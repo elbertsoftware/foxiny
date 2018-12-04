@@ -1,0 +1,25 @@
+{
+  "folders": [
+    {
+      "path": "web"
+    },
+    {
+      "path": "gateway"
+    },
+    {
+      "path": "backend"
+    },
+    {
+      "path": "config"
+    },
+    {
+      "path": "doc"
+    },
+    {
+      "path": "test"
+    }
+  ],
+  "settings": {
+    "javascript.validate.enable": false
+  }
+}

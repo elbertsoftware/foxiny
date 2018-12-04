@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  foxiny_db:
+    build:
+      dockerfile: Dockerfile
+      context: ./postgres
+    image: foxiny/postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    networks:
+      - backend
+    volumes:
+      - ./foxiny_main_db:/var/lib/postgresql
+    environment:
+      POSTGRES_USER: foxiny_dev
+      POSTGRES_PASSWORD: Foxiny@5432
+      POSTGRES_DB: foxiny_main_db
+
+  prisma:
+    build:
+      dockerfile: Dockerfile
+      context: ./prisma
+    image: foxiny/prisma
+    restart: always
+    ports:
+      - '4466:4466'
+    networks:
+      - backend
+    environment:
+      PRISMA_CONFIG: |
+        port: 4466
+        # uncomment the next line and provide the env var PRISMA_MANAGEMENT_API_SECRET=my-secret to activate cluster security
+        # managementApiSecret: my-secret
+        databases:
+          default:
+            connector: postgres
+            host: foxiny_db
+            port: '5432'
+            database: foxiny_main_db
+            user: foxiny_dev
+            password: Foxiny@5432
+            ssl: false
+            migrations: true
+            rawAccess: true
+    depends_on:
+      - foxiny_db
+
+networks:
+  backend:
+    driver: bridge

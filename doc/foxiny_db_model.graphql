@@ -1,0 +1,152 @@
+# Fields required for every type:
+# id: ID! @unique
+#  _version: Int! @default(value: "1")
+
+type Address {
+  id: ID! @unique
+  _version: Int! @default(value: "1")
+
+  # Address description: Home, Office, Mom, Dad, Headquarter, Branch, etc.
+  description: String!
+
+  # vi: Vietnam, zh: China, ja: Japan, ko: Korea (enum will be defined in graphql-yoga)
+  region: String!
+
+  # For US address now, more research on other country address
+  name: String!
+  phone: String!
+  street: String!
+  unit: String
+  city: String!
+  state: String!
+  zip: String!
+}
+
+type Media {
+  id: ID! @unique
+  _version: Int! @default(value: "1")
+
+  name: String!
+  ext: String!
+  mime: String!
+  size: Int! # in byte
+  hash: String! # hashed binary content for legitimation
+  #sha256: String!
+  uri: String!
+}
+
+type Review {
+  id: ID! @unique
+  _version: Int! @default(value: "1")
+
+  author: Member! @relation(name: "ReviewAuthor", onDelete: SET_NULL)
+
+  # Product, Vendor, Member to be reviewed, use interface/union in yoga to resolve reviews
+  targetType: String!
+  targetID: ID! # point to Product, Vendor, Member to be reviewed
+  # Review content
+  title: String!
+  body: String!
+  stars: Int!
+  medias: [Media!]!
+}
+
+type Permission {
+  id: ID! @unique
+  _version: Int! @default(value: "1")
+
+  type: String!
+  controller: String!
+  action: String!
+  enabled: Boolean! @default(value: "true")
+  policy: String!
+}
+
+type Role {
+  id: ID! @unique
+  _version: Int! @default(value: "1")
+
+  name: String! # Administrator, Assistant, Authenticated, Public
+  description: String!
+  type: String! # root, assistant, authenticated, public
+  permissions: [Permission!]!
+}
+
+type Payment {
+  id: ID! @unique
+  _version: Int! @default(value: "1")
+
+  # CARD, BANK
+  type: String!
+}
+
+type Member {
+  id: ID! @unique
+  _version: Int! @default(value: "1")
+
+  # Generic data"1")
+  name: String!
+  profile: String!
+  profileMedia: Media! @relation(name: "MemberProfileToMedia", onDelete: CASCADE)
+  badgeMedias: [Media!]! @relation(name: "MemberBadgeToMedia", onDelete: SET_NULL) # badge images are predefined, do not remove them when deleting member
+  addresses: [Address!]!
+  payments: [Payment!]!
+
+  # Reviews
+  authoredReviews: [Review!]! @relation(name: "ReviewAuthor", onDelete: CASCADE) # list of reviews this member authored
+  # reminder to use interface/union in yoga to resolve reviews
+  #reviews: [ID!]! # list of reviews this member received from another members
+
+  # Rewards
+
+  # Orders
+
+  # EMAIL, PHONE, GOOGLE, FACEBOOK (enum will be defined in graphql-yoga)
+  provider: String! @default(value: "EMAIL")
+
+  # Fields needed for email or phone authentication
+  email: String!
+  phone: String!
+  password: String!
+
+  # Fields neded for OAuth 2.0 authentication
+  authId: String!
+  accessToken: String!
+  refreshToken: String
+
+  confirmed: Boolean! @default(value: "false")
+  blocked: Boolean! @default(value: "false")
+
+  # Permissions are combined from roles and individual permissions for managing the app
+  roles: [Role!]! # role based permissions
+  permissions: [Permission!]! # individual permissions
+  # Assignments
+  assignments: [Assignment!]!
+}
+
+type Assignment {
+  id: ID! @unique
+  _version: Int! @default(value: "1")
+
+  assistant: Member!
+  vendor: Vendor!
+
+  roles: [Role!]!
+  permissions: [Permission!]!
+}
+
+type Vendor {
+  id: ID! @unique
+  _version: Int! @default(value: "1")
+
+  assistants: [Assignment!]!
+
+  # Products
+
+  # Reviews, reminder to use interface/union in yoga to resolve reviews
+  #reviews: [ID!]! # list of reviews this vendor received from another members
+
+  # Rewards
+
+  # Orders
+}

@@ -1,0 +1,44 @@
+type Query {
+  users(query: String): [User!]!
+  me: User!
+}
+
+type Mutation {
+  createUser(data: CreateUserInput!): AuthPayload!
+  login(data: LoginUserInput!): AuthPayload!
+  updateUser(data: UpdateUserInput!): User!
+  deleteUser: User!
+}
+
+type User {
+  id: ID!
+
+  name: String!
+  email: String # In the database, email is required, but here, it is not since we need to return null in case of non-authentication
+  password: String!
+
+  createdAt: String!
+  updatedAt: String!
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+type AuthPayload {
+  user: User!
+  token: String!
+}
+
+input UpdateUserInput {
+  name: String
+  email: String
+  password: String
+}

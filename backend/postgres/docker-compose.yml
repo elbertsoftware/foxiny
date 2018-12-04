@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  foxiny_db:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    image: foxiny/postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./foxiny_main_db:/var/lib/postgresql
+    environment:
+      POSTGRES_USER: foxiny_dev
+      POSTGRES_PASSWORD: Foxiny@5432
+      POSTGRES_DB: foxiny_main_db

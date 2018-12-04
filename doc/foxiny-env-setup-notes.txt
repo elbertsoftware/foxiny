@@ -1,0 +1,561 @@
+folder structure:
+--------------------------
+  foxiny 
+    + web
+    + mobile
+    + gateway
+    + backend
+      + foxiny_main_db
+      + postgres
+      + prisma
+    + config
+    + doc
+
+prepare dev env:
+---------------------------
+install and configure git:
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+install nvm: 
+  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+  command -v nvm
+
+install zsh, oh-my-zsh, zsh-nvm:
+  git clone https://github.com/lukechilds/zsh-nvm ~/.oh-my-zsh/custom/plugins/zsh-nvm
+
+  modify ~/.zshrc file for these following plugins:
+    plugins=(
+      git
+      colored-man-pages
+      docker
+      docker-compose
+      docker-machine
+      aws
+      kubectl
+      nvm
+      zsh-nvm
+      node
+      npm
+      npx
+      python
+      vscode
+    )
+
+uninstall previous node:
+  nvm uninstall 10.12.0
+
+install latest lts node and npm:
+  nvm install --lts --last-npm
+  nvm alias default 10.13.0 (update default node to latest node version since previous one was uninstalled)
+  
+  node --version
+    node v10.13.0
+
+  npm --version
+    npm v6.4.1
+
+reinstall any globally installed npm packages by previous node version
+  npm install prisma --global
+
+  npm install prisma --global
+    prisma --version (1.20.7)
+
+install docker:
+  sudo apt update
+	sudo apt install apt-transport-https ca-certificates curl software-properties-common
+
+	Create /etc/apt/sources.list.d/docker.list:
+		STABLE:
+			deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+		EDGE:chai-enzyme,
+			deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic edge
+		NIGHTLY:
+			deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic nightly
+
+	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+	sudo apt update
+
+	sudo apt install docker-ce
+	docker --version
+
+	sudo usermod -aG docker kenneth (logout and log back in)
+	docker version
+
+	docker info
+
+install docker-compose:
+  sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+	sudo chmod +x /usr/local/bin/docker-compose
+	docker-compose version
+
+chrome extensions:
+  React Developer Tools: https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?utm_source=chrome-ntp-icon
+
+  Apollo Client Developer Tools: https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm
+  
+  JSON Formatter: https://chrome.google.com/webstore/detail/json-formatter/mhimpmpmffogbmmkmajibklelopddmjf?utm_source=chrome-ntp-icon
+
+Project on BitBuck:
+
+cd ~/Projects
+git clone https://bitbucket.org/foxiny-dev/foxiny.git
+
+create new branch:
+  git branch <feature_branch>
+  git checkout <feature_branch>
+
+work on new branch:
+  git add . 
+  git commit -m "adding a change from the feature branch"
+
+  git push origin <feature_branch>
+
+switch back to master branch:
+  git checkout master
+
+setup frontend web:
+---------------------------
+
+https://dev.to/gate3/setting-up-your-react-workflow-with-create-react-app-eslint-flow-jest--enzyme-2n2o
+
+cd foxiny/frontend
+
+npx create-react-app foxiny-web
+mv foxiny-web web (rename foxiny-web folder)
+cd web
+
+setup flow:
+  npm install flow-bin --save-dev
+  
+  ./node_modules/.bin/flow init (create the .flowconfig file)
+  
+  add "flow": "flow" to scripts section of the package.json:
+    "scripts": {
+      ...
+      "flow": "flow"
+    },
+
+  run 'flow' from CLI to make sure there is no error
+
+  add '// @flow' at the top of any js/jsx file to start enforcing flow 
+
+setup eslint:
+  npm install eslint@5.6.0 --save-dev (eslint 5.6.0 is required by create-react-app at this time 11/12/2018)
+
+  ./node_modules/.bin/eslint --init
+    Use a popular style guide
+    Airbnb
+    React: Yes
+    Javascript
+
+  edit .eslintrc.js
+    module.exports = {
+      extends: ['airbnb', 'plugin:flowtype/recommended'],
+      env: {
+        jest: true,
+      },
+      parser: 'babel-eslint',
+      plugins: ['flowtype'],
+    };
+
+setup jest: 
+  create-react-app has made Jest as the default test runner
+
+setup enzyme:
+  npm install enzyme enzyme-adapter-react-16 enzyme-to-json --save-dev
+
+  add 'jest' section to package.json:
+    "jest": {
+      "snapshotSerializers": [
+        "enzyme-to-json/serializer"
+      ]
+    },
+
+  add a new file setupTests.js 'src' folder with this content:
+    import { configure } from 'enzyme';
+    import Adapter from 'enzyme-adapter-react-16';
+
+    configure({ adapter: new Adapter() });
+
+  Avoiding lint issue in the setupTests.js by adding theis rules to .eslintrc.js:
+    rules: {
+      'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    },
+
+  Visual Studio Code Workspace Settings:
+		"javascript.validate.enable": false
+
+setup apollo client:
+  npm install apollo-boost
+  npm install graphql
+  npm install react-apollo
+
+setup backend prisma & postgres:
+---------------------------
+
+cd foxiny/backend
+
+create 'foxiny_main_db' subfolder
+
+create 'postgres' subfolder and add 2 files:
+  1. Dockfile:
+      FROM postgres:latest
+
+  2. docker-compose.yml:
+      version: '3'
+      services:
+        foxiny_db:
+          build:
+            dockerfile: Dockerfile
+            context: .
+          image: foxiny/postgres
+          restart: always
+          ports:
+            - '5432:5432'
+          volumes:
+            - ./foxiny_main_db:/var/lib/postgresql
+          environment:
+            POSTGRES_USER: foxiny_dev
+            POSTGRES_PASSWORD: Foxiny@5432
+            POSTGRES_DB: foxiny_main_db
+
+cd postgres
+docker-compose up
+
+cd .. (back to backend folder)
+prisma init prisma
+  Use existing database
+    Set up a new Prisma server or deploy to an existing server? Use existing database
+    What kind of database do you want to deploy to? PostgreSQL
+    Does your database contain existing data? No
+    Enter database host: localhost
+    Enter database port: 5432
+    Enter database user: foxiny_dev
+    Enter database password: Foxiny@5432
+    Enter database name: foxiny_main_db
+    Use SSL? No
+    Select the programming language for the generated Prisma client: Don't generate
+
+cd postgres
+docker-compose down
+
+add 'Dockerfile' to newly created 'prisma' sub folder:
+  FROM prismagraphql/prisma:1.20
+
+move the newly created 'docker-compose.yml' from sub folder 'prisma' to the 'backend' folder, then modify its content:
+  version: '3'
+  services:
+    foxiny_db:
+      build:
+        dockerfile: Dockerfile
+        context: ./postgres
+      image: foxiny/postgres
+      restart: always
+      ports:
+        - '5432:5432'
+      networks:
+        - backend
+      volumes:
+        - ./foxiny_main_db:/var/lib/postgresql
+      environment:
+        POSTGRES_USER: foxiny_dev
+        POSTGRES_PASSWORD: Foxiny@5432
+        POSTGRES_DB: foxiny_main_db
+    prisma:
+      build:
+        dockerfile: Dockerfile
+        context: ./prisma
+      image: foxiny/prisma
+      restart: always
+      ports:
+        - '4466:4466'
+      networks:
+        - backend
+      environment:
+        PRISMA_CONFIG: |
+          port: 4466
+          # uncomment the next line and provide the env var PRISMA_MANAGEMENT_API_SECRET=my-secret to activate cluster security
+          # managementApiSecret: my-secret
+          databases:
+            default:
+              connector: postgres
+              host: foxiny_db
+              port: '5432'
+              database: foxiny_main_db
+              user: foxiny_dev
+              password: Foxiny@5432
+              ssl: false
+              migrations: true
+              rawAccess: true
+      depends_on:
+        - foxiny_db
+  networks:
+    backend:
+      driver: bridge
+
+cd .. (back to backend folder)
+docker-compose up
+  make sure prisma container connects to postgres container
+
+subsequent starting prisma server, use EITHER one of these:
+  docker-compose up
+    hit Ctrl+C to stop
+  
+  docker-compose up --detach
+    docker-compose stop
+
+  docker-compose start
+    docker-compose stop
+
+Note: 'docker-compose down' will remove containers and their volumes, so: 
+  database are also deleted
+  prisma deploy must be rerun 
+
+use pgAdmin III to connect to the database:
+  name: foxiny_main_db
+  host: localhost
+  port: 5432
+  username: foxiny_dev
+  password: Foxiny@5432
+
+cd prisma
+
+prisma deploy
+
+goto 'prisma' subfoler and modify the 'prisma.yml' file:
+  endpoint: ${env:PRISMA_ENDPOINT}
+
+prisma info (collect prisma endpoit)
+    http://localhost:4466/foxiny/dev
+
+add 'dev.env' to 'config' folder:
+  PRISMA_ENDPOINT=http://localhost:4466/foxiny/dev
+
+prisma deploy --env-file ../../config/dev.env (run everytime 'datamodel.prisma got modified)
+  or execute ./deploy-dev.sh (might need to allow permission: chmod +x deploy-dev.sh)
+
+navigate to http://localhost:4466/foxiny/dev
+  verify the schema created correctly
+
+reset database:
+  prisma delete --env-file ../../config/dev.env
+    or execute 'prisma-reset-dev.sh'
+
+setup services layer:
+---------------------------
+
+cd /foxiny/services
+mkdir gateway
+
+cd gateway
+npm init
+
+setup flow:
+  npm install flow-bin --save-dev
+
+  run './node_modules/.bin/flow init' (create the .flowconfig file)
+  
+  add "flow": "flow" to scripts section of the package.json:
+    "scripts": {
+      ...
+      "flow": "flow"
+    },
+
+  run 'flow' from CLI to make sure there is no error
+
+  add '// @flow' at the top of any js file to start enforcing flow 
+
+setup eslint:
+  npm install eslint --save-dev
+  npm install eslint-plugin-flowtype --save-dev
+  npm install babel-eslint --save-dev
+  npm install eslint-config-airbnb --save-dev
+  npm install eslint-plugin-jsx-a11y --save-dev
+  npm install eslint-plugin-react --save-dev
+
+  ./node_modules/.bin/eslint --init
+    Use a popular style guide
+    Airbnb
+    React: No
+    Javascript
+
+  edit .eslintrc.js
+    module.exports = {
+      extends: ['airbnb', 'plugin:flowtype/recommended'],
+      env: {
+        jest: true,
+      },
+      parser: 'babel-eslint',
+      plugins: ['flowtype'],
+    };
+
+configure babel:
+  npm install babel-cli babel-preset-env (using import/export in nodejs)
+  npm install babel-plugin-transform-object-rest-spread (using spread operator ... in nodejs)
+
+  create '.babelrc' in the 'gateway' sub folder:
+    {
+      "present": ["env"],
+      "plugins": ["transform-object-rest-spread"]
+    }
+
+run 'dev' with nodemon and babel-node:
+  npm install nodemon --save-dev
+  
+  add new entry 'dev' to package.json:
+    "scripts": {
+      ...
+      "dev": "nodemon ./src/index.js --exec babel-node --ext js,graphql"
+    },
+
+configure GraphQL implementation for Node JS:
+  npm install graphql-yoga (may need to roll back from 1.16.7 to 1.14.10 due to some dependencies issues)
+  npm install prisma-binding (2.1.6, see prisma.js) 
+  npm install graphql-cli --save-dev (do not use 2.17.0, use 2.16.4 since graphql-yoga is at 1.16.7) (see prisma.js and .graphqlconfig)
+
+  create ./src/prisma.js 
+    import { Prisma } from 'prisma-binding';
+
+    const prisma = new Prisma({
+      typeDefs: './src/generated/prisma.graphql',
+      endpoint: 'http://localhost:4466/foxiny/dev',
+    });
+
+    export { prisma as default };
+
+access prisma playground after securing it with secret token:
+  cd /foxiny/backend/prisma
+
+  prisma token --env-file ../../config/dev.env
+    or execute 'prisma-token-dev.sh'
+      <token>
+
+  add HTTP Header:
+    {
+      "Authorization": "Bearer <token>"
+    }
+
+  sample operations:
+
+    mutation {
+      createUser(data: {
+        name: "Ky Pham",
+        email: "kpham@example.com",
+        password: "Blah1"
+      }) {
+        id
+        name
+        email
+        password
+      } 
+    }
+
+    query {
+      users(where: {
+        name_contains: "P"
+      }) {
+        id
+        name
+        email
+        password
+        createdAt
+        updatedAt
+      }
+    }
+
+sample operations on local playground:
+
+mutation {
+  createUser(data: {
+    name: "Ky Pham",
+    email: "ky@example.com",
+    password: "abcd1234"
+  }) {
+    token
+    user {
+      name
+      email
+    }
+  }
+}
+
+fragment userFields on User {
+  name
+  email
+  password
+}
+
+query {
+  users(query: "P") {
+    ...userFields
+    createdAt
+  	updatedAt
+  }
+}
+
+mutation {
+  login(
+    data: {
+    	email: "ky@example.com"
+      password: "abcd1234"
+  	}
+  ) {
+    token
+    user {
+      id
+      name
+      email
+    }
+  }
+}
+
+query {
+  me {
+    id
+    name
+    email
+  }
+}
+
+mutation {
+  updateUser(data: {
+    name: "Kenneth Pham",
+    email: "kenneth@example.com",
+    password: "4321abcd"
+  }) {
+    id
+    name
+    email
+    password
+  }
+}
+
+mutation {
+  deleteUser {
+    id
+    name
+    email
+    password
+  }
+}
+
+test production locally:
+  initialize production database (just once): 
+    './deploy-prod.sh'
+  
+  use babel to translate code from 'src' folder to 'dist' folder: 
+    npm run postbuild
+  
+  start the server:
+    npm run prod
+
+real production:
+  initialize production database (just once): 
+    './deploy-prod.sh'
+  
+  use babel to translate code from 'src' folder to 'dist' folder: 
+    npm run postbuild
+  
+  start the server:
+    npm run start

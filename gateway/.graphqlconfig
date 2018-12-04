@@ -1,0 +1,10 @@
+{
+  "projects": {
+    "foxiny-gateway": {
+      "schemaPath": "./src/type-defs/generated/prisma.graphql",
+      "extensions": {
+        "prisma": "../backend/prisma/prisma.yml"
+      }
+    }
+  }
+}

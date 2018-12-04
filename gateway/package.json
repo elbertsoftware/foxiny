@@ -1,0 +1,51 @@
+{
+  "name": "foxiny-gateway",
+  "version": "0.1.0",
+  "description": "foxiny gateway",
+  "author": "foxiny-dev",
+  "license": "ISC",
+  "main": "index.js",
+  "scripts": {
+    "flow": "flow",
+    "schema": "graphql get-schema --project foxiny-gateway --dotenv ../config/dev.env",
+    "dev": "env-cmd ../config/dev.env nodemon ./src/index.js --exec babel-node --ext js,graphql",
+    "debug": "env-cmd ../config/dev.env babel-node ./src/index.js",
+    "test": "env-cmd ../config/test.env jest --watch --runInBand",
+    "prod": "env-cmd ../config/prod.env node ./dist/index.js",
+    "postbuild": "babel src --out-dir dist --copy-files",
+    "start": "node ./dist/index.js"
+  },
+  "jest": {
+    "globalSetup": "./tests/jest/start-test-server.js",
+    "globalTeardown": "./tests/jest/stop-test-server.js"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.0.0",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "bcryptjs": "^2.4.3",
+    "graphql-yoga": "^1.16.7",
+    "jsonwebtoken": "^8.4.0",
+    "prisma-binding": "^2.2.8"
+  },
+  "devDependencies": {
+    "apollo-boost": "^0.1.22",
+    "babel-eslint": "^10.0.1",
+    "babel-register": "^6.26.0",
+    "cross-fetch": "^2.2.3",
+    "env-cmd": "^8.0.2",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-flowtype": "^3.2.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.11.1",
+    "flow-bin": "^0.86.0",
+    "graphql": "^14.0.2",
+    "graphql-cli": "^2.16.4",
+    "jest": "^23.6.0",
+    "nodemon": "^1.18.6"
+  }
+}
