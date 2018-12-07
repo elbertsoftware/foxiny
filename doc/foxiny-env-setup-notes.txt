@@ -119,7 +119,7 @@ setup frontend web:
 
 https://dev.to/gate3/setting-up-your-react-workflow-with-create-react-app-eslint-flow-jest--enzyme-2n2o
 
-cd foxiny/frontend
+cd foxiny
 
 npx create-react-app foxiny-web
 mv foxiny-web web (rename foxiny-web folder)

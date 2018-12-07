@@ -56,7 +56,7 @@ For highly cost/expensive proudcts, Foxiny allows users setting up PiggyBank acc
 
 ## Data Layer
 
-[Data modeling](./Data_Modeling.html)
+[Data modeling](https://www.draw.io/#G19ZZtMWX6v6OcjEAS8qgbwZ_0qcAcVTz3)
 
 Indexing:
 
