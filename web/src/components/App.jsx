@@ -8,6 +8,8 @@ import './App.css';
 import UserList from './UserList';
 import MyButton from './MyButton';
 
+import { setAuthorizationToken } from '../utils/authentication';
+
 type State = {
   count: number,
 };
@@ -31,6 +33,13 @@ class App extends Component<Props, State> {
     this.setState({
       count,
     });
+  }
+
+  componentDidMount() {
+    // TODO: Remove the following line after implementing login feature
+    setAuthorizationToken(
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjanBxZDdvbWgwMDBsMDcxOWlrZnd3cm40IiwiaWF0IjoxNTQ0OTMyOTkwLCJleHAiOjE1NDU1Mzc3OTB9.juBRHwhQNaHY14I4dEDH70vh3jkH--cC_CQgroHr7zw',
+    );
   }
 
   render() {
