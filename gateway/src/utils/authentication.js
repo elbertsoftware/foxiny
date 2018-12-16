@@ -35,8 +35,11 @@ const getUserId = (request, requireAuthentication = true) => {
 
       return payload.userId;
     } catch (error) {
-      // custom return error message
-      throw new Error('Authentication failed'); // invalid token or token expired
+      // suppress error if authentication is not required
+      if (requireAuthentication) {
+        // custom return error message
+        throw new Error('Authentication failed'); // invalid token or token expired
+      }
     }
   }
 
