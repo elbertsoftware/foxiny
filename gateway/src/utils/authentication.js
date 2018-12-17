@@ -22,8 +22,8 @@ const generateToken = userId => jwt.sign({ userId }, process.env.JWT_SECRET, { e
 const getUserId = (request, requireAuthentication = true) => {
   // 1. Authorization from HTTP Header: http://localhost:4466/foxiny/dev (web/playground)
   // 2. Authorization from Websocket: ws://localhost:4466/foxiny/dev (Jest unit tests)
-  const authorization = request.request
-    ? request.request.headers.authorization // 1.
+  const authorization = request
+    ? request.headers.authorization // 1.
     : request.connection.context.Authorization; // 2.
 
   if (authorization) {

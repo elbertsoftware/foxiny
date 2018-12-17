@@ -38,7 +38,7 @@ class App extends Component<Props, State> {
   componentDidMount() {
     // TODO: Remove the following line after implementing login feature
     setAuthorizationToken(
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjanBxZDdvbWgwMDBsMDcxOWlrZnd3cm40IiwiaWF0IjoxNTQ0OTMyOTkwLCJleHAiOjE1NDU1Mzc3OTB9.juBRHwhQNaHY14I4dEDH70vh3jkH--cC_CQgroHr7zw',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjanBzMWM1eGkwMDBwMDc4MThuMTdrbGVoIiwiaWF0IjoxNTQ1MDMzOTc2LCJleHAiOjE1NDU2Mzg3NzZ9.xmuynIpgPzmGwqdTOMf66qC-bqxGAEKD1oJwhUFJMFA',
     );
   }
 
