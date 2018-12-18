@@ -14,7 +14,7 @@ const apolloClient = new ApolloClient({
     operation.setContext({
       headers: {
         Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjanA5OGgwMjYwMDBiMDc5NG9oMDQ3bng2IiwiaWF0IjoxNTQzODk3MTAzLCJleHAiOjE1NDQ1MDE5MDN9.L0UZOilliwdeM-oGXoarBAzopnV7rN5WaUn-W25rflA',
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InNlcnZpY2UiOiJmb3hpbnlAZGV2Iiwicm9sZXMiOlsiYWRtaW4iXX0sImlhdCI6MTU0NDQ0NzQzOSwiZXhwIjoxNTQ1MDUyMjM5fQ.1SZ_FYGd87drq0mqhFd25R69bYfbbNcQzesEhCY08A0',
       },
     });
   },
