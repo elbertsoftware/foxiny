@@ -1,21 +1,8 @@
+// @flow
 import React, { Component } from 'react';
-import { Box, IconButton, Text, Image } from 'gestalt';
+import { Box, Image, Heading } from 'gestalt';
 import 'gestalt/dist/gestalt.css';
-import styled from 'styled-components';
-
-// All styles for this component are here
-const Link = styled.a`
-  text-decoration: none;
-  text-transform: uppercase;
-  font-weight: 400;
-  color: #707070;
-  :hover {
-    color: #ff5733;
-  }
-`;
-const Nav = styled.div`
-  background: #f0f0f0;
-`;
+import { Nav, StyledDivider, StyledLink } from './StylesNavBar';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class NavBar extends Component {
@@ -30,22 +17,32 @@ class NavBar extends Component {
           display="flex"
           alignItems="center"
           justifyContent="around"
+          height={90}
         >
           <Box display="flex" alignItems="center">
             <Box width={70} height={70}>
               <Image alt="Foxiny logo" src="/assets/foxiny_logo.png" naturalHeight={1} naturalWidth={1} />
             </Box>
-            | <Text size="lg">Foxiny</Text>
+            <Box>
+              <StyledDivider />
+            </Box>
+            <Box marginLeft={1}>
+              <Heading size="xs">Foxiny</Heading>
+            </Box>
           </Box>
           <Box direction="row" display="flex">
             <Box padding={2}>
-              <Link href="#">Trang chu</Link>
+              <StyledLink href="#">Trang chủ</StyledLink>
             </Box>
             <Box padding={2}>
-              <Link href="#">San pham</Link>
+              <StyledLink href="#">
+                <span>Sản Phẩm</span>
+              </StyledLink>
             </Box>
             <Box padding={2}>
-              <Link href="#">Thong tin</Link>
+              <StyledLink href="#">
+                <span>Thông tin</span>
+              </StyledLink>
             </Box>
           </Box>
         </Box>
