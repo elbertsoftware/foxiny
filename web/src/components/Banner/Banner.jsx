@@ -3,7 +3,7 @@
 import React from 'react';
 import Glider from 'glider-js';
 import 'glider-js/glider.min.css';
-import { Box, Heading, Text, Button } from 'gestalt';
+import { Box, Heading, Text, Button, Container } from 'gestalt';
 import { divStyle } from './StylesBanner';
 
 class Banner extends React.Component {
@@ -33,26 +33,30 @@ class Banner extends React.Component {
 
   render() {
     return (
-      <div className="glider-contain">
+      <div className="glider-contain" style={{ zIndex: '-1' }}>
         <div className="glider" ref={this.myGlider} style={{ height: '500px' }}>
           <div style={divStyle}>
             <Box height={500} display="flex" direction="column" justifyContent="center" alignItems="start">
-              <Box display="flex" marginStart={12} paddingX={12} width="50%">
-                <Heading color="white" bold size="md">
-                  WELCOME TO &nbsp;
-                </Heading>
-                <Heading bold size="md" color="orange">
-                  FOXINY
-                </Heading>
-              </Box>
-              <Box marginStart={12} paddingX={12} margin={6}>
-                <Text color="white" leading="tall">
-                  We care your needs and focus on your experience.
-                </Text>
-                <Text color="white" leading="tall">
-                  We are here to help you and make your projects better.
-                </Text>
-              </Box>
+              <Container>
+                <Box display="flex" marginStart={12} paddingX={12}>
+                  <Heading color="white" bold size="md">
+                    WELCOME TO &nbsp;
+                  </Heading>
+                  <Heading bold size="md" color="orange">
+                    FOXINY
+                  </Heading>
+                </Box>
+              </Container>
+              <Container>
+                <Box marginStart={12} paddingX={12} margin={6}>
+                  <Text color="white" leading="tall">
+                    We care your needs and focus on your experience.
+                  </Text>
+                  <Text color="white" leading="tall">
+                    We are here to help you and make your projects better.
+                  </Text>
+                </Box>
+              </Container>
               <Box marginStart={12} paddingX={12} marginTop={1}>
                 <Button color="transparent" text="Learn more" />
               </Box>
