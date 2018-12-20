@@ -11,6 +11,7 @@ import '@babel/polyfill/noConflict';
 import server from './server';
 
 const startServer = async port => {
+  // node listens on IPv6 which is in this format: 2600:1700:dfa1:51a0:a088:143a:1edb:910f
   global.httpServer = await server.listen(port, () => {
     console.log(`🚀  foxiny-gateway is up and running on port ${port}`);
   });
