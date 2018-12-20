@@ -15,6 +15,7 @@ type User {
 
   name: String!
   email: String # In the database, email is required, but here, it is not since we need to return null in case of non-authentication
+  phone: String
   password: String!
 
   createdAt: String!
@@ -23,7 +24,8 @@ type User {
 
 input CreateUserInput {
   name: String!
-  email: String!
+  email: String
+  phone: String
   password: String!
 }
 

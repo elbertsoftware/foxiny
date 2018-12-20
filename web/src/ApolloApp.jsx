@@ -3,7 +3,6 @@
 import React from 'react';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
-
 import App from './components/App';
 import 'gestalt/dist/gestalt.css';
 import { getAuthorizationToken } from './utils/authentication';

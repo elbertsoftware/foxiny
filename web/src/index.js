@@ -1,41 +1,18 @@
+// @flow
+
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import ApolloClient, { gql } from 'apollo-boost';
+import env from 'dotenv';
 
 import './index.css';
 
 import ApolloApp from './ApolloApp';
 import * as serviceWorker from './serviceWorker';
 
-const apolloClient = new ApolloClient({
-  uri: 'http://localhost:4000',
-  request(operation) {
-    operation.setContext({
-      headers: {
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InNlcnZpY2UiOiJmb3hpbnlAZGV2Iiwicm9sZXMiOlsiYWRtaW4iXX0sImlhdCI6MTU0NDQ0NzQzOSwiZXhwIjoxNTQ1MDUyMjM5fQ.1SZ_FYGd87drq0mqhFd25R69bYfbbNcQzesEhCY08A0',
-      },
-    });
-  },
-});
+env.config();
 
-apolloClient
-  .query({
-    query: gql`
-      query {
-        users {
-          name
-          email
-          password
-
-          createdAt
-          updatedAt
-        }
-      }
-    `,
-  })
-  .then(result => console.log(`>>>>>>> sample result: ${JSON.stringify(result)}`));
+// variables which are defined in the .env file and started with REACT_APP_ prefix should be displayed here
+// console.log(process.env);
 
 ReactDOM.render(<ApolloApp />, document.getElementById('root'));
 

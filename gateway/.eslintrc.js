@@ -6,6 +6,7 @@ module.exports = {
   parser: 'babel-eslint',
   plugins: ['flowtype'],
   rules: {
+    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'arrow-parens': ['error', 'as-needed'],
     'max-len': [
       'error',
