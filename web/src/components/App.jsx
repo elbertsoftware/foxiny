@@ -1,11 +1,10 @@
 // @flow
 
 import React, { Component } from 'react';
-import NavBar from './nav/NavBar/NavBar';
-import Banner from './Banner/Banner';
-import 'gestalt/dist/gestalt.css';
 import { setAuthorizationToken } from '../utils/authentication';
 import './App.css';
+import withRoot from '../utils/withRoot';
+import NavBar from '../components/NavBar/NavBar';
 
 class App extends Component<Props, State> {
   componentDidMount() {
@@ -17,12 +16,11 @@ class App extends Component<Props, State> {
 
   render() {
     return (
-      <div>
+      <React.Fragment>
         <NavBar />
-        <Banner />
-      </div>
+      </React.Fragment>
     );
   }
 }
 
-export default App;
+export default withRoot(App);
