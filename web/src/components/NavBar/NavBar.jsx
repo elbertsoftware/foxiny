@@ -1,34 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
-import { AppBar, Typography, Toolbar } from '@material-ui/core';
+import { AppBar, Typography, Toolbar, Button } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 const styles = theme => ({
-  title: {
-    fontSize: 24,
+  root: {
+    flexGrow: 1,
   },
-  toolbar: {
-    justifyContent: 'stretch',
+  grow: {
+    flexGrow: 1,
   },
-  left: {
-    flex: 1,
+  menuButton: {
+    marginLeft: -12,
+    marginRight: 20,
   },
-  leftLinkActive: {
-    color: theme.palette.common.white,
-  },
-  right: {
-    flex: 1,
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
-  rightLink: {
-    fontSize: 16,
-    color: theme.palette.common.white,
-    marginLeft: theme.spacing.unit * 3,
-  },
-  linkSecondary: {
-    color: theme.palette.secondary.main,
+  image: {
+    maxWidth: '60px',
+    height: 'auto',
   },
 });
 
@@ -36,24 +25,20 @@ function NavBar(props) {
   const { classes } = props;
 
   return (
-    <div>
-      <AppBar position="fixed">
-        <Toolbar className={classes.toolbar}>
-          <div className={classes.left} />
-          <Typography variant="h6" color="inherit" className={classes.title}>
-            {'onepirate'}
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Toolbar>
+          <a href="/">
+            <img alt="Foxiny Inc - We care your needs" src="/assets/foxiny_logo.png" className={classes.image} />
+          </a>
+          <Typography variant="h6" color="inherit" className={classes.grow}>
+            Foxiny
           </Typography>
-          <div className={classes.right}>
-            <Typography color="inherit" variant="h6" className={classes.rightLink}>
-              {'Sign In'}
-            </Typography>
-            <Typography variant="h6" className={classNames(classes.rightLink, classes.linkSecondary)}>
-              {'Sign Up'}
-            </Typography>
-          </div>
+          <Link to="/signin">
+            <Button color="inherit">Đăng nhập</Button>
+          </Link>
         </Toolbar>
       </AppBar>
-      <div className={classes.placeholder} />
     </div>
   );
 }

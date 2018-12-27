@@ -8,6 +8,7 @@ import env from 'dotenv';
 import './index.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import ApolloApp from './ApolloApp';
+import SignIn from './components/SignIn/SignIn';
 import * as serviceWorker from './serviceWorker';
 
 env.config();
@@ -18,6 +19,7 @@ const Root = () => (
   <Router>
     <Switch>
       <Route component={ApolloApp} exact path="/" />
+      <Route component={SignIn} exact path="/signin" />
     </Switch>
   </Router>
 );

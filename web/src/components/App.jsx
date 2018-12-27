@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { setAuthorizationToken } from '../utils/authentication';
 import './App.css';
 import withRoot from '../utils/withRoot';
-import NavBar from '../components/NavBar/NavBar';
+import NavBar from './NavBar/NavBar';
 
 class App extends Component<Props, State> {
   componentDidMount() {
