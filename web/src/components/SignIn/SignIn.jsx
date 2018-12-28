@@ -55,12 +55,8 @@ class SignIn extends React.Component {
         <NavBar />
         <AppForm>
           <React.Fragment>
-            <Typography variant="h3" gutterBottom marked="center" align="center">
+            <Typography variant="h4" gutterBottom marked="center" align="left">
               Sign In
-            </Typography>
-            <Typography variant="body2" align="center">
-              {'Not a member yet? '}
-              <Link to="/">Sign Up here</Link>
             </Typography>
           </React.Fragment>
           <Form onSubmit={this.handleSubmit} subscription={{ submitting: true }} validate={this.validate}>
@@ -114,6 +110,10 @@ class SignIn extends React.Component {
           </Form>
           <Typography component={linkProps => <Link {...linkProps} to="/" />} align="center">
             Forgot password?
+          </Typography>
+          <Typography variant="body2" align="center">
+            {'Not a member yet? '}
+            <Link to="/signup">Sign Up here</Link>
           </Typography>
         </AppForm>
       </React.Fragment>

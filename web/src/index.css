@@ -19,3 +19,8 @@ code {
   font-family: 'HellshockTeddyBear';
   src: local('HellshockTeddyBear'), url(./fonts/HellshockTeddyBear.ttf) format('truetype');
 }
+
+a:link,
+a:visited {
+  text-decoration: none;
+}

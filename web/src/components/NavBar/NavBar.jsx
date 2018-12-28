@@ -34,9 +34,10 @@ function NavBar(props) {
           <Typography variant="h6" color="inherit" className={classes.grow}>
             Foxiny
           </Typography>
-          <Link to="/signin">
-            <Button color="inherit">Đăng nhập</Button>
-          </Link>
+
+          <Button component={Link} to="/signin" variant="outlined" color="secondary">
+            Đăng nhập
+          </Button>
         </Toolbar>
       </AppBar>
     </div>

@@ -22,6 +22,7 @@ const styles = theme => ({
 
 function Paper(props) {
   const { background, classes, className, padding, ...other } = props;
+
   return (
     <MuiPaper
       elevation={0}
