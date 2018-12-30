@@ -24,8 +24,8 @@ const Query = {
     return prisma.query.users(opArgs, info);
   },
 
-  me: (parent, args, { prisma, request }, info) => {
-    const userId = getUserId(request);
+  me: (parent, args, { prisma, request, cache }, info) => {
+    const userId = getUserId(request, cache);
 
     return prisma.query.user(
       {

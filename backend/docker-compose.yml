@@ -47,6 +47,22 @@ services:
     depends_on:
       - foxiny_db
 
+  foxiny_cache:
+    build:
+      dockerfile: Dockerfile
+      context: ./redis
+    image: foxiny/redis
+    restart: always
+    ports:
+      - '6379:6379'
+    networks:
+      - backend
+    command: redis-server --appendonly yes --requirepass Foxiny@6379
+    volumes:
+      - ./foxiny_cache:/data
+    depends_on:
+      - prisma
+
 networks:
   backend:
     driver: bridge

@@ -9,6 +9,7 @@ import { ApolloServer, gql } from 'apollo-server-express';
 
 import { resolvers, fragmentReplacements } from './resolvers';
 import prisma from './prisma';
+import cache from './cache';
 
 // Express server
 const server = express();
@@ -36,6 +37,7 @@ const graphQLServer = new ApolloServer({
     return {
       prisma,
       request,
+      cache,
     };
   },
   fragmentReplacements, // send fragment definitions to this graphql server

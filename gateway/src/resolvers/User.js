@@ -3,8 +3,9 @@
 import { getUserId } from '../utils/authentication';
 
 // How to lock down sensitive fields on non-authenticated users
-const resolveField = (parent, request, value) => {
-  const userId = getUserId(request, false); // no need to check for authentication
+const resolveField = (parent, request, cache, value) => {
+  const userId = getUserId(request, cache, false); // no need to check for authentication
+  // console.log(`userId ${userId}, parent.id ${parent.id}`);
   if (userId && userId === parent.id) {
     // login user is the same as selecting user (parent)
     return value;
@@ -17,14 +18,14 @@ const resolveField = (parent, request, value) => {
 const User = {
   email: {
     fragment: 'fragment userId on User { id }',
-    resolve: (parent, args, { request }) => {
-      return resolveField(parent, request, parent.email);
+    resolve: (parent, args, { request, cache }) => {
+      return resolveField(parent, request, cache, parent.email);
     },
   },
   phone: {
     fragment: 'fragment userId on User { id }',
-    resolve: (parent, args, { request }) => {
-      return resolveField(parent, request, parent.phone);
+    resolve: (parent, args, { request, cache }) => {
+      return resolveField(parent, request, cache, parent.phone);
     },
   },
 };

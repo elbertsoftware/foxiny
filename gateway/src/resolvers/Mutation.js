@@ -1,9 +1,9 @@
 // @flow
 
-import { hashPassword, verifyPassword, generateToken, getUserId } from '../utils/authentication';
+import { hashPassword, verifyPassword, generateToken, terminateToken, getUserId } from '../utils/authentication';
 
 const Mutation = {
-  createUser: async (parent, { data }, { prisma, request }) => {
+  createUser: async (parent, { data }, { prisma, request, cache }) => {
     const password = hashPassword(data.password);
 
     const user = await prisma.mutation.createUser({
@@ -16,14 +16,15 @@ const Mutation = {
 
     return {
       user,
-      token: generateToken(user.id, request),
+      token: generateToken(user.id, request, cache),
     };
   },
 
-  login: async (parent, { data }, { prisma, request }) => {
+  login: async (parent, { data }, { prisma, request, cache }) => {
     const user = await prisma.query.user({
       where: {
         email: data.email,
+        phone: data.phone,
       },
     });
 
@@ -38,18 +39,30 @@ const Mutation = {
 
     return {
       user,
-      token: generateToken(user.id, request),
+      token: generateToken(user.id, request, cache),
     };
   },
 
-  updateUser: (parent, { data }, { prisma, request }, info) => {
-    const userId = getUserId(request);
+  logout: async (parent, context, { request, cache }) => {
+    const userId = getUserId(request, cache);
+    terminateToken(userId);
+
+    return userId;
+  },
+
+  updateUser: (parent, { data }, { prisma, request, cache }, info) => {
+    const userId = getUserId(request, cache);
 
     const updateData = { ...data };
 
-    // TODO: For user account recovery purpose, sensitive info like email, password, etc. need to be archived
+    // TODO: For user account recovery purpose, sensitive info like email, phone, password, etc. need to be archived
     if (typeof data.email === 'string') {
       // email is about to be changed
+      // TODO: Archive current email somewhere else
+    }
+
+    if (typeof data.phone === 'string') {
+      // phone is about to be changed
       // TODO: Archive current email somewhere else
     }
 
@@ -70,9 +83,10 @@ const Mutation = {
     );
   },
 
-  deleteUser: (parent, args, { prisma, request }, info) => {
-    const userId = getUserId(request);
+  deleteUser: (parent, args, { prisma, request, cache }, info) => {
+    const userId = getUserId(request, cache);
 
+    terminateToken(userId);
     return prisma.mutation.deleteUser(
       {
         where: {
