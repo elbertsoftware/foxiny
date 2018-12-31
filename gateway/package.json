@@ -28,7 +28,6 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "graphql": "^14.0.2",
     "ioredis": "^4.3.0",
     "jsonwebtoken": "^8.4.0",
     "ms": "^2.1.1",
