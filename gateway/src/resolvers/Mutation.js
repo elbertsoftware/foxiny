@@ -1,6 +1,14 @@
 // @flow
 
-import { hashPassword, verifyPassword, generateToken, terminateToken, getUserId } from '../utils/authentication';
+import {
+  hashPassword,
+  verifyPassword,
+  generateToken,
+  terminateToken,
+  terminateAllTokens,
+  getToken,
+  getUserId,
+} from '../utils/authentication';
 
 const Mutation = {
   createUser: async (parent, { data }, { prisma, request, cache }) => {
@@ -43,9 +51,14 @@ const Mutation = {
     };
   },
 
-  logout: async (parent, context, { request, cache }) => {
+  logout: async (parent, { all }, { request, cache }) => {
+    const token = getToken(request);
     const userId = getUserId(request, cache);
-    terminateToken(userId);
+    if (all) {
+      terminateAllTokens(userId);
+    } else {
+      terminateToken(userId, token);
+    }
 
     return userId;
   },

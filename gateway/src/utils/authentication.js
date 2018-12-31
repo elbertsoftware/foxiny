@@ -20,12 +20,17 @@ const verifyPassword = (password, hashedPassword) => bcrypt.compareSync(password
 
 const getIpAddress = request => requestId.getClientIp(request);
 
-const saveToken = (cache, key, token, exp) => {
-  // console.log(`insert token '${token}' for userId '${key}'`);
-  cache.set(key, token, 'EX', exp);
+const saveToken = (cache, userId, token, ip, exp) => {
+  console.log(`insert token '${token}' for userId '${userId}' with ip ${ip}`);
+  cache.hset(userId, token, ip, 'EX', exp);
 };
 
-const loadToken = (cache, key) => {
+const loadToken = async (cache, userId, token) => {
+  const ip = await cache.hget(userId, token);
+  console.log(`retrieved ip ${ip} from token '${token}' for userId '${userId}'`);
+
+  return ip;
+  /*  
   cache
     .get(key) // async/await does not work, use .then()/.catch() for now
     .then(token => {
@@ -36,10 +41,15 @@ const loadToken = (cache, key) => {
       // console.log(`failed to retrieve token for userId '${key}'`, error);
       return null;
     });
+*/
 };
 
-const terminateToken = (cache, key) => {
-  cache.del(key);
+const terminateToken = (cache, userId, token) => {
+  cache.hdel(userId, token);
+};
+
+const terminateAllTokens = (cache, userId) => {
+  cache.del(userId);
 };
 
 const generateToken = (userId, request, cache) => {
@@ -51,44 +61,49 @@ const generateToken = (userId, request, cache) => {
   const payload = {
     userId,
     iat,
-    ip: getIpAddress(request),
   };
 
   // synchronous call since no callback supplied
   const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
+  const ip = getIpAddress(request);
 
   // save token to redis cache
-  saveToken(cache, userId, token, exp);
+  saveToken(cache, userId, token, ip, exp);
 
   return token;
 };
 
-const getUserId = (request, cache, requireAuthentication = true) => {
+const getToken = request => {
   // 1. Authorization from HTTP Header: http://localhost:4466/foxiny/dev (web/playground)
   // 2. Authorization from Websocket: ws://localhost:4466/foxiny/dev (Jest unit tests)
   const authorization = request
     ? request.headers.authorization // 1.
     : request.connection.context.Authorization; // 2.
 
-  if (authorization) {
-    const token = authorization.replace('Bearer ', ''); // remove ther prefix 'Bearer '
+  // remove ther prefix 'Bearer '
+  const token = authorization ? authorization.replace('Bearer ', '') : null;
+  console.log(`authorization token ${token}`);
 
+  return token;
+};
+
+const getUserId = (request, cache, requireAuthentication = true) => {
+  const token = getToken(request);
+  if (token) {
     // the verify() will throw Error if the token has been expired
     try {
       const payload = jwt.verify(token, process.env.JWT_SECRET); // synchronous call since no callback supplied
       let { userId } = payload;
 
       const ip = getIpAddress(request);
-      // console.log(`userId ${userId}, ip ${ip}, payload.ip ${payload.ip}`);
+      const cacheIp = loadToken(cache, userId, token);
+      console.log(`userId ${userId}, ip ${ip}, cacheIp ${cacheIp}`);
 
-      const cacheToken = loadToken(cache, userId);
-      // console.log(`userId ${userId}, cacheToken ${cacheToken}`);
-
-      // check IP address
-      let validated = ip === payload.ip;
-
-      // check against stored token (redis)
-      validated = validated && cacheToken && cacheToken === token;
+      let validated = true;
+      if (ip !== cacheIp) {
+        // check IP address
+        validated = false;
+      }
 
       // more validation goes here
       // ...
@@ -118,4 +133,4 @@ const getUserId = (request, cache, requireAuthentication = true) => {
   return null;
 };
 
-export { hashPassword, verifyPassword, getIpAddress, generateToken, terminateToken, getUserId };
+export { hashPassword, verifyPassword, generateToken, terminateToken, terminateAllTokens, getToken, getUserId };
