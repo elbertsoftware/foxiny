@@ -16,6 +16,8 @@ const styles = theme => ({
     [theme.breakpoints.up('md')]: {
       padding: `${theme.spacing.unit * 10}px ${theme.spacing.unit * 8}px`,
     },
+    position: 'relative',
+    borderRadius: '15px',
   },
 });
 
@@ -25,7 +27,9 @@ function AppForm(props) {
   return (
     <div className={classes.root}>
       <LayoutBody margin marginBottom width="small">
-        <Paper className={classes.paper}>{children}</Paper>
+        <Paper className={classes.paper} square={false}>
+          {children}
+        </Paper>
       </LayoutBody>
     </div>
   );

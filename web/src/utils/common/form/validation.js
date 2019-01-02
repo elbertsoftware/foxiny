@@ -1,18 +1,17 @@
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable no-unused-expressions */
 import isEmail from 'validator/lib/isEmail';
 
-export function email(value) {
-  return value && !isEmail(value.trim()) ? 'Invalid email' : null;
-}
+export const email = value => {
+  return value && !isEmail(value.trim()) ? 'Email không hợp lệ.' : null;
+};
 
-function isDirty(value) {
-  return value || value === 0;
-}
+const isDirty = value => value || value === 0;
 
-export function required(requiredFields, values) {
-  return requiredFields.reduce((fields, field) => {
+export const required = (requiredFields, values, messages) =>
+  requiredFields.reduce((fields, field) => {
     return {
       ...fields,
-      ...(isDirty(values[field]) ? undefined : { [field]: 'Required' }),
+      ...(isDirty(values[field]) ? undefined : { [field]: `Vui lòng nhập ${messages[field]}` }),
     };
   }, {});
-}

@@ -21,8 +21,8 @@ const rawTheme = createMuiTheme({
     },
     error: {
       xLight: red[50],
-      main: red[500],
-      dark: red[700],
+      main: red[700],
+      dark: red[900],
     },
     success: {
       xLight: green[50],

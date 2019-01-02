@@ -1,4 +1,3 @@
-/* eslint-disable import/named */
 import React from 'react';
 import PropTypes from 'prop-types';
 import compose from 'recompose/compose';
@@ -43,7 +42,7 @@ const styles = theme => ({
 
 const focusOnError = createDecorator();
 
-class SignIn extends React.Component {
+class SignUp extends React.Component {
   state = {
     sent: false,
   };
@@ -157,4 +156,4 @@ SignIn.propTypes = {
 export default compose(
   withRoot,
   withStyles(styles),
-)(SignIn);
+)(SignUp);
