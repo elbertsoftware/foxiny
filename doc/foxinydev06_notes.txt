@@ -488,11 +488,15 @@ secure prisma server:
 
 	+ Use this site to generate secrets:
 		https://passwordsgenerator.net
-		
+
 	+ add the following lines to 'dev.env':
 			# 32 characters
 			PRISMA_SECRET = _F5VVJ?@UnT%8#j=YK!2?tze+TyQ4mkD
-		
+			PRISMA_MANAGEMENT_API_SECRET = Y9GuJ3?KsW}Z"<_]*UL2gFJ624>e5LhU
+
+	+ uncomment the following line in the docker-compose.yml and set it with the same secret assigned to PRISMA_MANAGEMENT_API_SECRET env variable:
+		managementApiSecret: Y9GuJ3?KsW}Z"<_]*UL2gFJ624>e5LhU
+
 	+ Reploy prisma:
 			./deploy-dev.sh
 
