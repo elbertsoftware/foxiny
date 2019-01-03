@@ -486,6 +486,9 @@ secure prisma server:
 	+ add the following line to 'prisma.yml':
 			secret: ${env:PRISMA_SECRET}
 
+	+ Use this site to generate secrets:
+		https://passwordsgenerator.net
+		
 	+ add the following lines to 'dev.env':
 			# 32 characters
 			PRISMA_SECRET = _F5VVJ?@UnT%8#j=YK!2?tze+TyQ4mkD
