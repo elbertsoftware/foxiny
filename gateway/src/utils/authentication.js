@@ -18,37 +18,22 @@ const hashPassword = password => {
 
 const verifyPassword = (password, hashedPassword) => bcrypt.compareSync(password, hashedPassword);
 
-const getIpAddress = request => requestId.getClientIp(request);
+const getRequestIPAddress = request => requestId.getClientIp(request);
 
-const saveToken = (cache, userId, token, ip, exp) => {
-  console.log(`insert token '${token}' for userId '${userId}' with ip ${ip}`);
-  cache.hset(userId, token, ip, 'EX', exp);
+const saveTokenToCache = (cache, userId, token, data, exp) => {
+  cache.hset(userId, token, JSON.stringify(data), 'EX', exp);
 };
 
-const loadToken = async (cache, userId, token) => {
-  const ip = await cache.hget(userId, token);
-  console.log(`retrieved ip ${ip} from token '${token}' for userId '${userId}'`);
-
-  return ip;
-  /*  
-  cache
-    .get(key) // async/await does not work, use .then()/.catch() for now
-    .then(token => {
-      // console.log(`retrieved token '${token}' for userId '${key}'`);
-      return token;
-    })
-    .catch(error => {
-      // console.log(`failed to retrieve token for userId '${key}'`, error);
-      return null;
-    });
-*/
+const loadTokenFromCache = async (cache, userId, token) => {
+  const data = await cache.hget(userId, token);
+  return JSON.parse(data);
 };
 
-const terminateToken = (cache, userId, token) => {
+const deleteTokenInCache = (cache, userId, token) => {
   cache.hdel(userId, token);
 };
 
-const terminateAllTokens = (cache, userId) => {
+const deleteAllTokensInCache = (cache, userId) => {
   cache.del(userId);
 };
 
@@ -65,15 +50,15 @@ const generateToken = (userId, request, cache) => {
 
   // synchronous call since no callback supplied
   const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
-  const ip = getIpAddress(request);
+  const ip = getRequestIPAddress(request);
 
   // save token to redis cache
-  saveToken(cache, userId, token, ip, exp);
+  saveTokenToCache(cache, userId, token, ip, exp);
 
   return token;
 };
 
-const getToken = request => {
+const getTokenFromRequest = request => {
   // 1. Authorization from HTTP Header: http://localhost:4466/foxiny/dev (web/playground)
   // 2. Authorization from Websocket: ws://localhost:4466/foxiny/dev (Jest unit tests)
   const authorization = request
@@ -82,22 +67,21 @@ const getToken = request => {
 
   // remove ther prefix 'Bearer '
   const token = authorization ? authorization.replace('Bearer ', '') : null;
-  console.log(`authorization token ${token}`);
-
+  // console.log(`authorization token ${token}`);
   return token;
 };
 
-const getUserId = (request, cache, requireAuthentication = true) => {
-  const token = getToken(request);
+const getUserIDFromRequest = async (request, cache, requireAuthentication = true) => {
+  const token = getTokenFromRequest(request);
   if (token) {
     // the verify() will throw Error if the token has been expired
     try {
       const payload = jwt.verify(token, process.env.JWT_SECRET); // synchronous call since no callback supplied
       let { userId } = payload;
 
-      const ip = getIpAddress(request);
-      const cacheIp = loadToken(cache, userId, token);
-      console.log(`userId ${userId}, ip ${ip}, cacheIp ${cacheIp}`);
+      const ip = getRequestIPAddress(request);
+      const cacheIp = await loadTokenFromCache(cache, userId, token);
+      // console.log(`userId ${userId}, ip ${ip}, cacheIp ${cacheIp}`);
 
       let validated = true;
       if (ip !== cacheIp) {
@@ -133,4 +117,12 @@ const getUserId = (request, cache, requireAuthentication = true) => {
   return null;
 };
 
-export { hashPassword, verifyPassword, generateToken, terminateToken, terminateAllTokens, getToken, getUserId };
+export {
+  hashPassword,
+  verifyPassword,
+  generateToken,
+  deleteTokenInCache,
+  deleteAllTokensInCache,
+  getTokenFromRequest,
+  getUserIDFromRequest,
+};

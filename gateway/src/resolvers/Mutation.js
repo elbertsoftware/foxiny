@@ -4,28 +4,28 @@ import {
   hashPassword,
   verifyPassword,
   generateToken,
-  terminateToken,
-  terminateAllTokens,
-  getToken,
-  getUserId,
+  deleteTokenInCache,
+  deleteAllTokensInCache,
+  getTokenFromRequest,
+  getUserIDFromRequest,
 } from '../utils/authentication';
 
 const Mutation = {
-  createUser: async (parent, { data }, { prisma, request, cache }) => {
+  createUser: async (parent, { data }, { prisma }, info) => {
     const password = hashPassword(data.password);
 
-    const user = await prisma.mutation.createUser({
-      data: {
-        ...data,
-        password, // replace plain text password with the hashed one
+    const user = await prisma.mutation.createUser(
+      {
+        data: {
+          ...data,
+          password, // replace plain text password with the hashed one
+          enabled: false, // user needs to confirm before the account become enabled
+        },
       },
-    });
-    // }, info); // can not use info here since we are returning custom type AuthPayload
+      info,
+    );
 
-    return {
-      user,
-      token: generateToken(user.id, request, cache),
-    };
+    return user;
   },
 
   login: async (parent, { data }, { prisma, request, cache }) => {
@@ -39,32 +39,45 @@ const Mutation = {
     if (!user) {
       throw new Error('Unable to login'); // try NOT to provide enough information so hackers can guess
     }
-
+    /*
+    // TODO: Turn the if statement on after implementing confirmation process
+    if (!user.enabled) {
+      throw new Error('User profile has not been confirmed or was disabled');
+    } */
     const matched = verifyPassword(data.password, user.password);
     if (!matched) {
       throw new Error('Unable to login'); // try NOT to provide enough information so hackers can guess
     }
 
     return {
-      user,
+      userId: user.id,
       token: generateToken(user.id, request, cache),
     };
   },
 
   logout: async (parent, { all }, { request, cache }) => {
-    const token = getToken(request);
-    const userId = getUserId(request, cache);
+    const token = getTokenFromRequest(request);
+    const userId = await getUserIDFromRequest(request, cache);
     if (all) {
-      terminateAllTokens(userId);
+      // console.log(`removing all tokens on userId ${userId}`);
+      deleteAllTokensInCache(cache, userId);
     } else {
-      terminateToken(userId, token);
+      // console.log(`removing token ${token} on userId ${userId}`);
+      deleteTokenInCache(cache, userId, token);
     }
 
-    return userId;
+    return {
+      userId,
+      token,
+    };
   },
 
-  updateUser: (parent, { data }, { prisma, request, cache }, info) => {
-    const userId = getUserId(request, cache);
+  updateUser: async (parent, { data }, { prisma, request, cache }, info) => {
+    const userId = await getUserIDFromRequest(request, cache);
+
+    const { password, currentPassword } = data;
+    delete data.password;
+    delete data.currentPassword;
 
     const updateData = { ...data };
 
@@ -76,13 +89,31 @@ const Mutation = {
 
     if (typeof data.phone === 'string') {
       // phone is about to be changed
-      // TODO: Archive current email somewhere else
+      // TODO: Archive current phone somewhere else
     }
 
-    if (typeof data.password === 'string') {
-      // password is about to be changed
+    // both password and currentPassword present which means password is about to be changed
+    if (typeof password === 'string' && typeof currentPassword === 'string') {
+      // verify current password
+      const user = await prisma.query.user({
+        where: {
+          id: userId,
+        },
+      });
+
+      if (!user) {
+        throw new Error('Unable to update user profile'); // try NOT to provide enough information so hackers can guess
+      }
+
+      const matched = verifyPassword(currentPassword, user.password);
+      if (!matched) {
+        throw new Error('Unable to update user profile'); // try NOT to provide enough information so hackers can guess
+      }
+
+      updateData.password = hashPassword(password);
+      deleteAllTokensInCache(cache, userId);
+
       // TODO: Archive current password somewhere else
-      updateData.password = hashPassword(data.password);
     }
 
     return prisma.mutation.updateUser(
@@ -96,10 +127,10 @@ const Mutation = {
     );
   },
 
-  deleteUser: (parent, args, { prisma, request, cache }, info) => {
-    const userId = getUserId(request, cache);
+  deleteUser: async (parent, args, { prisma, request, cache }, info) => {
+    const userId = await getUserIDFromRequest(request, cache);
 
-    terminateToken(userId);
+    deleteAllTokensInCache(cache, userId);
     return prisma.mutation.deleteUser(
       {
         where: {
