@@ -1215,8 +1215,19 @@ daily git task:
   git add . 
   git commit -m "adding a change from the feature branch"
 
-	git pull --all
-  git push origin <feature_branch>
+	pull latest changes from master
+		git pull --all
+
+		or:
+
+		git pull origin master
+  
+	push local changes to Bitbucket:
+		git push origin master
+	
+		or:
+		
+		git push origin <feature_branch>
 
 + switch back to master branch:
   git checkout master
