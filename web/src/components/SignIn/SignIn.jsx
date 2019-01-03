@@ -3,28 +3,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import compose from 'recompose/compose';
 import { withStyles } from '@material-ui/core/styles';
-import { Field, Form, FormSpy } from 'react-final-form';
 import createDecorator from 'final-form-focus';
 import { Link } from 'react-router-dom';
-import Typography from '@material-ui/core/Typography';
+import { Typography, Tabs, Tab } from '@material-ui/core';
+import { validate } from '../../utils/common/form/validation';
 import withRoot from '../../utils/withRoot';
 import NavBar from '../NavBar/NavBar';
 import AppForm from '../../utils/common/form/AppForm';
-import { email, required } from '../../utils/common/form/validation';
-import RFTextField from '../../utils/common/form/RFTextField';
-import FormButton from '../../utils/common/form/FormButton';
-import FormFeedback from '../../utils/common/form/FormFeedback';
+import SignInForm from './SignInForm';
 
 const styles = theme => ({
   h4: {
     textTransform: 'none',
   },
   form: {
-    marginTop: theme.spacing.unit * 6,
+    marginTop: theme.spacing.unit * 4,
   },
   button: {
     marginTop: theme.spacing.unit * 3,
     marginBottom: theme.spacing.unit * 2,
+    borderRadius: '25px',
   },
   feedback: {
     marginTop: theme.spacing.unit * 2,
@@ -46,93 +44,59 @@ const focusOnError = createDecorator();
 class SignIn extends React.Component {
   state = {
     sent: false,
+    tabValue: 0,
+    locale: '',
   };
 
-  validate = values => {
-    const messages = {
-      email: 'email',
-      password: 'mật khẩu',
-    };
-    const errors = required(['email', 'password'], values, messages);
-    if (!errors.email) {
-      const emailError = email(values.email, values);
-      if (emailError) {
-        errors.email = email(values.email, values);
-      }
-    }
+  handleChange = (event, tabValue) => {
+    this.setState({
+      tabValue,
+    });
+  };
 
-    return errors;
+  handleChangeIndex = index => {
+    this.setState({
+      tabValue: index,
+    });
+  };
+
+  handleSelectChange = event => {
+    this.setState({
+      locale: event.target.value,
+    });
   };
 
   handleSubmit = () => {};
 
   render() {
-    const { classes } = this.props;
-    const { sent } = this.state;
+    const { classes, theme } = this.props;
+    const { sent, tabValue } = this.state;
 
     return (
       <React.Fragment>
         <NavBar />
         <AppForm>
           <React.Fragment>
-            <Typography className={classes.h4} variant="h4" gutterBottom marked="center" align="left">
-              Đăng nhập
-            </Typography>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography className={classes.h4} variant="h4" gutterBottom marked="center" align="left">
+                Đăng nhập
+              </Typography>
+              <Tabs variant="fullWidth" value={tabValue} onChange={this.handleChange}>
+                <Tab label="Email" />
+                <Tab label="Phone" />
+              </Tabs>
+            </div>
           </React.Fragment>
-          <Form
-            onSubmit={this.handleSubmit}
-            subscription={{ submitting: true }}
-            validate={this.validate}
-            decorators={[focusOnError]}
-          >
-            {({ handleSubmit, values, submitting }) => (
-              <form onSubmit={handleSubmit} className={classes.form} noValidate>
-                <Field
-                  autoComplete="email"
-                  autoFocus
-                  component={RFTextField}
-                  disabled={submitting || sent}
-                  fullWidth
-                  label="Email/SĐT"
-                  margin="normal"
-                  name="email"
-                  required
-                  size="large"
-                />
-                <Field
-                  fullWidth
-                  size="large"
-                  component={RFTextField}
-                  disabled={submitting || sent}
-                  required
-                  name="password"
-                  autoComplete="current-password"
-                  label="Mật khẩu"
-                  type="password"
-                  margin="normal"
-                />
-                <FormSpy subscription={{ submitError: true }}>
-                  {({ submitError }) =>
-                    submitError ? (
-                      <FormFeedback className={classes.feedback} error>
-                        {submitError}
-                      </FormFeedback>
-                    ) : null
-                  }
-                </FormSpy>
-                <FormButton
-                  className={classes.button}
-                  disabled={submitting || sent}
-                  size="large"
-                  color="secondary"
-                  fullWidth
-                >
-                  {submitting || sent ? 'Thực hiện...' : 'Đăng nhập'}
-                </FormButton>
-                <pre>{JSON.stringify(values, undefined, 2)}</pre>
-              </form>
-            )}
-          </Form>
+          <SignInForm
+            handleSubmit={this.handleSubmit}
+            handleChangeIndex={this.handleChangeIndex}
+            sent={sent}
+            theme={theme}
+            tabValue={tabValue}
+            classes={classes}
+            validate={validate}
+            focusOnError={focusOnError}
+          />
           <Typography
             className={classes.rightBottom}
             component={linkProps => <Link {...linkProps} to="/" />}
@@ -156,5 +120,5 @@ SignIn.propTypes = {
 
 export default compose(
   withRoot,
-  withStyles(styles),
+  withStyles(styles, { withTheme: true }),
 )(SignIn);

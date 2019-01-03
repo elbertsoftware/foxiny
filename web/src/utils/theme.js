@@ -6,14 +6,14 @@ import red from '@material-ui/core/colors/red';
 const rawTheme = createMuiTheme({
   palette: {
     primary: {
-      ligth: '#69696a',
-      main: '#28282a',
-      dark: '#1e1e1f',
+      ligth: '#5c7184',
+      main: '#314657',
+      dark: '#071f2e',
     },
     secondary: {
-      light: '#ffcccb',
-      main: '#f44336',
-      dark: '#ba000d',
+      light: '#ff855b',
+      main: '#ff512f',
+      dark: '#c40e00',
     },
     warning: {
       main: '#ffc071',
@@ -31,7 +31,7 @@ const rawTheme = createMuiTheme({
   },
   typography: {
     fontFamily: "'HellshockTeddyBear', sans-serif",
-    fontSize: 14,
+    fontSize: 16,
     fontWeightLight: 300,
     fontWeightRegular: 400,
     fontWeightMedium: 700,
@@ -40,7 +40,7 @@ const rawTheme = createMuiTheme({
 });
 
 const fontHeader = {
-  color: rawTheme.palette.text.primary,
+  color: rawTheme.palette.primary.dark,
   fontWeight: rawTheme.typography.fontWeightMedium,
   fontFamily: rawTheme.typography.fontFamilySecondary,
   textTransform: 'uppercase',
@@ -52,7 +52,7 @@ const theme = {
     ...rawTheme.palette,
     background: {
       ...rawTheme.palette.background,
-      default: rawTheme.palette.common.white,
+      default: rawTheme.palette.secondary.main,
       placeholder: grey[200],
     },
   },

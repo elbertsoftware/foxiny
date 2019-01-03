@@ -15,3 +15,20 @@ export const required = (requiredFields, values, messages) =>
       ...(isDirty(values[field]) ? undefined : { [field]: `Vui lòng nhập ${messages[field]}` }),
     };
   }, {});
+
+export const validate = values => {
+  const messages = {
+    email: 'email',
+    password: 'mật khẩu',
+    phone: 'số điện thoại',
+  };
+  const errors = required(['email', 'password', 'phone'], values, messages);
+  if (!errors.email) {
+    const emailError = email(values.email, values);
+    if (emailError) {
+      errors.email = email(values.email, values);
+    }
+  }
+
+  return errors;
+};

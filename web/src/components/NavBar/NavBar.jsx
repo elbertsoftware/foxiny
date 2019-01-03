@@ -26,7 +26,7 @@ function NavBar(props) {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="static" color="secondary">
         <Toolbar>
           <a href="/">
             <img alt="Foxiny Inc - We care your needs" src="/assets/foxiny_logo.png" className={classes.image} />
@@ -35,7 +35,7 @@ function NavBar(props) {
             Foxiny
           </Typography>
 
-          <Button component={Link} to="/signin" variant="outlined" color="secondary">
+          <Button component={Link} to="/signin" color="primary">
             Đăng nhập
           </Button>
         </Toolbar>

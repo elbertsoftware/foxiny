@@ -21,7 +21,7 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3,
     [theme.breakpoints.up(660 + theme.spacing.unit * 6)]: {
-      width: 660,
+      width: 450,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
@@ -31,7 +31,7 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3,
     [theme.breakpoints.up(850 + theme.spacing.unit * 6)]: {
-      width: 850,
+      width: 660,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
@@ -41,7 +41,7 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3,
     [theme.breakpoints.up('md')]: {
-      width: 880,
+      width: 780,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
