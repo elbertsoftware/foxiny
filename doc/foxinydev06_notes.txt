@@ -495,7 +495,7 @@ secure prisma server:
 			PRISMA_MANAGEMENT_API_SECRET = Y9GuJ3?KsW}Z"<_]*UL2gFJ624>e5LhU
 
 	+ uncomment the following line in the docker-compose.yml and set it with the same secret assigned to PRISMA_MANAGEMENT_API_SECRET env variable:
-		managementApiSecret: Y9GuJ3?KsW}Z"<_]*UL2gFJ624>e5LhU
+			managementApiSecret: Y9GuJ3?KsW}Z"<_]*UL2gFJ624>e5LhU
 
 	+ Reploy prisma:
 			./deploy-dev.sh
@@ -918,6 +918,14 @@ CONFIGURE REDIS CACHE:
 
 CONFIGURE JEST TEST:
 	npm install apollo-boost --save-dev
+
+CONFIGURE LOGGER:
+	https://thisdavej.com/using-winston-a-versatile-logging-library-for-node-js/
+	
+	npm install winston winston-daily-rotate-file
+
+	daily logs can be found under foxiny/gateway/log folder:
+		2019-01-03-foxiny-gateway.log
 
 SETUP FOXINY WEB
 ------------------------------------------------------------------------------------------------------------------------

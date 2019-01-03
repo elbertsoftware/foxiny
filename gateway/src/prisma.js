@@ -11,4 +11,4 @@ const prisma = new Prisma({
   fragmentReplacements, // send fragment definition to prisma server
 });
 
-export { prisma as default };
+export default prisma;

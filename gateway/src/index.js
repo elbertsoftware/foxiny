@@ -9,11 +9,12 @@
 import '@babel/polyfill/noConflict';
 
 import server from './server';
+import logger from './utils/logger';
 
 const startServer = async port => {
   // node listens on IPv6 which is in this format: 2600:1700:dfa1:51a0:a088:143a:1edb:910f
   global.httpServer = await server.listen(port, () => {
-    console.log(`🚀  foxiny-gateway is up and running on port ${port}`);
+    logger.info(`🚀  foxiny-gateway is up and running on port ${port}`);
   });
 };
 
@@ -25,7 +26,7 @@ startServer(port);
 // sample how to stop server programatically
 const stopServer = async () => {
   await global.httpServer.close();
-  console.log('🚁  foxiny-gateway has stopped');
+  logger.info('🚁  foxiny-gateway has stopped');
 };
 
 // test stopServer

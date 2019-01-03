@@ -10,6 +10,7 @@ import { ApolloServer, gql } from 'apollo-server-express';
 import { resolvers, fragmentReplacements } from './resolvers';
 import prisma from './prisma';
 import cache from './cache';
+import logger from './utils/logger';
 
 // Express server
 const server = express();
@@ -48,6 +49,6 @@ graphQLServer.applyMiddleware({ app: server }); // reference app to server
 // in case collocated path
 // graphQLServer.applyMiddleware({ app: server, path });
 
-console.log(`🔗  GraphQL endpoint: ${graphQLServer.graphqlPath}`);
+logger.info(`⚡ GraphQL endpoint: ${graphQLServer.graphqlPath}`);
 
 export default server;

@@ -59,10 +59,8 @@ const Mutation = {
     const token = getTokenFromRequest(request);
     const userId = await getUserIDFromRequest(request, cache);
     if (all) {
-      // console.log(`removing all tokens on userId ${userId}`);
       deleteAllTokensInCache(cache, userId);
     } else {
-      // console.log(`removing token ${token} on userId ${userId}`);
       deleteTokenInCache(cache, userId, token);
     }
 

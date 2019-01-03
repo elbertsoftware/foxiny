@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
 import requestId from 'request-ip';
+import logger from './logger';
 
 // TODO: more password rules will be enforced later
 const isValidPassword = password => password.length >= 8 && !password.toLowerCase().includes('password');
@@ -30,10 +31,12 @@ const loadTokenFromCache = async (cache, userId, token) => {
 };
 
 const deleteTokenInCache = (cache, userId, token) => {
+  logger.debug(`removing token ${token} on userId ${userId}`);
   cache.hdel(userId, token);
 };
 
 const deleteAllTokensInCache = (cache, userId) => {
+  logger.debug(`removing all tokens on userId ${userId}`);
   cache.del(userId);
 };
 
@@ -67,7 +70,8 @@ const getTokenFromRequest = request => {
 
   // remove ther prefix 'Bearer '
   const token = authorization ? authorization.replace('Bearer ', '') : null;
-  // console.log(`authorization token ${token}`);
+  logger.debug(`authorization token ${token}`);
+
   return token;
 };
 
@@ -81,7 +85,7 @@ const getUserIDFromRequest = async (request, cache, requireAuthentication = true
 
       const ip = getRequestIPAddress(request);
       const cacheIp = await loadTokenFromCache(cache, userId, token);
-      // console.log(`userId ${userId}, ip ${ip}, cacheIp ${cacheIp}`);
+      logger.debug(`userId ${userId}, ip ${ip}, cacheIp ${cacheIp}`);
 
       let validated = true;
       if (ip !== cacheIp) {
