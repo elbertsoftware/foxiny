@@ -80,13 +80,18 @@ const Mutation = {
     const updateData = { ...data };
 
     // TODO: For user account recovery purpose, sensitive info like email, phone, password, etc. need to be archived
+
+    // email is about to be changed
     if (typeof data.email === 'string') {
-      // email is about to be changed
+      updateData.enabled = false;
+
       // TODO: Archive current email somewhere else
     }
 
+    // phone is about to be changed
     if (typeof data.phone === 'string') {
-      // phone is about to be changed
+      updateData.enabled = false;
+
       // TODO: Archive current phone somewhere else
     }
 

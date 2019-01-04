@@ -3,6 +3,7 @@
 import fs from 'fs';
 
 import express from 'express';
+import helmet from 'helmet';
 import bodyParser from 'body-parser';
 
 import { ApolloServer, gql } from 'apollo-server-express';
@@ -15,7 +16,11 @@ import logger from './utils/logger';
 // Express server
 const server = express();
 
-// body parser middleware to parse application/json based body
+// helmet to protect the server from HTTP based attacks
+// TODO: only 7 default ones are used, review another then add them later
+server.use(helmet());
+
+// body parser middleware to parse application/json based body: authorization token
 server.use(bodyParser.json());
 
 // other middlewares goes here, like passport, etc.

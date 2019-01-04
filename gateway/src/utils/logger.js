@@ -3,10 +3,9 @@
 import { createLogger, format, transports } from 'winston';
 import 'winston-daily-rotate-file';
 import fs from 'fs';
-import path from 'path';
 
 // Create the log directory if it does not exist
-const logDir = 'log';
+const logDir = process.env.LOG_FOLDER;
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir);
 }
@@ -16,7 +15,8 @@ const logger = createLogger({
   // change level if in dev environment versus production
   level: env === 'production' ? 'warn' : 'debug',
   format: format.combine(
-    format.label({ label: path.basename(module.parent.filename) }),
+    // format.label({ label: path.basename(module.parent.filename) }), // filename does not work
+    format.label({ label: 'foxiny-gateway' }),
     format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   ),
   transports: [
