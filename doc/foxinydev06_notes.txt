@@ -788,6 +788,8 @@ npm install apollo-server-express
 
 SAMPLE OPERATIONS (for gateway playground)
 
+http://localhost:4000/graphql
+
 mutation createUser {
   createUser(data: {
     name: "Ky",
@@ -833,7 +835,7 @@ record the returned token as <token1>
 ----------------------------------------
 set HTTP HEADERS with token1
 {
-  "Authorization": "<token1>"
+  "Authorization": "Bearer <token1>"
 }
 
 query getAllUsers_Authenticated {
@@ -849,7 +851,7 @@ query getAllUsers_Authenticated {
   }
 }
 ----------------------------------------
-use token1 for authentiona
+use token1 for authentication
 
 query getUserProfile {
   me {
@@ -864,7 +866,7 @@ query getUserProfile {
   }
 }
 ----------------------------------------
-use token1 for authentiona
+use token1 for authentication
 
 mutation {
   updateUser(data: {
@@ -882,7 +884,7 @@ mutation {
   }
 }
 ----------------------------------------
-use token1 for authentiona
+use token1 for authentication
 
 mutation {
   deleteUser {
@@ -897,7 +899,7 @@ mutation {
   }
 }
 ----------------------------------------
-use token1 for authentiona
+use token1 for authentication
 
 mutation logout {
   logout(all: false) {
