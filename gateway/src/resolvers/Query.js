@@ -1,6 +1,6 @@
 // @flow
 
-import { getUserId } from '../utils/authentication';
+import { getUserIDFromRequest } from '../utils/authentication';
 
 const Query = {
   users: (parent, args, { prisma }, info) => {
@@ -24,8 +24,8 @@ const Query = {
     return prisma.query.users(opArgs, info);
   },
 
-  me: (parent, args, { prisma, request }, info) => {
-    const userId = getUserId(request);
+  me: async (parent, args, { prisma, request, cache }, info) => {
+    const userId = await getUserIDFromRequest(request, cache);
 
     return prisma.query.user(
       {

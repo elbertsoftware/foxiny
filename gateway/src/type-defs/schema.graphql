@@ -4,8 +4,9 @@ type Query {
 }
 
 type Mutation {
-  createUser(data: CreateUserInput!): AuthPayload!
+  createUser(data: CreateUserInput!): User!
   login(data: LoginUserInput!): AuthPayload!
+  logout(all: Boolean = false): AuthPayload!
   updateUser(data: UpdateUserInput!): User!
   deleteUser: User!
 }
@@ -14,10 +15,13 @@ type User {
   id: ID!
 
   name: String!
-  email: String # In the database, email is required, but here, it is not since we need to return null in case of non-authentication
-  phone: String
-  password: String!
 
+  # In the database, sensitive fields (email, phone, password, etc.) are required, but here, they are not since we need to return null in case of non-authentication
+  email: String
+  phone: String
+  password: String
+
+  enabled: Boolean!
   createdAt: String!
   updatedAt: String!
 }
@@ -30,17 +34,20 @@ input CreateUserInput {
 }
 
 input LoginUserInput {
-  email: String!
+  email: String
+  phone: String
   password: String!
 }
 
 type AuthPayload {
-  user: User!
   token: String!
+  userId: String!
 }
 
 input UpdateUserInput {
   name: String
   email: String
+  phone: String
   password: String
+  currentPassword: String
 }

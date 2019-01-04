@@ -1,0 +1,1248 @@
+foxinydev06
+	Created on macOS Mojave (2018-12-06)
+	A development virtual machine on Virtual Box 5.2.22
+
+UBUNTU BUDGIE 18.04.1 LTS (BIONIC)
+------------------------------------------------------------------------------------------------------------------------
+
+Full installation option
+
+superuser:
+	uid: dev
+	pwd: hiall
+
+manage system:
+	lsb_release -a
+
+	df -h
+	free -m
+
+	sudo apt update
+	sudo apt upgrade
+
+	sudo apt clean
+	sudo apt autoremove --purge
+
+run as root:
+	sudo su
+	exit
+
+change folders:
+	cd ..
+	cd ~
+	cd /Projects
+	cd -
+
+virtual box:
+	sudo apt install build-essential
+
+	install Virtualbox Guest Additions:
+		cd /media/dev/VBox_GAs_x.y.zz
+		sudo sh VBoxLinuxAdditions.run
+		sudo reboot
+
+	add a shared folder: host_shared (auto mount, permanent)
+	add current user (dev) to vboxsf: 
+		sudo usermod -aG vboxsf $(whoami)
+		log out then log back in
+
+DEVELOPMENT SOFTWARE
+------------------------------------------------------------------------------------------------------------------------
+
+Uninstall unused softwares: media, game, office, email, etc.
+
+Install and configure git:
+	sudo apt install git
+	git config --global user.email "you@example.com"
+	git config --global user.name "Your Name"
+
+Lepton
+Meld Diff Viewer
+pgAdmin III
+Postman
+Firefox
+Redis Desktop Manager
+
+Chrome:
+	React Developer Tools: https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?utm_source=chrome-ntp-icon
+	Apollo Client Developer Tools: https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm
+	JSON Formatter: https://chrome.google.com/webstore/detail/json-formatter/mhimpmpmffogbmmkmajibklelopddmjf?utm_source=chrome-ntp-icon
+
+Bracket: 
+	Extensions: Install ZIP from URL
+		+ Autosave every edit! (https://s3.amazonaws.com/extend.brackets/brackets-autosaver/brackets-autosaver-1.1.6.zip) 
+
+Visual Studio Code:
+	Enable VS Code to watch for file changes in large projects:
+		sudo nano /etc/sysctl.conf
+			fs.inotify.max_user_watches=524288
+
+		sudo sysctl -p
+
+	Extensions:
+		+ Auto Close Tag
+		+ Auto Rename Tag
+		+ Babel ES6/ES7
+		+ Bracket Pair Colorizer
+		+ Color Highlight
+		+ Debugger for Chrome
+		+ Docker
+		+ DotENV
+		+ Duplicate action
+		+ ES7 React/Redux/GraphQL/React-Native snippets
+		+ ESLint
+		+ Gist Extension
+		+ GraphQL for VSCode
+		+ Markdown All in One
+		+ markdownlint
+		+ Material Icon Themes
+		+ npm Intellisense
+		+ Paste and Indent
+		+ Path Intellisense
+		+ Prettier - Code formatter
+		+ Python
+		+ Theme - Oceanic Next
+		+ Vim
+
+	settings.json:
+		{
+			"window.zoomLevel": 1,
+
+			"workbench.colorTheme": "Oceanic Next (dimmed bg)",
+			"workbench.startupEditor": "none",
+			"workbench.iconTheme": "material-icon-theme",
+			"workbench.colorCustomizations": {
+				"statusBar.background": "#333333",
+				"statusBar.noFolderBackground": "#333333",
+				"statusBar.debuggingBackground": "#263238"
+			},
+
+			"editor.tabSize": 2,
+			"editor.fontSize": 12,
+			"editor.formatOnSave": true,
+			"editor.wordWrap": "on",
+			"editor.wordWrapColumn": 120,
+
+			"editor.tokenColorCustomizations": {
+				"textMateRules": [
+					{
+						"name": "yellow cursive",
+						"scope": [
+							//
+							// Add the scope of things you want to be
+							// yellow and cursive here
+							//
+							"support.constant.math", // Math
+							"support.class.builtin.js",
+							"support.variable.dom.js", // "document"
+							"entity.name", // "Object"
+							"entity.name.type.js",
+							"entity.name.type.class.js",
+							"support.function.magic.python",
+							"entity.other.attribute-name.html"
+						],
+						"settings": {
+							"foreground": "#fec355", // change this COLOR
+							"fontStyle": "italic" // dont change this
+						}
+					},
+					{
+						"name": "purple cursive",
+						"scope": [
+							//
+							// Add the scope of things you want to be
+							// Purple and cursive here
+							//
+							"keyword.control.module.js",
+							"entity.other.attribute-name",
+							"entity.other.attribute-name.js.jsx"
+						],
+						"settings": {
+							"foreground": "#c792eaff", // change this COLOR
+							"fontStyle": "italic" // dont change this
+						}
+					},
+					//
+					// Add more cursive styles here
+					// because you probably wont like just yellow and purple
+					//
+					{
+						"name": "grey cursive",
+						"scope": ["comment.line.double-slash.js", "comment.block.js"],
+						"settings": {
+							"foreground": "#65737eff",
+							"fontStyle": "italic"
+						}
+					}
+				]
+			},
+
+			"explorer.confirmDelete": false,
+
+			"files.autoSave": "onFocusChange",
+
+			"prettier.printWidth": 120,
+			"prettier.singleQuote": true,
+			"prettier.trailingComma": "all",
+
+			"git.autofetch": true,
+			"git.enableSmartCommit": true,
+
+			"css.validate": false,
+			"scss.validate": false,
+			"less.validate": false,
+
+			"terminal.integrated.rendererType": "dom"
+		}
+		
+INSTALL NVM, NODE, NPM
+------------------------------------------------------------------------------------------------------------------------
+
+sudo apt install curl
+
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+command -v nvm (use a new terminal)
+nvm --version
+
+nvm ls
+nvm ls-remote
+
+uninstall previous node if needed
+	nvm uninstall 10.12.0
+
+install latest lts node and npm:
+	nvm install --lts --latest-npm
+
+	with new install:
+		nvm use node or nvm use 10.14.1
+
+	with upgrade/switch:
+		nvm alias default 10.14.1 (update default node to latest node version since previous one was uninstalled)
+
+node --version
+	node v10.14.1
+
+npm --version
+	npm v6.4.1
+
+reinstall any globally installed npm packages by previous node version
+	+ prisma
+	+ ngrok
+
+INSTALL DOCKER & COMPOSE
+------------------------------------------------------------------------------------------------------------------------
+
+sudo apt update
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+
+Create /etc/apt/sources.list.d/docker.list (sudo nano):
+	deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt update
+
+sudo apt install docker-ce
+docker --version
+
+sudo usermod -aG docker $(whoami)
+sudo reboot
+
+docker version
+docker info
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose version
+
+ZSH & OH-MY-ZSH
+------------------------------------------------------------------------------------------------------------------------
+
+sudo apt install zsh
+
+whereis zsh (replace the '/usr/bin/zsh' with whatever path 'whereis zsh' returns)
+	sudo usermod -s /usr/bin/zsh $(whoami) 
+
+sudo apt install zsh-syntax-highlighting
+echo "source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ~/.zshrc
+
+install oh-my-zsh:
+	sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+install zsh-nvm:
+	git clone https://github.com/lukechilds/zsh-nvm ~/.oh-my-zsh/custom/plugins/zsh-nvm
+
+modify ~/.zshrc file for these following plugins:
+	ZSH_THEME="cloud"
+
+	plugins=(
+		git
+		colored-man-pages
+		docker
+		docker-compose
+		docker-machine
+		aws
+		kubectl
+		nvm
+		zsh-nvm
+		node
+		npm
+		npx
+		python
+		vscode
+	)
+
+------------------------------------------------------------------------------------------------------------------------
+Snapshot 1
+------------------------------------------------------------------------------------------------------------------------
+	
+SETUP FOXINY BACKEND: PRISMA, POSTGRES, REDIS
+------------------------------------------------------------------------------------------------------------------------
+
+cd foxiny
+mkdir backend
+mkdir config
+
+cd /foxiny/backend
+create 'foxiny_main_db' subfolder
+
+create 'postgres' subfolder and add 2 files:
+  1. Dockerfile:
+      FROM postgres:latest
+
+			# Fix warning issued by pgAdmin III on Ubuntu
+			RUN apt update && apt install postgresql-contrib
+
+  2. docker-compose.yml:
+		version: '3'
+		services:
+			foxiny_main_db:
+				build:
+					dockerfile: Dockerfile
+					context: .
+				image: foxiny/foxiny_main_db
+				restart: always
+				ports:
+					- '5432:5432'
+				volumes:
+					- ./foxiny_main_db:/var/lib/postgresql
+				environment:
+					POSTGRES_USER: foxiny_dev
+					POSTGRES_PASSWORD: Foxiny@5432
+					POSTGRES_DB: foxiny_main_db
+
+cd postgres
+docker-compose up
+
+cd .. (back to backend folder)
+
+npm install prisma --global (version 1.22.2)
+
+prisma init prisma
+  Use existing database
+    Set up a new Prisma server or deploy to an existing server? Use existing database
+    What kind of database do you want to deploy to? PostgreSQL
+    Does your database contain existing data? No
+    Enter database host: localhost
+    Enter database port: 5432
+    Enter database user: foxiny_dev
+    Enter database password: Foxiny@5432
+    Enter database name: foxiny_main_db
+    Use SSL? No
+    Select the programming language for the generated Prisma client: Don't generate
+
+cd postgres
+docker-compose down
+sudo rm -rf foxiny_main_db (inside the /foxiny/backend/postgres)
+
+cd /foxiny/backend/prisma
+
+rename 'datamodel.prisma' to 'datamodel.graphql', and edit its content:
+	type User {
+  	id: ID! @unique
+  	name: String!
+  	email: String! @unique
+  	password: String!
+
+		createdAt: DateTime!
+  	updatedAt: DateTime!
+	}
+
+add new 'Dockerfile' to newly created 'prisma' sub folder:
+  FROM prismagraphql/prisma:1.22
+
+move the newly created 'docker-compose.yml' from sub folder 'prisma' to the 'backend' folder, then modify its content:
+  version: '3'
+  services:
+    foxiny_main_db:
+      build:
+        dockerfile: Dockerfile
+        context: ./postgres
+      image: foxiny/postgres
+      restart: always
+      ports:
+        - '5432:5432'
+      networks:
+        - backend
+      volumes:
+        - ./foxiny_main_db:/var/lib/postgresql
+      environment:
+        POSTGRES_USER: foxiny_dev
+        POSTGRES_PASSWORD: Foxiny@5432
+        POSTGRES_DB: foxiny_main_db
+    prisma:
+      build:
+        dockerfile: Dockerfile
+        context: ./prisma
+      image: foxiny/prisma
+      restart: always
+      ports:
+        - '4466:4466'
+      networks:
+        - backend
+      environment:
+        PRISMA_CONFIG: |
+          port: 4466
+          # uncomment the next line and provide the env var PRISMA_MANAGEMENT_API_SECRET=my-secret to activate cluster security
+          # managementApiSecret: my-secret
+          databases:
+            default:
+              connector: postgres
+              host: foxiny_main_db
+              port: '5432'
+              database: foxiny_main_db
+              user: foxiny_dev
+              password: Foxiny@5432
+              ssl: false
+              migrations: true
+              rawAccess: true
+      depends_on:
+        - foxiny_main_db
+  networks:
+    backend:
+      driver: bridge
+
+cd .. (back to backend folder)
+docker-compose up --build
+  make sure prisma container (prisma_1) connects to postgres container (foxiny_main_db_1)
+
+subsequent starting prisma server, use EITHER one of these:
+  docker-compose up
+    hit Ctrl+C to stop
+  
+  docker-compose up --detach
+    docker-compose stop
+
+  docker-compose start
+    docker-compose stop
+
+Note: 'docker-compose down' will remove containers and their volumes, so: 
+  database are also deleted
+  prisma deploy must be rerun 
+
+use pgAdmin III to connect to the database:
+  name: foxiny_main_db
+  host: localhost
+  port: 5432
+	maintenance db: foxiny_main_db
+  username: foxiny_dev
+  password: Foxiny@5432
+
+goto 'prisma' subfoler and modify the 'prisma.yml' file:
+  endpoint: ${env:PRISMA_ENDPOINT}
+	datamodel: datamodel.graphql
+
+cd /foxiny/config
+
+add 'dev.env' to 'config' folder:
+  # dev schema: foxiny$dev
+	PRISMA_ENDPOINT = http://localhost:4466/foxiny/dev
+
+cd /foxiny/backend/prisma
+
+create new 'deploy-dev.sh'
+	#!/bin/bash
+	prisma deploy --env-file ../../config/dev.env
+
+sudo chmod +x deploy-dev.sh
+
+prisma deploy --env-file ../../config/dev.env (run everytime 'datamodel.graphql got modified)
+  or execute ./deploy-dev.sh
+
+navigate to http://localhost:4466/foxiny/dev
+  verify the schema created correctly
+
+prisma info --env-file ../../config/dev.env (collect prisma endpoints)
+	or execute ./prisma-info-dev.sh
+
+	HTTP:       http://localhost:4466/foxiny/dev
+  Websocket:  ws://localhost:4466/foxiny/dev
+
+nagivate to postgres database in pgAdmin III:
+	foxiny_main_db (localhost:5432)
+	
+	/Databases/foxiny_main_db/Schemas/foxiny$dev/Tables
+
+secure prisma server:
+	+ add the following line to 'prisma.yml':
+			secret: ${env:PRISMA_SECRET}
+
+	+ Use this site to generate secrets:
+		https://passwordsgenerator.net
+
+	+ add the following lines to 'dev.env':
+			# 32 characters
+			PRISMA_SECRET = _F5VVJ?@UnT%8#j=YK!2?tze+TyQ4mkD
+			PRISMA_MANAGEMENT_API_SECRET = Y9GuJ3?KsW}Z"<_]*UL2gFJ624>e5LhU
+
+	+ uncomment the following line in the docker-compose.yml and set it with the same secret assigned to PRISMA_MANAGEMENT_API_SECRET env variable:
+			managementApiSecret: Y9GuJ3?KsW}Z"<_]*UL2gFJ624>e5LhU
+
+	+ Reploy prisma:
+			./deploy-dev.sh
+
+	+ retrieve prisma access token:
+			prisma token --env-file ../../config/dev.env
+				or execute './prisma-token-dev.sh'
+					<token>
+
+	+ navigate to 'http://localhost:4466/foxiny/dev', and add the prisma <token> above to HTTP HEADERS:
+			{
+				"Authorization": "Bearer <token>"
+			}
+
+	+ verify the schema reloaded correctly
+
+SUBSEQUENTLY STARTING BACKEND DEVELOPMENT: 
+
+	cd /foxiny/backend
+
+	Use EITHER one of these:
+		1. docker-compose up
+				make sure prisma container (prisma_1) can connect to postgres container (foxiny_main_db_1)
+
+			Hit Ctrl+C to stop
+
+		2. docker-compose up --detach
+			docker-compose stop
+
+		3. docker-compose start
+			docker-compose stop
+
+		Notes: 'docker-compose down' will remove containers and their volumes which means:
+			database are also deleted
+			prisma deploy must be rerun
+
+	If database are empty, prisma data models must be redeployed:
+		cd /foxiny/backend/prisma
+
+		./deploy-dev.sh
+
+SAMPLE OPERATIONS (for Prisma server):
+
+	mutation {
+		createUser(data: {
+			name: "Ky Pham",
+			email: "kpham@example.com",
+			password: "test1234"
+		}) {
+			id
+			name
+			email
+			password
+		} 
+	}
+
+	----------------------------------------
+	QUERY VARIABLES:
+		{
+  		"data": {
+  			"name": "Yen Nguyen",
+  			"email": "ynguyen@example.com",
+  			"password": "test1234"
+			}
+		}
+
+	MUTATION:
+		mutation($data: UserCreateInput!) {
+			createUser(data: $data) {
+				id
+				name
+				email
+				password
+			} 
+		}
+
+	----------------------------------------
+	query {
+		users(where: {
+			name_contains: "P"
+		}) {
+			id
+			name
+			email
+			password
+			createdAt
+			updatedAt
+		}
+	}
+
+	----------------------------------------
+	FRAGMENT:
+		fragment userFields on User {
+			name
+			email
+			password
+		}
+
+	QUERY:
+		query {
+			users(where: {
+				name_contains: "P"
+			}) {
+				id
+				...userFields
+				createdAt
+				updatedAt
+			}
+		}	
+
+reset database:
+	cd /foxiny/backend/prisma
+
+  prisma delete --env-file ../../config/dev.env
+		or execute 'prisma-reset-dev.sh'
+
+reset docker environment:
+	docker system prune --all --volumes
+
+ADD REDIS CACHE SERVER:
+	create new subfolder redis under foxiny-backend and fill it with a new Dockerfile:
+		FROM redis:latest
+
+	add another service to docker-compose.yml file:
+		foxiny_cache:
+    build:
+      dockerfile: Dockerfile
+      context: ./redis
+    image: foxiny/redis
+    restart: always
+    ports:
+      - '6379:6379'
+    networks:
+      - backend
+    command: redis-server --appendonly yes --requirepass Foxiny@6379
+    volumes:
+      - ./foxiny_cache:/data
+    depends_on:
+      - prisma
+
+	add another line to .gitignore file:
+		/foxiny_cache
+		
+------------------------------------------------------------------------------------------------------------------------
+Snapshot 2
+------------------------------------------------------------------------------------------------------------------------
+
+SETUP FOXINY GATEWAY
+------------------------------------------------------------------------------------------------------------------------
+
+cd /foxiny
+mkdir gateway
+
+cd gateway
+npm init
+
+setup flow:
+  npm install flow-bin --save-dev
+
+  run './node_modules/.bin/flow init' (create the .flowconfig file)
+  
+  add "flow": "flow" to scripts section of the package.json:
+    "scripts": {
+      "flow": "flow",
+			...
+    },
+
+  run 'flow' from CLI to make sure there is no error
+
+  add '// @flow' at the top of any js file to start enforcing flow 
+
+setup eslint:
+  npm install eslint --save-dev
+  npm install eslint-plugin-flowtype --save-dev
+  npm install babel-eslint --save-dev
+  npm install eslint-config-airbnb --save-dev
+  npm install eslint-plugin-jsx-a11y --save-dev
+  npm install eslint-plugin-react --save-de
+
+  ./node_modules/.bin/eslint --init
+    ? How would you like to configure ESLint? Use a popular style guide
+		? Which style guide do you want to follow? Airbnb (https://github.com/airbnb/javascript)
+		? Do you use React? No
+		? What format do you want your config file to be in? JavaScript
+		Checking peerDependencies of eslint-config-airbnb-base@latest
+		The config that you've selected requires the following dependencies:
+
+		eslint-config-airbnb-base@latest eslint@^4.19.1 || ^5.3.0 eslint-plugin-import@^2.14.0
+		? Would you like to install them now with npm? (Y/n) Yes
+
+  edit .eslintrc.js
+		module.exports = {
+			extends: ['airbnb', 'plugin:flowtype/recommended'],
+			env: {
+				jest: true,
+			},
+			parser: 'babel-eslint',
+			plugins: ['flowtype'],
+			rules: {
+				'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+				'arrow-parens': ['error', 'as-needed'],
+				'max-len': [
+					'error',
+					{
+						code: 120,
+						tabWidth: 2,
+					},
+				],
+			},
+		};
+
+configure babel:
+  npm install babel-cli babel-preset-env (using import/export in nodejs)
+  npm install babel-plugin-transform-object-rest-spread (using spread operator ... in nodejs)
+
+  create '.babelrc' in the 'gateway' sub folder:
+    {
+      "present": ["env"],
+      "plugins": ["transform-object-rest-spread"]
+    }
+
+run 'dev' with nodemon and babel-node:
+  npm install nodemon --save-dev
+  
+  add new entry 'dev' to package.json:
+    "scripts": {
+      ...
+      "dev": "nodemon ./src/index.js --exec babel-node --ext js,graphql"
+    },
+
+Configure Prisma:
+	npm install prisma-binding
+	npm install env-cmd --save-dev
+	npm install graphql-cli --save-dev
+
+	+ create new '.graphqlconfig' file under '/foxiny/gateway' folder with the following content:
+		{
+			"projects": {
+				"foxiny-gateway": {
+					"schemaPath": "./src/type-defs/generated/prisma.graphql",
+					"extensions": {
+						"prisma": "../backend/prisma/prisma.yml"
+					}
+				}
+			}
+		}
+
+	+ add new script to gateway's package.json:
+		"scripts": {
+			...
+			"schema": "graphql get-schema --project foxiny-gateway --dotenv ../config/dev.env",
+			...
+		}
+
+	+ execute 'npm run schema' and check the './src/type-defs/generated/' folder for newly created 'prisma.graphql' file
+
+	+ create ./src/prisma.js:
+		// @flow
+		import { Prisma } from 'prisma-binding';
+
+		const prisma = new Prisma({
+			typeDefs: './src/type-defs/generated/prisma.graphql', // link to generated prisma schema
+			endpoint: process.env.PRISMA_ENDPOINT, // point to prisma server running in docker compose
+			secret: process.env.PRISMA_SECRET,
+		});
+
+		export default prisma;
+
+	+ use ./src/prisma.js to access prisma server:
+		import prisma from '../prisma';
+		...
+		const user = await prisma.mutation.createUser({
+      data: {
+        ...data,
+        password, // replace plain password with hashed one
+      },
+    });
+		...
+		const user = await prisma.query.user({
+			where: {
+				id: payload.userId,
+			},
+		});
+
+Add Express and Apollo Server:
+
+npm install express body-parser
+npm install apollo-server-express
+
+SAMPLE OPERATIONS (for gateway playground)
+
+mutation createUser {
+  createUser(data: {
+    name: "Ky",
+    email: "ky@example.com",
+    phone: "714-348-4897",
+    password: "abcd1234"
+  }) {
+		id
+		name
+		email
+		phone
+		password
+		enabled
+		createdAt
+		updatedAt
+  }
+}
+----------------------------------------
+query getAllUsers {
+  users {
+    id
+    name
+    email
+    phone
+    password
+		enabled
+    createdAt
+    updatedAt
+  }
+}
+----------------------------------------
+mutation login {
+  login(data: {
+    email: "ky@example.com",
+    password: "abcd1234"
+  }) {
+    token
+    userId
+  }
+}
+
+record the returned token as <token1>
+----------------------------------------
+set HTTP HEADERS with token1
+{
+  "Authorization": "<token1>"
+}
+
+query getAllUsers_Authenticated {
+  users {
+    id
+    name
+    email
+    phone
+    password
+		enabled
+    createdAt
+    updatedAt
+  }
+}
+----------------------------------------
+use token1 for authentiona
+
+query getUserProfile {
+  me {
+    id
+    name
+    email
+    phone
+    password
+		enabled
+    createdAt
+    updatedAt
+  }
+}
+----------------------------------------
+use token1 for authentiona
+
+mutation {
+  updateUser(data: {
+    password: "Test1234",
+    currentPassword: "abcd1234"
+  }) {
+    id
+    name
+    email
+    phone
+    password
+    enabled
+    createdAt
+    updatedAt
+  }
+}
+----------------------------------------
+use token1 for authentiona
+
+mutation {
+  deleteUser {
+    id
+    name
+    email
+    phone
+    password
+    enabled
+    createdAt
+    updatedAt
+  }
+}
+----------------------------------------
+use token1 for authentiona
+
+mutation logout {
+  logout(all: false) {
+    token
+		userId
+  }
+}
+
+CONFIGURE REDIS CACHE:
+	Install Redis Desktop Manager and connect to foxiny-cache server:
+		name: foxiny_cache
+		address: localhost
+		port: 6379
+		password: Foxiny@6379
+
+	Add Redis connection string to dev/test environment files under foxiny/config:
+		# Redis cache
+		REDIS_ENDPOINT = redis://:Foxiny@6379@localhost:6379
+
+CONFIGURE JEST TEST:
+	npm install apollo-boost --save-dev
+
+CONFIGURE LOGGER:
+	https://thisdavej.com/using-winston-a-versatile-logging-library-for-node-js/
+	
+	npm install winston winston-daily-rotate-file
+
+	daily logs can be found under foxiny/gateway/log folder:
+		2019-01-03-foxiny-gateway.log
+
+SETUP FOXINY WEB
+------------------------------------------------------------------------------------------------------------------------
+
+https://dev.to/gate3/setting-up-your-react-workflow-with-create-react-app-eslint-flow-jest--enzyme-2n2o
+
+cd foxiny
+
+npx create-react-app foxiny-web
+mv foxiny-web web (rename foxiny-web folder to just web)
+cd web
+
+setup flow:
+  npm install flow-bin --save-dev
+  
+  ./node_modules/.bin/flow init (create the .flowconfig file)
+  
+  add "flow": "flow" to scripts section of the package.json:
+    "scripts": {
+      "flow": "flow",
+			...
+    },
+
+  run 'flow' from CLI to make sure there is no error
+
+  add '// @flow' at the top of any js/jsx file to start enforcing flow 
+
+setup eslint:
+	check if CRA already installed eslint 5.6.0 (as of 11/12/2018)
+  	npm ls eslint --depth=99
+
+		if not, install it:
+			npm install eslint@5.6.0 --save-dev
+
+  ./node_modules/.bin/eslint --init
+		? How would you like to configure ESLint? Use a popular style guide
+		? Which style guide do you want to follow? Airbnb
+		? Do you use React? Yes
+		? What format do you want your config file to be in? JavaScript
+		Checking peerDependencies of eslint-config-airbnb@latest
+		The config that you've selected requires the following dependencies:
+
+		eslint-config-airbnb@latest eslint@^4.19.1 || ^5.3.0 eslint-plugin-import@^2.14.0 eslint-plugin-jsx-a11y@^6.1.1 eslint-plugin-react@^7.11.0
+		? Would you like to install them now with npm? No
+
+	manually install additional eslint dependences:
+		npm install eslint-config-airbnb --save-dev
+		npm install eslint-plugin-import --save-dev
+  	npm install eslint-plugin-jsx-a11y --save-dev
+  	npm install eslint-plugin-react --save-dev
+
+  edit .eslintrc.js
+    module.exports = {
+			extends: ['react-app', 'airbnb', 'plugin:flowtype/recommended'],
+			env: {
+				jest: true,
+			},
+			parser: 'babel-eslint',
+			plugins: ['flowtype'],
+			rules: {
+				'import/no-extraneous-dependencies': ['warning', { devDependencies: true }],
+				'arrow-parens': ['error', 'as-needed'],
+				'max-len': [
+					'error',
+					{
+						code: 120,
+						tabWidth: 2,
+					},
+				],
+			},
+		};
+
+setup jest: 
+  create-react-app has made Jest as the default test runner
+
+setup enzyme:
+  npm install enzyme enzyme-adapter-react-16 enzyme-to-json --save-dev
+
+  add 'jest' section to package.json:
+    "jest": {
+      "snapshotSerializers": [
+        "enzyme-to-json/serializer"
+      ]
+    },
+
+  add a new file setupTests.js 'src' folder with this content (create-react-app will find this enzyme configuration file in this folder by default):
+		// @flow
+    import { configure } from 'enzyme';
+    import Adapter from 'enzyme-adapter-react-16';
+
+    configure({ adapter: new Adapter() });
+
+  Avoiding lint issue in the setupTests.js by adding theis rules to .eslintrc.js:
+    rules: {
+      'import/no-extraneous-dependencies': ['warning', { devDependencies: true }],
+			'arrow-parens': ['error', 'as-needed'],
+			'max-len': [
+				'error',
+				{
+					code: 120,
+					tabWidth: 2,
+				},
+			],
+    },
+
+  Visual Studio Code Workspace Settings:
+		"javascript.validate.enable": false
+
+Environment variables:
+	+ create .env file in the project root folder (REACT_APP_ prefix is required for conveniently use process.env in the React app): 
+		REACT_APP_GATEWAY_URL=http://localhost:4000
+
+	+ enable dotenv in the app index.js
+		import env from 'dotenv';
+		env.config();
+		console.log(process.env);
+
+	+ use environment variables:
+		process.env.REACT_APP_GATEWAY_URL,
+
+Add Apollo Client to the React app:
+	npm install apollo-boost
+  npm install graphql
+  npm install react-apollo
+
+	+ Create Apollo Client and wrap the main app with ApolloProvider:
+		import ApolloClient from 'apollo-boost';
+		import { ApolloProvider } from 'react-apollo';
+		...
+		const apolloClient = new ApolloClient({
+			uri: process.env.REACT_APP_GATEWAY_URL,
+			request: operation => {
+				operation.setContext(context => ({
+					headers: {
+						...context.headers,
+						authorization: getAuthorizationToken(),
+					},
+				}));
+			},
+		});
+		...
+		const ApolloApp = () => (
+			<ApolloProvider client={apolloClient}>
+				<App />
+			</ApolloProvider>
+		);
+
++ Invoke Apollo Server queries:
+	import React from 'react';
+	import { gql } from 'apollo-boost';
+	import { Query } from 'react-apollo';
+
+	const GET_ALL_USERS = gql`
+		query {
+			users {
+				name
+				email
+				password
+
+				createdAt
+				updatedAt
+			}
+		}
+	`;
+
+	const UserList = () => (
+		<Query query={GET_ALL_USERS}>
+			{({ loading, error, data }) => {
+				if (loading) return <p>Loading...</p>;
+				if (error) return <p>Error!</p>;
+
+				return data.users.map(({ name, email, password, createdAt }) => (
+					<div key={password}>
+						<p>{`${name}: Joined on ${createdAt} with email: ${email}`}</p>
+					</div>
+				));
+			}}
+		</Query>
+	);
+
+	export default UserList;
+
++ Invoke Apollo Server mutations:
+	import React from 'react';
+	import { Query, Mutation } from 'react-apollo';
+	import { Redirect } from 'react-router-dom';
+	import { gql } from 'apollo-boost';
+
+	const CREATE_USER = gql`
+		mutation createUser($data: CreateUserInput!) {
+			createUser(data: $data) {
+				token
+				user {
+					id
+					name
+					email
+					password
+					createdAt
+					updatedAt
+				}
+			}
+		}
+	`;
+
+	export default () => (
+		<Mutation mutation={CREATE_USER} onCompleted={() => (window.location.href = '/')}>
+			{(createUser, { data, loading, error }) => (
+				<div>
+					<div>
+						<form
+							onSubmit={e => {
+								e.preventDefault();
+								createUser({
+									variables: {
+										data: {
+											name: 'Kenneth Pham',
+											email: 'kenneth.pham@gmail.com',
+											password: 'Hiall1234',
+										},
+									},
+								});
+
+								this.name.value = '';
+								this.email.value = '';
+								this.password.value = '';
+							}}
+						>
+							<div style={{ maxWidth: 400 }} className="">
+								<label> Name </label>
+								<input type="text" required placeholder="Enter your name" />
+								<label> Email </label>
+								<input type="text" required placeholder="Enter your email" />
+								<label> Password </label>
+								<input type="text" required placeholder="Enter your password" />
+							</div>
+
+							{loading && <p>Loading...</p>}
+							{error && <p>Error :( Please try again</p>}
+
+							<button type="submit">Add User</button>
+						</form>
+					</div>
+				</div>
+			)}
+		</Mutation>
+	);
+
+CONFIGURE NGROK FOR DEV TESTING WITH REAL IP ADDRESS 
+------------------------------------------------------------------------------------------------------------------------
+npm install ngrok --global
+
+start routing for foxiny-web:
+	ngrok http 3000
+	then use the external URL to access foxiny-web
+
+start routing for foxiny-gateway:
+	ngrok http 4000
+	then use the external URL to access foxiny-gateway
+
+PROJECT ON BITBUCKET
+------------------------------------------------------------------------------------------------------------------------
+
+cd ~/Projects
+git clone https://bitbucket.org/foxiny-dev/foxiny.git
+
+setup working environment:
+	cd foxiny/backend (tab 1)
+	docker-compose up
+
+	cd foxiny/backend/prisma (tab 2)
+	./deploy-dev.sh
+
+	connect pgAdmin to foxiny_main_db with the info above
+	verify that the database 'foxiny_main_db' and the schema 'foxiny$dev' are there
+
+	cd foxiny/gateway (tab 3, normally the Visual Studio Code terminal 1)
+	npm install
+	npm run dev
+
+	navigate to the local graphql playground URL: http://localhost:4000/graphql
+	check out the schema
+	try out sample graphql mutations/queries above (against gateway graphql server)
+
+	cd foxiny/web (tab 4, normally the Visual Studio Code terminal 2)
+	npm install
+	npm start
+
+	navigate to the web app URL: http://localhost:3000
+	verify the user created above is displayed at the bottom of the front page (email and phone should be set to null)
+
+daily git task:
+
++ show git remote:
+	git remote -v
+	git remote show origin
+
++ create new branch:
+  git branch <feature_branch>
+  git checkout <feature_branch>
+
++ work on new branch:
+  git add . 
+  git commit -m "adding a change from the feature branch"
+
+	pull latest changes from master
+		git pull --all
+
+		or:
+
+		git pull origin master
+  
+	push local changes to Bitbucket:
+		git push origin master
+	
+		or:
+		
+		git push origin <feature_branch>
+
++ switch back to master branch:
+  git checkout master

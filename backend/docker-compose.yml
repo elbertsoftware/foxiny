@@ -32,7 +32,7 @@ services:
       PRISMA_CONFIG: |
         port: 4466
         # uncomment the next line and provide the env var PRISMA_MANAGEMENT_API_SECRET=my-secret to activate cluster security
-        # managementApiSecret: my-secret
+        managementApiSecret: Y9GuJ3?KsW}Z"<_]*UL2gFJ624>e5LhU
         databases:
           default:
             connector: postgres
@@ -46,6 +46,22 @@ services:
             rawAccess: true
     depends_on:
       - foxiny_db
+
+  foxiny_cache:
+    build:
+      dockerfile: Dockerfile
+      context: ./redis
+    image: foxiny/redis
+    restart: always
+    ports:
+      - '6379:6379'
+    networks:
+      - backend
+    command: redis-server --appendonly yes --requirepass Foxiny@6379
+    volumes:
+      - ./foxiny_cache:/data
+    depends_on:
+      - prisma
 
 networks:
   backend:
