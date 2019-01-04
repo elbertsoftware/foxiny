@@ -1,14 +1,17 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-shadow */
 /* eslint-disable no-confusing-arrow */
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Field, Form, FormSpy } from 'react-final-form';
+import createDecorator from 'final-form-focus';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { Typography, MenuItem } from '@material-ui/core';
 import RFTextField from '../../utils/common/form/RFTextField';
 import FormButton from '../../utils/common/form/FormButton';
-import FormFeedback from '../../utils/common/form/FormFeedback';
 import PhoneSelectList from './PhoneSelectList';
+import { validate } from '../../utils/common/form/validation';
 import callingCodes from '../../utils/callingcodes';
 
 function TabContainer({ children, dir }) {
@@ -24,23 +27,15 @@ TabContainer.propTypes = {
   dir: PropTypes.string.isRequired,
 };
 
-const countries = callingCodes.map(({ country, value, code }) => (
+const countries = callingCodes.map(({ country, value }) => (
   <MenuItem key={country} value={value}>{`${country} ${value}`}</MenuItem>
 ));
 
-const SignInForm = ({
-  handleSubmit,
-  validate,
-  focusOnError,
-  theme,
-  tabValue,
-  sent,
-  handleChangeIndex,
-  classes,
-  handleSelectChange,
-}) => (
+const focusOnError = createDecorator();
+
+const SignInForm = ({ handleSubmit, theme, tabValue, sent, handleChangeIndex, classes }) => (
   <Form onSubmit={handleSubmit} subscription={{ submitting: true }} validate={validate} decorators={[focusOnError]}>
-    {({ values, submitting }) => (
+    {({ handleSubmit, values, submitting }) => (
       <form onSubmit={handleSubmit} className={classes.form} noValidate>
         <SwipeableViews
           axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
@@ -50,7 +45,6 @@ const SignInForm = ({
           <TabContainer dir={theme.direction}>
             <Field
               autoComplete="email"
-              autoFocus
               component={RFTextField}
               disabled={submitting || sent}
               fullWidth
@@ -60,21 +54,33 @@ const SignInForm = ({
               required
               size="large"
             />
+            <Field
+              fullWidth
+              size="large"
+              component={RFTextField}
+              disabled={submitting || sent}
+              required
+              name="passwordEmail"
+              autoComplete="current-password"
+              label="Mật khẩu"
+              type="password"
+              margin="normal"
+            />
           </TabContainer>
           <TabContainer dir={theme.direction}>
-            <Field
-              autoFocus
-              component={PhoneSelectList}
-              render={() => countries}
-              disabled={submitting || sent}
-              fullWidth
-              name="postalList"
-              required
-              size="large"
-            />
+            {countries && (
+              <Field
+                component={PhoneSelectList}
+                render={() => countries}
+                disabled={submitting || sent}
+                fullWidth
+                name="postalList"
+                required
+                size="large"
+              />
+            )}
             <Field
               autoComplete="phone"
-              autoFocus
               component={RFTextField}
               disabled={submitting || sent}
               fullWidth
@@ -84,34 +90,27 @@ const SignInForm = ({
               required
               size="large"
             />
+            <Field
+              fullWidth
+              size="large"
+              component={RFTextField}
+              disabled={submitting || sent}
+              required
+              name="passwordPhone"
+              autoComplete="current-password"
+              label="Mật khẩu"
+              type="password"
+              margin="normal"
+            />
           </TabContainer>
         </SwipeableViews>
 
-        <Field
-          fullWidth
-          size="large"
-          component={RFTextField}
-          disabled={submitting || sent}
-          required
-          name="password"
-          autoComplete="current-password"
-          label="Mật khẩu"
-          type="password"
-          margin="normal"
-        />
-        <FormSpy subscription={{ submitError: true }}>
-          {({ submitError }) =>
-            submitError ? (
-              <FormFeedback className={classes.feedback} error>
-                {submitError}
-              </FormFeedback>
-            ) : null
-          }
-        </FormSpy>
         <FormButton className={classes.button} disabled={submitting || sent} size="large" color="secondary" fullWidth>
           {submitting || sent ? 'Thực hiện...' : 'Đăng nhập'}
         </FormButton>
-        <pre>{JSON.stringify(values, undefined, 2)}</pre>
+        <FormSpy subscription={{ values: true }}>
+          {({ values }) => <pre>{JSON.stringify(values, undefined, 2)}</pre>}
+        </FormSpy>
       </form>
     )}
   </Form>

@@ -3,10 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import compose from 'recompose/compose';
 import { withStyles } from '@material-ui/core/styles';
-import createDecorator from 'final-form-focus';
 import { Link } from 'react-router-dom';
 import { Typography, Tabs, Tab } from '@material-ui/core';
-import { validate } from '../../utils/common/form/validation';
 import withRoot from '../../utils/withRoot';
 import NavBar from '../NavBar/NavBar';
 import AppForm from '../../utils/common/form/AppForm';
@@ -39,13 +37,12 @@ const styles = theme => ({
   },
 });
 
-const focusOnError = createDecorator();
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 class SignIn extends React.Component {
   state = {
     sent: false,
     tabValue: 0,
-    locale: '',
   };
 
   handleChange = (event, tabValue) => {
@@ -60,13 +57,10 @@ class SignIn extends React.Component {
     });
   };
 
-  handleSelectChange = event => {
-    this.setState({
-      locale: event.target.value,
-    });
+  handleSubmit = async values => {
+    await sleep(500);
+    window.alert(JSON.stringify(values, undefined, 2));
   };
-
-  handleSubmit = () => {};
 
   render() {
     const { classes, theme } = this.props;
@@ -94,8 +88,6 @@ class SignIn extends React.Component {
             theme={theme}
             tabValue={tabValue}
             classes={classes}
-            validate={validate}
-            focusOnError={focusOnError}
           />
           <Typography
             className={classes.rightBottom}

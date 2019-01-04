@@ -19,10 +19,11 @@ export const required = (requiredFields, values, messages) =>
 export const validate = values => {
   const messages = {
     email: 'email',
-    password: 'mật khẩu',
+    passwordEmail: 'mật khẩu',
     phone: 'số điện thoại',
+    passwordPhone: 'mật khẩu',
   };
-  const errors = required(['email', 'password', 'phone'], values, messages);
+  const errors = required(['email', 'passwordEmail', 'phone', 'passwordPhone'], values, messages);
   if (!errors.email) {
     const emailError = email(values.email, values);
     if (emailError) {
