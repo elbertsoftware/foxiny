@@ -2,7 +2,7 @@
 
 import { Prisma } from 'prisma-binding';
 
-import { fragmentReplacements } from './resolvers';
+import { fragmentReplacements } from '../resolvers';
 
 const prisma = new Prisma({
   typeDefs: './src/type-defs/generated/prisma.graphql', // link to generated prisma schema

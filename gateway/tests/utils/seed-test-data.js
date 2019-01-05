@@ -1,6 +1,6 @@
 // @flow
 
-import prisma from '../../src/prisma';
+import prisma from '../../src/utils/prisma';
 import { hashPassword, generateToken } from '../../src/utils/authentication';
 
 const seedUserOne = {

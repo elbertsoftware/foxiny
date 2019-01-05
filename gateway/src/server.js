@@ -9,8 +9,8 @@ import bodyParser from 'body-parser';
 import { ApolloServer, gql } from 'apollo-server-express';
 
 import { resolvers, fragmentReplacements } from './resolvers';
-import prisma from './prisma';
-import cache from './cache';
+import prisma from './utils/prisma';
+import cache from './utils/cache';
 import logger from './utils/logger';
 
 // Express server
