@@ -3,6 +3,8 @@
 import {
   hashPassword,
   verifyPassword,
+  generateConfirmation,
+  verifyConfirmation,
   generateToken,
   deleteTokenInCache,
   deleteAllTokensInCache,
@@ -10,8 +12,12 @@ import {
   getUserIDFromRequest,
 } from '../utils/authentication';
 
+import logger from '../utils/logger';
+import { sendConfirmationEmail } from '../utils/email';
+import { sendConfirmationText } from '../utils/sms';
+
 const Mutation = {
-  createUser: async (parent, { data }, { prisma }, info) => {
+  createUser: async (parent, { data }, { prisma, cache }, info) => {
     const password = hashPassword(data.password);
 
     const user = await prisma.mutation.createUser(
@@ -20,6 +26,40 @@ const Mutation = {
           ...data,
           password, // replace plain text password with the hashed one
           enabled: false, // user needs to confirm before the account become enabled
+        },
+      },
+      info,
+    );
+
+    const code = generateConfirmation(cache, user.id);
+
+    // email the code if user is signing up via email
+    if (typeof data.email === 'string') {
+      sendConfirmationEmail(data.name, data.email, code);
+    }
+
+    // text the code if user is signing up via phone
+    if (typeof data.phone === 'string') {
+      sendConfirmationText(data.name, data.phone, code);
+    }
+
+    return user;
+  },
+
+  confirmUser: async (parent, { data }, { prisma, cache }, info) => {
+    const matched = await verifyConfirmation(cache, data.code, data.userId);
+    logger.debug(`confirmation matched: ${matched}`);
+    if (!matched) {
+      throw new Error('Unable to confirm user profile');
+    }
+
+    const user = prisma.mutation.updateUser(
+      {
+        where: {
+          id: data.userId,
+        },
+        data: {
+          enabled: true,
         },
       },
       info,
@@ -39,11 +79,11 @@ const Mutation = {
     if (!user) {
       throw new Error('Unable to login'); // try NOT to provide enough information so hackers can guess
     }
-    /*
-    // TODO: Turn the if statement on after implementing confirmation process
+
     if (!user.enabled) {
       throw new Error('User profile has not been confirmed or was disabled');
-    } */
+    }
+
     const matched = verifyPassword(data.password, user.password);
     if (!matched) {
       throw new Error('Unable to login'); // try NOT to provide enough information so hackers can guess

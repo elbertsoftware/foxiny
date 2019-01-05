@@ -4,6 +4,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
 import requestId from 'request-ip';
+import cryptoRandomString from 'crypto-random-string';
+
 import logger from './logger';
 
 // TODO: more password rules will be enforced later
@@ -20,6 +22,21 @@ const hashPassword = password => {
 const verifyPassword = (password, hashedPassword) => bcrypt.compareSync(password, hashedPassword);
 
 const getRequestIPAddress = request => requestId.getClientIp(request);
+
+const generateConfirmation = (cache, userId) => {
+  const code = cryptoRandomString(parseInt(process.env.CONFIRMATION_LENGTH, 10));
+  logger.debug(`generated new confirmation code ${code} for userId ${userId}`);
+
+  cache.set(code, userId, 'EX', ms(process.env.CONFIRMATION_EXPIRATION) / 1000); // convert to seconds
+  return code;
+};
+
+const verifyConfirmation = async (cache, code, userId) => {
+  const cacheUserId = await cache.get(code);
+  logger.debug(`verifying confirmation code ${code} for userId ${userId} upon the cached userId ${cacheUserId}`);
+
+  return cacheUserId === userId;
+};
 
 const saveTokenToCache = (cache, userId, token, data, exp) => {
   cache.hset(userId, token, JSON.stringify(data), 'EX', exp);
@@ -41,22 +58,18 @@ const deleteAllTokensInCache = (cache, userId) => {
 };
 
 const generateToken = (userId, request, cache) => {
-  const expiresIn = process.env.JWT_EXPIRATION;
-
-  const iat = Date.now();
-  const exp = ms(expiresIn);
-
   const payload = {
     userId,
-    iat,
+    iat: Date.now(),
   };
 
   // synchronous call since no callback supplied
+  const expiresIn = process.env.JWT_EXPIRATION;
   const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
   const ip = getRequestIPAddress(request);
 
   // save token to redis cache
-  saveTokenToCache(cache, userId, token, ip, exp);
+  saveTokenToCache(cache, userId, token, ip, ms(expiresIn) / 1000); // convert to seconds
 
   return token;
 };
@@ -124,6 +137,8 @@ const getUserIDFromRequest = async (request, cache, requireAuthentication = true
 export {
   hashPassword,
   verifyPassword,
+  generateConfirmation,
+  verifyConfirmation,
   generateToken,
   deleteTokenInCache,
   deleteAllTokensInCache,
