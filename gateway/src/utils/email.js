@@ -18,6 +18,8 @@ const sendConfirmationEmail = async (name, to, code) => {
     
     in order to activate your profile as soon as you receive this email.
 
+    Your account will be removed within 24h if it is not activated.
+
     Thanks and regards,
     Foxiny Admin
   `;
@@ -30,6 +32,8 @@ const sendConfirmationEmail = async (name, to, code) => {
     <p><strong>${code}</strong></p>
     <br>
     <p>in order to activate your profile as soon as you receive this email.</p>
+    <br>
+    <p>Your account will be removed within 24h if it is not activated.</p>
     <br>
     <p>Thanks and regards,</p>
     <p><strong>Foxiny Admin</strong></p>

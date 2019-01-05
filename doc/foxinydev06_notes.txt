@@ -794,7 +794,7 @@ mutation createUser {
   createUser(data: {
     name: "Ky",
     email: "ky@example.com",
-    phone: "714-348-4897",
+    phone: "+17143484897",
     password: "abcd1234"
   }) {
 		id
@@ -807,6 +807,9 @@ mutation createUser {
 		updatedAt
   }
 }
+
+record the returned userId as <userId1>
+record the confirmation code sent to the email address/phone number as <code1>
 ----------------------------------------
 query getAllUsers {
   users {
@@ -821,9 +824,39 @@ query getAllUsers {
   }
 }
 ----------------------------------------
+use the <code1> and <userId1>
+
+mutation {
+  confirmUser(data: {
+    userId: "<userId1>",
+    code: "<code1>"
+  }) {
+    id
+    name
+    email
+    phone
+    password
+    enabled
+    createdAt
+    updatedAt
+  }
+}
+----------------------------------------
 mutation login {
   login(data: {
-    email: "ky@example.com",
+    email: "kenneth.pham@gmail.com",
+    password: "abcd1234"
+  }) {
+    token
+    userId
+  }
+}
+
+or 
+
+mutation login {
+  login(data: {
+    phone: "+17143484897",
     password: "abcd1234"
   }) {
     token
