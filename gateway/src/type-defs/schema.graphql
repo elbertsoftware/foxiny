@@ -5,6 +5,7 @@ type Query {
 
 type Mutation {
   createUser(data: CreateUserInput!): User!
+  confirmUser(data: ConfirmUserInput): User!
   login(data: LoginUserInput!): AuthPayload!
   logout(all: Boolean = false): AuthPayload!
   updateUser(data: UpdateUserInput!): User!
@@ -33,6 +34,11 @@ input CreateUserInput {
   password: String!
 }
 
+input ConfirmUserInput {
+  userId: ID!
+  code: String!
+}
+
 input LoginUserInput {
   email: String
   phone: String
@@ -40,8 +46,8 @@ input LoginUserInput {
 }
 
 type AuthPayload {
+  userId: ID!
   token: String!
-  userId: String!
 }
 
 input UpdateUserInput {
