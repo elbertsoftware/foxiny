@@ -57,7 +57,12 @@ class SignIn extends React.Component {
     });
   };
 
-  handleSubmit = async values => {
+  handleSubmitEmail = async values => {
+    await sleep(500);
+    window.alert(JSON.stringify(values, undefined, 2));
+  };
+
+  handleSubmitPhone = async values => {
     await sleep(500);
     window.alert(JSON.stringify(values, undefined, 2));
   };
@@ -82,7 +87,8 @@ class SignIn extends React.Component {
             </div>
           </React.Fragment>
           <SignInForm
-            handleSubmit={this.handleSubmit}
+            handleSubmitEmail={this.handleSubmitEmail}
+            handleSubmitPhone={this.handleSubmitPhone}
             handleChangeIndex={this.handleChangeIndex}
             sent={sent}
             theme={theme}

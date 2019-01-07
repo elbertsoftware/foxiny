@@ -1,14 +1,26 @@
+/* eslint-disable import/prefer-default-export */
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable no-unused-expressions */
 import isEmail from 'validator/lib/isEmail';
+import { regex } from '../../callingcodes';
 
-export const email = value => {
+const email = value => {
   return value && !isEmail(value.trim()) ? 'Email không hợp lệ.' : null;
+};
+
+const phone = (countryCode, str) => {
+  if (Object.prototype.hasOwnProperty.call(regex, countryCode)) {
+    const phoneRegex = new RegExp(regex[countryCode]);
+    if (phoneRegex.test(str)) {
+      return null;
+    }
+  }
+  return 'Số điện thoại không hợp lệ.';
 };
 
 const isDirty = value => value || value === 0;
 
-export const required = (requiredFields, values, messages) =>
+const required = (requiredFields, values, messages) =>
   requiredFields.reduce((fields, field) => {
     return {
       ...fields,
@@ -28,6 +40,12 @@ export const validate = values => {
     const emailError = email(values.email, values);
     if (emailError) {
       errors.email = email(values.email, values);
+    }
+  }
+  if (!errors.phone) {
+    const phoneError = phone(values.countryCode, values.phone);
+    if (phoneError) {
+      errors.phone = phone(values.countryCode, values.phone);
     }
   }
 

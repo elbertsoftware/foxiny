@@ -54,12 +54,7 @@
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
     "flow-bin": "^0.86.0",
-<<<<<<< HEAD
-    "graphql": "^14.0.2",
-    "graphql-cli": "^2.17.0",
-=======
     "graphql-cli": "^3.0.3",
->>>>>>> dbd76a33baa998802e481be053804abeb5e01390
     "jest": "^23.6.0",
     "nodemon": "^1.18.7"
   }
