@@ -22,9 +22,6 @@ const styles = theme => ({
     marginBottom: theme.spacing.unit * 2,
     borderRadius: '25px',
   },
-  feedback: {
-    marginTop: theme.spacing.unit * 2,
-  },
   leftBottom: {
     position: 'absolute',
     left: '24px',
@@ -57,12 +54,7 @@ class SignIn extends React.Component {
     });
   };
 
-  handleSubmitEmail = async values => {
-    await sleep(500);
-    window.alert(JSON.stringify(values, undefined, 2));
-  };
-
-  handleSubmitPhone = async values => {
+  onSubmit = async values => {
     await sleep(500);
     window.alert(JSON.stringify(values, undefined, 2));
   };
@@ -87,8 +79,7 @@ class SignIn extends React.Component {
             </div>
           </React.Fragment>
           <SignInForm
-            handleSubmitEmail={this.handleSubmitEmail}
-            handleSubmitPhone={this.handleSubmitPhone}
+            onSubmit={this.onSubmit}
             handleChangeIndex={this.handleChangeIndex}
             sent={sent}
             theme={theme}
@@ -102,9 +93,8 @@ class SignIn extends React.Component {
           >
             Quên mật khẩu?
           </Typography>
-          <Typography className={classes.leftBottom} variant="body2" align="center">
-            {'Chưa có tài khoản? '}
-            <Link to="/signup">Đăng ký ngay</Link>
+          <Typography className={classes.leftBottom} variant="body2" align="center" component={Link} to="/signup">
+            Đăng ký
           </Typography>
         </AppForm>
       </React.Fragment>

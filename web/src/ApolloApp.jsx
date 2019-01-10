@@ -2,6 +2,7 @@
 
 import React from 'react';
 import ApolloClient from 'apollo-boost';
+import { BrowserRouter } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
 import App from './components/App';
 import { getAuthorizationToken } from './utils/authentication';
@@ -20,7 +21,9 @@ const apolloClient = new ApolloClient({
 
 const ApolloApp = () => (
   <ApolloProvider client={apolloClient}>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </ApolloProvider>
 );
 

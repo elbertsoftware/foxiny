@@ -1,3 +1,8 @@
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/react-in-jsx-scope */
+import React from 'react';
+import { MenuItem } from '@material-ui/core';
+
 export const callingCodes = [
   {
     country: 'China',
@@ -11,6 +16,9 @@ export const callingCodes = [
     code: 'VN',
   },
 ];
+export const countries = callingCodes.map(({ country, value, code }) => (
+  <MenuItem key={country} value={code}>{`${country} + ${value}`}</MenuItem>
+));
 
 export const regex = {
   VN: '^(\\+?84|0)(3[2-9]|5[689]|7[0|6-9]|8[1-5]|9[0-9])([0-9]{7})$',
