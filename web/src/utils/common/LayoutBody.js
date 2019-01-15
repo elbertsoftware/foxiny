@@ -21,7 +21,7 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3,
     [theme.breakpoints.up(660 + theme.spacing.unit * 6)]: {
-      width: 450,
+      width: 660,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
@@ -31,7 +31,7 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3,
     [theme.breakpoints.up(850 + theme.spacing.unit * 6)]: {
-      width: 660,
+      width: 850,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
@@ -41,7 +41,7 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3,
     [theme.breakpoints.up('md')]: {
-      width: 780,
+      width: 880,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
@@ -130,7 +130,7 @@ LayoutBody.defaultProps = {
   fullWidth: false,
   margin: false,
   marginBottom: false,
-  width: 'medium',
+  width: 'small',
 };
 
 export default withStyles(styles)(LayoutBody);

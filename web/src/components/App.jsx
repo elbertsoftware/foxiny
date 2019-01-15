@@ -2,13 +2,15 @@
 
 import React, { Component } from 'react';
 import { loadReCaptcha } from 'react-recaptcha-google';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router';
+import compose from 'recompose/compose';
 import { setAuthorizationToken } from '../utils/authentication';
 import './App.css';
 import withRoot from '../utils/withRoot';
 import NavBar from './NavBar/NavBar';
 import SignIn from './SignIn/SignIn';
 import SignUp from './SignUp/SignUp';
+import ConfirmPage from './form/ConfirmPage';
 
 class App extends Component<Props, State> {
   componentDidMount() {
@@ -22,20 +24,23 @@ class App extends Component<Props, State> {
   render() {
     return (
       <React.Fragment>
+        <Switch>
+          <Route exact path="/" component={NavBar} />
+        </Switch>
         <Route
           path="/(.+)"
           render={() => (
-            <div>
-              <Switch>
-                <Route exact path="/" component={NavBar} />
-              </Switch>
+            <React.Fragment>
               <Switch>
                 <Route path="/signin" component={SignIn} />
               </Switch>
               <Switch>
                 <Route path="/signup" component={SignUp} />
               </Switch>
-            </div>
+              <Switch>
+                <Route path="/confirm/:id" component={ConfirmPage} />
+              </Switch>
+            </React.Fragment>
           )}
         />
       </React.Fragment>
@@ -43,4 +48,7 @@ class App extends Component<Props, State> {
   }
 }
 
-export default withRoot(App);
+export default compose(
+  withRouter,
+  withRoot,
+)(App);

@@ -24,8 +24,6 @@ const styles = theme => ({
   },
 });
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
 class SignUp extends React.Component {
   state = {
     sent: false,
@@ -42,11 +40,6 @@ class SignUp extends React.Component {
     this.setState({
       tabValue: index,
     });
-  };
-
-  onSubmit = async values => {
-    await sleep(500);
-    window.alert(JSON.stringify(values, undefined, 2));
   };
 
   render() {
@@ -69,15 +62,15 @@ class SignUp extends React.Component {
             </div>
           </React.Fragment>
           <SignUpForm
-            onSubmit={this.onSubmit}
             handleChangeIndex={this.handleChangeIndex}
             sent={sent}
             theme={theme}
             tabValue={tabValue}
             classes={classes}
+            history={this.props.history}
           />
           <Typography variant="body2" align="center">
-            {'Chưa có tài khoản? '}
+            {'Đã có tài khoản? '}
             <Link to="/signin">Đăng nhập</Link>
           </Typography>
         </AppForm>

@@ -13,7 +13,7 @@ const styles = theme => ({
   },
   paper: {
     padding: `${theme.spacing.unit * 4}px ${theme.spacing.unit * 3}px`,
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
       padding: `${theme.spacing.unit * 10}px ${theme.spacing.unit * 8}px`,
     },
     position: 'relative',

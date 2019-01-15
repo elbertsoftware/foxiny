@@ -44,4 +44,5 @@ export const messages = {
   namePhone: 'tên',
   cfrPasswordEmail: 'lại mật khẩu',
   cfrPasswordPhone: 'lại mật khẩu',
+  confirmCode: 'mã xác thực',
 };
