@@ -1,1 +1,1 @@
-FROM prismagraphql/prisma:1.23
+FROM prismagraphql/prisma:1.24
