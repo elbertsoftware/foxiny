@@ -24,6 +24,7 @@ import {
   confirm,
   messages,
   formatInternationalPhone,
+  captChaVerification,
 } from '../../utils/common/form/validation';
 import PhoneFields from './PhoneFields';
 import EmailFields from './EmailFields';
@@ -55,6 +56,7 @@ class SignUpForm extends React.Component {
   state = {
     initData: {},
     verified: true,
+    captchaResponse: '',
   };
 
   recaptchaRef = React.createRef();
@@ -83,9 +85,9 @@ class SignUpForm extends React.Component {
   }
 
   onSubmit = ({ createUser }) => async values => {
-    // Captcha validation
-    const capRes = window.grecaptcha.getResponse();
-    if (capRes.length) {
+    // Checked Captcha or not
+    const capRes = this.state.captchaResponse;
+    if (capRes.length !== 0) {
       this.recaptchaRef.current.reset();
     } else {
       this.setState({
@@ -93,6 +95,11 @@ class SignUpForm extends React.Component {
       });
       return;
     }
+
+    const result = await captChaVerification(this.state.captchaResponse);
+
+    if (!result.data.success) return; // Notify message for user, using Toast later
+
     let data;
     try {
       if (values.email) {
@@ -119,7 +126,7 @@ class SignUpForm extends React.Component {
       }
       this.props.history.push(`/confirm/${data.data.createUser.id}`);
     } catch (error) {
-      console.log(error.messages);
+      throw new Error(error.messages);
     }
   };
 
@@ -132,6 +139,9 @@ class SignUpForm extends React.Component {
   };
 
   verifyCallback = recaptchaToken => {
+    this.setState({
+      captchaResponse: recaptchaToken,
+    });
     // Here you will get the final recaptchaToken!!!
     console.log(recaptchaToken, '<= your recaptcha token');
   };
@@ -202,7 +212,8 @@ class SignUpForm extends React.Component {
                     ref={this.recaptchaRef}
                     size="normal"
                     render="explicit"
-                    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                    sitekey="6Lc8fIoUAAAAAEIelPYBBoehOd00PSDckbO75rhh"
+                    hl="vi"
                     onloadCallback={this.onLoadRecaptcha}
                     verifyCallback={this.verifyCallback}
                   />

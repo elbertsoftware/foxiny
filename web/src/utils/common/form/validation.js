@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable no-unused-expressions */
+import axios from 'axios';
 import isEmail from 'validator/lib/isEmail';
 import { regex } from '../../callingcodes';
 
@@ -46,6 +47,19 @@ export const required = (requiredFields, values, messages) =>
       ...(isDirty(values[field]) ? undefined : { [field]: `Vui lòng nhập ${messages[field]}` }),
     };
   }, {});
+
+const SECRET_KEY = '6Lc8fIoUAAAAALu3ueS_-bQfud-YeAGq2QFlBCpS';
+
+export const captChaVerification = async (captchaResponse, secretKey = SECRET_KEY) => {
+  const proxyurl = 'https://cors-anywhere.herokuapp.com/';
+  const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${captchaResponse}`;
+  const result = await axios.post(proxyurl + url, undefined, {
+    headers: {
+      'Content-type': 'application/x-www-form-urlencoded',
+    },
+  });
+  return result;
+};
 
 export const messages = {
   email: 'email',

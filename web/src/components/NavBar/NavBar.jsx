@@ -35,7 +35,7 @@ function NavBar(props) {
             Foxiny
           </Typography>
 
-          <Button component={Link} to="/signin" color="secondary">
+          <Button size="large" component={Link} to="/signin" color="secondary">
             Đăng nhập
           </Button>
         </Toolbar>

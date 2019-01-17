@@ -26,6 +26,7 @@
   "dependencies": {
     "@material-ui/core": "^3.7.1",
     "apollo-boost": "^0.1.22",
+    "axios": "^0.18.0",
     "final-form": "^4.11.0",
     "final-form-focus": "^1.1.0",
     "glider-js": "^1.6.1",
