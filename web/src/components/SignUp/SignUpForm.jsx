@@ -17,13 +17,19 @@ import { gql } from 'apollo-boost';
 import TabContainer from '../../utils/common/form/TabContainer';
 import RFTextField from '../../utils/common/form/RFTextField';
 import FormButton from '../../utils/common/form/FormButton';
-import { email, phone, required, confirm, messages } from '../../utils/common/form/validation';
+import {
+  email,
+  phone,
+  required,
+  confirm,
+  messages,
+  formatInternationalPhone,
+} from '../../utils/common/form/validation';
 import PhoneFields from './PhoneFields';
 import EmailFields from './EmailFields';
 
 const focusOnError = createDecorator();
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-const recaptchaRef = React.createRef();
 const CREATE_USER = gql`
   mutation createUser($data: CreateUserInput!) {
     createUser(data: $data) {
@@ -33,59 +39,94 @@ const CREATE_USER = gql`
   }
 `;
 
+const initData = {
+  nameEmail: '',
+  email: '',
+  passwordEmail: '',
+  cfrPasswordEmail: '',
+  namePhone: '',
+  phone: '',
+  passwordPhone: '',
+  cfrPasswordPhone: '',
+  countryCode: 84,
+};
+
 class SignUpForm extends React.Component {
   state = {
     initData: {},
     verified: true,
   };
 
+  recaptchaRef = React.createRef();
+
+  signupRef = React.createRef();
+
   componentDidMount() {
     this.setState({ loading: true });
-    const initData = {
-      countryCode: 'VN',
-    };
+
     this.setState({ initData });
     // captcha
-    if (recaptchaRef) {
+    if (this.recaptchaRef) {
       console.log('started, just a second...');
-      recaptchaRef.current.reset();
+      this.recaptchaRef.current.reset();
     }
     this.setState({ loading: false });
+  }
+
+  componentDidUpdate(nextProps) {
+    if (this.props.tabValue !== nextProps.tabValue) {
+      this.signupRef.current.reset();
+      this.setState({
+        initData,
+      });
+    }
   }
 
   onSubmit = ({ createUser }) => async values => {
     // Captcha validation
     const capRes = window.grecaptcha.getResponse();
     if (capRes.length) {
-      recaptchaRef.current.reset();
+      this.recaptchaRef.current.reset();
     } else {
       this.setState({
         verified: false,
       });
       return;
     }
-    createUser({
-      variables: {
-        data: {
-          name: values.nameEmail,
-          email: values.email,
-          password: values.passwordEmail,
-        },
-      },
-    })
-      .then(({ data }) => {
-        console.log(data);
-        this.props.history.push(`/confirm/${data.createUser.id}`);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    let data;
+    try {
+      if (values.email) {
+        data = await createUser({
+          variables: {
+            data: {
+              name: values.nameEmail,
+              email: values.email,
+              password: values.passwordEmail,
+            },
+          },
+        });
+      } else {
+        const phoneNumber = formatInternationalPhone(values.phone, values.countryCode);
+        data = await createUser({
+          variables: {
+            data: {
+              name: values.namePhone,
+              phone: phoneNumber,
+              password: values.passwordPhone,
+            },
+          },
+        });
+      }
+      this.props.history.push(`/confirm/${data.data.createUser.id}`);
+    } catch (error) {
+      console.log(error.messages);
+    }
   };
 
   onLoadRecaptcha = () => {
     setTimeout(() => {
-      if (recaptchaRef) {
-        recaptchaRef.current.reset();
+      if (this.recaptchaRef) {
+        this.recaptchaRef.current.reset();
       }
     }, 0);
   };
@@ -139,10 +180,10 @@ class SignUpForm extends React.Component {
                 return errors;
               }}
               decorators={[focusOnError]}
-              initialValues={initData}
+              initialValues={this.state.initData}
             >
-              {({ handleSubmit, values, submitting }) => (
-                <form onSubmit={handleSubmit} className={classes.form} noValidate>
+              {({ handleSubmit, values, submitting, reset }) => (
+                <form ref={this.signupRef} onSubmit={handleSubmit} className={classes.form} noValidate>
                   {loading && <p>Loading...</p>}
                   <SwipeableViews
                     axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
@@ -158,7 +199,7 @@ class SignUpForm extends React.Component {
                     </TabContainer>
                   </SwipeableViews>
                   <ReCaptcha
-                    ref={recaptchaRef}
+                    ref={this.recaptchaRef}
                     size="normal"
                     render="explicit"
                     sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"

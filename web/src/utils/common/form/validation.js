@@ -18,6 +18,18 @@ export const phone = (countryCode, str) => {
   return 'Số điện thoại không hợp lệ.';
 };
 
+export const formatInternationalPhone = (phoneNumber, countryCode) => {
+  // Vietnam
+  if (phoneNumber.startsWith('0')) {
+    return phoneNumber.replace(/^0+(?=\d)/, `+${countryCode}`);
+  }
+  // US
+  if (phoneNumber.startsWith('1')) {
+    return phoneNumber.replace(/^1+(?=\d)/, `+${countryCode}`);
+  }
+  return phoneNumber;
+};
+
 export const confirm = (firstVal, secondVal) => {
   if (firstVal !== secondVal) {
     return 'Mật khẩu không khớp';
