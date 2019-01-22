@@ -3,7 +3,7 @@
 import React from 'react';
 import { Form, Field } from 'react-final-form';
 import { Typography, Button, CircularProgress } from '@material-ui/core';
-import { Mutation } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
@@ -19,6 +19,14 @@ const CONFIRM_USER = gql`
   mutation confirmUser($data: ConfirmUserInput!) {
     confirmUser(data: $data) {
       enabled
+    }
+  }
+`;
+
+const RESEND_CONFIRMATION = gql`
+  mutation resendConfirmation($userId: String!) {
+    resendConfirmation(userId: $userId) {
+      id
     }
   }
 `;
@@ -59,7 +67,7 @@ class ConfirmPage extends React.Component {
     clearTimeout(this.timerReturn);
   }
 
-  onSubmit = ({ confirmUser }) => async values => {
+  onSubmit = async values => {
     if (!this.state.loading) {
       this.setState(
         {
@@ -68,28 +76,30 @@ class ConfirmPage extends React.Component {
         },
         () => {
           this.timer = setTimeout(() => {
-            confirmUser({
-              variables: {
-                data: {
-                  userId: this.props.match.params.id,
-                  code: values.confirmCode,
+            this.props
+              .confirmUser({
+                variables: {
+                  data: {
+                    userId: this.props.match.params.id,
+                    code: values.confirmCode,
+                  },
                 },
-              },
-            }).then(({ data }) => {
-              if (data.confirmUser.enabled) {
-                this.setState(
-                  {
-                    success: true,
-                    loading: false,
-                  },
-                  () => {
-                    this.timerReturn = setTimeout(() => {
-                      this.props.history.push('/');
-                    }, 500);
-                  },
-                );
-              }
-            });
+              })
+              .then(({ data }) => {
+                if (data.confirmUser.enabled) {
+                  this.setState(
+                    {
+                      success: true,
+                      loading: false,
+                    },
+                    () => {
+                      this.timerReturn = setTimeout(() => {
+                        this.props.history.push('/');
+                      }, 500);
+                    },
+                  );
+                }
+              });
           }, 1000);
         },
       );
@@ -115,6 +125,21 @@ class ConfirmPage extends React.Component {
     }, 1000);
   };
 
+  handleResend = async () => {
+    await this.startCountDown();
+    // Resend code
+    this.props
+      .resendConfirmation({
+        variables: {
+          userId: this.props.match.params.id,
+        },
+      })
+      .then(({ data }) => {
+        console.log(data.resendConfirmation.id);
+      })
+      .catch(error => alert(error.messages));
+  };
+
   render() {
     const { loading, success, sent, seconds } = this.state;
     const { classes } = this.props;
@@ -124,49 +149,47 @@ class ConfirmPage extends React.Component {
 
     return (
       <AppForm>
-        <Mutation mutation={CONFIRM_USER}>
-          {confirmUser => (
-            <React.Fragment>
-              <Typography variant="h4">Xác thực tài khoản</Typography>
-              <Typography variant="h5">
-                Vui lòng nhập mã xác thực được gửi đến email hoặc số điện thoại của bạn
-              </Typography>
-              <Form
-                onSubmit={this.onSubmit({ confirmUser })}
-                subscription={{ submitting: true }}
-                validate={values => {
-                  let errors = {};
-                  errors = required(['confirmCode'], values, messages);
-                  return errors;
-                }}
-              >
-                {({ handleSubmit, submitting }) => (
-                  <form onSubmit={handleSubmit} noValidate>
-                    <Field
-                      component={RFTextField}
-                      margin="normal"
-                      label="Mã xác thực"
-                      name="confirmCode"
-                      type="text"
-                      fullWidth
-                    />
-                    <div className={classes.root}>
-                      <FormButton variant="contained" color="secondary" className={buttonClassname} disabled={loading}>
-                        {loading && <CircularProgress size={18} className={classes.buttonProgress} />}
-                        {submitting ? 'Thực hiện...' : 'Xác thực'}
-                      </FormButton>
-                      <Button onClick={this.startCountDown} color="primary" disabled={sent}>
-                        {!sent ? 'Gửi lại' : seconds}
-                      </Button>
-                    </div>
-                  </form>
-                )}
-              </Form>
-            </React.Fragment>
-          )}
-        </Mutation>
+        <React.Fragment>
+          <Typography variant="h4">Xác thực tài khoản</Typography>
+          <Typography variant="h5">Vui lòng nhập mã xác thực được gửi đến email hoặc số điện thoại của bạn</Typography>
+          <Form
+            onSubmit={this.onSubmit}
+            subscription={{ submitting: true }}
+            validate={values => {
+              let errors = {};
+              errors = required(['confirmCode'], values, messages);
+              return errors;
+            }}
+          >
+            {({ handleSubmit, submitting }) => (
+              <form onSubmit={handleSubmit} noValidate>
+                <Field
+                  component={RFTextField}
+                  margin="normal"
+                  label="Mã xác thực"
+                  name="confirmCode"
+                  type="text"
+                  fullWidth
+                />
+                <div className={classes.root}>
+                  <FormButton variant="contained" color="secondary" className={buttonClassname} disabled={loading}>
+                    {loading && <CircularProgress size={18} className={classes.buttonProgress} />}
+                    {submitting ? 'Thực hiện...' : 'Xác thực'}
+                  </FormButton>
+                  <Button onClick={this.handleResend} color="primary" disabled={sent}>
+                    {!sent ? 'Gửi lại' : seconds}
+                  </Button>
+                </div>
+              </form>
+            )}
+          </Form>
+        </React.Fragment>
       </AppForm>
     );
   }
 }
-export default withStyles(styles)(ConfirmPage);
+export default compose(
+  graphql(CONFIRM_USER, { name: 'confirmUser' }),
+  graphql(RESEND_CONFIRMATION, { name: 'resendConfirmation' }),
+  withStyles(styles),
+)(ConfirmPage);

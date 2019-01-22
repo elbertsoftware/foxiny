@@ -59,7 +59,6 @@ class SignUpForm extends React.Component {
     initData: {},
     verified: true,
     captchaResponse: '',
-    error: null,
   };
 
   recaptchaRef = React.createRef();
@@ -68,11 +67,9 @@ class SignUpForm extends React.Component {
 
   componentDidMount() {
     this.setState({ loading: true });
-
     this.setState({ initData });
     // captcha
     if (this.recaptchaRef) {
-      console.log('started, just a second...');
       this.recaptchaRef.current.reset();
     }
     this.setState({ loading: false });
@@ -83,10 +80,6 @@ class SignUpForm extends React.Component {
       resetForm();
     }
   }
-
-  resetForm = () => {
-    document.getElementById('myForm').dispatchEvent(new Event('reset', { cancelable: true }));
-  };
 
   onSubmit = ({ createUser }) => async values => {
     // Checked Captcha or not
@@ -146,7 +139,6 @@ class SignUpForm extends React.Component {
       captchaResponse: recaptchaToken,
     });
     // Here you will get the final recaptchaToken!!!
-    console.log(recaptchaToken, '<= your recaptcha token');
   };
 
   render() {

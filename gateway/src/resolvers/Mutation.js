@@ -17,19 +17,16 @@ import { sendConfirmationEmail } from '../utils/email';
 import { sendConfirmationText } from '../utils/sms';
 
 const Mutation = {
-  createUser: async (parent, { data }, { prisma, cache }, info) => {
+  createUser: async (parent, { data }, { prisma, cache }) => {
     const password = hashPassword(data.password);
 
-    const user = await prisma.mutation.createUser(
-      {
-        data: {
-          ...data,
-          password, // replace plain text password with the hashed one
-          enabled: false, // user needs to confirm before the account become enabled
-        },
+    const user = await prisma.mutation.createUser({
+      data: {
+        ...data,
+        password, // replace plain text password with the hashed one
+        enabled: false, // user needs to confirm before the account become enabled
       },
-      info,
-    );
+    });
 
     const code = generateConfirmation(cache, user.id);
 
@@ -46,16 +43,12 @@ const Mutation = {
     return user;
   },
 
-  resendConfirmation: async (parent, { userId }, { prisma, cache }, info) => {
-    const user = await prisma.query.user(
-      {
-        where: {
-          id: userId,
-        },
+  resendConfirmation: async (parent, { userId }, { prisma, cache }) => {
+    const user = await prisma.query.user({
+      where: {
+        id: userId,
       },
-      info,
-    );
-
+    });
     if (!user) {
       throw new Error('Unable to resend confirmation'); // try NOT to provide enough information so hackers can guess
     }
