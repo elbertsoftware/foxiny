@@ -52,11 +52,14 @@ const initData = {
   countryCode: 84,
 };
 
+let resetForm;
+
 class SignUpForm extends React.Component {
   state = {
     initData: {},
     verified: true,
     captchaResponse: '',
+    error: null,
   };
 
   recaptchaRef = React.createRef();
@@ -75,14 +78,15 @@ class SignUpForm extends React.Component {
     this.setState({ loading: false });
   }
 
-  componentDidUpdate(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.tabValue !== nextProps.tabValue) {
-      this.signupRef.current.reset();
-      this.setState({
-        initData,
-      });
+      resetForm();
     }
   }
+
+  resetForm = () => {
+    document.getElementById('myForm').dispatchEvent(new Event('reset', { cancelable: true }));
+  };
 
   onSubmit = ({ createUser }) => async values => {
     // Checked Captcha or not
@@ -97,7 +101,6 @@ class SignUpForm extends React.Component {
     }
 
     const result = await captChaVerification(this.state.captchaResponse);
-
     if (!result.data.success) return; // Notify message for user, using Toast later
 
     let data;
@@ -147,8 +150,8 @@ class SignUpForm extends React.Component {
   };
 
   render() {
-    const { theme, tabValue, sent, handleChangeIndex, classes } = this.props;
-    const { loading, initData } = this.state;
+    const { theme, tabValue, handleChangeIndex, classes } = this.props;
+    const { loading, initData, error } = this.state;
     return (
       <Mutation mutation={CREATE_USER}>
         {(createUser, { data, loading, error }) => (
@@ -192,50 +195,53 @@ class SignUpForm extends React.Component {
               decorators={[focusOnError]}
               initialValues={this.state.initData}
             >
-              {({ handleSubmit, values, submitting, reset }) => (
-                <form ref={this.signupRef} onSubmit={handleSubmit} className={classes.form} noValidate>
-                  {loading && <p>Loading...</p>}
-                  <SwipeableViews
-                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                    index={tabValue}
-                    onChangeIndex={handleChangeIndex}
-                    style={{ marginBottom: '16px' }}
-                  >
-                    <TabContainer dir={theme.direction}>
-                      {tabValue === 0 ? <EmailFields submitting={submitting} sent={sent} /> : ' '}
-                    </TabContainer>
-                    <TabContainer dir={theme.direction}>
-                      {tabValue === 1 ? <PhoneFields submitting={submitting} sent={sent} /> : ' '}
-                    </TabContainer>
-                  </SwipeableViews>
-                  <ReCaptcha
-                    ref={this.recaptchaRef}
-                    size="normal"
-                    render="explicit"
-                    sitekey="6Lc8fIoUAAAAAEIelPYBBoehOd00PSDckbO75rhh"
-                    hl="vi"
-                    onloadCallback={this.onLoadRecaptcha}
-                    verifyCallback={this.verifyCallback}
-                  />
-                  {!this.state.verified && (
-                    <FormHelperText id="component-error-text" error>
-                      Vui lòng xác nhận bạn không phải là người máy
-                    </FormHelperText>
-                  )}
-                  <FormButton
-                    className={classes.button}
-                    disabled={submitting || sent}
-                    size="large"
-                    color="secondary"
-                    fullWidth
-                  >
-                    {submitting || sent ? 'Thực hiện...' : 'Đăng ký'}
-                  </FormButton>
-                  <FormSpy subscription={{ values: true }}>
-                    {({ values }) => <pre>{JSON.stringify(values, undefined, 2)}</pre>}
-                  </FormSpy>
-                </form>
-              )}
+              {({ handleSubmit, values, submitting, reset }) => {
+                resetForm = reset;
+                return (
+                  <form id="myForm" ref={this.signupRef} onSubmit={handleSubmit} className={classes.form} noValidate>
+                    {loading && <p>Loading...</p>}
+                    <SwipeableViews
+                      axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                      index={tabValue}
+                      onChangeIndex={handleChangeIndex}
+                      style={{ marginBottom: '16px' }}
+                    >
+                      <TabContainer dir={theme.direction}>
+                        {tabValue === 0 ? <EmailFields submitting={submitting} /> : ' '}
+                      </TabContainer>
+                      <TabContainer dir={theme.direction}>
+                        {tabValue === 1 ? <PhoneFields submitting={submitting} /> : ' '}
+                      </TabContainer>
+                    </SwipeableViews>
+                    <ReCaptcha
+                      ref={this.recaptchaRef}
+                      size="normal"
+                      render="explicit"
+                      sitekey="6Lc8fIoUAAAAAEIelPYBBoehOd00PSDckbO75rhh"
+                      hl="vi"
+                      onloadCallback={this.onLoadRecaptcha}
+                      verifyCallback={this.verifyCallback}
+                    />
+                    {!this.state.verified && (
+                      <FormHelperText id="component-error-text" error>
+                        Vui lòng xác nhận bạn không phải là người máy
+                      </FormHelperText>
+                    )}
+                    <FormButton
+                      className={classes.button}
+                      disabled={submitting}
+                      size="large"
+                      color="secondary"
+                      fullWidth
+                    >
+                      {submitting ? 'Thực hiện...' : 'Đăng ký'}
+                    </FormButton>
+                    <FormSpy subscription={{ values: true }}>
+                      {({ values }) => <pre>{JSON.stringify(values, undefined, 2)}</pre>}
+                    </FormSpy>
+                  </form>
+                );
+              }}
             </Form>
           </React.Fragment>
         )}

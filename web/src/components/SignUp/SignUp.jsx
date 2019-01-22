@@ -26,7 +26,6 @@ const styles = theme => ({
 
 class SignUp extends React.Component {
   state = {
-    sent: false,
     tabValue: 0,
   };
 
@@ -44,7 +43,7 @@ class SignUp extends React.Component {
 
   render() {
     const { classes, theme } = this.props;
-    const { sent, tabValue } = this.state;
+    const { tabValue } = this.state;
 
     return (
       <React.Fragment>
@@ -63,7 +62,6 @@ class SignUp extends React.Component {
           </React.Fragment>
           <SignUpForm
             handleChangeIndex={this.handleChangeIndex}
-            sent={sent}
             theme={theme}
             tabValue={tabValue}
             classes={classes}

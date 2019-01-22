@@ -2,13 +2,13 @@ import React from 'react';
 import { Field } from 'react-final-form';
 import RFTextField from '../../utils/common/form/RFTextField';
 
-const EmailFields = ({ submitting, sent }) => {
+const EmailFields = ({ submitting }) => {
   return (
     <React.Fragment>
       <Field
         autoComplete="name"
         component={RFTextField}
-        disabled={submitting || sent}
+        disabled={submitting}
         fullWidth
         label="Tên"
         margin="normal"
@@ -19,7 +19,7 @@ const EmailFields = ({ submitting, sent }) => {
       <Field
         autoComplete="email"
         component={RFTextField}
-        disabled={submitting || sent}
+        disabled={submitting}
         fullWidth
         label="Email"
         margin="normal"
@@ -31,7 +31,7 @@ const EmailFields = ({ submitting, sent }) => {
         fullWidth
         size="large"
         component={RFTextField}
-        disabled={submitting || sent}
+        disabled={submitting}
         required
         name="passwordEmail"
         autoComplete="current-password"
@@ -43,7 +43,7 @@ const EmailFields = ({ submitting, sent }) => {
         fullWidth
         size="large"
         component={RFTextField}
-        disabled={submitting || sent}
+        disabled={submitting}
         required
         name="cfrPasswordEmail"
         autoComplete="confirm-password"

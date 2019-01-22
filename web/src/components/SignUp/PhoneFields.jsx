@@ -4,24 +4,17 @@ import RFTextField from '../../utils/common/form/RFTextField';
 import PhoneSelectList from '../SignIn/PhoneSelectList';
 import { countries } from '../../utils/callingcodes';
 
-const PhoneFields = ({ submitting, sent }) => {
+const PhoneFields = ({ submitting }) => {
   return (
     <React.Fragment>
-      <Field
-        component={PhoneSelectList}
-        disabled={submitting || sent}
-        fullWidth
-        name="countryCode"
-        required
-        size="large"
-      >
+      <Field component={PhoneSelectList} disabled={submitting} fullWidth name="countryCode" required size="large">
         {countries}
       </Field>
 
       <Field
         autoComplete="name"
         component={RFTextField}
-        disabled={submitting || sent}
+        disabled={submitting}
         fullWidth
         label="Tên"
         margin="normal"
@@ -32,7 +25,7 @@ const PhoneFields = ({ submitting, sent }) => {
       <Field
         autoComplete="phone"
         component={RFTextField}
-        disabled={submitting || sent}
+        disabled={submitting}
         fullWidth
         label="Phone"
         margin="normal"
@@ -44,7 +37,7 @@ const PhoneFields = ({ submitting, sent }) => {
         fullWidth
         size="large"
         component={RFTextField}
-        disabled={submitting || sent}
+        disabled={submitting}
         required
         name="passwordPhone"
         autoComplete="current-password"
@@ -56,7 +49,7 @@ const PhoneFields = ({ submitting, sent }) => {
         fullWidth
         size="large"
         component={RFTextField}
-        disabled={submitting || sent}
+        disabled={submitting}
         required
         name="cfrPasswordPhone"
         autoComplete="confirm-password"

@@ -13,6 +13,8 @@ import FormButton from '../../utils/common/form/FormButton';
 import AppForm from '../../utils/common/form/AppForm';
 import { required, messages } from '../../utils/common/form/validation';
 
+let count = 59;
+
 const CONFIRM_USER = gql`
   mutation confirmUser($data: ConfirmUserInput!) {
     confirmUser(data: $data) {
@@ -48,6 +50,8 @@ class ConfirmPage extends React.Component {
   state = {
     loading: false,
     success: false,
+    seconds: 60,
+    sent: false,
   };
 
   componentWillUnmount() {
@@ -92,12 +96,32 @@ class ConfirmPage extends React.Component {
     }
   };
 
+  intervalHandle;
+
+  startCountDown = () => {
+    this.setState({
+      sent: true,
+    });
+    this.intervalHandle = setInterval(() => {
+      this.setState({ seconds: count-- });
+      if (this.state.seconds === 0) {
+        clearInterval(this.intervalHandle);
+        this.setState({
+          sent: false,
+          seconds: 60,
+        });
+        count = 59;
+      }
+    }, 1000);
+  };
+
   render() {
-    const { loading, success } = this.state;
+    const { loading, success, sent, seconds } = this.state;
     const { classes } = this.props;
     const buttonClassname = classNames({
       [classes.buttonSuccess]: success,
     });
+
     return (
       <AppForm>
         <Mutation mutation={CONFIRM_USER}>
@@ -119,7 +143,6 @@ class ConfirmPage extends React.Component {
                 {({ handleSubmit, submitting }) => (
                   <form onSubmit={handleSubmit} noValidate>
                     <Field
-                      autoFocus
                       component={RFTextField}
                       margin="normal"
                       label="Mã xác thực"
@@ -128,12 +151,12 @@ class ConfirmPage extends React.Component {
                       fullWidth
                     />
                     <div className={classes.root}>
-                      <FormButton variant="contained" color="primary" className={buttonClassname} disabled={loading}>
+                      <FormButton variant="contained" color="secondary" className={buttonClassname} disabled={loading}>
                         {loading && <CircularProgress size={18} className={classes.buttonProgress} />}
                         {submitting ? 'Thực hiện...' : 'Xác thực'}
                       </FormButton>
-                      <Button onClick={this.props.history.goBack} color="primary">
-                        Quay về
+                      <Button onClick={this.startCountDown} color="primary" disabled={sent}>
+                        {!sent ? 'Gửi lại' : seconds}
                       </Button>
                     </div>
                   </form>
