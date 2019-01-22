@@ -18,7 +18,7 @@ require('@babel/polyfill/noConflict');
 // into this file which uses Node native syntax
 require('babel-register');
 
-const graphQLServer = require('../../src/graphql-server').default;
+const graphQLServer = require('../../src/server').default;
 
 // dev server on port 4000, test server on port 5000, prod server depends on process.env.PORT
 module.exports = async () => {

@@ -3,7 +3,7 @@
 // 'cross-fetch' is Fetch API polyfill which is needed by Apollo Boost to work in Node
 import 'cross-fetch/polyfill';
 
-import prisma from '../src/prisma';
+import prisma from '../src/utils/prisma';
 import getGraphQLClient from './utils/get-graphql-client';
 import seedTestData, { seedUserOne } from './utils/seed-test-data';
 import operations from './utils/operations';

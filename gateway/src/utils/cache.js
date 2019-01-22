@@ -1,7 +1,7 @@
 import redis from 'redis';
 import util from 'util';
 
-import logger from './utils/logger';
+import logger from './logger';
 
 const cache = redis.createClient(process.env.REDIS_ENDPOINT);
 

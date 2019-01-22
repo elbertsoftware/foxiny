@@ -46,6 +46,39 @@ const Mutation = {
     return user;
   },
 
+  resendConfirmation: async (parent, { userId }, { prisma, cache }, info) => {
+    const user = await prisma.query.user(
+      {
+        where: {
+          id: userId,
+        },
+      },
+      info,
+    );
+
+    if (!user) {
+      throw new Error('Unable to resend confirmation'); // try NOT to provide enough information so hackers can guess
+    }
+
+    if (user.enabled) {
+      throw new Error('User profile has been confirmed');
+    }
+
+    const code = generateConfirmation(cache, user.id);
+
+    // email the code if user is signing up via email
+    if (typeof user.email === 'string') {
+      sendConfirmationEmail(user.name, user.email, code);
+    }
+
+    // text the code if user is signing up via phone
+    if (typeof user.phone === 'string') {
+      sendConfirmationText(user.name, user.phone, code);
+    }
+
+    return user;
+  },
+
   confirmUser: async (parent, { data }, { prisma, cache }, info) => {
     const matched = await verifyConfirmation(cache, data.code, data.userId);
     logger.debug(`confirmation matched: ${matched}`);
