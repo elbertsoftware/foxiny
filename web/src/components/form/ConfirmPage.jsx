@@ -8,6 +8,7 @@ import { gql } from 'apollo-boost';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import green from '@material-ui/core/colors/green';
+import { toast } from 'react-toastify';
 import RFTextField from '../../utils/common/form/RFTextField';
 import FormButton from '../../utils/common/form/FormButton';
 import AppForm from '../../utils/common/form/AppForm';
@@ -87,6 +88,7 @@ class ConfirmPage extends React.Component {
               })
               .then(({ data }) => {
                 if (data.confirmUser.enabled) {
+                  toast.success('Đăng ký thành công !');
                   this.setState(
                     {
                       success: true,
@@ -99,6 +101,12 @@ class ConfirmPage extends React.Component {
                     },
                   );
                 }
+              })
+              .catch(() => {
+                toast.error('Xác thực thất bại. Vui lòng thử lại.');
+                this.setState({
+                  loading: false,
+                });
               });
           }, 1000);
         },

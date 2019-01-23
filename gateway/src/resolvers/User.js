@@ -18,21 +18,22 @@ const resolveField = async (parent, request, cache, value) => {
 // fragment is needed to be sure User.id included no matter what the clients ask for it in the selection
 const User = {
   email: {
-    fragment: 'fragment userId on User { id }',
+    fragment: 'fragment userIdForEmail on User { id }',
+
     resolve: (parent, args, { request, cache }) => {
       return resolveField(parent, request, cache, parent.email);
     },
   },
+
   phone: {
-    fragment: 'fragment userId on User { id }',
+    fragment: 'fragment userIdForPhone on User { id }',
     resolve: (parent, args, { request, cache }) => {
       return resolveField(parent, request, cache, parent.phone);
     },
   },
-  password: {
-    resolve: () => {
-      return null; // never show password
-    },
+
+  password: () => {
+    return null; // never show password
   },
 };
 

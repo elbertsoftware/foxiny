@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { loadReCaptcha } from 'react-recaptcha-google';
 import { Route, Switch, withRouter } from 'react-router';
 import compose from 'recompose/compose';
+import 'react-toastify/dist/ReactToastify.css';
 import { setAuthorizationToken } from '../utils/authentication';
 import './App.css';
 import withRoot from '../utils/withRoot';

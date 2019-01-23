@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css?family=Patrick+Hand');
+
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Patrick Hand', cursive;
+  font-family: 'Patrick Hand';
   font-weight: 300;
   font-size: 20px;
   text-rendering: optimizeLegibility;
@@ -17,4 +19,17 @@ code {
 a:link,
 a:visited {
   text-decoration: none;
+}
+
+.Toastify__toast-body {
+  font-family: 'Patrick Hand';
+}
+.Toastify__toast {
+  border-radius: 8px !important;
+}
+.Toastify__toast--error {
+  background: #d9534f !important;
+}
+.Toastify__toast--success {
+  background: #5cb85c !important;
 }

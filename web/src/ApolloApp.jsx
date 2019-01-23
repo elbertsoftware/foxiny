@@ -4,6 +4,7 @@ import React from 'react';
 import ApolloClient from 'apollo-boost';
 import { BrowserRouter } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
+import { ToastContainer } from 'react-toastify';
 import App from './components/App';
 import { getAuthorizationToken } from './utils/authentication';
 
@@ -24,6 +25,15 @@ const ApolloApp = () => (
     <BrowserRouter>
       <App />
     </BrowserRouter>
+    <ToastContainer
+      position="bottom-right"
+      autoClose={2000}
+      hideProgressBar={false}
+      closeOnClick
+      pauseOnVisibilityChange
+      draggable
+      pauseOnHover
+    />
   </ApolloProvider>
 );
 
