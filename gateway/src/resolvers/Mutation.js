@@ -1,5 +1,7 @@
 // @flow
 
+import { addFragmentToInfo } from 'graphql-binding';
+
 import {
   hashPassword,
   verifyPassword,
@@ -47,18 +49,21 @@ const Mutation = {
   },
 
   resendConfirmation: async (parent, { userId }, { prisma, cache }, info) => {
+    const fragment = 'fragment userEmailPhone on User { email phone }';
     const user = await prisma.query.user(
       {
         where: {
           id: userId,
         },
       },
-      info,
+      addFragmentToInfo(info, fragment),
     );
 
     if (!user) {
       throw new Error('Unable to resend confirmation'); // try NOT to provide enough information so hackers can guess
     }
+
+    logger.debug(`user id ${user.id}, email ${user.email}, password ${user.phone}, enabled ${user.enabled}`);
 
     if (user.enabled) {
       throw new Error('User profile has been confirmed');
