@@ -1,10 +1,16 @@
 import React from 'react';
 import { Field } from 'react-final-form';
-import RFTextField from '../../utils/common/form/RFTextField';
+import RFTextField from '../../../utils/common/form/RFTextField';
+import PhoneSelectList from './PhoneSelectList';
+import { countries } from '../../../utils/callingcodes';
 
-const EmailFields = ({ submitting }) => {
+const PhoneFields = ({ submitting }) => {
   return (
     <React.Fragment>
+      <Field component={PhoneSelectList} disabled={submitting} fullWidth name="countryCode" required size="large">
+        {countries}
+      </Field>
+
       <Field
         autoComplete="name"
         component={RFTextField}
@@ -12,18 +18,18 @@ const EmailFields = ({ submitting }) => {
         fullWidth
         label="Tên"
         margin="normal"
-        name="nameEmail"
+        name="namePhone"
         required
         size="large"
       />
       <Field
-        autoComplete="email"
+        autoComplete="phone"
         component={RFTextField}
         disabled={submitting}
         fullWidth
-        label="Email"
+        label="Phone"
         margin="normal"
-        name="email"
+        name="phone"
         required
         size="large"
       />
@@ -33,7 +39,7 @@ const EmailFields = ({ submitting }) => {
         component={RFTextField}
         disabled={submitting}
         required
-        name="passwordEmail"
+        name="passwordPhone"
         autoComplete="current-password"
         label="Mật khẩu"
         type="password"
@@ -45,7 +51,7 @@ const EmailFields = ({ submitting }) => {
         component={RFTextField}
         disabled={submitting}
         required
-        name="cfrPasswordEmail"
+        name="cfrPasswordPhone"
         autoComplete="confirm-password"
         label="Nhập lại mật khẩu"
         type="password"
@@ -55,4 +61,4 @@ const EmailFields = ({ submitting }) => {
   );
 };
 
-export default EmailFields;
+export default PhoneFields;

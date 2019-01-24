@@ -8,7 +8,7 @@ import { Typography, Tabs, Tab } from '@material-ui/core';
 import withRoot from '../../utils/withRoot';
 import NavBar from '../NavBar/NavBar';
 import AppForm from '../../utils/common/form/AppForm';
-import SignInForm from './SignInForm';
+import SignInForm from '../Form/SignInForm';
 
 const styles = theme => ({
   h4: {
@@ -34,11 +34,8 @@ const styles = theme => ({
   },
 });
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
 class SignIn extends React.Component {
   state = {
-    sent: false,
     tabValue: 0,
   };
 
@@ -54,14 +51,9 @@ class SignIn extends React.Component {
     });
   };
 
-  onSubmit = async values => {
-    await sleep(500);
-    window.alert(JSON.stringify(values, undefined, 2));
-  };
-
   render() {
     const { classes, theme } = this.props;
-    const { sent, tabValue } = this.state;
+    const { tabValue } = this.state;
 
     return (
       <React.Fragment>
@@ -79,12 +71,11 @@ class SignIn extends React.Component {
             </div>
           </React.Fragment>
           <SignInForm
-            onSubmit={this.onSubmit}
             handleChangeIndex={this.handleChangeIndex}
-            sent={sent}
             theme={theme}
             tabValue={tabValue}
             classes={classes}
+            history={this.props.history}
           />
           <Typography
             className={classes.rightBottom}

@@ -8,7 +8,7 @@ import { Typography, Tabs, Tab } from '@material-ui/core';
 import withRoot from '../../utils/withRoot';
 import NavBar from '../NavBar/NavBar';
 import AppForm from '../../utils/common/form/AppForm';
-import SignUpForm from './SignUpForm';
+import SignUpForm from '../Form/SignUpForm';
 
 const styles = theme => ({
   h4: {

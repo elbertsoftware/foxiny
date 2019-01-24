@@ -18,4 +18,8 @@ const setAuthorizationToken = token => {
   }
 };
 
-export { getAuthorizationToken, setAuthorizationToken };
+const removeAuthorizationToken = () => {
+  localStorage.removeItem(AUTHORIZATION_TOKEN_KEY);
+};
+
+export { getAuthorizationToken, setAuthorizationToken, removeAuthorizationToken };

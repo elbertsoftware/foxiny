@@ -14,6 +14,7 @@ import { ReCaptcha } from 'react-recaptcha-google';
 import { Mutation } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
 import { gql } from 'apollo-boost';
+import { toast } from 'react-toastify';
 import TabContainer from '../../utils/common/form/TabContainer';
 import RFTextField from '../../utils/common/form/RFTextField';
 import FormButton from '../../utils/common/form/FormButton';
@@ -26,11 +27,10 @@ import {
   formatInternationalPhone,
   captChaVerification,
 } from '../../utils/common/form/validation';
-import PhoneFields from './PhoneFields';
-import EmailFields from './EmailFields';
+import PhoneFields from './Fields/PhoneFields';
+import EmailFields from './Fields/EmailFields';
 
 const focusOnError = createDecorator();
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const CREATE_USER = gql`
   mutation createUser($data: CreateUserInput!) {
     createUser(data: $data) {
@@ -41,14 +41,6 @@ const CREATE_USER = gql`
 `;
 
 const initData = {
-  nameEmail: '',
-  email: '',
-  passwordEmail: '',
-  cfrPasswordEmail: '',
-  namePhone: '',
-  phone: '',
-  passwordPhone: '',
-  cfrPasswordPhone: '',
   countryCode: 84,
 };
 
@@ -62,8 +54,6 @@ class SignUpForm extends React.Component {
   };
 
   recaptchaRef = React.createRef();
-
-  signupRef = React.createRef();
 
   componentDidMount() {
     this.setState({ loading: true });
@@ -94,7 +84,9 @@ class SignUpForm extends React.Component {
     }
 
     const result = await captChaVerification(this.state.captchaResponse);
-    if (!result.data.success) return; // Notify message for user, using Toast later
+    if (!result.data.success) {
+      toast.error('Đăng ký không thành công !');
+    }
 
     let data;
     try {
@@ -108,7 +100,7 @@ class SignUpForm extends React.Component {
             },
           },
         });
-      } else {
+      } else if (values.phone) {
         const phoneNumber = formatInternationalPhone(values.phone, values.countryCode);
         data = await createUser({
           variables: {
@@ -121,8 +113,8 @@ class SignUpForm extends React.Component {
         });
       }
       this.props.history.push(`/confirm/${data.data.createUser.id}`);
-    } catch (error) {
-      throw new Error(error.messages);
+    } catch {
+      toast.error('Đăng ký không thành công !');
     }
   };
 
