@@ -69,7 +69,7 @@ class SignInForm extends React.Component {
         data = await login({
           variables: {
             data: {
-              phone: values.phone,
+              phone: phoneNumber,
               password: values.passwordPhone,
             },
           },
@@ -77,11 +77,11 @@ class SignInForm extends React.Component {
       }
       if (data.data.login.token) {
         setAuthorizationToken(data.data.login.token);
+        console.log(`Login sucess with token ${data.data.login.token}`);
         this.props.history.push('/');
       }
     } catch (error) {
-      console.log(error.message);
-      toast.error('Có lỗi khi đăng nhập !');
+      toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi khi đăng nhập !');
     }
   };
 
@@ -117,7 +117,7 @@ class SignInForm extends React.Component {
             decorators={[focusOnError]}
             initialValues={this.state.initData}
           >
-            {({ handleSubmit, values, submitting, reset }) => {
+            {({ handleSubmit, values, submitting, form: { reset } }) => {
               resetForm = reset;
               return (
                 <form onSubmit={handleSubmit} className={classes.form} noValidate>

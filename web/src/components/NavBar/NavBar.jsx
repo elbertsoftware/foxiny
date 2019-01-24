@@ -5,7 +5,6 @@ import { AppBar, Typography, Toolbar } from '@material-ui/core';
 import SignInMenu from '../Menu/SignInMenu';
 import SignUpMenu from '../Menu/SignUpMenu';
 import { getAuthorizationToken } from '../../utils/authentication';
-import { renderToStringWithData } from 'react-apollo';
 
 const styles = theme => ({
   root: {

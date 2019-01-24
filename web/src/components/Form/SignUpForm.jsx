@@ -113,8 +113,8 @@ class SignUpForm extends React.Component {
         });
       }
       this.props.history.push(`/confirm/${data.data.createUser.id}`);
-    } catch {
-      toast.error('Đăng ký không thành công !');
+    } catch (error) {
+      toast.error(error.message.replace('GraphQL error:', '') || 'Đăng ký không thành công !');
     }
   };
 
@@ -179,7 +179,7 @@ class SignUpForm extends React.Component {
               decorators={[focusOnError]}
               initialValues={this.state.initData}
             >
-              {({ handleSubmit, values, submitting, reset }) => {
+              {({ handleSubmit, values, submitting, form: { reset } }) => {
                 resetForm = reset;
                 return (
                   <form id="myForm" ref={this.signupRef} onSubmit={handleSubmit} className={classes.form} noValidate>

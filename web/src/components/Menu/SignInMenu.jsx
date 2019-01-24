@@ -23,6 +23,7 @@ function SignInMenu({ handleRemoveToken }) {
                 if (data.logout.token) {
                   removeAuthorizationToken();
                   handleRemoveToken();
+                  console.log('Logout sucess');
                 }
               });
             }}

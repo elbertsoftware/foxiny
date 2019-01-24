@@ -145,7 +145,7 @@ class ConfirmPage extends React.Component {
       .then(({ data }) => {
         console.log(data.resendConfirmation.id);
       })
-      .catch(error => alert(error.messages));
+      .catch(error => toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !'));
   };
 
   render() {
