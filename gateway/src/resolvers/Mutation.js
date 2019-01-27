@@ -1,5 +1,9 @@
 // @flow
 
+import { addFragmentToInfo } from 'graphql-binding';
+import bcrypt from 'bcryptjs';
+import cryptoRandomString from 'crypto-random-string';
+
 import {
   hashPassword,
   verifyPassword,
@@ -11,13 +15,26 @@ import {
   getTokenFromRequest,
   getUserIDFromRequest,
 } from '../utils/authentication';
+import { validateInputCreateUser, removeEmptyProperty } from '../utils/validation';
 
 import logger from '../utils/logger';
 import { sendConfirmationEmail } from '../utils/email';
 import { sendConfirmationText } from '../utils/sms';
+import { sendConfirmationEsms } from '../utils/smsVN';
 
 const Mutation = {
   createUser: async (parent, { data }, { prisma, cache }, info) => {
+    validateInputCreateUser(
+      data.name,
+      data.email,
+      data.phone,
+      data.password,
+      data.questionA,
+      data.answerA,
+      data.questionB,
+      data.answerB,
+    );
+
     const password = hashPassword(data.password);
 
     const user = await prisma.mutation.createUser(
@@ -35,45 +52,52 @@ const Mutation = {
 
     // email the code if user is signing up via email
     if (typeof data.email === 'string') {
-      sendConfirmationEmail(data.name, data.email, code);
+      // sendConfirmationEmail(data.name, data.email, code);
     }
 
     // text the code if user is signing up via phone
     if (typeof data.phone === 'string') {
-      sendConfirmationText(data.name, data.phone, code);
+      // sendConfirmationText(data.name, data.phone, code);
+      // sendConfirmationEsms(user.phone, code);
     }
 
     return user;
   },
 
   resendConfirmation: async (parent, { userId }, { prisma, cache }, info) => {
+    const fragment = 'fragment userNameEmailPhoneEnabled on User { name email phone enabled }';
     const user = await prisma.query.user(
       {
         where: {
           id: userId,
         },
       },
-      info,
+      addFragmentToInfo(info, fragment),
     );
 
     if (!user) {
       throw new Error('Unable to resend confirmation'); // try NOT to provide enough information so hackers can guess
     }
 
+    logger.debug(
+      `user id ${userId}, name ${user.name}, email ${user.email}, password ${user.phone}, enabled ${user.enabled}`,
+    );
+
     if (user.enabled) {
       throw new Error('User profile has been confirmed');
     }
 
-    const code = generateConfirmation(cache, user.id);
+    const code = generateConfirmation(cache, userId);
 
     // email the code if user is signing up via email
     if (typeof user.email === 'string') {
-      sendConfirmationEmail(user.name, user.email, code);
+      // sendConfirmationEmail(user.name, user.email, code);
     }
 
     // text the code if user is signing up via phone
     if (typeof user.phone === 'string') {
-      sendConfirmationText(user.name, user.phone, code);
+      // sendConfirmationText(user.name, user.phone, code);
+      // sendConfirmationEsms(user.phone, code);
     }
 
     return user;
@@ -146,6 +170,9 @@ const Mutation = {
   updateUser: async (parent, { data }, { prisma, request, cache }, info) => {
     const userId = await getUserIDFromRequest(request, cache);
 
+    // remove all empty properties
+    data = removeEmptyProperty(data);
+
     const { password, currentPassword } = data;
     delete data.password;
     delete data.currentPassword;
@@ -171,11 +198,14 @@ const Mutation = {
     // both password and currentPassword present which means password is about to be changed
     if (typeof password === 'string' && typeof currentPassword === 'string') {
       // verify current password
-      const user = await prisma.query.user({
-        where: {
-          id: userId,
+      const user = await prisma.query.user(
+        {
+          where: {
+            id: userId,
+          },
         },
-      });
+        '{ id name email phone password questionA answerA questionB answerB }',
+      );
 
       if (!user) {
         throw new Error('Unable to update user profile'); // try NOT to provide enough information so hackers can guess
@@ -187,12 +217,17 @@ const Mutation = {
       }
 
       updateData.password = hashPassword(password);
-      deleteAllTokensInCache(cache, userId);
+      // deleteAllTokensInCache(cache, userId);
 
       // TODO: Archive current password somewhere else
     }
 
-    return prisma.mutation.updateUser(
+    // TODO: Update security questions?
+
+    // TODO: Clean all token after email/phone/pwd changed
+    // deleteAllTokensInCache(cache, userId);
+
+    const updated = prisma.mutation.updateUser(
       {
         where: {
           id: userId,
@@ -201,6 +236,7 @@ const Mutation = {
       },
       info,
     );
+    return updated;
   },
 
   deleteUser: async (parent, args, { prisma, request, cache }, info) => {
@@ -215,6 +251,107 @@ const Mutation = {
       },
       info,
     );
+  },
+
+  // Step1: user click forgot pwd -> return security questions
+  requestResetPwd: async (parent, { data }, { prisma, request, cache }, info) => {
+    const user = await prisma.query.user({
+      where: {
+        email: data.email,
+        phone: data.phone,
+      },
+    });
+
+    if (!user) {
+      throw new Error('Unable to digest'); // try NOT to provide enough information so hackers can guess
+    }
+
+    if (!user.enabled) {
+      throw new Error('User profile has not been confirmed or was disabled');
+    }
+
+    return {
+      token: generateToken(userId, request, cache),
+      questionA: user.questionA,
+      questionB: user.questionB,
+    };
+  },
+
+  // Step2: user enter the answers
+  verifyBeforeResetPwd: async (parent, { data }, { prisma, request, cache }, info) => {
+    const userId = await getUserIDFromRequest(request, cache);
+
+    const user = await prisma.query.user({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new Error('Unable to digest'); // try NOT to provide enough information so hackers can guess
+    }
+
+    if (!user.enabled) {
+      throw new Error('User profile has not been confirmed or was disabled');
+    }
+
+    return (
+      data.answerA.toLowerCase() !== user.answerA.toLowerCase() &&
+      data.answerB.toLowerCase() !== user.answerB.toLowerCase()
+    );
+  },
+
+  // Step3: user enter new pwd -> clean cache
+  resetPassword: async (parent, { data }, { prisma, request, cache }, info) => {
+    const userId = await getUserIDFromRequest(request, cache);
+
+    const user = await prisma.query.user({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new Error('Unable to update user profile'); // try NOT to provide enough information so hackers can guess
+    }
+
+    if (!user.enabled) {
+      throw new Error('User profile has not been confirmed or was disabled');
+    }
+
+    // remove all tokens from cache
+    deleteAllTokensInCache(cache, userId);
+
+    delete user.id;
+    delete user.name;
+    delete user.email;
+    delete user.phone;
+    delete user.questionA;
+    delete user.answerA;
+    delete user.questionB;
+    delete user.answerB;
+    delete user.createAt;
+    delete user.updateAt;
+
+    // TODO: Archive current password somewhere else
+
+    // update user information
+    const updateUser = {
+      ...user,
+      password: hashPassword(data.password),
+    };
+
+    await prisma.mutation.updateUser(
+      {
+        where: {
+          id: userId,
+        },
+        data: updateUser,
+      },
+      info,
+    );
+
+    return true;
   },
 };
 

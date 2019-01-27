@@ -26,7 +26,7 @@ module.exports = async () => {
 
   // Use 'global' to pass variables between modules
   // global.httpServer will be used in stop-test-server.js to bring down the graphQLServer
-  global.httpServer = await graphQLServer.start({ port }, () => {
+  global.httpServer = await graphQLServer.listen({ port }, () => {
     console.log(`TEST foxiny-gateway is up and running on port ${port}`);
   });
 };

@@ -35,6 +35,10 @@ const verifyConfirmation = async (cache, code, userId) => {
   const cacheUserId = await cache.get(code);
   logger.debug(`verifying confirmation code ${code} for userId ${userId} upon the cached userId ${cacheUserId}`);
 
+  // delete the code after verifying
+  cache.del(code);
+  logger.debug(`the confirmation code ${code} for userId ${userId} has been deleted from cache`);
+
   return cacheUserId === userId;
 };
 

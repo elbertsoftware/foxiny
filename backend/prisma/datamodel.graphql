@@ -5,6 +5,10 @@ type User {
   phone: String @unique # required and uniqueness will be handled in foxiny-gateway
   password: String # required will be handled in foxiny-gateway
   enabled: Boolean @default(value: "false") # required will be handled in foxiny-gateway
+  questionA: String # required will be handled in foxiny-gateway
+  answerA: String # required will be handled in foxiny-gateway
+  questionB: String # required will be handled in foxiny-gateway
+  answerB: String # required will be handled in foxiny-gateway
   createdAt: DateTime!
   updatedAt: DateTime!
 }
