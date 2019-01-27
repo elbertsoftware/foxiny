@@ -11,6 +11,10 @@ type Mutation {
   logout(all: Boolean = false): AuthPayload!
   updateUser(data: UpdateUserInput!): User!
   deleteUser: User!
+
+  requestResetPwd(data: RequestResetPwdInput!): SecPayload!
+  verifyBeforeResetPwd(data: VerifyBeforeResetPwdInput!): Boolean!
+  resetPassword(data: ResetPwdInput!): Boolean!
 }
 
 type User {
@@ -24,6 +28,13 @@ type User {
   password: String
 
   enabled: Boolean!
+
+  # for recover password
+  questionA: String!
+  answerA: String!
+  questionB: String!
+  answerB: String!
+
   createdAt: String!
   updatedAt: String!
 }
@@ -33,6 +44,10 @@ input CreateUserInput {
   email: String
   phone: String
   password: String!
+  questionA: String!
+  answerA: String!
+  questionB: String!
+  answerB: String!
 }
 
 input ConfirmUserInput {
@@ -55,6 +70,32 @@ input UpdateUserInput {
   name: String
   email: String
   phone: String
+
+  questionA: String
+  answerA: String
+  questionB: String
+  answerB: String
+
   password: String
   currentPassword: String
+}
+
+type SecPayload {
+  token: String!
+  questionA: String!
+  questionB: String!
+}
+
+input RequestResetPwdInput {
+  email: String
+  phone: String
+}
+
+input VerifyBeforeResetPwdInput {
+  answerA: String!
+  answerB: String!
+}
+
+input ResetPwdInput {
+  password: String!
 }

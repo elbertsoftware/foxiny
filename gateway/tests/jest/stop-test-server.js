@@ -7,4 +7,5 @@
 module.exports = async () => {
   // global.httpServer was assigned in 'start-test-server.js'
   await global.httpServer.close();
+  console.log(`TEST foxiny-gateway is down`);
 };

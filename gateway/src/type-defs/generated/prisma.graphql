@@ -1,5 +1,5 @@
 # source: http://localhost:4466/foxiny/dev
-# timestamp: Wed Jan 02 2019 15:15:21 GMT-0800 (Pacific Standard Time)
+# timestamp: Fri Jan 25 2019 09:26:05 GMT+0700 (Indochina Time)
 
 type AggregateUser {
   count: Int!
@@ -85,6 +85,10 @@ type User implements Node {
   phone: String
   password: String
   enabled: Boolean
+  questionA: String
+  answerA: String
+  questionB: String
+  answerB: String
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -105,6 +109,10 @@ input UserCreateInput {
   phone: String
   password: String
   enabled: Boolean
+  questionA: String
+  answerA: String
+  questionB: String
+  answerB: String
 }
 
 """An edge in a connection."""
@@ -129,6 +137,14 @@ enum UserOrderByInput {
   password_DESC
   enabled_ASC
   enabled_DESC
+  questionA_ASC
+  questionA_DESC
+  answerA_ASC
+  answerA_DESC
+  questionB_ASC
+  questionB_DESC
+  answerB_ASC
+  answerB_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -142,6 +158,10 @@ type UserPreviousValues {
   phone: String
   password: String
   enabled: Boolean
+  questionA: String
+  answerA: String
+  questionB: String
+  answerB: String
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -191,6 +211,10 @@ input UserUpdateInput {
   phone: String
   password: String
   enabled: Boolean
+  questionA: String
+  answerA: String
+  questionB: String
+  answerB: String
 }
 
 input UserUpdateManyMutationInput {
@@ -199,6 +223,10 @@ input UserUpdateManyMutationInput {
   phone: String
   password: String
   enabled: Boolean
+  questionA: String
+  answerA: String
+  questionB: String
+  answerB: String
 }
 
 input UserWhereInput {
@@ -414,6 +442,166 @@ input UserWhereInput {
 
   """All values that are not equal to given value."""
   enabled_not: Boolean
+  questionA: String
+
+  """All values that are not equal to given value."""
+  questionA_not: String
+
+  """All values that are contained in given list."""
+  questionA_in: [String!]
+
+  """All values that are not contained in given list."""
+  questionA_not_in: [String!]
+
+  """All values less than the given value."""
+  questionA_lt: String
+
+  """All values less than or equal the given value."""
+  questionA_lte: String
+
+  """All values greater than the given value."""
+  questionA_gt: String
+
+  """All values greater than or equal the given value."""
+  questionA_gte: String
+
+  """All values containing the given string."""
+  questionA_contains: String
+
+  """All values not containing the given string."""
+  questionA_not_contains: String
+
+  """All values starting with the given string."""
+  questionA_starts_with: String
+
+  """All values not starting with the given string."""
+  questionA_not_starts_with: String
+
+  """All values ending with the given string."""
+  questionA_ends_with: String
+
+  """All values not ending with the given string."""
+  questionA_not_ends_with: String
+  answerA: String
+
+  """All values that are not equal to given value."""
+  answerA_not: String
+
+  """All values that are contained in given list."""
+  answerA_in: [String!]
+
+  """All values that are not contained in given list."""
+  answerA_not_in: [String!]
+
+  """All values less than the given value."""
+  answerA_lt: String
+
+  """All values less than or equal the given value."""
+  answerA_lte: String
+
+  """All values greater than the given value."""
+  answerA_gt: String
+
+  """All values greater than or equal the given value."""
+  answerA_gte: String
+
+  """All values containing the given string."""
+  answerA_contains: String
+
+  """All values not containing the given string."""
+  answerA_not_contains: String
+
+  """All values starting with the given string."""
+  answerA_starts_with: String
+
+  """All values not starting with the given string."""
+  answerA_not_starts_with: String
+
+  """All values ending with the given string."""
+  answerA_ends_with: String
+
+  """All values not ending with the given string."""
+  answerA_not_ends_with: String
+  questionB: String
+
+  """All values that are not equal to given value."""
+  questionB_not: String
+
+  """All values that are contained in given list."""
+  questionB_in: [String!]
+
+  """All values that are not contained in given list."""
+  questionB_not_in: [String!]
+
+  """All values less than the given value."""
+  questionB_lt: String
+
+  """All values less than or equal the given value."""
+  questionB_lte: String
+
+  """All values greater than the given value."""
+  questionB_gt: String
+
+  """All values greater than or equal the given value."""
+  questionB_gte: String
+
+  """All values containing the given string."""
+  questionB_contains: String
+
+  """All values not containing the given string."""
+  questionB_not_contains: String
+
+  """All values starting with the given string."""
+  questionB_starts_with: String
+
+  """All values not starting with the given string."""
+  questionB_not_starts_with: String
+
+  """All values ending with the given string."""
+  questionB_ends_with: String
+
+  """All values not ending with the given string."""
+  questionB_not_ends_with: String
+  answerB: String
+
+  """All values that are not equal to given value."""
+  answerB_not: String
+
+  """All values that are contained in given list."""
+  answerB_in: [String!]
+
+  """All values that are not contained in given list."""
+  answerB_not_in: [String!]
+
+  """All values less than the given value."""
+  answerB_lt: String
+
+  """All values less than or equal the given value."""
+  answerB_lte: String
+
+  """All values greater than the given value."""
+  answerB_gt: String
+
+  """All values greater than or equal the given value."""
+  answerB_gte: String
+
+  """All values containing the given string."""
+  answerB_contains: String
+
+  """All values not containing the given string."""
+  answerB_not_contains: String
+
+  """All values starting with the given string."""
+  answerB_starts_with: String
+
+  """All values not starting with the given string."""
+  answerB_not_starts_with: String
+
+  """All values ending with the given string."""
+  answerB_ends_with: String
+
+  """All values not ending with the given string."""
+  answerB_not_ends_with: String
   createdAt: DateTime
 
   """All values that are not equal to given value."""
