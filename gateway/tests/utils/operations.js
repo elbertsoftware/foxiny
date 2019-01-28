@@ -104,6 +104,10 @@ const updateUser = gql`
       email
       phone
       password
+      questionA
+      answerA
+      questionB
+      answerB
       enabled
     }
   }
@@ -128,14 +132,17 @@ const requestResetPwd = gql`
 `;
 
 const verifyBeforeResetPwd = gql`
-  mutation($data: VerifyBeforeResetPwd!) {
-    verifyBeforeResetPwd(data: $data)
+  mutation($data: VerifyBeforeResetPwdInput!) {
+    verifyBeforeResetPwd(data: $data) {
+      userId
+      token
+    }
   }
 `;
 
 const resetPassword = gql`
   mutation($data: ResetPwdInput!) {
-    verifyBeforeResetPwd(data: $data)
+    resetPassword(data: $data)
   }
 `;
 

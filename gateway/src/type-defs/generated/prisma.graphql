@@ -1,5 +1,5 @@
 # source: http://localhost:4466/foxiny/dev
-# timestamp: Fri Jan 25 2019 09:26:05 GMT+0700 (Indochina Time)
+# timestamp: Mon Jan 28 2019 23:22:59 GMT+0700 (Indochina Time)
 
 type AggregateUser {
   count: Int!

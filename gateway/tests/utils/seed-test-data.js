@@ -54,7 +54,11 @@ const seedUserFive = {
     email: 'john5@example.com',
     phone: '0123455555',
     password: hashPassword('!abcd1234'),
-    enabled: false,
+    questionA: 'A?',
+    answerA: 'a',
+    questionB: 'B?',
+    answerB: 'b',
+    enabled: true,
   },
   user: undefined,
 };

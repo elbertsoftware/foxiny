@@ -15,7 +15,7 @@ import {
   getTokenFromRequest,
   getUserIDFromRequest,
 } from '../utils/authentication';
-import { validateInputCreateUser, removeEmptyProperty } from '../utils/validation';
+import { validateCreateUserInput, validateUpdateUserInput, removeEmptyProperty } from '../utils/validation';
 
 import logger from '../utils/logger';
 import { sendConfirmationEmail } from '../utils/email';
@@ -24,7 +24,7 @@ import { sendConfirmationEsms } from '../utils/smsVN';
 
 const Mutation = {
   createUser: async (parent, { data }, { prisma, cache }, info) => {
-    validateInputCreateUser(
+    validateCreateUserInput(
       data.name,
       data.email,
       data.phone,
@@ -171,6 +171,7 @@ const Mutation = {
     const userId = await getUserIDFromRequest(request, cache);
 
     // remove all empty properties
+    validateUpdateUserInput(data.name, data.email, data.phone, data.password, data.currentPassword);
     data = removeEmptyProperty(data);
 
     const { password, currentPassword } = data;
@@ -263,15 +264,18 @@ const Mutation = {
     });
 
     if (!user) {
-      throw new Error('Unable to digest'); // try NOT to provide enough information so hackers can guess
+      throw new Error('Account does not exist'); // try NOT to provide enough information so hackers can guess
     }
 
     if (!user.enabled) {
-      throw new Error('User profile has not been confirmed or was disabled');
+      throw new Error('Account has not been confirmed or was disabled');
     }
 
+    // log out of all devices
+    deleteAllTokensInCache(cache, user.id);
+
     return {
-      token: generateToken(userId, request, cache),
+      token: generateToken(user.id, request, cache),
       questionA: user.questionA,
       questionB: user.questionB,
     };
@@ -280,7 +284,7 @@ const Mutation = {
   // Step2: user enter the answers
   verifyBeforeResetPwd: async (parent, { data }, { prisma, request, cache }, info) => {
     const userId = await getUserIDFromRequest(request, cache);
-
+    if (!userId) throw new Error('null userid');
     const user = await prisma.query.user({
       where: {
         id: userId,
@@ -288,21 +292,39 @@ const Mutation = {
     });
 
     if (!user) {
-      throw new Error('Unable to digest'); // try NOT to provide enough information so hackers can guess
+      throw new Error('Unable to perform reset password request'); // try NOT to provide enough information so hackers can guess
     }
 
     if (!user.enabled) {
       throw new Error('User profile has not been confirmed or was disabled');
     }
 
-    return (
-      data.answerA.toLowerCase() !== user.answerA.toLowerCase() &&
-      data.answerB.toLowerCase() !== user.answerB.toLowerCase()
-    );
+    const flag =
+      data.answerA.toLowerCase() === user.answerA.toLowerCase() &&
+      data.answerB.toLowerCase() === user.answerB.toLowerCase() &&
+      (user.answerA && user.answerB);
+
+    // TODO: after x tries, prevent user from trying to recover account in y minutes
+
+    if (flag) {
+      // delete all tokens
+      deleteAllTokensInCache(cache, userId);
+
+      // send new token
+      return {
+        userId,
+        token: generateToken(user.id, request, cache),
+      };
+    }
+
+    throw new Error('Unable to perform reset password request');
   },
 
   // Step3: user enter new pwd -> clean cache
   resetPassword: async (parent, { data }, { prisma, request, cache }, info) => {
+    // validate password input
+    validateUpdateUserInput(null, null, null, data.password, null);
+
     const userId = await getUserIDFromRequest(request, cache);
 
     const user = await prisma.query.user({
@@ -312,7 +334,7 @@ const Mutation = {
     });
 
     if (!user) {
-      throw new Error('Unable to update user profile'); // try NOT to provide enough information so hackers can guess
+      throw new Error('Unable to perform the action'); // try NOT to provide enough information so hackers can guess
     }
 
     if (!user.enabled) {
@@ -322,36 +344,24 @@ const Mutation = {
     // remove all tokens from cache
     deleteAllTokensInCache(cache, userId);
 
-    delete user.id;
-    delete user.name;
-    delete user.email;
-    delete user.phone;
-    delete user.questionA;
-    delete user.answerA;
-    delete user.questionB;
-    delete user.answerB;
-    delete user.createAt;
-    delete user.updateAt;
-
     // TODO: Archive current password somewhere else
 
     // update user information
     const updateUser = {
-      ...user,
       password: hashPassword(data.password),
     };
 
-    await prisma.mutation.updateUser(
+    const updatedUser = await prisma.mutation.updateUser(
       {
         where: {
           id: userId,
         },
         data: updateUser,
       },
-      info,
+      '{password}',
     );
 
-    return true;
+    return verifyPassword(data.password, updatedUser.password);
   },
 };
 

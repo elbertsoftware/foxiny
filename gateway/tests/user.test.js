@@ -109,34 +109,34 @@ describe(`User Tests: create a user`, () => {
   );
 
   test.each`
-    description                                | name                | email                                                                             | phone            | password       | questionA | answerA | questionB | answerB
-    ${'wrong email: lack of domain'}           | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail'}                                                  | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong email: lack of domain'}           | ${'elbertsoftware'} | ${'elbertsoftware.tester@'}                                                       | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong email: lack of @ domain'}         | ${'elbertsoftware'} | ${'elbertsoftware.tester'}                                                        | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong email: lack of @ domain'}         | ${'elbertsoftware'} | ${'elbertsoftware'}                                                               | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong email: lack of mailbox'}          | ${'elbertsoftware'} | ${'@gmail.com.io'}                                                                | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong email: lack of mailbox'}          | ${'elbertsoftware'} | ${'@gmail.com'}                                                                   | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong email: lack of mailbox & domain'} | ${'elbertsoftware'} | ${'@gmail'}                                                                       | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong email: double @'}                 | ${'elbertsoftware'} | ${'elbertsoftware@tester@gmail.com'}                                              | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong email: double @'}                 | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail@com'}                                              | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong email: special characters'}       | ${'elbertsoftware'} | ${'~!#$%@gmail.com'}                                                              | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong email: special character'}        | ${'elbertsoftware'} | ${'elbertsoftware&tester@gmail.com'}                                              | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong email: space'}                    | ${'elbertsoftware'} | ${'elbertsoftware tester@gmail.com'}                                              | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong email: over 64 characters'}       | ${'elbertsoftware'} | ${'1234567890123456789012345678901234567890123456789012345678901234+x@gmail.com'} | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong phone: has dash'}                 | ${'elbertsoftware'} | ${undefined}                                                                      | ${'-0386824579'} | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong phone: has splash'}               | ${'elbertsoftware'} | ${undefined}                                                                      | ${'/0386824579'} | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong phone: has letter'}               | ${'elbertsoftware'} | ${undefined}                                                                      | ${'a0386824579'} | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong phone: has letter'}               | ${'elbertsoftware'} | ${undefined}                                                                      | ${'38682457a9'}  | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong phone: has singlequote'}          | ${'elbertsoftware'} | ${undefined}                                                                      | ${"'0386824579"} | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong phone: has singlequote'}          | ${'elbertsoftware'} | ${undefined}                                                                      | ${"38682457'9"}  | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong pwd: only numbers'}               | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'12345678'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong pwd: lack of letter'}             | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'1234567!'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong pwd: lack of special letter'}     | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'1234567a'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong pwd: only letters'}               | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'abcdefgh'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong pwd: lack of number'}             | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'abcdefg!'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong pwd: lack of special character'}  | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'abcdefg1'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong pwd: only special characters'}    | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'~!@#$%^&'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'wrong pwdL < 6 character'}              | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'ab12!'}     | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    description                                  | name                | email                                                                             | phone            | password       | questionA | answerA | questionB | answerB
+    ${'invalid email: lack of domain'}           | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail'}                                                  | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: lack of domain'}           | ${'elbertsoftware'} | ${'elbertsoftware.tester@'}                                                       | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: lack of @ domain'}         | ${'elbertsoftware'} | ${'elbertsoftware.tester'}                                                        | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: lack of @ domain'}         | ${'elbertsoftware'} | ${'elbertsoftware'}                                                               | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: lack of mailbox'}          | ${'elbertsoftware'} | ${'@gmail.com.io'}                                                                | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: lack of mailbox'}          | ${'elbertsoftware'} | ${'@gmail.com'}                                                                   | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: lack of mailbox & domain'} | ${'elbertsoftware'} | ${'@gmail'}                                                                       | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: double @'}                 | ${'elbertsoftware'} | ${'elbertsoftware@tester@gmail.com'}                                              | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: double @'}                 | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail@com'}                                              | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: special characters'}       | ${'elbertsoftware'} | ${'~!#$%@gmail.com'}                                                              | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: special character'}        | ${'elbertsoftware'} | ${'elbertsoftware&tester@gmail.com'}                                              | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: space'}                    | ${'elbertsoftware'} | ${'elbertsoftware tester@gmail.com'}                                              | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: over 64 characters'}       | ${'elbertsoftware'} | ${'1234567890123456789012345678901234567890123456789012345678901234+x@gmail.com'} | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid phone: has dash'}                 | ${'elbertsoftware'} | ${undefined}                                                                      | ${'-0386824579'} | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid phone: has splash'}               | ${'elbertsoftware'} | ${undefined}                                                                      | ${'/0386824579'} | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid phone: has letter'}               | ${'elbertsoftware'} | ${undefined}                                                                      | ${'a0386824579'} | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid phone: has letter'}               | ${'elbertsoftware'} | ${undefined}                                                                      | ${'38682457a9'}  | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid phone: has singlequote'}          | ${'elbertsoftware'} | ${undefined}                                                                      | ${"'0386824579"} | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid phone: has singlequote'}          | ${'elbertsoftware'} | ${undefined}                                                                      | ${"38682457'9"}  | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwd: only numbers'}               | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'12345678'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwd: lack of letter'}             | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'1234567!'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwd: lack of special letter'}     | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'1234567a'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwd: only letters'}               | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'abcdefgh'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwd: lack of number'}             | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'abcdefg!'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwd: lack of special character'}  | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'abcdefg1'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwd: only special characters'}    | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'~!@#$%^&'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwdL < 6 character'}              | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'ab12!'}     | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
   `(
     `Should not create user because of: $description`,
     async ({ name, email, phone, password, questionA, answerA, questionB, answerB }) => {
@@ -171,7 +171,7 @@ describe(`User Tests: create a user`, () => {
     ${'phone'}  | ${'elbertsoftware'} | ${undefined}                             | ${'038-682-4579'}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
     ${'phone'}  | ${'elbertsoftware'} | ${undefined}                             | ${'038.682.4579'}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
   `(
-    `Should create user by: $desciption`,
+    `Should create user by: $description`,
     async ({ name, email, phone, password, questionA, answerA, questionB, answerB }) => {
       const variables = {
         data: {
@@ -221,7 +221,7 @@ describe(`Resend confirmation code`, () => {
     ${'user ID is undefined'}       | ${undefined}
     ${'user ID is not exsisted'}    | ${'0123456789'}
     ${'user is exised and enabled'} | ${() => seedUserOne.user.id}
-  `(`Should not resend confirmation code because $description : $userId`, async ({ userId }) => {
+  `(`Should not resend confirmation code since $description : $userId`, async ({ userId }) => {
     const variables = {
       userId: userId,
     };
@@ -256,25 +256,27 @@ describe('Login', () => {
   });
 
   test.each`
-    description                  | email                 | phone            | password
-    ${'by email but pwd null'}   | ${'john@example.com'} | ${undefined}     | ${''}
-    ${'by email but pwd null'}   | ${'john@example.com'} | ${undefined}     | ${null}
-    ${'by email but pwd null'}   | ${'john@example.com'} | ${undefined}     | ${undefined}
-    ${'by email but email null'} | ${''}                 | ${undefined}     | ${'!abcd1234'}
-    ${'by email but email null'} | ${null}               | ${undefined}     | ${'!abcd1234'}
-    ${'by email but email null'} | ${undefined}          | ${undefined}     | ${'!abcd1234'}
-    ${'by phone but pwd null'}   | ${undefined}          | ${''}            | ${'!abcd1234'}
-    ${'by phone but pwd null'}   | ${undefined}          | ${null}          | ${'!abcd1234'}
-    ${'by phone but pwd null'}   | ${undefined}          | ${undefined}     | ${'!abcd1234'}
-    ${'by phone but pwd null'}   | ${undefined}          | ${'01234567890'} | ${''}
-    ${'by phone but pwd null'}   | ${undefined}          | ${'01234567890'} | ${null}
-    ${'by phone but pwd null'}   | ${undefined}          | ${'01234567890'} | ${undefined}
-    ${'all null'}                | ${''}                 | ${''}            | ${''}
-    ${'all null'}                | ${null}               | ${null}          | ${null}
-    ${'all null'}                | ${undefined}          | ${undefined}     | ${undefined}
-    ${'by email but wrong pwd'}  | ${'john@example.com'} | ${undefined}     | ${'abcd1234'}
-    ${'by phone but wrong pwd'}  | ${undefined}          | ${'0123456789'}  | ${'abcd1234'}
-  `(`Should log in`, async ({ email, phone, password }) => {
+    description                   | email                   | phone            | password
+    ${'by email but pwd null'}    | ${'john@example.com'}   | ${undefined}     | ${''}
+    ${'by email but pwd null'}    | ${'john@example.com'}   | ${undefined}     | ${null}
+    ${'by email but pwd null'}    | ${'john@example.com'}   | ${undefined}     | ${undefined}
+    ${'by email but email null'}  | ${''}                   | ${undefined}     | ${'!abcd1234'}
+    ${'by email but email null'}  | ${null}                 | ${undefined}     | ${'!abcd1234'}
+    ${'by email but email null'}  | ${undefined}            | ${undefined}     | ${'!abcd1234'}
+    ${'by phone but phone null'}  | ${undefined}            | ${''}            | ${'!abcd1234'}
+    ${'by phone but phone null'}  | ${undefined}            | ${null}          | ${'!abcd1234'}
+    ${'by phone but phone null'}  | ${undefined}            | ${undefined}     | ${'!abcd1234'}
+    ${'by phone but pwd null'}    | ${undefined}            | ${'01234567890'} | ${''}
+    ${'by phone but pwd null'}    | ${undefined}            | ${'01234567890'} | ${null}
+    ${'by phone but pwd null'}    | ${undefined}            | ${'01234567890'} | ${undefined}
+    ${'as all null'}              | ${''}                   | ${''}            | ${''}
+    ${'as all null'}              | ${null}                 | ${null}          | ${null}
+    ${'as all null'}              | ${undefined}            | ${undefined}     | ${undefined}
+    ${'by email but wrong pwd'}   | ${'john@example.com'}   | ${undefined}     | ${'abcd1234'}
+    ${'by phone but wrong pwd'}   | ${undefined}            | ${'0123456789'}  | ${'abcd1234'}
+    ${'by email but wrong email'} | ${'hijohn@example.com'} | ${undefined}     | ${'abcd1234'}
+    ${'by phone but wrong phone'} | ${undefined}            | ${'0987654321'}  | ${'abcd1234'}
+  `(`Should not log in $description`, async ({ email, phone, password }) => {
     const variables = {
       data: {
         email: email,
@@ -408,11 +410,11 @@ describe(`Log out`, () => {
   });
 });
 
-/**
- *
- *  --- CONFIRM USER ---
- *
- */
+// /**
+//  *
+//  *  --- CONFIRM USER ---
+//  *
+//  */
 
 describe(`Confirm user`, () => {
   test('Should confirm user account and remove the confirmation code from redis', async () => {
@@ -457,107 +459,188 @@ describe(`Confirm user`, () => {
  *
  */
 
-test('Should update user name', async () => {
-  let variables = {
-    data: {
-      email: 'john@example.com',
-      password: '!abcd1234',
-    },
-  };
-  const res = await graphQLClient.mutate({
-    mutation: operations.login,
-    variables,
-  });
+describe(`Update user's profile`, () => {
+  test.each`
+    description           | name         | oldemail               | oldphone        | email                  | phone           | password       | currentPassword | enabled      | expected
+    ${'change name'}      | ${'updated'} | ${'john5@example.com'} | ${undefined}    | ${undefined}           | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'name'}
+    ${'change email'}     | ${undefined} | ${'john5@example.com'} | ${undefined}    | ${'johnX@example.com'} | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'email'}
+    ${'change questionA'} | ${undefined} | ${'john5@example.com'} | ${undefined}    | ${undefined}           | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'questionA'}
+    ${'change answerA'}   | ${undefined} | ${'john5@example.com'} | ${undefined}    | ${undefined}           | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'answerA'}
+    ${'change questionB'} | ${undefined} | ${'john5@example.com'} | ${undefined}    | ${undefined}           | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'questionB'}
+    ${'change answerB'}   | ${undefined} | ${'john5@example.com'} | ${undefined}    | ${undefined}           | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'answerB'}
+    ${'change name'}      | ${'updated'} | ${undefined}           | ${'0123455555'} | ${undefined}           | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'name'}
+    ${'change email'}     | ${undefined} | ${undefined}           | ${'0123455555'} | ${undefined}           | ${'0987654321'} | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'phone'}
+    ${'change questionA'} | ${undefined} | ${undefined}           | ${'0123455555'} | ${undefined}           | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'questionA'}
+    ${'change answerA'}   | ${undefined} | ${undefined}           | ${'0123455555'} | ${undefined}           | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'answerA'}
+    ${'change questionB'} | ${undefined} | ${undefined}           | ${'0123455555'} | ${undefined}           | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'questionB'}
+    ${'change answerB'}   | ${undefined} | ${undefined}           | ${'0123455555'} | ${undefined}           | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'answerB'}
+    ${'change pwd'}       | ${undefined} | ${'john5@example.com'} | ${undefined}    | ${undefined}           | ${undefined}    | ${'!dcba4321'} | ${'!abcd1234'}  | ${undefined} | ${'password'}
+    ${'change all'}       | ${'updated'} | ${'john5@example.com'} | ${'0123455555'} | ${'johnX@example.com'} | ${'0987654321'} | ${'!dcba4321'} | ${'!abcd1234'}  | ${undefined} | ${'all'}
+  `(
+    `Should update user: $description`,
+    async ({ name, oldemail, oldphone, email, phone, password, currentPassword, enabled, expected }) => {
+      // login
+      let variables = {
+        data: {
+          email: oldemail,
+          phone: oldphone,
+          password: currentPassword,
+        },
+      };
+      const res = await graphQLClient.mutate({
+        mutation: operations.login,
+        variables,
+      });
 
-  // and then query profile
-  const graphQLClientWithToken = getGraphQLClient(res.data.login.token);
-  variables = {
-    data: {
-      name: 'updated',
-    },
-  };
-  const { data } = await graphQLClientWithToken.mutate({ mutation: operations.updateUser, variables });
-  expect(data.updateUser.id).toBe(seedUserOne.user.id);
-  expect(data.updateUser.name).toBe('updated');
-  expect(data.updateUser.email).toBe(seedUserOne.user.email);
-});
+      // and then query profile
+      const graphQLClientWithToken = getGraphQLClient(res.data.login.token);
+      variables = {
+        data: {
+          name: name,
+          email: email,
+          phone: phone,
+          password: password,
+          currentPassword: currentPassword,
+        },
+      };
+      const { data } = await graphQLClientWithToken.mutate({ mutation: operations.updateUser, variables });
 
-test('Should update user email and change status to disabled', async () => {
-  let variables = {
-    data: {
-      email: 'john@example.com',
-      password: '!abcd1234',
-    },
-  };
-  const res = await graphQLClient.mutate({
-    mutation: operations.login,
-    variables,
-  });
+      expect(data.updateUser.id).toBe(seedUserFive.user.id);
 
-  // and then query profile
-  const graphQLClientWithToken = getGraphQLClient(res.data.login.token);
-  variables = {
-    data: {
-      email: 'updated@email.com',
-    },
-  };
-  const { data } = await graphQLClientWithToken.mutate({ mutation: operations.updateUser, variables });
-  expect(data.updateUser.id).toBe(seedUserOne.user.id);
-  expect(data.updateUser.email).not.toBe(seedUserOne.user.email);
-  expect(data.updateUser.enabled).toBe(false);
-});
+      if (expected === 'name') {
+        expect(data.updateUser.name).not.toBe(seedUserFive.user.name);
+        return;
+      }
+      if (expected === 'email') {
+        expect(data.updateUser.email).not.toBe(seedUserFive.user.email);
+        expect(data.updateUser.enabled).toBe(false);
+        return;
+      }
+      if (expected === 'phone') {
+        expect(data.updateUser.phone).not.toBe(seedUserFive.user.phone);
+        expect(data.updateUser.enabled).toBe(false);
+        return;
+      }
+      if (expected === 'all') {
+        expect(data.updateUser.name).not.toBe(seedUserFive.user.name);
+        expect(data.updateUser.email).not.toBe(seedUserFive.user.email);
+        expect(data.updateUser.phone).not.toBe(seedUserFive.user.phone);
+        expect(data.updateUser.enabled).toBe(false);
+      }
 
-test("Should update user's phone and change status to disabled", async () => {
-  let variables = {
-    data: {
-      email: 'john@example.com',
-      password: '!abcd1234',
+      // TODO: try to confirm password has changed
     },
-  };
-  const res = await graphQLClient.mutate({
-    mutation: operations.login,
-    variables,
-  });
+  );
 
-  // and then query profile
-  const graphQLClientWithToken = getGraphQLClient(res.data.login.token);
-  variables = {
-    data: {
-      phone: '9876543210',
-    },
-  };
-  const { data } = await graphQLClientWithToken.mutate({ mutation: operations.updateUser, variables });
-  expect(data.updateUser.id).toBe(seedUserOne.user.id);
-  expect(data.updateUser.phone).not.toBe(seedUserOne.user.email);
-  expect(data.updateUser.enabled).toBe(false);
-});
+  test.each`
+    description              | name         | oldemail               | oldphone        | email                                                                             | phone           | password       | currentPassword | enabled      | expected
+    ${'empty new name'}      | ${''}        | ${'john5@example.com'} | ${undefined}    | ${undefined}                                                                      | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'name'}
+    ${'empty new email'}     | ${undefined} | ${'john5@example.com'} | ${undefined}    | ${''}                                                                             | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'email'}
+    ${'empty new questionA'} | ${undefined} | ${'john5@example.com'} | ${undefined}    | ${undefined}                                                                      | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'questionA'}
+    ${'empty new answerA'}   | ${undefined} | ${'john5@example.com'} | ${undefined}    | ${undefined}                                                                      | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'answerA'}
+    ${'empty new questionB'} | ${undefined} | ${'john5@example.com'} | ${undefined}    | ${undefined}                                                                      | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'questionB'}
+    ${'empty new answerB'}   | ${undefined} | ${'john5@example.com'} | ${undefined}    | ${undefined}                                                                      | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'answerB'}
+    ${'wrong authen'}        | ${undefined} | ${'john5@example.com'} | ${undefined}    | ${undefined}                                                                      | ${undefined}    | ${undefined}   | ${'abcd1234'}   | ${undefined} | ${'authenfailed'}
+    ${'account not existed'} | ${'updated'} | ${'john6@example.com'} | ${undefined}    | ${'johnX@example.com'}                                                            | ${'0987654321'} | ${'!dcba4321'} | ${'!abcd1234'}  | ${undefined} | ${'wrongaccount'}
+    ${'invalid new pwd'}     | ${'updated'} | ${'john5@example.com'} | ${undefined}    | ${undefined}                                                                      | ${undefined}    | ${'ab12!'}     | ${'!abcd1234'}  | ${undefined} | ${'invalidNewPwd'}
+    ${'invalid new mail'}    | ${'updated'} | ${'john5@example.com'} | ${undefined}    | ${'elbertsoftware.tester@gmail'}                                                  | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'invalidNewMail'}
+    ${'invalid new mail'}    | ${'updated'} | ${'john5@example.com'} | ${undefined}    | ${'elbertsoftware.tester@'}                                                       | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'invalidNewMail'}
+    ${'invalid new mail'}    | ${'updated'} | ${'john5@example.com'} | ${undefined}    | ${'elbertsoftware.tester'}                                                        | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'invalidNewMail'}
+    ${'invalid new mail'}    | ${'updated'} | ${'john5@example.com'} | ${undefined}    | ${'elbertsoftware'}                                                               | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'invalidNewMail'}
+    ${'invalid new mail'}    | ${'updated'} | ${'john5@example.com'} | ${undefined}    | ${'@gmail.com.io'}                                                                | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'invalidNewMail'}
+    ${'invalid new mail'}    | ${'updated'} | ${'john5@example.com'} | ${undefined}    | ${'@gmail.com'}                                                                   | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'invalidNewMail'}
+    ${'invalid new mail'}    | ${'updated'} | ${'john5@example.com'} | ${undefined}    | ${'@gmail'}                                                                       | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'invalidNewMail'}
+    ${'invalid new mail'}    | ${'updated'} | ${'john5@example.com'} | ${undefined}    | ${'elbertsoftware@tester@gmail.com'}                                              | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'invalidNewMail'}
+    ${'invalid new mail'}    | ${'updated'} | ${'john5@example.com'} | ${undefined}    | ${'elbertsoftware.tester@gmail@com'}                                              | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'invalidNewMail'}
+    ${'invalid new mail'}    | ${'updated'} | ${'john5@example.com'} | ${undefined}    | ${'~!#$%@gmail.com'}                                                              | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'invalidNewMail'}
+    ${'invalid new mail'}    | ${'updated'} | ${'john5@example.com'} | ${undefined}    | ${'elbertsoftware&tester@gmail.com'}                                              | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'invalidNewMail'}
+    ${'invalid new mail'}    | ${'updated'} | ${'john5@example.com'} | ${undefined}    | ${'elbertsoftware tester@gmail.com'}                                              | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'invalidNewMail'}
+    ${'invalid new mail'}    | ${'updated'} | ${'john5@example.com'} | ${undefined}    | ${'1234567890123456789012345678901234567890123456789012345678901234+x@gmail.com'} | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'invalidNewMail'}
+    ${'empty new name'}      | ${''}        | ${undefined}           | ${'0123455555'} | ${undefined}                                                                      | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'name'}
+    ${'empty new phone'}     | ${undefined} | ${undefined}           | ${'0123455555'} | ${''}                                                                             | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'email'}
+    ${'empty new questionA'} | ${undefined} | ${undefined}           | ${'0123455555'} | ${undefined}                                                                      | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'questionA'}
+    ${'empty new answerA'}   | ${undefined} | ${undefined}           | ${'0123455555'} | ${undefined}                                                                      | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'answerA'}
+    ${'empty new questionB'} | ${undefined} | ${undefined}           | ${'0123455555'} | ${undefined}                                                                      | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'questionB'}
+    ${'empty new answerB'}   | ${undefined} | ${undefined}           | ${'0123455555'} | ${undefined}                                                                      | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'answerB'}
+    ${'empty all'}           | ${undefined} | ${undefined}           | ${'0123455555'} | ${undefined}                                                                      | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'all'}
+    ${'wrong authen'}        | ${undefined} | ${undefined}           | ${'0123455555'} | ${undefined}                                                                      | ${undefined}    | ${undefined}   | ${'abcd1234'}   | ${undefined} | ${'authenfailed'}
+    ${'account not existed'} | ${'updated'} | ${undefined}           | ${'0123455556'} | ${undefined}                                                                      | ${'0987654321'} | ${'!dcba4321'} | ${'!abcd1234'}  | ${undefined} | ${'wrongaccount'}
+    ${'invalid new pwd'}     | ${'updated'} | ${undefined}           | ${'0123455555'} | ${undefined}                                                                      | ${undefined}    | ${'ab12!'}     | ${'!abcd1234'}  | ${undefined} | ${'invalidNewPwd'}
+    ${'empty all'}           | ${undefined} | ${'john5@example.com'} | ${undefined}    | ${undefined}                                                                      | ${undefined}    | ${undefined}   | ${'!abcd1234'}  | ${undefined} | ${'all'}
+  `(
+    `Should not update user because of $description`,
+    async ({ name, oldemail, oldphone, email, phone, password, currentPassword, enabled, expected }) => {
+      // login
+      let variables = {
+        data: {
+          email: oldemail,
+          phone: oldphone,
+          password: currentPassword,
+        },
+      };
 
-test('Should not update field if input is empty', async () => {
-  let variables = {
-    data: {
-      email: 'john@example.com',
-      password: '!abcd1234',
-    },
-  };
-  const res = await graphQLClient.mutate({
-    mutation: operations.login,
-    variables,
-  });
+      if (expected === 'authenfailed' || expected === 'wrongaccount') {
+        await expect(
+          graphQLClient.mutate({
+            mutation: operations.login,
+            variables,
+          }),
+        ).rejects.toThrow();
+        return;
+      }
 
-  // and then query profile
-  const graphQLClientWithToken = getGraphQLClient(res.data.login.token);
-  variables = {
-    data: {
-      name: '',
-      email: null,
-      phone: undefined,
+      const res = await graphQLClient.mutate({
+        mutation: operations.login,
+        variables,
+      });
+
+      // and then query profile
+      const graphQLClientWithToken = getGraphQLClient(res.data.login.token);
+      variables = {
+        data: {
+          name: name,
+          email: email,
+          phone: phone,
+          password: password,
+          currentPassword: currentPassword,
+        },
+      };
+
+      if (expected === 'invalidNewPwd' || expected === 'invalidNewMail') {
+        await expect(graphQLClientWithToken.mutate({ mutation: operations.updateUser, variables })).rejects.toThrow();
+        return;
+      }
+
+      const { data } = await graphQLClientWithToken.mutate({ mutation: operations.updateUser, variables });
+
+      expect(data.updateUser.id).toBe(seedUserFive.user.id);
+
+      if (expected === 'name') {
+        expect(data.updateUser.name).toBe(seedUserFive.user.name);
+        return;
+      }
+      if (expected === 'email') {
+        expect(data.updateUser.email).toBe(seedUserFive.user.email);
+        expect(data.updateUser.enabled).toBe(true);
+        return;
+      }
+      if (expected === 'phone') {
+        expect(data.updateUser.phone).toBe(seedUserFive.user.phone);
+        expect(data.updateUser.enabled).toBe(true);
+        return;
+      }
+      if (expected === 'password') {
+        expect(auth.hashPassword(data.updateUser.password)).toBe(seedUserFive.user.password);
+        return;
+      }
+      if (expected === 'all') {
+        expect(data.updateUser.name).toBe(seedUserFive.user.name);
+        expect(data.updateUser.email).toBe(seedUserFive.user.email);
+        expect(data.updateUser.phone).toBe(seedUserFive.user.phone);
+        expect(data.updateUser.enabled).toBe(true);
+      }
     },
-  };
-  const { data } = await graphQLClientWithToken.mutate({ mutation: operations.updateUser, variables });
-  expect(data.updateUser.id).toBe(seedUserOne.user.id);
-  expect(data.updateUser.name).toBe(seedUserOne.user.name);
-  expect(data.updateUser.email).toBe(seedUserOne.user.email);
-  expect(data.updateUser.phone).toBe(seedUserOne.user.phone);
+  );
 });
 
 // /**
@@ -566,28 +649,188 @@ test('Should not update field if input is empty', async () => {
 //  *
 //  */
 
-test('Should delete user', async () => {
-  const variables = {
-    data: {
-      email: 'john@example.com',
-      password: '!abcd1234',
-    },
-  };
-  const res = await graphQLClient.mutate({
-    mutation: operations.login,
-    variables,
-  });
-  expect(res.data.login.token.length).toBeGreaterThan(32);
+describe(`Delete User`, () => {
+  test('Should delete user', async () => {
+    const variables = {
+      data: {
+        email: 'john@example.com',
+        password: '!abcd1234',
+      },
+    };
+    const res = await graphQLClient.mutate({
+      mutation: operations.login,
+      variables,
+    });
+    expect(res.data.login.token.length).toBeGreaterThan(32);
 
-  const graphQLClientWithToken = getGraphQLClient(res.data.login.token);
-  const { data } = await graphQLClientWithToken.mutate({ mutation: operations.deleteUser });
-  expect(data.deleteUser.id).toBe(seedUserOne.user.id);
+    const graphQLClientWithToken = getGraphQLClient(res.data.login.token);
+    const { data } = await graphQLClientWithToken.mutate({ mutation: operations.deleteUser });
+    expect(data.deleteUser.id).toBe(seedUserOne.user.id);
+  });
+
+  test('Should not delete user because user does not log in', async () => {
+    await expect(graphQLClient.mutate({ mutation: operations.deleteUser })).rejects.toThrow();
+  });
 });
 
-// /**
-//  *
-//  *  --- RESET PWD ---
-//  *
-//  */
+/**
+ *
+ *  --- RESET PWD ---
+ *
+ */
 
-// // test('Should return token when make a resetPWD request', () => {});
+describe(`Reset PWD`, () => {
+  describe(`Step1: Make an request reset password`, () => {
+    test.each`
+      description   | email                  | phone           | questionA | question B
+      ${'by email'} | ${'john5@example.com'} | ${undefined}    | ${'A?'}   | ${'B?'}
+      ${'by phone'} | ${undefined}           | ${'0123455555'} | ${'A?'}   | ${'B?'}
+    `(
+      'Should return token & questions when user makes a resetPWD request $description',
+      async ({ email, phone, questionA, questionB }) => {
+        const variables = {
+          data: {
+            email: email,
+            phone: phone,
+          },
+        };
+        const { data } = await graphQLClient.mutate({ mutation: operations.requestResetPwd, variables });
+        expect(data.requestResetPwd.token.length).toBeGreaterThanOrEqual(32);
+        expect(data.requestResetPwd.questionA).toBeTruthy();
+        expect(data.requestResetPwd.questionA).toBe(questionA);
+        expect(data.requestResetPwd.questionB).toBeTruthy();
+        expect(data.requestResetPwd.questionB).toBe(questionB);
+      },
+    );
+    test.each`
+      description             | email                      | phone
+      ${'by unexisted email'} | ${'hellojohn@example.com'} | ${undefined}
+      ${'by unexisted phone'} | ${undefined}               | ${'0987654321'}
+      ${'empty input'}        | ${undefined}               | ${undefined}
+    `(
+      'Should not return token & questions when user makes an invalid resetPWD request $description',
+      async ({ email, phone }) => {
+        const variables = {
+          data: {
+            email: email,
+            phone: phone,
+          },
+        };
+        await expect(graphQLClient.mutate({ mutation: operations.requestResetPwd, variables })).rejects.toThrow();
+      },
+    );
+  });
+  describe(`Step2: Verify identity by answering some securty questions`, () => {
+    let token = '';
+    beforeEach(async () => {
+      const variables = {
+        data: {
+          email: 'john5@example.com',
+        },
+      };
+      const { data } = await graphQLClient.mutate({ mutation: operations.requestResetPwd, variables });
+      token = data.requestResetPwd.token;
+      expect(token.length).toBeGreaterThanOrEqual(32);
+    });
+    test(`Should get a new token to reset pwd`, async () => {
+      expect(token.length).toBeGreaterThanOrEqual(32);
+      const graphQLClientWithToken = getGraphQLClient(token);
+      const variables = {
+        data: {
+          answerA: 'a',
+          answerB: 'b',
+        },
+      };
+      const { data } = await graphQLClientWithToken.mutate({ mutation: operations.verifyBeforeResetPwd, variables });
+      expect(data.verifyBeforeResetPwd.token.length).toBeGreaterThanOrEqual(32);
+      expect(data.verifyBeforeResetPwd.userId).toBe(seedUserFive.user.id);
+    });
+    test.each`
+      description        | answerA      | answerB      | token
+      ${'no token'}      | ${'a'}       | ${'b'}       | ${undefined}
+      ${'no answerA'}    | ${undefined} | ${'b'}       | ${token}
+      ${'no answerB'}    | ${'a'}       | ${undefined} | ${token}
+      ${'no answers'}    | ${undefined} | ${undefined} | ${token}
+      ${'wrong answer'}  | ${'c'}       | ${'b'}       | ${token}
+      ${'wrong answer'}  | ${'a'}       | ${'c'}       | ${token}
+      ${'wrong answers'} | ${'c'}       | ${'d'}       | ${token}
+    `(`Should not verify user's identity because of $description`, async ({ answerA, answerB, token }) => {
+      const graphQLClientWithToken = getGraphQLClient(token);
+      const variables = {
+        data: {
+          answerA: answerA,
+          answerB: answerB,
+        },
+      };
+      await expect(
+        graphQLClientWithToken.mutate({ mutation: operations.verifyBeforeResetPwd, variables }),
+      ).rejects.toThrow();
+    });
+  });
+
+  describe(`Step3: Reset Pwd`, () => {
+    let token = '';
+    beforeEach(async () => {
+      let variables = {
+        data: {
+          email: 'john5@example.com',
+        },
+      };
+      const res = await graphQLClient.mutate({ mutation: operations.requestResetPwd, variables });
+      expect(res.data.requestResetPwd.token.length).toBeGreaterThanOrEqual(32);
+      const graphQLClientWithToken = getGraphQLClient(res.data.requestResetPwd.token);
+      variables = {
+        data: {
+          answerA: 'a',
+          answerB: 'b',
+        },
+      };
+      const { data } = await graphQLClientWithToken.mutate({ mutation: operations.verifyBeforeResetPwd, variables });
+      token = data.verifyBeforeResetPwd.token;
+      expect(token.length).toBeGreaterThanOrEqual(32);
+    });
+    test(`Should reset pwd and log in with new pwd`, async () => {
+      expect(token.length).toBeGreaterThanOrEqual(32);
+      const graphQLClientWithToken = getGraphQLClient(token);
+      let variables = {
+        data: {
+          password: '@cdef5678',
+        },
+      };
+      const { data } = await graphQLClientWithToken.mutate({ mutation: operations.resetPassword, variables });
+      expect(data.resetPassword).toBe(true);
+      // login with new pwd
+      variables = {
+        data: {
+          email: 'john5@example.com',
+          password: '@cdef5678',
+        },
+      };
+      const res = await graphQLClient.mutate({
+        mutation: operations.login,
+        variables,
+      });
+      expect(res.data.login.token.length).toBeGreaterThan(32);
+    });
+    test.each`
+      description                        | password
+      ${'empty input'}                   | ${''}
+      ${'empty input'}                   | ${undefined}
+      ${'only number'}                   | ${'12345678'}
+      ${'only words'}                    | ${'abcdefgh'}
+      ${'only special characters'}       | ${'!@#$%^&*'}
+      ${'lacking of special characters'} | ${'1234abcd'}
+      ${'lacking of words'}              | ${'!@#$5678'}
+      ${'too small'}                     | ${'@ab12'}
+    `(`Should not reset pwd because of $description`, async ({ password }) => {
+      expect(token.length).toBeGreaterThanOrEqual(32);
+      const graphQLClientWithToken = getGraphQLClient(token);
+      const variables = {
+        data: {
+          password: password,
+        },
+      };
+      await expect(graphQLClientWithToken.mutate({ mutation: operations.resetPassword, variables })).rejects.toThrow();
+    });
+  });
+});

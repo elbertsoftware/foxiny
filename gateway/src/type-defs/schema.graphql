@@ -13,7 +13,7 @@ type Mutation {
   deleteUser: User!
 
   requestResetPwd(data: RequestResetPwdInput!): SecPayload!
-  verifyBeforeResetPwd(data: VerifyBeforeResetPwdInput!): Boolean!
+  verifyBeforeResetPwd(data: VerifyBeforeResetPwdInput!): AuthPayload!
   resetPassword(data: ResetPwdInput!): Boolean!
 }
 
@@ -70,11 +70,6 @@ input UpdateUserInput {
   name: String
   email: String
   phone: String
-
-  questionA: String
-  answerA: String
-  questionB: String
-  answerB: String
 
   password: String
   currentPassword: String
