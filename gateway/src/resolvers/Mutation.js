@@ -127,8 +127,8 @@ const Mutation = {
     }
 
     return {
-      userId: user.id,
       token: generateToken(user.id, request, cache),
+      user,
     };
   },
 
@@ -142,8 +142,8 @@ const Mutation = {
     }
 
     return {
-      userId,
       token,
+      userId,
     };
   },
 

@@ -7,8 +7,8 @@ type Mutation {
   createUser(data: CreateUserInput!): User!
   resendConfirmation(userId: String!): User!
   confirmUser(data: ConfirmUserInput): User!
-  login(data: LoginUserInput!): AuthPayload!
-  logout(all: Boolean = false): AuthPayload!
+  login(data: LoginUserInput!): LoginPayload!
+  logout(all: Boolean = false): LogoutPayload!
   updateUser(data: UpdateUserInput!): User!
   deleteUser: User!
 }
@@ -46,9 +46,14 @@ input LoginUserInput {
   password: String!
 }
 
-type AuthPayload {
-  userId: ID!
+type LoginPayload {
   token: String!
+  user: User!
+}
+
+type LogoutPayload {
+  token: String!
+  userId: String!
 }
 
 input UpdateUserInput {
