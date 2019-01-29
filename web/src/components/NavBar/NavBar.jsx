@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { AppBar, Typography, Toolbar } from '@material-ui/core';
+import { compose, graphql } from 'react-apollo';
 import SignInMenu from '../Menu/SignInMenu';
 import SignUpMenu from '../Menu/SignUpMenu';
-import { getAuthorizationToken } from '../../utils/authentication';
+import getCurrentUser from '../../graphql/getCurrentUser';
 
 const styles = theme => ({
   root: {
@@ -26,44 +27,34 @@ const styles = theme => ({
   },
 });
 
-class NavBar extends React.Component {
-  state = {
-    authToken: null,
-  };
-
-  componentDidMount() {
-    this.setState({
-      authToken: getAuthorizationToken(),
-    });
-  }
-
-  handleRemoveToken = () => {
-    this.setState({ authToken: null });
-  };
-
-  render() {
-    const { classes } = this.props;
-    const { authToken } = this.state;
-    return (
-      <div className={classes.root}>
-        <AppBar position="static" color="primary">
-          <Toolbar>
-            <a href="/">
-              <img alt="Foxiny Inc - We care your needs" src="/assets/foxiny_logo.png" className={classes.image} />
-            </a>
-            <Typography variant="h6" color="inherit" className={classes.grow}>
-              Foxiny
-            </Typography>
-            {authToken ? <SignInMenu handleRemoveToken={this.handleRemoveToken} /> : <SignUpMenu classes={classes} />}
-          </Toolbar>
-        </AppBar>
-      </div>
-    );
-  }
-}
+const NavBar = ({ classes, currentUser }) => {
+  return (
+    <div className={classes.root}>
+      <AppBar position="static" color="primary">
+        <Toolbar>
+          <a href="/">
+            <img alt="Foxiny Inc - We care your needs" src="/assets/foxiny_logo.png" className={classes.image} />
+          </a>
+          <Typography variant="h6" color="inherit" className={classes.grow}>
+            Foxiny
+          </Typography>
+          {currentUser.token ? <SignInMenu currentUser={currentUser} /> : <SignUpMenu classes={classes} />}
+        </Toolbar>
+      </AppBar>
+    </div>
+  );
+};
 
 NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
+  currentUser: PropTypes.object,
 };
 
-export default withStyles(styles)(NavBar);
+export default compose(
+  withStyles(styles),
+  graphql(getCurrentUser, {
+    props: ({ data: { currentUser } }) => ({
+      currentUser,
+    }),
+  }),
+)(NavBar);

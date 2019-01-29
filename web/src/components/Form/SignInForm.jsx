@@ -9,7 +9,7 @@ import createDecorator from 'final-form-focus';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { Typography, MenuItem } from '@material-ui/core';
-import { Mutation } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { toast } from 'react-toastify';
 import RFTextField from '../../utils/common/form/RFTextField';
@@ -19,13 +19,18 @@ import PhoneSelectList from './Fields/PhoneSelectList';
 import { email, phone, messages, required, formatInternationalPhone } from '../../utils/common/form/validation';
 import { countries } from '../../utils/callingcodes';
 import { setAuthorizationToken } from '../../utils/authentication';
+import updateUser from '../../graphql/updateUser';
 
 const focusOnError = createDecorator();
 
 const LOGIN = gql`
   mutation login($data: LoginUserInput!) {
     login(data: $data) {
-      userId
+      user {
+        name
+        email
+        phone
+      }
       token
     }
   }
@@ -52,7 +57,8 @@ class SignInForm extends React.Component {
     }
   }
 
-  onSubmit = ({ login }) => async values => {
+  onSubmit = async values => {
+    const { login, updateUser } = this.props;
     let data;
     try {
       if (values.email) {
@@ -75,9 +81,25 @@ class SignInForm extends React.Component {
           },
         });
       }
-      if (data.data.login.token) {
-        setAuthorizationToken(data.data.login.token);
-        console.log(`Login sucess with token ${data.data.login.token}`);
+      const {
+        token,
+        user: { name, email, phone },
+      } = data.data.login;
+      console.log('After login ', name, email, phone);
+      if (token) {
+        setAuthorizationToken(token);
+        updateUser({
+          variables: {
+            data: {
+              name,
+              email,
+              phone,
+              token,
+            },
+          },
+        });
+        console.log(name);
+        console.log(`Login sucess with token ${token}`);
         this.props.history.push('/');
       }
     } catch (error) {
@@ -88,136 +110,135 @@ class SignInForm extends React.Component {
   render() {
     const { theme, tabValue, handleChangeIndex, classes } = this.props;
     return (
-      <Mutation mutation={LOGIN}>
-        {(login, { data, loading, error }) => (
-          <Form
-            onSubmit={this.onSubmit({ login })}
-            subscription={{ submitting: true }}
-            validate={values => {
-              let errors = {};
-              if (tabValue === 0) {
-                errors = required(['email', 'passwordEmail'], values, messages);
-                if (!errors.email) {
-                  const emailError = email(values.email, values);
-                  if (emailError) {
-                    errors.email = emailError;
-                  }
-                }
-              } else if (tabValue === 1) {
-                errors = required(['phone', 'passwordPhone'], values, messages);
-                if (!errors.phone) {
-                  const phoneError = phone(values.countryCode, values.phone);
-                  if (phoneError) {
-                    errors.phone = phoneError;
-                  }
-                }
+      <Form
+        onSubmit={this.onSubmit}
+        subscription={{ submitting: true }}
+        validate={values => {
+          let errors = {};
+          if (tabValue === 0) {
+            errors = required(['email', 'passwordEmail'], values, messages);
+            if (!errors.email) {
+              const emailError = email(values.email, values);
+              if (emailError) {
+                errors.email = emailError;
               }
-              return errors;
-            }}
-            decorators={[focusOnError]}
-            initialValues={this.state.initData}
-          >
-            {({ handleSubmit, values, submitting, form: { reset } }) => {
-              resetForm = reset;
-              return (
-                <form onSubmit={handleSubmit} className={classes.form} noValidate>
-                  <SwipeableViews
-                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                    index={tabValue}
-                    onChangeIndex={handleChangeIndex}
-                  >
-                    <TabContainer dir={theme.direction}>
-                      {tabValue === 0 ? (
-                        <Field
-                          autoComplete="email"
-                          component={RFTextField}
-                          disabled={submitting}
-                          fullWidth
-                          label="Email"
-                          margin="normal"
-                          name="email"
-                          required
-                          size="large"
-                        />
-                      ) : (
-                        ''
-                      )}
-                      {tabValue === 0 ? (
-                        <Field
-                          fullWidth
-                          size="large"
-                          component={RFTextField}
-                          disabled={submitting}
-                          required
-                          name="passwordEmail"
-                          autoComplete="current-password"
-                          label="Mật khẩu"
-                          type="password"
-                          margin="normal"
-                        />
-                      ) : (
-                        ''
-                      )}
-                    </TabContainer>
-                    <TabContainer dir={theme.direction}>
-                      {tabValue === 1 ? (
-                        <Field
-                          component={PhoneSelectList}
-                          disabled={submitting}
-                          fullWidth
-                          name="countryCode"
-                          required
-                          size="large"
-                        >
-                          {countries}
-                        </Field>
-                      ) : (
-                        ''
-                      )}
-                      {tabValue === 1 ? (
-                        <Field
-                          autoComplete="phone"
-                          component={RFTextField}
-                          disabled={submitting}
-                          fullWidth
-                          label="Phone"
-                          margin="normal"
-                          name="phone"
-                          required
-                          size="large"
-                        />
-                      ) : (
-                        ''
-                      )}
-                      {tabValue === 1 ? (
-                        <Field
-                          fullWidth
-                          size="large"
-                          component={RFTextField}
-                          disabled={submitting}
-                          required
-                          name="passwordPhone"
-                          autoComplete="current-password"
-                          label="Mật khẩu"
-                          type="password"
-                          margin="normal"
-                        />
-                      ) : (
-                        ''
-                      )}
-                    </TabContainer>
-                  </SwipeableViews>
-                  <FormButton className={classes.button} disabled={submitting} size="large" color="secondary" fullWidth>
-                    {submitting ? 'Thực hiện...' : 'Đăng nhập'}
-                  </FormButton>
-                </form>
-              );
-            }}
-          </Form>
-        )}
-      </Mutation>
+            }
+          } else if (tabValue === 1) {
+            errors = required(['phone', 'passwordPhone'], values, messages);
+            if (!errors.phone) {
+              const phoneError = phone(values.countryCode, values.phone);
+              if (phoneError) {
+                errors.phone = phoneError;
+              }
+            }
+          }
+          return errors;
+        }}
+        decorators={[focusOnError]}
+        initialValues={this.state.initData}
+      >
+        {({ handleSubmit, values, submitting, form: { reset } }) => {
+          resetForm = reset;
+          return (
+            <form onSubmit={handleSubmit} className={classes.form} noValidate>
+              <SwipeableViews
+                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                index={tabValue}
+                onChangeIndex={handleChangeIndex}
+              >
+                <TabContainer dir={theme.direction}>
+                  {tabValue === 0 ? (
+                    <Field
+                      autoComplete="email"
+                      component={RFTextField}
+                      disabled={submitting}
+                      fullWidth
+                      label="Email"
+                      margin="normal"
+                      name="email"
+                      required
+                      size="large"
+                    />
+                  ) : (
+                    ''
+                  )}
+                  {tabValue === 0 ? (
+                    <Field
+                      fullWidth
+                      size="large"
+                      component={RFTextField}
+                      disabled={submitting}
+                      required
+                      name="passwordEmail"
+                      autoComplete="current-password"
+                      label="Mật khẩu"
+                      type="password"
+                      margin="normal"
+                    />
+                  ) : (
+                    ''
+                  )}
+                </TabContainer>
+                <TabContainer dir={theme.direction}>
+                  {tabValue === 1 ? (
+                    <Field
+                      component={PhoneSelectList}
+                      disabled={submitting}
+                      fullWidth
+                      name="countryCode"
+                      required
+                      size="large"
+                    >
+                      {countries}
+                    </Field>
+                  ) : (
+                    ''
+                  )}
+                  {tabValue === 1 ? (
+                    <Field
+                      autoComplete="phone"
+                      component={RFTextField}
+                      disabled={submitting}
+                      fullWidth
+                      label="Phone"
+                      margin="normal"
+                      name="phone"
+                      required
+                      size="large"
+                    />
+                  ) : (
+                    ''
+                  )}
+                  {tabValue === 1 ? (
+                    <Field
+                      fullWidth
+                      size="large"
+                      component={RFTextField}
+                      disabled={submitting}
+                      required
+                      name="passwordPhone"
+                      autoComplete="current-password"
+                      label="Mật khẩu"
+                      type="password"
+                      margin="normal"
+                    />
+                  ) : (
+                    ''
+                  )}
+                </TabContainer>
+              </SwipeableViews>
+              <FormButton className={classes.button} disabled={submitting} size="large" color="secondary" fullWidth>
+                {submitting ? 'Thực hiện...' : 'Đăng nhập'}
+              </FormButton>
+            </form>
+          );
+        }}
+      </Form>
     );
   }
 }
 
-export default SignInForm;
+export default compose(
+  graphql(LOGIN, { name: 'login' }),
+  graphql(updateUser, { name: 'updateUser' }),
+)(SignInForm);
