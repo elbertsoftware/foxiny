@@ -63,54 +63,63 @@ class ConfirmPage extends React.Component {
     sent: false,
   };
 
+  _isMounted = false;
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
   componentWillUnmount() {
+    this._isMounted = false;
     clearTimeout(this.timer);
     clearTimeout(this.timerReturn);
   }
 
   onSubmit = async values => {
     if (!this.state.loading) {
-      this.setState(
-        {
-          success: false,
-          loading: true,
-        },
-        () => {
-          this.timer = setTimeout(() => {
-            this.props
-              .confirmUser({
-                variables: {
-                  data: {
-                    userId: this.props.match.params.id,
-                    code: values.confirmCode,
+      if (this._isMounted) {
+        this.setState(
+          {
+            success: false,
+            loading: true,
+          },
+          () => {
+            this.timer = setTimeout(() => {
+              this.props
+                .confirmUser({
+                  variables: {
+                    data: {
+                      userId: this.props.match.params.id,
+                      code: values.confirmCode,
+                    },
                   },
-                },
-              })
-              .then(({ data }) => {
-                if (data.confirmUser.enabled) {
-                  toast.success('Đăng ký thành công !');
-                  this.setState(
-                    {
-                      success: true,
-                      loading: false,
-                    },
-                    () => {
-                      this.timerReturn = setTimeout(() => {
-                        this.props.history.push('/');
-                      }, 500);
-                    },
-                  );
-                }
-              })
-              .catch(() => {
-                toast.error('Xác thực thất bại. Vui lòng thử lại.');
-                this.setState({
-                  loading: false,
+                })
+                .then(({ data }) => {
+                  if (data.confirmUser.enabled) {
+                    toast.success('Đăng ký thành công !');
+                    this.setState(
+                      {
+                        success: true,
+                        loading: false,
+                      },
+                      () => {
+                        this.timerReturn = setTimeout(() => {
+                          this.props.history.push('/');
+                        }, 500);
+                      },
+                    );
+                  }
+                })
+                .catch(() => {
+                  toast.error('Xác thực thất bại. Vui lòng thử lại.');
+                  this.setState({
+                    loading: false,
+                  });
                 });
-              });
-          }, 1000);
-        },
-      );
+            }, 1000);
+          },
+        );
+      }
     }
   };
 

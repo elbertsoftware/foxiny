@@ -210,10 +210,6 @@ class SignInForm extends React.Component {
                   <FormButton className={classes.button} disabled={submitting} size="large" color="secondary" fullWidth>
                     {submitting ? 'Thực hiện...' : 'Đăng nhập'}
                   </FormButton>
-
-                  <FormSpy subscription={{ values: true }}>
-                    {({ values }) => <pre>{JSON.stringify(values, undefined, 2)}</pre>}
-                  </FormSpy>
                 </form>
               );
             }}

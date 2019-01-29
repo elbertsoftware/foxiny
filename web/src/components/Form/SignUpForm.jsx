@@ -220,9 +220,6 @@ class SignUpForm extends React.Component {
                     >
                       {submitting ? 'Thực hiện...' : 'Đăng ký'}
                     </FormButton>
-                    <FormSpy subscription={{ values: true }}>
-                      {({ values }) => <pre>{JSON.stringify(values, undefined, 2)}</pre>}
-                    </FormSpy>
                   </form>
                 );
               }}
