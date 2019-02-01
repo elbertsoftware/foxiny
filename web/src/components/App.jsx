@@ -6,11 +6,12 @@ import { Route, Switch, withRouter } from 'react-router';
 import compose from 'recompose/compose';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
-import withRoot from '../utils/withRoot';
+import withTheme from '../utils/withTheme';
 import NavBar from './NavBar/NavBar';
 import SignIn from './SignIn/SignIn';
 import SignUp from './SignUp/SignUp';
 import ConfirmPage from './Form/ConfirmPage';
+import UserDashboard from './User/UserDashboard';
 
 class App extends Component<Props, State> {
   componentDidMount() {
@@ -27,6 +28,7 @@ class App extends Component<Props, State> {
           path="/(.+)"
           render={() => (
             <React.Fragment>
+              <NavBar />
               <Switch>
                 <Route path="/signin" component={SignIn} />
               </Switch>
@@ -35,6 +37,9 @@ class App extends Component<Props, State> {
               </Switch>
               <Switch>
                 <Route path="/confirm/:id" component={ConfirmPage} />
+              </Switch>
+              <Switch>
+                <Route path="/profile/:id" component={UserDashboard} />
               </Switch>
             </React.Fragment>
           )}
@@ -46,5 +51,5 @@ class App extends Component<Props, State> {
 
 export default compose(
   withRouter,
-  withRoot,
+  withTheme,
 )(App);

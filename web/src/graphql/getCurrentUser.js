@@ -2,11 +2,12 @@ import gql from 'graphql-tag';
 
 export default gql`
   query {
-    currentUser @client {
+    me {
+      id
       name
       email
       phone
-      token
+      createdAt
     }
   }
 `;

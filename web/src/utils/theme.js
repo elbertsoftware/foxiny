@@ -46,7 +46,6 @@ const fontHeader = {
   color: rawTheme.palette.primary.dark,
   fontWeight: rawTheme.typography.fontWeightMedium,
   fontFamily: rawTheme.typography.fontFamilySecondary,
-  textTransform: 'uppercase',
 };
 
 const theme = {

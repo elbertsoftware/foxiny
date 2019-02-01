@@ -18,7 +18,7 @@ import TabContainer from '../../utils/common/form/TabContainer';
 import PhoneSelectList from './Fields/PhoneSelectList';
 import { email, phone, messages, required, formatInternationalPhone } from '../../utils/common/form/validation';
 import { countries } from '../../utils/callingcodes';
-import { setAuthorizationToken } from '../../utils/authentication';
+import { setAuthorizationToken, setUserInfo } from '../../utils/authentication';
 import updateUser from '../../graphql/updateUser';
 
 const focusOnError = createDecorator();
@@ -27,6 +27,7 @@ const LOGIN = gql`
   mutation login($data: LoginUserInput!) {
     login(data: $data) {
       user {
+        id
         name
         email
         phone
@@ -83,23 +84,12 @@ class SignInForm extends React.Component {
       }
       const {
         token,
-        user: { name, email, phone },
+        user: { id, name, email, phone },
       } = data.data.login;
       console.log('After login ', name, email, phone);
       if (token) {
         setAuthorizationToken(token);
-        updateUser({
-          variables: {
-            data: {
-              name,
-              email,
-              phone,
-              token,
-            },
-          },
-        });
-        console.log(name);
-        console.log(`Login sucess with token ${token}`);
+        setUserInfo(id, name);
         this.props.history.push('/');
       }
     } catch (error) {
@@ -238,7 +228,4 @@ class SignInForm extends React.Component {
   }
 }
 
-export default compose(
-  graphql(LOGIN, { name: 'login' }),
-  graphql(updateUser, { name: 'updateUser' }),
-)(SignInForm);
+export default compose(graphql(LOGIN, { name: 'login' }))(SignInForm);

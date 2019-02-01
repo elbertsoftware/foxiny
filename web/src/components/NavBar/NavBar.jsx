@@ -2,17 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { AppBar, Typography, Toolbar } from '@material-ui/core';
-import { compose, graphql } from 'react-apollo';
 import SignInMenu from '../Menu/SignInMenu';
 import SignUpMenu from '../Menu/SignUpMenu';
-import getCurrentUser from '../../graphql/getCurrentUser';
+import { getAuthorizationToken, getUserInfo } from '../../utils/authentication';
 
 const styles = theme => ({
-  root: {
-    flexGrow: 1,
-  },
+  root: {},
   grow: {
     flexGrow: 1,
+    textTransform: 'uppercase',
   },
   menuButton: {
     marginLeft: -12,
@@ -27,9 +25,27 @@ const styles = theme => ({
   },
 });
 
-const NavBar = ({ classes, currentUser }) => {
-  return (
-    <div className={classes.root}>
+class NavBar extends React.Component {
+  state = {
+    auth: false,
+  };
+
+  componentDidMount() {
+    if (getAuthorizationToken()) {
+      this.setState({ auth: true });
+    }
+  }
+
+  handleUnAuth = () => {
+    this.setState({ auth: false });
+  };
+
+  render() {
+    const { classes, history } = this.props;
+    const { auth } = this.state;
+    const userInfo = getUserInfo();
+
+    return (
       <AppBar position="static" color="primary">
         <Toolbar>
           <a href="/">
@@ -38,23 +54,19 @@ const NavBar = ({ classes, currentUser }) => {
           <Typography variant="h6" color="inherit" className={classes.grow}>
             Foxiny
           </Typography>
-          {currentUser.token ? <SignInMenu currentUser={currentUser} /> : <SignUpMenu classes={classes} />}
+          {auth ? (
+            <SignInMenu history={history} userInfo={userInfo} handleUnAuth={this.handleUnAuth} />
+          ) : (
+            <SignUpMenu classes={classes} />
+          )}
         </Toolbar>
       </AppBar>
-    </div>
-  );
-};
+    );
+  }
+}
 
 NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
-  currentUser: PropTypes.object,
 };
 
-export default compose(
-  withStyles(styles),
-  graphql(getCurrentUser, {
-    props: ({ data: { currentUser } }) => ({
-      currentUser,
-    }),
-  }),
-)(NavBar);
+export default withStyles(styles)(NavBar);

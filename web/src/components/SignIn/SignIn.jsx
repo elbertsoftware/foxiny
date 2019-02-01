@@ -5,8 +5,7 @@ import compose from 'recompose/compose';
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import { Typography, Tabs, Tab } from '@material-ui/core';
-import withRoot from '../../utils/withRoot';
-import NavBar from '../NavBar/NavBar';
+import withRoot from '../../utils/withTheme';
 import AppForm from '../../utils/common/form/AppForm';
 import SignInForm from '../Form/SignInForm';
 
@@ -57,7 +56,6 @@ class SignIn extends React.Component {
 
     return (
       <React.Fragment>
-        <NavBar />
         <AppForm>
           <React.Fragment>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>

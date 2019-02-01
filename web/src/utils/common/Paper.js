@@ -25,7 +25,7 @@ function Paper(props) {
 
   return (
     <MuiPaper
-      elevation={0}
+      elevation={2}
       square
       className={classNames(
         classes[`background${capitalize(background)}`],
