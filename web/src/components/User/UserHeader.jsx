@@ -2,20 +2,10 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment';
-import {
-  Avatar,
-  Paper,
-  Grid,
-  Typography,
-  Icon,
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
-  Button,
-} from '@material-ui/core';
+import { Avatar, Paper, Grid, Typography, Icon } from '@material-ui/core';
 import { graphql, compose } from 'react-apollo';
 import getCurrentUser from '../../graphql/getCurrentUser';
+import UserExpansionForm from '../Form/UserExpansionForm';
 
 const styles = theme => ({
   paper: {
@@ -52,16 +42,6 @@ const styles = theme => ({
   lightWeight: {
     fontWeight: 300,
   },
-  table: {
-    margin: '20px 0px',
-  },
-  tableCell: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  grow: {
-    flexGrow: 1,
-  },
 });
 
 class UserHeader extends React.Component {
@@ -94,70 +74,7 @@ class UserHeader extends React.Component {
             <Typography component="h3" variant="h4">
               Thông tin tài khoản
             </Typography>
-            <Table className={classes.table}>
-              <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <div className={classes.tableCell}>
-                      <div className={classes.grow}>
-                        <Typography variant="subtitle1">
-                          <b>Tên:</b>
-                        </Typography>
-                        <Typography variant="body2">{user.nauser}</Typography>
-                      </div>
-                      <div>
-                        <Button variant="contained">Sửa</Button>
-                      </div>
-                    </div>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className={classes.tableCell}>
-                      <div className={classes.grow}>
-                        <Typography variant="subtitle1">
-                          <b>Email:</b>
-                        </Typography>
-                        <Typography variant="body2">{user.email || 'Chưa có thông tin.'}</Typography>
-                      </div>
-                      <div>
-                        <Button variant="contained">Sửa</Button>
-                      </div>
-                    </div>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className={classes.tableCell}>
-                      <div className={classes.grow}>
-                        <Typography variant="subtitle1">
-                          <b>Số điện thoại</b>
-                        </Typography>
-                        <Typography variant="body2">{user.phone || 'Chưa có thông tin.'}</Typography>
-                      </div>
-                      <div>
-                        <Button variant="contained">Sửa</Button>
-                      </div>
-                    </div>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className={classes.tableCell}>
-                      <div className={classes.grow}>
-                        <Typography variant="subtitle1">
-                          <b>Mật khẩu</b>
-                        </Typography>
-                        <Typography variant="body2">●●●●●●●●</Typography>
-                      </div>
-                      <div>
-                        <Button variant="contained">Sửa</Button>
-                      </div>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+            <UserExpansionForm user={user} />
           </Grid>
         </Grid>
       </Paper>

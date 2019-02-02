@@ -23,7 +23,6 @@ import {
   phone,
   required,
   confirm,
-  messages,
   formatInternationalPhone,
   captChaVerification,
 } from '../../utils/common/form/validation';
@@ -86,6 +85,7 @@ class SignUpForm extends React.Component {
     const result = await captChaVerification(this.state.captchaResponse);
     if (!result.data.success) {
       toast.error('Đăng ký không thành công !');
+      return;
     }
 
     let data;
@@ -146,7 +146,7 @@ class SignUpForm extends React.Component {
               validate={values => {
                 let errors = {};
                 if (tabValue === 0) {
-                  errors = required(['email', 'passwordEmail', 'nameEmail', 'cfrPasswordEmail'], values, messages);
+                  errors = required(['email', 'passwordEmail', 'nameEmail', 'cfrPasswordEmail'], values);
                   if (!errors.email) {
                     const emailError = email(values.email, values);
                     if (emailError) {
@@ -160,7 +160,7 @@ class SignUpForm extends React.Component {
                     }
                   }
                 } else if (tabValue === 1) {
-                  errors = required(['phone', 'passwordPhone', 'namePhone', 'cfrPasswordPhone'], values, messages);
+                  errors = required(['phone', 'passwordPhone', 'namePhone', 'cfrPasswordPhone'], values);
                   if (!errors.phone) {
                     const phoneError = phone(values.countryCode, values.phone);
                     if (phoneError) {

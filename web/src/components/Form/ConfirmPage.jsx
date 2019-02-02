@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 import RFTextField from '../../utils/common/form/RFTextField';
 import FormButton from '../../utils/common/form/FormButton';
 import AppForm from '../../utils/common/form/AppForm';
-import { required, messages } from '../../utils/common/form/validation';
+import { required } from '../../utils/common/form/validation';
 
 let count = 59;
 
@@ -174,7 +174,7 @@ class ConfirmPage extends React.Component {
             subscription={{ submitting: true }}
             validate={values => {
               let errors = {};
-              errors = required(['confirmCode'], values, messages);
+              errors = required(['confirmCode'], values);
               return errors;
             }}
           >

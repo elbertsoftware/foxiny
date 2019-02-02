@@ -1,12 +1,11 @@
 import gql from 'graphql-tag';
 
 export default gql`
-  mutation updateUser($data: UserInfo!) {
-    updateUser(data: $data) @client {
+  mutation updateUser($data: UpdateUserInput!) {
+    updateUser(data: $data) {
       name
       email
       phone
-      token
     }
   }
 `;

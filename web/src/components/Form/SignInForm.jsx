@@ -4,7 +4,7 @@
 /* eslint-disable no-confusing-arrow */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Field, Form, FormSpy } from 'react-final-form';
+import { Field, Form } from 'react-final-form';
 import createDecorator from 'final-form-focus';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
@@ -16,7 +16,7 @@ import RFTextField from '../../utils/common/form/RFTextField';
 import FormButton from '../../utils/common/form/FormButton';
 import TabContainer from '../../utils/common/form/TabContainer';
 import PhoneSelectList from './Fields/PhoneSelectList';
-import { email, phone, messages, required, formatInternationalPhone } from '../../utils/common/form/validation';
+import { email, phone, required, formatInternationalPhone } from '../../utils/common/form/validation';
 import { countries } from '../../utils/callingcodes';
 import { setAuthorizationToken, setUserInfo } from '../../utils/authentication';
 import updateUser from '../../graphql/updateUser';
@@ -106,7 +106,7 @@ class SignInForm extends React.Component {
         validate={values => {
           let errors = {};
           if (tabValue === 0) {
-            errors = required(['email', 'passwordEmail'], values, messages);
+            errors = required(['email', 'passwordEmail'], values);
             if (!errors.email) {
               const emailError = email(values.email, values);
               if (emailError) {
@@ -114,7 +114,7 @@ class SignInForm extends React.Component {
               }
             }
           } else if (tabValue === 1) {
-            errors = required(['phone', 'passwordPhone'], values, messages);
+            errors = required(['phone', 'passwordPhone'], values);
             if (!errors.phone) {
               const phoneError = phone(values.countryCode, values.phone);
               if (phoneError) {

@@ -38,9 +38,23 @@ export const confirm = (firstVal, secondVal) => {
   return null;
 };
 
+const messages = {
+  email: 'email',
+  passwordEmail: 'mật khẩu',
+  phone: 'số điện thoại',
+  passwordPhone: 'mật khẩu',
+  password: 'mật khẩu',
+  currentPassword: 'mật khẩu',
+  nameEmail: 'tên',
+  namePhone: 'tên',
+  cfrPasswordEmail: 'lại mật khẩu',
+  cfrPasswordPhone: 'lại mật khẩu',
+  confirmCode: 'mã xác thực',
+};
+
 const isDirty = value => value || value === 0;
 
-export const required = (requiredFields, values, messages) =>
+export const required = (requiredFields, values) =>
   requiredFields.reduce((fields, field) => {
     return {
       ...fields,
@@ -59,16 +73,4 @@ export const captChaVerification = async (captchaResponse, secretKey = SECRET_KE
     },
   });
   return result;
-};
-
-export const messages = {
-  email: 'email',
-  passwordEmail: 'mật khẩu',
-  phone: 'số điện thoại',
-  passwordPhone: 'mật khẩu',
-  nameEmail: 'tên',
-  namePhone: 'tên',
-  cfrPasswordEmail: 'lại mật khẩu',
-  cfrPasswordPhone: 'lại mật khẩu',
-  confirmCode: 'mã xác thực',
 };
