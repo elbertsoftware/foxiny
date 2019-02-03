@@ -4,7 +4,6 @@ import React from 'react';
 import { Form, Field } from 'react-final-form';
 import { Typography, Button, CircularProgress } from '@material-ui/core';
 import { graphql, compose } from 'react-apollo';
-import { gql } from 'apollo-boost';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import green from '@material-ui/core/colors/green';
@@ -13,24 +12,9 @@ import RFTextField from '../../utils/common/form/RFTextField';
 import FormButton from '../../utils/common/form/FormButton';
 import AppForm from '../../utils/common/form/AppForm';
 import { required } from '../../utils/common/form/validation';
+import { CONFIRM_USER, RESEND_CONFIRMATION } from '../../graphql/confirmUser';
 
 let count = 59;
-
-const CONFIRM_USER = gql`
-  mutation confirmUser($data: ConfirmUserInput!) {
-    confirmUser(data: $data) {
-      enabled
-    }
-  }
-`;
-
-const RESEND_CONFIRMATION = gql`
-  mutation resendConfirmation($userId: String!) {
-    resendConfirmation(userId: $userId) {
-      id
-    }
-  }
-`;
 
 const styles = theme => ({
   root: {
@@ -96,7 +80,7 @@ class ConfirmPage extends React.Component {
                 })
                 .then(({ data }) => {
                   if (data.confirmUser.enabled) {
-                    toast.success('Đăng ký thành công !');
+                    toast.success('Xác thực thành công !');
                     this.setState(
                       {
                         success: true,
@@ -104,8 +88,8 @@ class ConfirmPage extends React.Component {
                       },
                       () => {
                         this.timerReturn = setTimeout(() => {
-                          this.props.history.push('/');
-                        }, 500);
+                          window.location.href = '/';
+                        }, 50);
                       },
                     );
                   }

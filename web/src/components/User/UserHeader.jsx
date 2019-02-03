@@ -6,6 +6,7 @@ import { Avatar, Paper, Grid, Typography, Icon } from '@material-ui/core';
 import { graphql, compose } from 'react-apollo';
 import getCurrentUser from '../../graphql/getCurrentUser';
 import UserExpansionForm from '../Form/UserExpansionForm';
+import Loading from '../App/Loading';
 
 const styles = theme => ({
   paper: {
@@ -46,8 +47,8 @@ const styles = theme => ({
 
 class UserHeader extends React.Component {
   render() {
-    const { classes, match, loading, user } = this.props;
-    if (loading) return <p>Loading...</p>;
+    const { classes, history, match, loading, user } = this.props;
+    if (loading) return <Loading />;
     return (
       <Paper className={classes.paper}>
         <Grid container>
@@ -74,7 +75,7 @@ class UserHeader extends React.Component {
             <Typography component="h3" variant="h4">
               Thông tin tài khoản
             </Typography>
-            <UserExpansionForm user={user} />
+            <UserExpansionForm history={history} match={match} user={user} />
           </Grid>
         </Grid>
       </Paper>
@@ -83,8 +84,7 @@ class UserHeader extends React.Component {
 }
 export default compose(
   graphql(getCurrentUser, {
-    props: ({ data: { loading, me } }) => ({
-      loading,
+    props: ({ data: { me } }) => ({
       user: me,
     }),
   }),

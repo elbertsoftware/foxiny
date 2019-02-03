@@ -5,13 +5,14 @@ import { loadReCaptcha } from 'react-recaptcha-google';
 import { Route, Switch, withRouter } from 'react-router';
 import compose from 'recompose/compose';
 import 'react-toastify/dist/ReactToastify.css';
-import './App.css';
-import withTheme from '../utils/withTheme';
-import NavBar from './NavBar/NavBar';
-import SignIn from './SignIn/SignIn';
-import SignUp from './SignUp/SignUp';
-import ConfirmPage from './Form/ConfirmPage';
-import UserDashboard from './User/UserDashboard';
+import withTheme from '../../utils/withTheme';
+import NavBar from '../NavBar/NavBar';
+import SignIn from '../SignIn/SignIn';
+import SignUp from '../SignUp/SignUp';
+import ConfirmPage from '../Form/ConfirmPage';
+import UserDashboard from '../User/UserDashboard';
+import Homepage from '../Homepage';
+import withAuthenticator from '../../utils/RouteProtector';
 
 class App extends Component<Props, State> {
   componentDidMount() {
@@ -22,7 +23,7 @@ class App extends Component<Props, State> {
     return (
       <React.Fragment>
         <Switch>
-          <Route exact path="/" component={NavBar} />
+          <Route exact path="/" component={Homepage} />
         </Switch>
         <Route
           path="/(.+)"
@@ -39,7 +40,7 @@ class App extends Component<Props, State> {
                 <Route path="/confirm/:id" component={ConfirmPage} />
               </Switch>
               <Switch>
-                <Route path="/profile/:id" component={UserDashboard} />
+                <Route path="/profile/:id" component={withAuthenticator(UserDashboard)} />
               </Switch>
             </React.Fragment>
           )}

@@ -8,6 +8,7 @@ export default gql`
       email
       phone
       createdAt
+      enabled
     }
   }
 `;

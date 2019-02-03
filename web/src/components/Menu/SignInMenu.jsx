@@ -1,8 +1,9 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Button, Popper, Paper, MenuItem, MenuList, ClickAwayListener, Fade } from '@material-ui/core';
+import { Button, Popper, Paper, MenuItem, MenuList, ClickAwayListener, Fade, Typography } from '@material-ui/core';
 import { Mutation } from 'react-apollo';
 import { gql } from 'apollo-boost';
+import { Link } from 'react-router-dom';
 import { removeAuthorizationToken, removeUserInfo } from '../../utils/authentication';
 
 const LOGOUT = gql`
@@ -86,6 +87,15 @@ const styles = theme => ({
     padding: '6px 8px',
     color: theme.palette.common.white,
   },
+  button: {
+    marginBottom: '-16px',
+  },
+  greeting: {
+    color: theme.palette.common.white,
+    fontSize: '15px',
+    paddingLeft: '10px',
+    marginBottom: '-20px',
+  },
 });
 
 class SignInMenu extends React.Component {
@@ -126,30 +136,31 @@ class SignInMenu extends React.Component {
   };
 
   handleAfterLogout = () => {
-    const { handleUnAuth } = this.props;
     removeAuthorizationToken();
     removeUserInfo();
-    handleUnAuth();
+    window.location.href = '/';
   };
 
   render() {
     const { anchorEl, open, arrowRef } = this.state;
-    const { classes, userInfo, history } = this.props;
+    const { classes, userInfo } = this.props;
+    const name = userInfo.name.split(' ')[0]; // Get first name
     return (
       <div>
         <Mutation mutation={LOGOUT}>
           {logout => (
             <React.Fragment>
+              <Typography variant="body2" className={classes.greeting}>{`Hi, ${name}`}</Typography>
               <Button
+                className={classes.button}
                 aria-owns={open ? 'fade-popper' : undefined}
-                variant="outlined"
+                variant="text"
                 color="secondary"
                 onMouseEnter={this.handleOpen}
                 onMouseLeave={this.handleClose}
                 onClick={this.handleClick}
               >
-                Hi,
-                {userInfo.name}
+                Tài khoản
               </Button>
               <Popper
                 id="fade-popper"
@@ -175,10 +186,7 @@ class SignInMenu extends React.Component {
                       <Paper className={classes.paper}>
                         <ClickAwayListener onClickAway={this.handleClose}>
                           <MenuList>
-                            <MenuItem
-                              onClick={() => history.push(`/profile/${userInfo.id}`)}
-                              className={classes.menuItem}
-                            >
+                            <MenuItem component={Link} to={`/profile/${userInfo.id}`} className={classes.menuItem}>
                               Trang cá nhân
                             </MenuItem>
                             <MenuItem

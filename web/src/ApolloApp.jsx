@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ToastContainer } from 'react-toastify';
-import App from './components/App';
+import App from './components/App/App';
 import { getAuthorizationToken } from './utils/authentication';
 import { resolvers, typeDefs } from './graphql/resolvers';
 

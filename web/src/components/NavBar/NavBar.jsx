@@ -26,22 +26,14 @@ const styles = theme => ({
 });
 
 class NavBar extends React.Component {
-  state = {
-    auth: false,
-  };
-
   componentDidMount() {
     if (getAuthorizationToken()) {
       this.setState({ auth: true });
     }
   }
 
-  handleUnAuth = () => {
-    this.setState({ auth: false });
-  };
-
   render() {
-    const { classes, history } = this.props;
+    const { classes } = this.props;
     const { auth } = this.state;
     const userInfo = getUserInfo();
 
@@ -54,11 +46,7 @@ class NavBar extends React.Component {
           <Typography variant="h6" color="inherit" className={classes.grow}>
             Foxiny
           </Typography>
-          {auth ? (
-            <SignInMenu history={history} userInfo={userInfo} handleUnAuth={this.handleUnAuth} />
-          ) : (
-            <SignUpMenu classes={classes} />
-          )}
+          {auth ? <SignInMenu userInfo={userInfo} /> : <SignUpMenu classes={classes} />}
         </Toolbar>
       </AppBar>
     );
