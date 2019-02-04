@@ -5,38 +5,16 @@ import 'cross-fetch/polyfill';
 import { gql } from 'apollo-boost';
 
 import prisma from '../src/utils/prisma';
-import getGraphQLClient from './utils/get-graphql-client';
+import getGraphQLClient, { getGraphQLClientWithTunnel } from './utils/get-graphql-client';
 import seedTestData, { seedUserOne, seedUserFour, seedUserFive } from './utils/seed-test-data';
 import operations from './utils/operations';
 import logger from '../src/utils/logger';
 import cache from '../src/utils/cache';
 import * as auth from '../src/utils/authentication';
 
-const graphQLClient = getGraphQLClient();
+const ngrok = require('ngrok');
 
-const testUserOne = {
-  name: 'elbertsoftware',
-  email: 'elbertsoftware.tester@gmail.com',
-  password: '!dcba4321',
-  questionA: 'a?',
-  answerA: 'a',
-  questionB: 'b?',
-  answerB: 'b',
-};
-const testUserTwo = {
-  name: 'elbertsoftware',
-  phone: '0386824579',
-  password: '!dcba4321',
-  questionA: 'a?',
-  answerA: 'a',
-  questionB: 'b?',
-  answerB: 'b',
-};
-const testUserThree = {
-  name: 'Jack',
-  email: 'jack@example.com',
-  password: '!dcba4321',
-};
+const graphQLClient = getGraphQLClient();
 
 beforeEach(seedTestData);
 
@@ -48,47 +26,70 @@ beforeEach(seedTestData);
 
 describe(`User Tests: create a user`, () => {
   test.each`
-    description                           | name                | email                                | phone           | password       | questionA    | answerA      | questionB    | answerB
-    ${'email but name is undefined'}      | ${undefined}        | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'email but email is undefined'}     | ${'elbertsoftware'} | ${undefined}                         | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'email but password is undefined'}  | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${undefined}   | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'email but questA is undefined'}    | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${undefined} | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'email but ansA is undefined'}      | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${undefined} | ${'B?'}      | ${'b'}
-    ${'email but questABis undefined'}    | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${undefined} | ${'b'}
-    ${'email but ansA is undefined'}      | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${undefined}
-    ${'email but name is null'}           | ${null}             | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'email but email is null'}          | ${'elbertsoftware'} | ${null}                              | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'email but password is null'}       | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${null}        | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'email but questA is null'}         | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${null}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'email but ansA is null'}           | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${null}      | ${'B?'}      | ${'b'}
-    ${'email but questABis null'}         | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${null}      | ${'b'}
-    ${'email but ansA is null'}           | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${null}
-    ${'email but name is empty'}          | ${''}               | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'email but email is empty'}         | ${'elbertsoftware'} | ${''}                                | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'email but password is empty'}      | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${''}          | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'email but questA is empty'}        | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${''}        | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'email but ansA is empty'}          | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${''}        | ${'B?'}      | ${'b'}
-    ${'email but questABis empty'}        | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${''}        | ${'b'}
-    ${'email but ansA is empty'}          | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${''}
-    ${'phone but name is undefined'}      | ${undefined}        | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'phone but password is undefined'}  | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${undefined}   | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'phone but questionA is undefined'} | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${undefined} | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'phone but answerA is undefined'}   | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${undefined} | ${'B?'}      | ${'b'}
-    ${'phone but questionB is undefined'} | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${undefined} | ${'b'}
-    ${'phone but answerB is undefined'}   | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${undefined}
-    ${'phone but name is empty'}          | ${''}               | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'phone but password is empty'}      | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${''}          | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'phone but questionA is empty'}     | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${''}        | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'phone but answerA is empty'}       | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${''}        | ${'B?'}      | ${'b'}
-    ${'phone but questionB is empty'}     | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${''}        | ${'b'}
-    ${'phone but answerB is empty'}       | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${''}
-    ${'phone but name is null'}           | ${null}             | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'phone but password is null'}       | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${null}        | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'phone but questionA is null'}      | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${null}      | ${'a'}       | ${'B?'}      | ${'b'}
-    ${'phone but answerA is null'}        | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${null}      | ${'B?'}      | ${'b'}
-    ${'phone but questionB is null'}      | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${null}      | ${'b'}
-    ${'phone but answerB is null'}        | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${null}
-    ${'null of all'}                      | ${undefined}        | ${undefined}                         | ${undefined}    | ${undefined}   | ${undefined} | ${undefined} | ${undefined} | ${undefined}
+    description                             | name                | email                                | phone           | password       | questionA    | answerA      | questionB    | answerB
+    ${'email but name is undefined'}        | ${undefined}        | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but email is undefined'}       | ${'elbertsoftware'} | ${undefined}                         | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but password is undefined'}    | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${undefined}   | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but questA is undefined'}      | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${undefined} | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but ansA is undefined'}        | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${undefined} | ${'B?'}      | ${'b'}
+    ${'email but questABis undefined'}      | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${undefined} | ${'b'}
+    ${'email but ansA is undefined'}        | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${undefined}
+    ${'email but name is null'}             | ${null}             | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but email is null'}            | ${'elbertsoftware'} | ${null}                              | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but password is null'}         | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${null}        | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but questA is null'}           | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${null}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but ansA is null'}             | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${null}      | ${'B?'}      | ${'b'}
+    ${'email but questABis null'}           | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${null}      | ${'b'}
+    ${'email but ansA is null'}             | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${null}
+    ${'email but name is empty'}            | ${''}               | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but email is empty'}           | ${'elbertsoftware'} | ${''}                                | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but password is empty'}        | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${''}          | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but questA is empty'}          | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${''}        | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but ansA is empty'}            | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${''}        | ${'B?'}      | ${'b'}
+    ${'email but questABis empty'}          | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${''}        | ${'b'}
+    ${'email but ansA is empty'}            | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${''}
+    ${'email but name whitespaces'}         | ${'  '}             | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but email whitespaces'}        | ${'elbertsoftware'} | ${'  '}                              | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but password whitespaces'}     | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'  '}        | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but questA whitespaces'}       | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'  '}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but ansA whitespaces'}         | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'  '}      | ${'B?'}      | ${'b'}
+    ${'email but questA whitespaces'}       | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'  '}      | ${'b'}
+    ${'email but ansA whitespaces'}         | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'  '}
+    ${'email but name is empty'}            | ${'   '}            | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but email is empty'}           | ${'elbertsoftware'} | ${'   '}                             | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but password is empty'}        | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'   '}       | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but questA is empty'}          | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'   '}     | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'email but ansA is empty'}            | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'   '}     | ${'B?'}      | ${'b'}
+    ${'email but questABis empty'}          | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'   '}     | ${'b'}
+    ${'email but ansA is empty'}            | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined}    | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'   '}
+    ${'phone but name is undefined'}        | ${undefined}        | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'phone but password is undefined'}    | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${undefined}   | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'phone but questionA is undefined'}   | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${undefined} | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'phone but answerA is undefined'}     | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${undefined} | ${'B?'}      | ${'b'}
+    ${'phone but questionB is undefined'}   | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${undefined} | ${'b'}
+    ${'phone but answerB is undefined'}     | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${undefined}
+    ${'phone but name is empty'}            | ${''}               | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'phone but password is empty'}        | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${''}          | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'phone but questionA is empty'}       | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${''}        | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'phone but answerA is empty'}         | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${''}        | ${'B?'}      | ${'b'}
+    ${'phone but questionB is empty'}       | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${''}        | ${'b'}
+    ${'phone but answerB is empty'}         | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${''}
+    ${'phone but name is whitespaces'}      | ${'  '}             | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'phone but password is whitespaces'}  | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'  '}        | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'phone but questionA is whitespaces'} | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'  '}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'phone but answerA is whitespaces'}   | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'  '}      | ${'B?'}      | ${'b'}
+    ${'phone but questionB is whitespaces'} | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'  '}      | ${'b'}
+    ${'phone but answerB is whitespaces'}   | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'  '}
+    ${'phone but name is null'}             | ${null}             | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'phone but password is null'}         | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${null}        | ${'A?'}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'phone but questionA is null'}        | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${null}      | ${'a'}       | ${'B?'}      | ${'b'}
+    ${'phone but answerA is null'}          | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${null}      | ${'B?'}      | ${'b'}
+    ${'phone but questionB is null'}        | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${null}      | ${'b'}
+    ${'phone but answerB is null'}          | ${'elbertsoftware'} | ${undefined}                         | ${'0386824579'} | ${'!dcba4321'} | ${'A?'}      | ${'a'}       | ${'B?'}      | ${null}
+    ${'null of all'}                        | ${undefined}        | ${undefined}                         | ${undefined}    | ${undefined}   | ${undefined} | ${undefined} | ${undefined} | ${undefined}
+    ${'null of all'}                        | ${''}               | ${''}                                | ${''}           | ${''}          | ${''}        | ${''}        | ${''}        | ${''}
+    ${'null of all'}                        | ${'  '}             | ${'  '}                              | ${'  '}         | ${'  '}        | ${'  '}      | ${'  '}      | ${'  '}      | ${'  '}
+    ${'null of all'}                        | ${null}             | ${null}                              | ${null}         | ${null}        | ${null}      | ${null}      | ${null}      | ${null}
   `(
     `Should not create user by: $description`,
     async ({ name, email, phone, password, questionA, answerA, questionB, answerB }) => {
@@ -109,34 +110,36 @@ describe(`User Tests: create a user`, () => {
   );
 
   test.each`
-    description                                  | name                | email                                                                             | phone            | password       | questionA | answerA | questionB | answerB
-    ${'invalid email: lack of domain'}           | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail'}                                                  | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid email: lack of domain'}           | ${'elbertsoftware'} | ${'elbertsoftware.tester@'}                                                       | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid email: lack of @ domain'}         | ${'elbertsoftware'} | ${'elbertsoftware.tester'}                                                        | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid email: lack of @ domain'}         | ${'elbertsoftware'} | ${'elbertsoftware'}                                                               | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid email: lack of mailbox'}          | ${'elbertsoftware'} | ${'@gmail.com.io'}                                                                | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid email: lack of mailbox'}          | ${'elbertsoftware'} | ${'@gmail.com'}                                                                   | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid email: lack of mailbox & domain'} | ${'elbertsoftware'} | ${'@gmail'}                                                                       | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid email: double @'}                 | ${'elbertsoftware'} | ${'elbertsoftware@tester@gmail.com'}                                              | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid email: double @'}                 | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail@com'}                                              | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid email: special characters'}       | ${'elbertsoftware'} | ${'~!#$%@gmail.com'}                                                              | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid email: special character'}        | ${'elbertsoftware'} | ${'elbertsoftware&tester@gmail.com'}                                              | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid email: space'}                    | ${'elbertsoftware'} | ${'elbertsoftware tester@gmail.com'}                                              | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid email: over 64 characters'}       | ${'elbertsoftware'} | ${'1234567890123456789012345678901234567890123456789012345678901234+x@gmail.com'} | ${undefined}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid phone: has dash'}                 | ${'elbertsoftware'} | ${undefined}                                                                      | ${'-0386824579'} | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid phone: has splash'}               | ${'elbertsoftware'} | ${undefined}                                                                      | ${'/0386824579'} | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid phone: has letter'}               | ${'elbertsoftware'} | ${undefined}                                                                      | ${'a0386824579'} | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid phone: has letter'}               | ${'elbertsoftware'} | ${undefined}                                                                      | ${'38682457a9'}  | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid phone: has singlequote'}          | ${'elbertsoftware'} | ${undefined}                                                                      | ${"'0386824579"} | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid phone: has singlequote'}          | ${'elbertsoftware'} | ${undefined}                                                                      | ${"38682457'9"}  | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid pwd: only numbers'}               | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'12345678'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid pwd: lack of letter'}             | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'1234567!'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid pwd: lack of special letter'}     | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'1234567a'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid pwd: only letters'}               | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'abcdefgh'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid pwd: lack of number'}             | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'abcdefg!'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid pwd: lack of special character'}  | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'abcdefg1'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid pwd: only special characters'}    | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'~!@#$%^&'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
-    ${'invalid pwdL < 6 character'}              | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}     | ${'ab12!'}     | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    description                                  | name                | email                                                                             | phone                  | password       | questionA | answerA | questionB | answerB
+    ${'invalid email: not trimmed'}              | ${'elbertsoftware'} | ${'  elbertsoftware.tester@gmail  '}                                              | ${undefined}           | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: lack of domain'}           | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail'}                                                  | ${undefined}           | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: lack of domain'}           | ${'elbertsoftware'} | ${'elbertsoftware.tester@'}                                                       | ${undefined}           | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: lack of @ domain'}         | ${'elbertsoftware'} | ${'elbertsoftware.tester'}                                                        | ${undefined}           | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: lack of @ domain'}         | ${'elbertsoftware'} | ${'elbertsoftware'}                                                               | ${undefined}           | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: lack of mailbox'}          | ${'elbertsoftware'} | ${'@gmail.com.io'}                                                                | ${undefined}           | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: lack of mailbox'}          | ${'elbertsoftware'} | ${'@gmail.com'}                                                                   | ${undefined}           | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: lack of mailbox & domain'} | ${'elbertsoftware'} | ${'@gmail'}                                                                       | ${undefined}           | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: double @'}                 | ${'elbertsoftware'} | ${'elbertsoftware@tester@gmail.com'}                                              | ${undefined}           | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: double @'}                 | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail@com'}                                              | ${undefined}           | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: special characters'}       | ${'elbertsoftware'} | ${'~!#$%@gmail.com'}                                                              | ${undefined}           | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: special character'}        | ${'elbertsoftware'} | ${'elbertsoftware&tester@gmail.com'}                                              | ${undefined}           | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: space'}                    | ${'elbertsoftware'} | ${'elbertsoftware tester@gmail.com'}                                              | ${undefined}           | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid email: over 64 characters'}       | ${'elbertsoftware'} | ${'1234567890123456789012345678901234567890123456789012345678901234+x@gmail.com'} | ${undefined}           | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid phone: not trimmed'}              | ${'elbertsoftware'} | ${undefined}                                                                      | ${'  +840386824579  '} | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid phone: has dash'}                 | ${'elbertsoftware'} | ${undefined}                                                                      | ${'-+840386824579'}    | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid phone: has splash'}               | ${'elbertsoftware'} | ${undefined}                                                                      | ${'/+840386824579'}    | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid phone: has letter'}               | ${'elbertsoftware'} | ${undefined}                                                                      | ${'a+840386824579'}    | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid phone: has letter'}               | ${'elbertsoftware'} | ${undefined}                                                                      | ${'+8438682457a9'}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid phone: has singlequote'}          | ${'elbertsoftware'} | ${undefined}                                                                      | ${"'+840386824579"}    | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid phone: has singlequote'}          | ${'elbertsoftware'} | ${undefined}                                                                      | ${"+8438682457'9"}     | ${'!dcba4321'} | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwd: only numbers'}               | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}           | ${'12345678'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwd: lack of letter'}             | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}           | ${'1234567!'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwd: lack of special letter'}     | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}           | ${'1234567a'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwd: only letters'}               | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}           | ${'abcdefgh'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwd: lack of number'}             | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}           | ${'abcdefg!'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwd: lack of special character'}  | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}           | ${'abcdefg1'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwd: only special characters'}    | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}           | ${'~!@#$%^&'}  | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
+    ${'invalid pwdL < 6 character'}              | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'}                                              | ${undefined}           | ${'ab12!'}     | ${'A?'}   | ${'a'}  | ${'B?'}   | ${'b'}
   `(
     `Should not create user because of: $description`,
     async ({ name, email, phone, password, questionA, answerA, questionB, answerB }) => {
@@ -220,10 +223,10 @@ describe(`Resend confirmation code`, () => {
     ${'user ID is null'}            | ${null}
     ${'user ID is undefined'}       | ${undefined}
     ${'user ID is not exsisted'}    | ${'0123456789'}
-    ${'user is exised and enabled'} | ${() => seedUserOne.user.id}
+    ${'user is exised and enabled'} | ${'seedUserOneId'}
   `(`Should not resend confirmation code since $description : $userId`, async ({ userId }) => {
     const variables = {
-      userId: userId,
+      userId: userId === 'seedUserOneId' ? seedUserOne.user.id : userId,
     };
     await expect(graphQLClient.mutate({ mutation: operations.resendConfirmation, variables })).rejects.toThrow();
   });
@@ -410,11 +413,11 @@ describe(`Log out`, () => {
   });
 });
 
-// /**
-//  *
-//  *  --- CONFIRM USER ---
-//  *
-//  */
+/**
+ *
+ *  --- CONFIRM USER ---
+ *
+ */
 
 describe(`Confirm user`, () => {
   test('Should confirm user account and remove the confirmation code from redis', async () => {
@@ -433,20 +436,22 @@ describe(`Confirm user`, () => {
   });
 
   test.each`
-    description                | userId                        | code
-    ${'lacking of inputs'}     | ${undefined}                  | ${undefined}
-    ${'lacking of userId'}     | ${undefined}                  | ${() => seedUserFour.confirmCode}
-    ${'lacking of code'}       | ${() => seedUserFour.user.id} | ${undefined}
-    ${'using an invalid code'} | ${() => seedUserFour.user.id} | ${'a1b2c3'}
-    ${'using an invalid code'} | ${() => seedUserFour.user.id} | ${() => seedUserFive.user.id}
+    description                | userId            | code
+    ${'lacking of inputs'}     | ${undefined}      | ${undefined}
+    ${'lacking of userId'}     | ${undefined}      | ${'seedUserFour'}
+    ${'lacking of code'}       | ${'seedUserFour'} | ${undefined}
+    ${'using an invalid code'} | ${'seedUserFour'} | ${'a1b2c3'}
+    ${'using an invalid code'} | ${'seedUserFour'} | ${'seedUserFive'}
   `(`Should not confirm user 4 account because of: $description`, async ({ userId, code }) => {
-    expect(seedUserFour.user.id.length).toBeGreaterThan(8);
-    expect(seedUserFour.confirmCode.length).toBeGreaterThan(4);
-
     const variables = {
       data: {
-        userId: userId,
-        code: code,
+        userId: userId === 'seedUserFour' ? seedUserFour.user.id : userId,
+        code:
+          code === 'seedUserFive'
+            ? seedUserFive.confirmCode
+            : code === 'seedUserFour'
+            ? seedUserFour.confirmCode
+            : code,
       },
     };
     await expect(graphQLClient.mutate({ mutation: operations.confirmUser, variables })).rejects.toThrow();
@@ -702,11 +707,14 @@ describe(`Reset PWD`, () => {
         expect(data.requestResetPwd.questionB).toBe(questionB);
       },
     );
+
     test.each`
       description             | email                      | phone
       ${'by unexisted email'} | ${'hellojohn@example.com'} | ${undefined}
       ${'by unexisted phone'} | ${undefined}               | ${'0987654321'}
       ${'empty input'}        | ${undefined}               | ${undefined}
+      ${'empty input'}        | ${''}                      | ${undefined}
+      ${'empty input'}        | ${undefined}               | ${null}
     `(
       'Should not return token & questions when user makes an invalid resetPWD request $description',
       async ({ email, phone }) => {
@@ -720,7 +728,8 @@ describe(`Reset PWD`, () => {
       },
     );
   });
-  describe(`Step2: Verify identity by answering some securty questions`, () => {
+
+  describe(`Step2: Verify identity by answering some securty questions and reset pwd`, () => {
     let token = '';
     beforeEach(async () => {
       const variables = {
@@ -730,76 +739,22 @@ describe(`Reset PWD`, () => {
       };
       const { data } = await graphQLClient.mutate({ mutation: operations.requestResetPwd, variables });
       token = data.requestResetPwd.token;
-      expect(token.length).toBeGreaterThanOrEqual(32);
     });
-    test(`Should get a new token to reset pwd`, async () => {
-      expect(token.length).toBeGreaterThanOrEqual(32);
-      const graphQLClientWithToken = getGraphQLClient(token);
-      const variables = {
-        data: {
-          answerA: 'a',
-          answerB: 'b',
-        },
-      };
-      const { data } = await graphQLClientWithToken.mutate({ mutation: operations.verifyBeforeResetPwd, variables });
-      expect(data.verifyBeforeResetPwd.token.length).toBeGreaterThanOrEqual(32);
-      expect(data.verifyBeforeResetPwd.userId).toBe(seedUserFive.user.id);
-    });
-    test.each`
-      description        | answerA      | answerB      | token
-      ${'no token'}      | ${'a'}       | ${'b'}       | ${undefined}
-      ${'no answerA'}    | ${undefined} | ${'b'}       | ${token}
-      ${'no answerB'}    | ${'a'}       | ${undefined} | ${token}
-      ${'no answers'}    | ${undefined} | ${undefined} | ${token}
-      ${'wrong answer'}  | ${'c'}       | ${'b'}       | ${token}
-      ${'wrong answer'}  | ${'a'}       | ${'c'}       | ${token}
-      ${'wrong answers'} | ${'c'}       | ${'d'}       | ${token}
-    `(`Should not verify user's identity because of $description`, async ({ answerA, answerB, token }) => {
-      const graphQLClientWithToken = getGraphQLClient(token);
-      const variables = {
-        data: {
-          answerA: answerA,
-          answerB: answerB,
-        },
-      };
-      await expect(
-        graphQLClientWithToken.mutate({ mutation: operations.verifyBeforeResetPwd, variables }),
-      ).rejects.toThrow();
-    });
-  });
 
-  describe(`Step3: Reset Pwd`, () => {
-    let token = '';
-    beforeEach(async () => {
-      let variables = {
-        data: {
-          email: 'john5@example.com',
-        },
-      };
-      const res = await graphQLClient.mutate({ mutation: operations.requestResetPwd, variables });
-      expect(res.data.requestResetPwd.token.length).toBeGreaterThanOrEqual(32);
-      const graphQLClientWithToken = getGraphQLClient(res.data.requestResetPwd.token);
-      variables = {
-        data: {
-          answerA: 'a',
-          answerB: 'b',
-        },
-      };
-      const { data } = await graphQLClientWithToken.mutate({ mutation: operations.verifyBeforeResetPwd, variables });
-      token = data.verifyBeforeResetPwd.token;
-      expect(token.length).toBeGreaterThanOrEqual(32);
-    });
-    test(`Should reset pwd and log in with new pwd`, async () => {
+    test(`Should verify user and reset pwd`, async () => {
       expect(token.length).toBeGreaterThanOrEqual(32);
       const graphQLClientWithToken = getGraphQLClient(token);
       let variables = {
         data: {
+          answerA: 'a',
+          answerB: 'b',
           password: '@cdef5678',
         },
       };
       const { data } = await graphQLClientWithToken.mutate({ mutation: operations.resetPassword, variables });
-      expect(data.resetPassword).toBe(true);
-      // login with new pwd
+      expect(data.resetPassword).toBeTruthy();
+
+      // should login with new pwd
       variables = {
         data: {
           email: 'john5@example.com',
@@ -812,25 +767,151 @@ describe(`Reset PWD`, () => {
       });
       expect(res.data.login.token.length).toBeGreaterThan(32);
     });
+
     test.each`
-      description                        | password
-      ${'empty input'}                   | ${''}
-      ${'empty input'}                   | ${undefined}
-      ${'only number'}                   | ${'12345678'}
-      ${'only words'}                    | ${'abcdefgh'}
-      ${'only special characters'}       | ${'!@#$%^&*'}
-      ${'lacking of special characters'} | ${'1234abcd'}
-      ${'lacking of words'}              | ${'!@#$5678'}
-      ${'too small'}                     | ${'@ab12'}
-    `(`Should not reset pwd because of $description`, async ({ password }) => {
-      expect(token.length).toBeGreaterThanOrEqual(32);
-      const graphQLClientWithToken = getGraphQLClient(token);
+      description        | answerA      | answerB      | password       | rule
+      ${'no token'}      | ${'a'}       | ${'b'}       | ${'@cdef5678'} | ${'noToken'}
+      ${'no answerA'}    | ${undefined} | ${'b'}       | ${'@cdef5678'} | ${'token'}
+      ${'no answerB'}    | ${'a'}       | ${undefined} | ${'@cdef5678'} | ${'token'}
+      ${'no answers'}    | ${undefined} | ${undefined} | ${'@cdef5678'} | ${'token'}
+      ${'wrong answer'}  | ${'c'}       | ${'b'}       | ${'@cdef5678'} | ${'token'}
+      ${'wrong answer'}  | ${'a'}       | ${'c'}       | ${'@cdef5678'} | ${'token'}
+      ${'wrong answers'} | ${'c'}       | ${'d'}       | ${'@cdef5678'} | ${'token'}
+      ${'wrong pwd'}     | ${'a'}       | ${'b'}       | ${'@ab12'}     | ${'token'}
+    `(`Should not verify user's identity because of $description`, async ({ answerA, answerB, password, rule }) => {
+      const graphQLClientWithToken = getGraphQLClient(rule === 'noToken' ? null : token);
       const variables = {
         data: {
+          answerA: answerA,
+          answerB: answerB,
           password: password,
         },
       };
       await expect(graphQLClientWithToken.mutate({ mutation: operations.resetPassword, variables })).rejects.toThrow();
     });
+  });
+});
+
+describe(`Testing with ngrok`, async () => {
+  let url;
+  let xClient;
+  // Open a tunnel before runing all tests
+  // and make sure that ngrok return the url that we're going to pass into the apollo booost
+  beforeAll(async () => {
+    url = await ngrok.connect({
+      proto: 'http',
+      addr: '127.0.0.1:5000',
+    });
+    console.log('TEST ngrok tunnel is up');
+    console.log('TEST Tunnel is: ' + url);
+    xClient = getGraphQLClientWithTunnel(null, url);
+  }, 10000);
+
+  // Close tunnel after running all tests (this is important)
+  afterAll(async () => {
+    await ngrok.disconnect();
+    await ngrok.kill();
+    console.log('TEST ngrok tunnel is down');
+  });
+
+  beforeEach(seedTestData);
+
+  /**
+   *
+   *  --- SIGN UP ---
+   *
+   */
+
+  test(`Should one userId has two tokens with different ip in cache`, async () => {
+    // local ip
+    let variables = {
+      data: {
+        email: 'john@example.com',
+        password: '!abcd1234',
+      },
+    };
+    const res1 = await graphQLClient.mutate({
+      mutation: operations.login,
+      variables,
+    });
+    expect(res1.data.login.token.length).toBeGreaterThan(32);
+
+    // with ngrok tunnel
+    variables = {
+      data: {
+        phone: '0123456789',
+        password: '!abcd1234',
+      },
+    };
+    const res2 = await xClient.mutate({
+      mutation: operations.login,
+      variables,
+    });
+    expect(res2.data.login.token.length).toBeGreaterThan(32);
+
+    // get all hashes in cache
+    const cacheData = await cache.hgetall(seedUserOne.user.id);
+    expect(Object.keys(cacheData).length).toBeGreaterThanOrEqual(2);
+  });
+
+  test(`Should clean all tokens of an userId in cache`, async () => {
+    // local ip
+    let variables = {
+      data: {
+        email: 'john@example.com',
+        password: '!abcd1234',
+      },
+    };
+    const res1 = await graphQLClient.mutate({
+      mutation: operations.login,
+      variables,
+    });
+    expect(res1.data.login.token.length).toBeGreaterThan(32);
+
+    // with ngrok tunnel
+    variables = {
+      data: {
+        phone: '0123456789',
+        password: '!abcd1234',
+      },
+    };
+    const res2 = await xClient.mutate({
+      mutation: operations.login,
+      variables,
+    });
+    expect(res2.data.login.token.length).toBeGreaterThan(32);
+
+    // delete all tokens before they are expired
+    auth.deleteAllTokensInCache(cache, seedUserOne.user.id);
+
+    const cacheData = await cache.hgetall(seedUserOne.user.id);
+    expect(cacheData).toBeNull();
+  });
+
+  test(`Should tokens are deleted since it is expired`, async () => {
+    let variables = {
+      data: {
+        email: 'john@example.com',
+        password: '!abcd1234',
+      },
+    };
+    const res1 = await graphQLClient.mutate({
+      mutation: operations.login,
+      variables,
+    });
+    expect(res1.data.login.token.length).toBeGreaterThan(32);
+
+    // wait 5s and check the cache
+    setTimeout(async () => {
+      const cacheData = await cache.hgetall(seedUserOne.user.id);
+      expect(Object.keys(cacheData).length).toBe(0);
+    }, 5000);
+  });
+});
+
+describe('Get language', () => {
+  const client = getGraphQLClient();
+  test(`Should get language from client`, () => {
+    expect();
   });
 });

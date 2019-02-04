@@ -18,6 +18,8 @@ require('@babel/polyfill/noConflict');
 // into this file which uses Node native syntax
 require('babel-register');
 
+// const ngrok = require('ngrok');
+
 const graphQLServer = require('../../src/server').default;
 
 // dev server on port 4000, test server on port 5000, prod server depends on process.env.PORT
@@ -26,7 +28,19 @@ module.exports = async () => {
 
   // Use 'global' to pass variables between modules
   // global.httpServer will be used in stop-test-server.js to bring down the graphQLServer
-  global.httpServer = await graphQLServer.listen({ port }, () => {
+  global.httpServer = await graphQLServer.listen({ port }, async () => {
     console.log(`TEST foxiny-gateway is up and running on port ${port}`);
   });
+
+  // open tunnel -> inside server is ok but tests(in test,js files) cannot get the url (via global.tunnelUrl) -> dont know why
+  // we need pass the ngrok tunnel url into the apollo boost (client)
+
+  // (async () => {
+  //   global.tunnelUrl = await ngrok.connect({
+  //     proto: 'http',
+  //     addr: '127.0.0.1:5000',
+  //   });
+  //   console.log('TEST ngrok tunnel is up');
+  //   console.log('TEST Tunnel is: ' + global.tunnelUrl);
+  // })();
 };
