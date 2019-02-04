@@ -131,17 +131,8 @@ const requestResetPwd = gql`
   }
 `;
 
-const verifyBeforeResetPwd = gql`
-  mutation($data: VerifyBeforeResetPwdInput!) {
-    verifyBeforeResetPwd(data: $data) {
-      userId
-      token
-    }
-  }
-`;
-
 const resetPassword = gql`
-  mutation($data: ResetPwdInput!) {
+  mutation($data: ResetPasswordInput!) {
     resetPassword(data: $data)
   }
 `;
@@ -157,7 +148,6 @@ const operations = {
   updateUser,
   deleteUser,
   requestResetPwd,
-  verifyBeforeResetPwd,
   resetPassword,
 };
 

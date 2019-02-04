@@ -64,8 +64,9 @@ const seedUserFive = {
 };
 
 const seedTestData = async () => {
-  // Delete test data
+  // Delete test data & clean cache
   await prisma.mutation.deleteManyUsers();
+  await cache.flushall();
 
   // Seed user one
   seedUserOne.user = await prisma.mutation.createUser({

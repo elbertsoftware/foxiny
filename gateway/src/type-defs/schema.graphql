@@ -1,5 +1,6 @@
 type Query {
   users(query: String): [User!]!
+  # questions(query: String): [SecurityQuestion]!
   me: User!
 }
 
@@ -13,8 +14,7 @@ type Mutation {
   deleteUser: User!
 
   requestResetPwd(data: RequestResetPwdInput!): SecPayload!
-  verifyBeforeResetPwd(data: VerifyBeforeResetPwdInput!): AuthPayload!
-  resetPassword(data: ResetPwdInput!): Boolean!
+  resetPassword(data: ResetPasswordInput!): Boolean!
 }
 
 type User {
@@ -34,10 +34,24 @@ type User {
   answerA: String!
   questionB: String!
   answerB: String!
+  # answers: [Answer]!
 
   createdAt: String!
   updatedAt: String!
 }
+
+# type SecurityQuestion {
+#   id: ID! @unique
+#   question: String!
+#   answer: [Answer]!
+# }
+
+# type Answer {
+#   id: ID! @unique
+#   user: User!
+#   question: Question!
+#   answer: String!
+# }
 
 input CreateUserInput {
   name: String!
@@ -86,11 +100,8 @@ input RequestResetPwdInput {
   phone: String
 }
 
-input VerifyBeforeResetPwdInput {
+input ResetPasswordInput {
   answerA: String!
   answerB: String!
-}
-
-input ResetPwdInput {
   password: String!
 }

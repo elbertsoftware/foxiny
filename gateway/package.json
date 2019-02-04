@@ -10,7 +10,7 @@
     "schema": "graphql get-schema --project foxiny-gateway --dotenv ../config/dev.env",
     "dev": "env-cmd ../config/dev.env nodemon ./src/index.js --exec babel-node --ext js,graphql",
     "debug": "env-cmd ../config/dev.env babel-node ./src/index.js",
-    "test": "env-cmd ../config/test.env jest --watch --runInBand",
+    "test": "env-cmd ../config/test.env jest --watchAll --runInBand",
     "prod": "env-cmd ../config/prod.env node ./dist/index.js",
     "postbuild": "babel src --out-dir dist --copy-files",
     "start": "node ./dist/index.js"
@@ -58,6 +58,7 @@
     "flow-bin": "^0.86.0",
     "graphql-cli": "^3.0.3",
     "jest": "^23.6.0",
+    "ngrok": "^3.1.0",
     "nodemon": "^1.18.6"
   }
 }

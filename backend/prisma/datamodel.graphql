@@ -4,11 +4,25 @@ type User {
   email: String @unique # required and uniqueness will be handled in foxiny-gateway
   phone: String @unique # required and uniqueness will be handled in foxiny-gateway
   password: String # required will be handled in foxiny-gateway
+  questionA: String!
+  answerA: String!
+  questionB: String!
+  answerB: String!
+  # answers: [Answer]!
   enabled: Boolean @default(value: "false") # required will be handled in foxiny-gateway
-  questionA: String # required will be handled in foxiny-gateway
-  answerA: String # required will be handled in foxiny-gateway
-  questionB: String # required will be handled in foxiny-gateway
-  answerB: String # required will be handled in foxiny-gateway
   createdAt: DateTime!
   updatedAt: DateTime!
 }
+
+# type SecurityQuestion {
+#   id: ID! @unique
+#   question: String!
+#   answer: [Answer]!
+# }
+
+# type Answer {
+#   id: ID! @unique
+#   user: User!
+#   question: Question!
+#   answer: String!
+# }
