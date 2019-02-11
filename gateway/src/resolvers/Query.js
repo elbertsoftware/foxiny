@@ -36,6 +36,24 @@ const Query = {
       info,
     );
   },
+
+  // get all security questions
+  questions: async (parent, args, { prisma, request, cache }, info) => {
+    const opArgs = {};
+
+    if (args.query) {
+      opArgs.where = {
+        OR: [
+          // use OR to search for multiple fields
+          {
+            question_contains: args.query,
+          },
+        ],
+      };
+    }
+
+    return prisma.query.securityQuestions(opArgs, info);
+  },
 };
 
 export default Query;

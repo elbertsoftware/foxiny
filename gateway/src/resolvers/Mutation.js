@@ -27,23 +27,41 @@ import { sendConfirmationEmail } from '../utils/email';
 import { sendConfirmationText } from '../utils/sms';
 import { sendConfirmationEsms } from '../utils/smsVN';
 
+// TODO: un-comment sendConfirmation functions
+
 const Mutation = {
   createUser: async (parent, { data }, { prisma, cache, request }, info) => {
-    logger.info(JSON.stringify(request.headers, undefined, 2));
-    getLanguage(request);
+    // TODO: check the header in apolloBoost
+    // logger.debug(JSON.stringify(request.headers, undefined, 2));
+    // getLanguage(request);
     validateCreateInput(data);
 
     const password = hashPassword(data.password);
+    const queAnsPair = data.securityInfo; // get pairs of security question & answer from securityInfo
+    delete data.securityInfo; // remove unnescessary field
 
+    // Fragment ensures securityAnswers is always fetched after mutating
+    const fragment = `fragment securityAnswersForUser on User { securityAnswers { id securityQuestion { id question } answer createdAt updatedAt } }`;
     const user = await prisma.mutation.createUser(
       {
         data: {
           ...data,
           password, // replace plain text password with the hashed one
+          securityAnswers: {
+            // cast Question&AnswerPairs from input to securityAnswer before mutating
+            create: queAnsPair.map(pair => ({
+              securityQuestion: {
+                connect: {
+                  id: pair.questionId,
+                },
+              },
+              answer: pair.answer,
+            })),
+          },
           enabled: false, // user needs to confirm before the account become enabled
         },
       },
-      info,
+      addFragmentToInfo(info, fragment),
     );
 
     const code = generateConfirmation(cache, user.id);

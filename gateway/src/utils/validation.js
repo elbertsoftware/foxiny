@@ -24,47 +24,47 @@ const validatePwd = password => {
   if (!password || !pwdRegex.test(password)) throw new Error('Invalid input');
 };
 
-// const validateSecurityAnswer = answer => {
-//   // Throw error if input is white spaces
-//   if (!answer || !answer.trim()) throw new Error('Invalid input');
-// };
-
-const validateSecQnA = questionOrAnswer => {
-  // Throw error if input is white spaces
-  if (!questionOrAnswer || !questionOrAnswer.trim()) throw new Error('Invalid input');
+const validateSecurityAnswer = answer => {
+  // Throw error if input is empty/null/undefined or white spaces
+  if (!answer || !answer.trim()) throw new Error('Invalid input');
 };
 
-const validateName = name => {
+const validateIsEmpty = value => {
   // Throw error if input is empty/null/undefined or white spaces
-  if (!name || !name.trim()) throw new Error('Invalid input');
+  if (!value || !value.trim()) throw new Error('Invalid input');
+};
+
+const validateSecurityAnswers = questionAnswerPairs => {
+  if (questionAnswerPairs.length < 3) throw new Error('Invalid input');
+  questionAnswerPairs.forEach(pair => {
+    validateIsEmpty(pair.questionId);
+    validateIsEmpty(pair.answer);
+  });
 };
 
 /**
  * validate inputs before creating a user
- * @param {nested data} data
+ * @param {Object} data
  */
 const validateCreateInput = data => {
   // To create a user, either email or phone is required
-  if ((!data.email && !data.phone) || !data.name || !data.password) throw new Error('Invalid input');
+  if (!data.email && !data.phone) throw new Error('Invalid input');
   if (data.email) {
     validateEmail(data.email);
   } else {
     validatePhone(data.phone);
   }
-  validateName(data.name);
+  validateIsEmpty(data.name);
   validatePwd(data.password);
-  validateSecQnA(data.questionA);
-  validateSecQnA(data.answerA);
-  validateSecQnA(data.questionB);
-  validateSecQnA(data.answerB);
+  validateSecurityAnswers(data.securityAnswers);
 };
 
 /**
  * validate inputs before updating a user
- * @param {nested data} data
+ * @param {Object} data
  */
 const validateUpdateInput = data => {
-  // if (data.name) validateName(data.name); // no need to check name input since we remove it if null
+  if (data.name) validateIsEmpty(data.name);
   if (data.email) validateEmail(data.email);
   if (data.phone) validatePhone(data.phone);
   if (data.password) {
@@ -73,9 +73,14 @@ const validateUpdateInput = data => {
   }
 };
 
+/**
+ *
+ * @param {Object} data
+ */
 const validateResetPwdInput = data => {
-  validateSecQnA(data.answerA);
-  validateSecQnA(data.answerB);
+  validateSecurityAnswer(data.answerA);
+  validateSecurityAnswer(data.answerB);
+  validateSecurityAnswer(data.answerC);
   validatePwd(data.password);
 };
 
@@ -84,10 +89,9 @@ export {
   validateCreateInput,
   validateUpdateInput,
   validateResetPwdInput,
-  validateName,
   validateEmail,
   validatePhone,
   validatePwd,
-  validateSecQnA,
-  // validateSecurityAnswer,
+  validateIsEmpty,
+  validateSecurityAnswer,
 };

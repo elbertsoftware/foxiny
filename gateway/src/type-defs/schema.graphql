@@ -1,9 +1,11 @@
 type Query {
   users(query: String): [User!]!
-  # questions(query: String): [SecurityQuestion]!
   me: User!
+  questions(query: String): [SecurityQuestion]!
 }
 
+# user must pick three of many security question from database
+# user does not need to create their own security questions
 type Mutation {
   createUser(data: CreateUserInput!): User!
   resendConfirmation(userId: String!): User!
@@ -29,39 +31,51 @@ type User {
 
   enabled: Boolean!
 
-  # for recover password
-  questionA: String!
-  answerA: String!
-  questionB: String!
-  answerB: String!
-  # answers: [Answer]!
+  # for password recovery
+  # will be removed from this as no one can see these things
+  securityAnswers: [SecurityAnswer]!
+  securityInfo: [SecurityInfo]
 
   createdAt: String!
   updatedAt: String!
 }
 
-# type SecurityQuestion {
-#   id: ID! @unique
-#   question: String!
-#   answer: [Answer]!
-# }
+type SecurityQuestion {
+  id: ID!
+  question: String!
 
-# type Answer {
-#   id: ID! @unique
-#   user: User!
-#   question: Question!
-#   answer: String!
-# }
+  createdAt: String!
+  updatedAt: String!
+}
+
+type SecurityAnswer {
+  id: ID!
+  securityQuestion: SecurityQuestion!
+  answer: String!
+
+  createdAt: String!
+  updatedAt: String!
+}
+
+type SecurityInfo {
+  questionId: ID!
+  question: String!
+  answerId: ID!
+  answer: String!
+}
 
 input CreateUserInput {
   name: String!
   email: String
   phone: String
   password: String!
-  questionA: String!
-  answerA: String!
-  questionB: String!
-  answerB: String!
+
+  securityInfo: [QueAnsPairInput]!
+}
+
+input QueAnsPairInput {
+  questionId: String!
+  answer: String!
 }
 
 input ConfirmUserInput {

@@ -4,25 +4,25 @@ type User {
   email: String @unique # required and uniqueness will be handled in foxiny-gateway
   phone: String @unique # required and uniqueness will be handled in foxiny-gateway
   password: String # required will be handled in foxiny-gateway
-  questionA: String!
-  answerA: String!
-  questionB: String!
-  answerB: String!
-  # answers: [Answer]!
+  securityAnswers: [SecurityAnswer] @relation(name: "AnswerToUser", onDelete: CASCADE) # required will be handled in foxiny-gateway
   enabled: Boolean @default(value: "false") # required will be handled in foxiny-gateway
   createdAt: DateTime!
   updatedAt: DateTime!
 }
 
-# type SecurityQuestion {
-#   id: ID! @unique
-#   question: String!
-#   answer: [Answer]!
-# }
+type SecurityQuestion {
+  id: ID! @unique
+  question: String # required and uniqueness will be handled in foxiny-gateway
+  securityAnswers: [SecurityAnswer] @relation(name: "AnswerToQuestion", onDelete: CASCADE)
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
 
-# type Answer {
-#   id: ID! @unique
-#   user: User!
-#   question: Question!
-#   answer: String!
-# }
+type SecurityAnswer {
+  id: ID! @unique
+  user: User @relation(name: "AnswerToUser", onDelete: SET_NULL) # required and uniqueness will be handled in foxiny-gateway
+  securityQuestion: SecurityQuestion @relation(name: "AnswerToQuestion", onDelete: SET_NULL) # required and uniqueness will be handled in foxiny-gateway
+  answer: String # required and uniqueness will be handled in foxiny-gateway
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
