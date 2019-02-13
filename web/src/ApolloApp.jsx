@@ -35,6 +35,7 @@ const apolloClient = new ApolloClient({
       headers: {
         ...context.headers,
         authorization: getAuthorizationToken(),
+        'Accept-Language': 'vi',
       },
     }));
   },
