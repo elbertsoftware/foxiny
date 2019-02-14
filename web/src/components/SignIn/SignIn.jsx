@@ -5,6 +5,7 @@ import compose from 'recompose/compose';
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import { Typography, Tabs, Tab } from '@material-ui/core';
+import { Trans } from '@lingui/macro';
 import withRoot from '../../utils/withTheme';
 import AppForm from '../../utils/common/form/AppForm';
 import SignInForm from '../Form/SignInForm';
@@ -60,7 +61,7 @@ class SignIn extends React.Component {
           <React.Fragment>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Typography className={classes.h4} variant="h4" gutterBottom marked="center" align="left">
-                Đăng nhập
+                <Trans id="signin">Đăng nhập</Trans>
               </Typography>
               <Tabs variant="fullWidth" value={tabValue} onChange={this.handleChange}>
                 <Tab label="Email" />
