@@ -21,7 +21,6 @@ import {
   validateResetPwdInput,
   removeEmptyProperty,
 } from '../utils/validation';
-import { getLanguage } from '../utils/i18n';
 import logger from '../utils/logger';
 import { sendConfirmationEmail } from '../utils/email';
 import { sendConfirmationText } from '../utils/sms';
@@ -31,17 +30,11 @@ import { sendConfirmationEsms } from '../utils/smsVN';
 
 const Mutation = {
   createUser: async (parent, { data }, { prisma, cache, request }, info) => {
-    // TODO: check the header in apolloBoost
-    // logger.debug(JSON.stringify(request.headers, undefined, 2));
-    // getLanguage(request);
     validateCreateInput(data);
 
     const password = hashPassword(data.password);
-    const queAnsPair = data.securityInfo; // get pairs of security question & answer from securityInfo
+    const { securityInfo } = data; // get pairs of security question & answer from securityInfo
     delete data.securityInfo; // remove unnescessary field
-
-    // Fragment ensures securityAnswers is always fetched after mutating
-    const fragment = `fragment securityAnswersForUser on User { securityAnswers { id securityQuestion { id question } answer createdAt updatedAt } }`;
     const user = await prisma.mutation.createUser(
       {
         data: {
@@ -49,7 +42,7 @@ const Mutation = {
           password, // replace plain text password with the hashed one
           securityAnswers: {
             // cast Question&AnswerPairs from input to securityAnswer before mutating
-            create: queAnsPair.map(pair => ({
+            create: securityInfo.map(pair => ({
               securityQuestion: {
                 connect: {
                   id: pair.questionId,
@@ -61,7 +54,7 @@ const Mutation = {
           enabled: false, // user needs to confirm before the account become enabled
         },
       },
-      addFragmentToInfo(info, fragment),
+      info,
     );
 
     const code = generateConfirmation(cache, user.id);
@@ -119,6 +112,7 @@ const Mutation = {
     return user;
   },
 
+  // TODO: how does it work if user want to confirm account but has no userId
   confirmUser: async (parent, { data }, { prisma, cache }, info) => {
     const matched = await verifyConfirmation(cache, data.code, data.userId);
     logger.debug(`confirmation matched: ${matched}`);
@@ -189,9 +183,10 @@ const Mutation = {
     validateUpdateInput(data);
     removeEmptyProperty(data);
 
-    const { password, currentPassword } = data;
+    const { password, currentPassword, securityInfo } = data;
     delete data.password;
     delete data.currentPassword;
+    delete data.securityInfo;
 
     const updateData = { ...data };
 
@@ -220,7 +215,7 @@ const Mutation = {
             id: userId,
           },
         },
-        '{ id name email phone password questionA answerA questionB answerB }',
+        '{ id name email phone password }',
       );
 
       if (!user) {
@@ -238,6 +233,23 @@ const Mutation = {
       // TODO: Archive current password somewhere else
     }
 
+    if (typeof securityInfo === 'object') {
+      // declaration of new data: securityAnswers
+      updateData.securityAnswers = {};
+      // delete old data
+      // TODO: try to find out why we cannot use id_not: 0
+      updateData.securityAnswers.deleteMany = { createdAt_lt: new Date().toISOString() };
+      // create new data
+      updateData.securityAnswers.create = securityInfo.map(pair => ({
+        securityQuestion: {
+          connect: {
+            id: pair.questionId,
+          },
+        },
+        answer: pair.answer,
+      }));
+    }
+
     // TODO: Clean all token after email/phone/pwd changed
     // deleteAllTokensInCache(cache, userId);
 
@@ -252,8 +264,6 @@ const Mutation = {
     );
     return updated;
   },
-
-  // TODO: Update security question?
 
   deleteUser: async (parent, args, { prisma, request, cache }, info) => {
     const userId = await getUserIDFromRequest(request, cache);
@@ -271,12 +281,15 @@ const Mutation = {
 
   // Step1: user click forgot pwd -> return security questions
   requestResetPwd: async (parent, { data }, { prisma, request, cache }, info) => {
-    const user = await prisma.query.user({
-      where: {
-        email: data.email,
-        phone: data.phone,
+    const user = await prisma.query.user(
+      {
+        where: {
+          email: data.email,
+          phone: data.phone,
+        },
       },
-    });
+      `{ id securityAnswers { securityQuestion { id question } } enabled}`,
+    );
 
     if (!user) {
       throw new Error('Account does not exist'); // try NOT to provide enough information so hackers can guess
@@ -291,20 +304,26 @@ const Mutation = {
 
     return {
       token: generateToken(user.id, request, cache),
-      questionA: user.questionA,
-      questionB: user.questionB,
+      securityQuestions: user.securityAnswers.map(question => ({
+        id: question.securityQuestion.id,
+        question: question.securityQuestion.question,
+      })),
     };
   },
 
   // Step2: user enter the answers and new password
   resetPassword: async (parent, { data }, { prisma, request, cache }, info) => {
+    validateResetPwdInput(data);
     const userId = await getUserIDFromRequest(request, cache);
     if (!userId) throw new Error('null userid');
-    const user = await prisma.query.user({
-      where: {
-        id: userId,
+    const user = await prisma.query.user(
+      {
+        where: {
+          id: userId,
+        },
       },
-    });
+      `{ id securityAnswers { securityQuestion { id question } answer } enabled}`,
+    );
 
     if (!user) {
       throw new Error('Unable to perform reset password request'); // try NOT to provide enough information so hackers can guess
@@ -314,17 +333,22 @@ const Mutation = {
       throw new Error('User profile has not been confirmed or was disabled');
     }
 
+    const { securityAnswers } = user;
+    const { securityInfo } = data;
+
     const flag =
-      data.answerA.toLowerCase() === user.answerA.toLowerCase() &&
-      data.answerB.toLowerCase() === user.answerB.toLowerCase() &&
-      (user.answerA && user.answerB);
+      securityInfo[0].answer.toLowerCase() ===
+        securityAnswers.find(x => x.securityQuestion.id === securityInfo[0].questionId).answer.toLowerCase() &&
+      securityInfo[1].answer.toLowerCase() ===
+        securityAnswers.find(x => x.securityQuestion.id === securityInfo[1].questionId).answer.toLowerCase() &&
+      securityInfo[2].answer.toLowerCase() ===
+        securityAnswers.find(x => x.securityQuestion.id === securityInfo[2].questionId).answer.toLowerCase() &&
+      securityInfo.length === 3;
 
     // TODO: after x tries, prevent user from trying to recover account in y minutes
 
+    // change pwd if account is verified
     if (flag) {
-      // validate new pwd
-      validateResetPwdInput(data);
-
       const updateUser = {
         password: hashPassword(data.password),
       };
@@ -340,7 +364,7 @@ const Mutation = {
           },
           data: updateUser,
         },
-        '{password}',
+        '{ password }',
       );
 
       return verifyPassword(data.password, updatedUser.password);

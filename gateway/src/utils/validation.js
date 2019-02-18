@@ -24,17 +24,12 @@ const validatePwd = password => {
   if (!password || !pwdRegex.test(password)) throw new Error('Invalid input');
 };
 
-const validateSecurityAnswer = answer => {
-  // Throw error if input is empty/null/undefined or white spaces
-  if (!answer || !answer.trim()) throw new Error('Invalid input');
-};
-
 const validateIsEmpty = value => {
   // Throw error if input is empty/null/undefined or white spaces
   if (!value || !value.trim()) throw new Error('Invalid input');
 };
 
-const validateSecurityAnswers = questionAnswerPairs => {
+const validateSecurityInfo = questionAnswerPairs => {
   if (questionAnswerPairs.length < 3) throw new Error('Invalid input');
   questionAnswerPairs.forEach(pair => {
     validateIsEmpty(pair.questionId);
@@ -56,7 +51,7 @@ const validateCreateInput = data => {
   }
   validateIsEmpty(data.name);
   validatePwd(data.password);
-  validateSecurityAnswers(data.securityAnswers);
+  validateSecurityInfo(data.securityInfo);
 };
 
 /**
@@ -78,9 +73,7 @@ const validateUpdateInput = data => {
  * @param {Object} data
  */
 const validateResetPwdInput = data => {
-  validateSecurityAnswer(data.answerA);
-  validateSecurityAnswer(data.answerB);
-  validateSecurityAnswer(data.answerC);
+  validateSecurityInfo(data.securityInfo);
   validatePwd(data.password);
 };
 
@@ -93,5 +86,4 @@ export {
   validatePhone,
   validatePwd,
   validateIsEmpty,
-  validateSecurityAnswer,
 };

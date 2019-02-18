@@ -5,6 +5,20 @@ import { hashPassword, generateToken, generateConfirmation } from '../../src/uti
 import cache from '../../src/utils/cache';
 import logger from '../../src/utils/logger';
 
+const securityQuestions = [{ question: 'A?' }, { question: 'B?' }, { question: 'C?' }];
+
+/**
+ * seed security questions
+ */
+let questions = [];
+(async () => {
+  await prisma.mutation.deleteManySecurityQuestions();
+  securityQuestions.forEach(async question => {
+    const q = await prisma.mutation.createSecurityQuestion({ data: question });
+    questions.push(q);
+  });
+})();
+
 const seedUserOne = {
   data: {
     name: 'John Smith',
@@ -54,10 +68,6 @@ const seedUserFive = {
     email: 'john5@example.com',
     phone: '0123455555',
     password: hashPassword('!abcd1234'),
-    questionA: 'A?',
-    answerA: 'a',
-    questionB: 'B?',
-    answerB: 'b',
     enabled: true,
   },
   user: undefined,
@@ -66,28 +76,56 @@ const seedUserFive = {
 const seedTestData = async () => {
   // Delete test data & clean cache
   await prisma.mutation.deleteManyUsers();
+  // clean cache
   await cache.flushall();
 
   // Seed user one
-  seedUserOne.user = await prisma.mutation.createUser({
-    data: seedUserOne.data,
-  });
+  seedUserOne.user = await prisma.mutation.createUser(
+    {
+      data: seedUserOne.data,
+    },
+    `{ id name email phone password securityAnswers { id securityQuestion { id question } } enabled createdAt updatedAt }`,
+  );
   // Seed user two
-  seedUserTwo.user = await prisma.mutation.createUser({
-    data: seedUserTwo.data,
-  });
+  seedUserTwo.user = await prisma.mutation.createUser(
+    {
+      data: seedUserTwo.data,
+    },
+    `{ id name email phone password securityAnswers { id securityQuestion { id question } } enabled createdAt updatedAt }`,
+  );
   // Seed user three
-  seedUserThree.user = await prisma.mutation.createUser({
-    data: seedUserThree.data,
-  });
+  seedUserThree.user = await prisma.mutation.createUser(
+    {
+      data: seedUserThree.data,
+    },
+    `{ id name email phone password securityAnswers { id securityQuestion { id question } } enabled createdAt updatedAt }`,
+  );
   // Seed user four
-  seedUserFour.user = await prisma.mutation.createUser({
-    data: seedUserFour.data,
-  });
+  seedUserFour.user = await prisma.mutation.createUser(
+    {
+      data: seedUserFour.data,
+    },
+    `{ id name email phone password securityAnswers { id securityQuestion { id question } } enabled createdAt updatedAt }`,
+  );
   // Seed user five
-  seedUserFive.user = await prisma.mutation.createUser({
-    data: seedUserFive.data,
-  });
+  seedUserFive.user = await prisma.mutation.createUser(
+    {
+      data: {
+        ...seedUserFive.data,
+        securityAnswers: {
+          create: questions.map((q, i) => ({
+            securityQuestion: {
+              connect: {
+                id: q.id,
+              },
+            },
+            answer: i.toString(),
+          })),
+        },
+      },
+    },
+    `{ id name email phone password securityAnswers { id securityQuestion { id question } } enabled createdAt updatedAt }`,
+  );
 
   // seedUserOne.token = generateToken(seedUserOne.user.id);
   seedUserFour.confirmCode = generateConfirmation(cache, seedUserFour.user.id);
@@ -95,4 +133,4 @@ const seedTestData = async () => {
 };
 
 export default seedTestData;
-export { seedUserOne, seedUserFour, seedUserFive };
+export { seedUserOne, seedUserFour, seedUserFive, questions };

@@ -6,6 +6,8 @@ type User {
   password: String # required will be handled in foxiny-gateway
   securityAnswers: [SecurityAnswer] @relation(name: "AnswerToUser", onDelete: CASCADE) # required will be handled in foxiny-gateway
   enabled: Boolean @default(value: "false") # required will be handled in foxiny-gateway
+  # TODO: recoverable @default:false
+
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -20,8 +22,8 @@ type SecurityQuestion {
 
 type SecurityAnswer {
   id: ID! @unique
-  user: User @relation(name: "AnswerToUser", onDelete: SET_NULL) # required and uniqueness will be handled in foxiny-gateway
-  securityQuestion: SecurityQuestion @relation(name: "AnswerToQuestion", onDelete: SET_NULL) # required and uniqueness will be handled in foxiny-gateway
+  user: User @relation(name: "AnswerToUser", onDelete: CASCADE) # required and uniqueness will be handled in foxiny-gateway
+  securityQuestion: SecurityQuestion @relation(name: "AnswerToQuestion", onDelete: CASCADE) # required and uniqueness will be handled in foxiny-gateway
   answer: String # required and uniqueness will be handled in foxiny-gateway
   createdAt: DateTime!
   updatedAt: DateTime!
