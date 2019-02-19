@@ -224,126 +224,125 @@ class UserExpansionForm extends Component {
                   </ExpansionPanelDetails>
                   {expanded === 'panel1' && submitting && <Loading />}
                 </ExpansionPanel>
-                {user.email && (
-                  <ExpansionPanel expanded={expanded === 'panel2'} onChange={this.handleChange('panel2')}>
-                    <ExpansionPanelSummary
-                      expandIcon={
-                        user.email
-                          ? expanded !== 'panel2' && <Icon>edit</Icon>
-                          : expanded !== 'panel2' && <Icon>add_box</Icon>
-                      }
-                    >
-                      <div>
-                        <Typography variant="subtitle1">
-                          <b>Email:</b>
-                        </Typography>
-                        <div className={verifiedClassname}>
-                          <Typography variant="body2">{user.email || 'Chưa có thông tin.'}</Typography>
-                          {!verifiedAccount && (
-                            <Button onClick={this.handleVerifying} color="primary" size="small" variant="text">
-                              Xác thực
-                            </Button>
-                          )}
-                        </div>
+
+                <ExpansionPanel expanded={expanded === 'panel2'} onChange={this.handleChange('panel2')}>
+                  <ExpansionPanelSummary
+                    expandIcon={
+                      user.email
+                        ? expanded !== 'panel2' && <Icon>edit</Icon>
+                        : expanded !== 'panel2' && <Icon>add_box</Icon>
+                    }
+                  >
+                    <div>
+                      <Typography variant="subtitle1">
+                        <b>Email:</b>
+                      </Typography>
+                      <div className={verifiedClassname}>
+                        <Typography variant="body2">{user.email || 'Chưa có thông tin.'}</Typography>
+                        {!verifiedAccount && (
+                          <Button onClick={this.handleVerifying} color="primary" size="small" variant="text">
+                            Xác thực
+                          </Button>
+                        )}
                       </div>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                      <Grid container direction="column">
-                        <UpdateEmailFields classes={classes} />
-                        {expanded === 'panel2' && (
-                          <ReCaptcha
-                            ref={this.recaptchaRef}
-                            size="normal"
-                            render="explicit"
-                            sitekey="6Lc8fIoUAAAAAEIelPYBBoehOd00PSDckbO75rhh"
-                            hl="vi"
-                            onloadCallback={this.onLoadRecaptcha}
-                            verifyCallback={this.verifyCallback}
-                          />
-                        )}
-                        {expanded === 'panel2' && !verified && (
-                          <FormHelperText id="component-error-text" error>
-                            Vui lòng xác nhận bạn không phải là người máy
-                          </FormHelperText>
-                        )}
-                      </Grid>
-                    </ExpansionPanelDetails>
-                    <Divider />
-                    <ExpansionPanelActions>
-                      <Button onClick={this.handleClose}>Huỷ</Button>
-                      <FormButton
-                        disabled={submitting}
-                        className={classes.button}
-                        size="small"
-                        variant="contained"
-                        color="secondary"
-                      >
-                        Lưu
-                      </FormButton>
-                    </ExpansionPanelActions>
-                    {expanded === 'panel2' && submitting && <Loading />}
-                  </ExpansionPanel>
-                )}
-                {user.phone && (
-                  <ExpansionPanel expanded={expanded === 'panel3'} onChange={this.handleChange('panel3')}>
-                    <ExpansionPanelSummary
-                      expandIcon={
-                        user.phone
-                          ? expanded !== 'panel3' && <Icon>edit</Icon>
-                          : expanded !== 'panel3' && <Icon>add_box</Icon>
-                      }
+                    </div>
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails>
+                    <Grid container direction="column">
+                      <UpdateEmailFields classes={classes} />
+                      {expanded === 'panel2' && (
+                        <ReCaptcha
+                          ref={this.recaptchaRef}
+                          size="normal"
+                          render="explicit"
+                          sitekey="6Lc8fIoUAAAAAEIelPYBBoehOd00PSDckbO75rhh"
+                          hl="vi"
+                          onloadCallback={this.onLoadRecaptcha}
+                          verifyCallback={this.verifyCallback}
+                        />
+                      )}
+                      {expanded === 'panel2' && !verified && (
+                        <FormHelperText id="component-error-text" error>
+                          Vui lòng xác nhận bạn không phải là người máy
+                        </FormHelperText>
+                      )}
+                    </Grid>
+                  </ExpansionPanelDetails>
+                  <Divider />
+                  <ExpansionPanelActions>
+                    <Button onClick={this.handleClose}>Huỷ</Button>
+                    <FormButton
+                      disabled={submitting}
+                      className={classes.button}
+                      size="small"
+                      variant="contained"
+                      color="secondary"
                     >
-                      <div>
-                        <Typography variant="subtitle1">
-                          <b>Số điện thoại</b>
-                        </Typography>
-                        <div className={verifiedClassname}>
-                          <Typography variant="body2">{user.phone || 'Chưa có thông tin.'}</Typography>
-                          {!verifiedAccount && (
-                            <Button onClick={this.handleVerifying} color="primary" size="small" variant="text">
-                              Xác thực
-                            </Button>
-                          )}
-                        </div>
+                      Lưu
+                    </FormButton>
+                  </ExpansionPanelActions>
+                  {expanded === 'panel2' && submitting && <Loading />}
+                </ExpansionPanel>
+
+                <ExpansionPanel expanded={expanded === 'panel3'} onChange={this.handleChange('panel3')}>
+                  <ExpansionPanelSummary
+                    expandIcon={
+                      user.phone
+                        ? expanded !== 'panel3' && <Icon>edit</Icon>
+                        : expanded !== 'panel3' && <Icon>add_box</Icon>
+                    }
+                  >
+                    <div>
+                      <Typography variant="subtitle1">
+                        <b>Số điện thoại</b>
+                      </Typography>
+                      <div className={verifiedClassname}>
+                        <Typography variant="body2">{user.phone || 'Chưa có thông tin.'}</Typography>
+                        {!verifiedAccount && (
+                          <Button onClick={this.handleVerifying} color="primary" size="small" variant="text">
+                            Xác thực
+                          </Button>
+                        )}
                       </div>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                      <Grid container direction="column">
-                        <UpdatePhoneFields classes={classes} />
-                        {expanded === 'panel3' && (
-                          <ReCaptcha
-                            ref={this.recaptchaRef}
-                            size="normal"
-                            render="explicit"
-                            sitekey="6Lc8fIoUAAAAAEIelPYBBoehOd00PSDckbO75rhh"
-                            hl="vi"
-                            onloadCallback={this.onLoadRecaptcha}
-                            verifyCallback={this.verifyCallback}
-                          />
-                        )}
-                        {expanded === 'panel3' && !verified && (
-                          <FormHelperText id="component-error-text" error>
-                            Vui lòng xác nhận bạn không phải là người máy
-                          </FormHelperText>
-                        )}
-                      </Grid>
-                    </ExpansionPanelDetails>
-                    <Divider />
-                    <ExpansionPanelActions>
-                      <Button onClick={this.handleClose}>Huỷ</Button>
-                      <FormButton
-                        disabled={submitting}
-                        className={classes.button}
-                        size="small"
-                        variant="contained"
-                        color="secondary"
-                      >
-                        Lưu
-                      </FormButton>
-                    </ExpansionPanelActions>
-                    {expanded === 'panel3' && submitting && <Loading />}
-                  </ExpansionPanel>
-                )}
+                    </div>
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails>
+                    <Grid container direction="column">
+                      <UpdatePhoneFields classes={classes} />
+                      {expanded === 'panel3' && (
+                        <ReCaptcha
+                          ref={this.recaptchaRef}
+                          size="normal"
+                          render="explicit"
+                          sitekey="6Lc8fIoUAAAAAEIelPYBBoehOd00PSDckbO75rhh"
+                          hl="vi"
+                          onloadCallback={this.onLoadRecaptcha}
+                          verifyCallback={this.verifyCallback}
+                        />
+                      )}
+                      {expanded === 'panel3' && !verified && (
+                        <FormHelperText id="component-error-text" error>
+                          Vui lòng xác nhận bạn không phải là người máy
+                        </FormHelperText>
+                      )}
+                    </Grid>
+                  </ExpansionPanelDetails>
+                  <Divider />
+                  <ExpansionPanelActions>
+                    <Button onClick={this.handleClose}>Huỷ</Button>
+                    <FormButton
+                      disabled={submitting}
+                      className={classes.button}
+                      size="small"
+                      variant="contained"
+                      color="secondary"
+                    >
+                      Lưu
+                    </FormButton>
+                  </ExpansionPanelActions>
+                  {expanded === 'panel3' && submitting && <Loading />}
+                </ExpansionPanel>
+
                 <ExpansionPanel expanded={expanded === 'panel4'} onChange={this.handleChange('panel4')}>
                   <ExpansionPanelSummary expandIcon={expanded !== 'panel4' && <Icon>edit</Icon>}>
                     <div>

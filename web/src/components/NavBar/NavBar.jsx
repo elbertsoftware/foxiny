@@ -5,6 +5,7 @@ import { AppBar, Typography, Toolbar } from '@material-ui/core';
 import SignInMenu from '../Menu/SignInMenu';
 import SignUpMenu from '../Menu/SignUpMenu';
 import { getUserInfo } from '../../utils/authentication';
+import NavLang from './NavLang';
 
 const styles = theme => ({
   root: {},
@@ -27,7 +28,7 @@ const styles = theme => ({
 
 class NavBar extends React.Component {
   render() {
-    const { classes } = this.props;
+    const { classes, handleSetLanguage } = this.props;
     const userInfo = getUserInfo();
 
     return (

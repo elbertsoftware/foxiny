@@ -44,6 +44,10 @@ class App extends Component<Props, State> {
     }));
   };
 
+  handleSetLanguage = language => {
+    this.setState({ language });
+  };
+
   render() {
     const { language, catalogs } = this.state;
     return (
@@ -56,7 +60,7 @@ class App extends Component<Props, State> {
             path="/(.+)"
             render={() => (
               <React.Fragment>
-                <NavBar />
+                <NavBar handleSetLanguage={this.handleSetLanguage} />
                 <Switch>
                   <Route path="/signin" component={SignIn} />
                 </Switch>
