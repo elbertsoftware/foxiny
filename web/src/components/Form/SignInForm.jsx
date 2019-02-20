@@ -15,7 +15,7 @@ import { toast } from 'react-toastify';
 import RFTextField from '../../utils/common/form/RFTextField';
 import FormButton from '../../utils/common/form/FormButton';
 import TabContainer from '../../utils/common/form/TabContainer';
-import PhoneSelectList from './Fields/PhoneSelectList';
+import SelectList from './Fields/SelectList';
 import { email, phone, required, formatInternationalPhone } from '../../utils/common/form/validation';
 import { countries } from '../../utils/callingcodes';
 import { setAuthorizationToken, setUserInfo } from '../../utils/authentication';
@@ -172,7 +172,7 @@ class SignInForm extends React.Component {
                 <TabContainer dir={theme.direction}>
                   {tabValue === 1 ? (
                     <Field
-                      component={PhoneSelectList}
+                      component={SelectList}
                       disabled={submitting}
                       fullWidth
                       name="countryCode"

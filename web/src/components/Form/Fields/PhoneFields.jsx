@@ -1,13 +1,13 @@
 import React from 'react';
 import { Field } from 'react-final-form';
 import RFTextField from '../../../utils/common/form/RFTextField';
-import PhoneSelectList from './PhoneSelectList';
+import SelectList from './SelectList';
 import { countries } from '../../../utils/callingcodes';
 
 const PhoneFields = ({ submitting }) => {
   return (
     <React.Fragment>
-      <Field component={PhoneSelectList} disabled={submitting} fullWidth name="countryCode" required size="large">
+      <Field component={SelectList} disabled={submitting} fullWidth name="countryCode" required size="large">
         {countries}
       </Field>
 

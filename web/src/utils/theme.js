@@ -29,7 +29,7 @@ const rawTheme = createMuiTheme({
       dark: green[700],
     },
     text: {
-      secondary: 'rgba(0, 0, 0, 0.87)',
+      secondary: 'rgba(0, 0, 0, 0.76)',
     },
   },
   typography: {
@@ -84,13 +84,17 @@ const theme = {
     },
     h5: {
       ...rawTheme.typography.h5,
-      fontSize: 22,
+      color: rawTheme.palette.primary.dark,
+      fontSize: 24,
       fontWeight: rawTheme.typography.fontWeightLight,
+      letterSpacing: '1px',
     },
     h6: {
       ...rawTheme.typography.h6,
-      ...fontHeader,
+      color: rawTheme.palette.text.secondary,
       fontSize: 20,
+      fontWeight: rawTheme.typography.fontWeightLight,
+      lineHeight: 'normal',
     },
     subtitle1: {
       ...rawTheme.typography.subtitle1,

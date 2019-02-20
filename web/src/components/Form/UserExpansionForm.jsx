@@ -62,7 +62,6 @@ class UserExpansionForm extends Component {
     expanded: null,
     captchaResponse: '',
     verified: true,
-    verifiedAccount: true,
   };
 
   recaptchaRef = React.createRef();
@@ -75,9 +74,6 @@ class UserExpansionForm extends Component {
       name: user.name,
       countryCode: 84,
     };
-    this.setState({
-      verifiedAccount: user.enabled,
-    });
   }
 
   handleChange = panel => (event, expanded) => {
@@ -144,14 +140,20 @@ class UserExpansionForm extends Component {
           },
         },
       });
+      if (values.email) {
+        await this.handleVerifying();
+        // TODO: Pass additional param to determine email/phone should be sent
+      } else if (values.phone) {
+        await this.handleVerifying();
+      }
       if (values.password && values.currentPassword) {
         // In case update password
         removeAuthorizationToken();
         removeUserInfo();
         history.push('/signin');
       }
-      window.location.reload();
       toast.success('Cập nhật thành công!');
+      window.location.reload();
     } catch (error) {
       toast.error(error.message.replace('GraphQL error:', '') || 'Cập nhật không thành công !');
     }
@@ -174,10 +176,10 @@ class UserExpansionForm extends Component {
 
   render() {
     const { classes, user } = this.props;
-    const { expanded, verified, verifiedAccount } = this.state;
-    const verifiedClassname = classNames({
-      [classes.verified]: !verifiedAccount,
-    });
+    const { expanded, verified } = this.state;
+    // const verifiedClassname = classNames({
+    //   [classes.verified]: !verifiedAccount,
+    // });
     return (
       <div className={classes.root}>
         <Form
@@ -237,14 +239,7 @@ class UserExpansionForm extends Component {
                       <Typography variant="subtitle1">
                         <b>Email:</b>
                       </Typography>
-                      <div className={verifiedClassname}>
-                        <Typography variant="body2">{user.email || 'Chưa có thông tin.'}</Typography>
-                        {!verifiedAccount && (
-                          <Button onClick={this.handleVerifying} color="primary" size="small" variant="text">
-                            Xác thực
-                          </Button>
-                        )}
-                      </div>
+                      <Typography variant="body2">{user.email ? user.email : 'Chưa có thông tin'}</Typography>
                     </div>
                   </ExpansionPanelSummary>
                   <ExpansionPanelDetails>
@@ -296,14 +291,7 @@ class UserExpansionForm extends Component {
                       <Typography variant="subtitle1">
                         <b>Số điện thoại</b>
                       </Typography>
-                      <div className={verifiedClassname}>
-                        <Typography variant="body2">{user.phone || 'Chưa có thông tin.'}</Typography>
-                        {!verifiedAccount && (
-                          <Button onClick={this.handleVerifying} color="primary" size="small" variant="text">
-                            Xác thực
-                          </Button>
-                        )}
-                      </div>
+                      <Typography variant="body2">{user.phone ? user.phone : 'Chưa có thông tin'}</Typography>
                     </div>
                   </ExpansionPanelSummary>
                   <ExpansionPanelDetails>

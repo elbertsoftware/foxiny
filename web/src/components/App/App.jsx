@@ -13,6 +13,7 @@ import SignUp from '../SignUp/SignUp';
 import ConfirmPage from '../Form/ConfirmPage';
 import UserDashboard from '../User/UserDashboard';
 import Homepage from '../Homepage';
+import UserSecurityQuestion from '../User/UserSecurityQuestion';
 import withAuthenticator from '../../utils/RouteProtector';
 
 class App extends Component<Props, State> {
@@ -72,6 +73,9 @@ class App extends Component<Props, State> {
                 </Switch>
                 <Switch>
                   <Route path="/profile/:id" component={withAuthenticator(UserDashboard)} />
+                </Switch>
+                <Switch>
+                  <Route path="/security-question" component={withAuthenticator(UserSecurityQuestion)} />
                 </Switch>
               </React.Fragment>
             )}

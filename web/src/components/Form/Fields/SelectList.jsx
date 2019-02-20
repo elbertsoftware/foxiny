@@ -2,7 +2,7 @@
 import React from 'react';
 import { Select } from '@material-ui/core';
 
-const PhoneSelectList = ({ input, inputProps, render, meta, children, ...restProps }) => {
+const SelectList = ({ input, inputProps, render, meta, children, ...restProps }) => {
   return (
     <React.Fragment>
       <Select {...input} {...inputProps} {...restProps}>
@@ -12,4 +12,4 @@ const PhoneSelectList = ({ input, inputProps, render, meta, children, ...restPro
   );
 };
 
-export default PhoneSelectList;
+export default SelectList;

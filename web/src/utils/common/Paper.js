@@ -7,13 +7,19 @@ import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
   backgroundLight: {
-    backgroundColor: theme.palette.secondary.light,
+    backgroundColor: '#fcfcfc',
   },
   backgroundMain: {
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.secondary.light,
   },
   backgroundDark: {
     backgroundColor: theme.palette.secondary.dark,
+  },
+  root: {
+    maxWidth: 935,
+    margin: 'auto',
+    marginTop: '15px',
+    marginBottom: '10px',
   },
   padding: {
     padding: theme.spacing.unit,
@@ -26,12 +32,12 @@ function Paper(props) {
   return (
     <MuiPaper
       elevation={2}
-      square
       className={classNames(
         classes[`background${capitalize(background)}`],
         {
           [classes.padding]: padding,
         },
+        classes.root,
         className,
       )}
       {...other}
@@ -47,7 +53,7 @@ Paper.propTypes = {
 };
 
 Paper.defaultProps = {
-  background: 'light',
+  background: 'main',
   padding: false,
 };
 

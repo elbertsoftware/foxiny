@@ -1,6 +1,6 @@
 import React from 'react';
 import { Field } from 'react-final-form';
-import PhoneSelectList from './PhoneSelectList';
+import SelectList from './SelectList';
 import { countries } from '../../../utils/callingcodes';
 import RFTextField from '../../../utils/common/form/RFTextField';
 
@@ -9,7 +9,7 @@ const UpdatePhoneFields = ({ submitting, classes }) => {
     <React.Fragment>
       <Field
         className={classes.field}
-        component={PhoneSelectList}
+        component={SelectList}
         disabled={submitting}
         name="countryCode"
         required
