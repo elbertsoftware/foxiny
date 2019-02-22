@@ -50,6 +50,12 @@ const messages = {
   cfrPasswordEmail: 'lại mật khẩu',
   cfrPasswordPhone: 'lại mật khẩu',
   confirmCode: 'mã xác thực',
+  question0: 'câu hỏi',
+  question1: 'câu hỏi',
+  question2: 'câu hỏi',
+  answer0: 'câu trả lời',
+  answer1: 'câu trả lời',
+  answer2: 'câu trả lời',
 };
 
 const isDirty = value => value || value === 0;

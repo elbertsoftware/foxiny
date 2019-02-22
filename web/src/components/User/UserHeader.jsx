@@ -117,7 +117,7 @@ class UserHeader extends React.Component {
             </Grid>
           </Grid>
           <List component="nav">
-            <ListItem className={classes.listItem} button>
+            <ListItem onClick={() => history.push('/security-question')} className={classes.listItem} button>
               <ListItemText primary="Câu hỏi bảo mật" />
               <Icon>navigate_next</Icon>
             </ListItem>
