@@ -52,8 +52,9 @@ const Mutation = {
     // email the code if user is signing up via email
     if (typeof data.email === 'string') {
       // sendConfirmationEmail(data.name, data.email, code);
-      if (!process.env.TEST_STATE) {
-        console.log(`testing mode`);
+      if (process.env.TEST_STATE) {
+        // TODO: try to count how many time confirmation code is sent to user and
+        // try to stop sending to many times
       }
     }
 
@@ -62,8 +63,9 @@ const Mutation = {
       // TODO: try to find out where does the number come from, US or VN or other, to choose the best way to send the code
       // sendConfirmationText(data.name, data.phone, code);
       // sendConfirmationEsms(user.phone, code);
-      if (!process.env.TEST_STATE) {
-        console.log(`testing mode`);
+      if (process.env.TEST_STATE) {
+        // TODO: try to count how many time confirmation code is sent to user and
+        // try to stop sending to many times
       }
     }
 
@@ -110,15 +112,6 @@ const Mutation = {
       }
     }
 
-    // delete old securityInfo from user
-    await prisma.mutation.deleteManySecurityAnswers({
-      where: {
-        user: {
-          id: userId,
-        },
-      },
-    });
-
     // create new securityInfo to user
     const updatedUser = await prisma.mutation.updateUser({
       where: {
@@ -126,6 +119,9 @@ const Mutation = {
       },
       data: {
         securityAnswers: {
+          deleteMany: {
+            createdAt_lt: new Date(),
+          },
           // cast Question&AnswerPairs from input to securityAnswer before mutating
           create: updateData.map(pair => ({
             securityQuestion: {
