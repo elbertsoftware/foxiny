@@ -17,6 +17,9 @@ import {
 } from '../utils/authentication';
 import {
   validateCreateInput,
+  validateConfirmInput,
+  validateSecurityInfo,
+  validateResendConfirmationInput,
   validateUpdateInput,
   validateResetPwdInput,
   removeEmptyProperty,
@@ -33,24 +36,11 @@ const Mutation = {
     validateCreateInput(data);
 
     const password = hashPassword(data.password);
-    const { securityInfo } = data; // get pairs of security question & answer from securityInfo
-    delete data.securityInfo; // remove unnescessary field
     const user = await prisma.mutation.createUser(
       {
         data: {
           ...data,
           password, // replace plain text password with the hashed one
-          securityAnswers: {
-            // cast Question&AnswerPairs from input to securityAnswer before mutating
-            create: securityInfo.map(pair => ({
-              securityQuestion: {
-                connect: {
-                  id: pair.questionId,
-                },
-              },
-              answer: pair.answer,
-            })),
-          },
           enabled: false, // user needs to confirm before the account become enabled
         },
       },
@@ -62,77 +52,183 @@ const Mutation = {
     // email the code if user is signing up via email
     if (typeof data.email === 'string') {
       // sendConfirmationEmail(data.name, data.email, code);
+      if (!process.env.TEST_STATE) {
+        console.log(`testing mode`);
+      }
     }
 
     // text the code if user is signing up via phone
     if (typeof data.phone === 'string') {
+      // TODO: try to find out where does the number come from, US or VN or other, to choose the best way to send the code
       // sendConfirmationText(data.name, data.phone, code);
       // sendConfirmationEsms(user.phone, code);
+      if (!process.env.TEST_STATE) {
+        console.log(`testing mode`);
+      }
     }
 
     return user;
   },
 
-  resendConfirmation: async (parent, { userId }, { prisma, cache }, info) => {
-    const fragment = 'fragment userNameEmailPhoneEnabled on User { name email phone enabled }';
-    const user = await prisma.query.user(
-      {
-        where: {
+  /**
+   * Insert or update user's security info
+   */
+  upsertSecurityInfo: async (parent, { securityInfo }, { prisma, cache, request }, info) => {
+    validateSecurityInfo(securityInfo);
+
+    const userId = await getUserIDFromRequest(request, cache);
+
+    const user = await prisma.query.user({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      logger.info(`🛑 CREATE_SECURITY_INFO: User ${data.userId} not found`);
+      throw new Error('Unable to confirmUser'); // try NOT to provide enough information so hackers can guess
+    }
+
+    // insert new question and restructure to-be-inserted data
+    const updateData = [];
+    for (let i = 0; i < 3; i++) {
+      if (securityInfo[i].questionId) {
+        updateData.push({
+          questionId: securityInfo[i].questionId,
+          answer: securityInfo[i].answer,
+        });
+      } else {
+        const question = await prisma.mutation.createSecurityQuestion({
+          data: {
+            question: securityInfo[i].question,
+          },
+        });
+        updateData.push({
+          questionId: question.id,
+          answer: securityInfo[i].answer,
+        });
+      }
+    }
+
+    // delete old securityInfo from user
+    await prisma.mutation.deleteManySecurityAnswers({
+      where: {
+        user: {
           id: userId,
         },
       },
-      addFragmentToInfo(info, fragment),
+    });
+
+    // create new securityInfo to user
+    const updatedUser = await prisma.mutation.updateUser({
+      where: {
+        id: userId,
+      },
+      data: {
+        securityAnswers: {
+          // cast Question&AnswerPairs from input to securityAnswer before mutating
+          create: updateData.map(pair => ({
+            securityQuestion: {
+              connect: {
+                id: pair.questionId,
+              },
+            },
+            answer: pair.answer,
+          })),
+        },
+        recoverable: true,
+      },
+      info,
+    });
+
+    return updatedUser;
+  },
+
+  // TODO: how does it work if user want to confirm account but has no userId --> solved
+  confirmUser: async (parent, { data }, { prisma, cache }, info) => {
+    validateConfirmInput(data);
+
+    const user = await prisma.query.user({
+      where: {
+        id: data.userId,
+        email: data.email,
+        phone: data.phone,
+      },
+    });
+
+    if (!user) {
+      logger.info(`🛑 CONFIRM_USER: User ${data.userId}${data.email}${data.phone} not found`);
+      throw new Error('Unable to confirmUser'); // try NOT to provide enough information so hackers can guess
+    }
+
+    const matched = await verifyConfirmation(cache, data.code, data.userId || user.id);
+    logger.debug(`confirmation matched: ${matched}`);
+    if (!matched) {
+      throw new Error('Unable to confirm user profile');
+    }
+
+    // change to true on matched input
+    const updateData = {
+      enabled: true,
+      emailConfirmed: (data.userId || data.email) && !!user.email,
+      phoneConfirmed: (data.userId || data.phone) && !!user.phone,
+    };
+
+    const updatedUser = await prisma.mutation.updateUser(
+      {
+        where: {
+          id: user.id,
+        },
+        data: updateData,
+      },
+      info,
     );
+
+    return updatedUser;
+  },
+
+  // reusing this to confirm additional phone/email, or the code is expired/invalid
+  resendConfirmation: async (parent, { data }, { prisma, cache }, info) => {
+    validateResendConfirmationInput(data);
+
+    const user = await prisma.query.user({
+      where: {
+        id: data.userId,
+        email: data.email,
+        phone: data.phone,
+      },
+    });
 
     if (!user) {
       throw new Error('Unable to resend confirmation'); // try NOT to provide enough information so hackers can guess
     }
 
     logger.debug(
-      `user id ${userId}, name ${user.name}, email ${user.email}, password ${user.phone}, enabled ${user.enabled}`,
+      `user id ${user.id}, name ${user.name}, email ${user.email}, password ${user.phone}, emailConfirmed ${
+        user.emailConfirmed
+      }, phoneConfirmed ${user.phoneConfirmed}, enabled ${user.enabled}`,
     );
 
-    if (user.enabled) {
+    if (user.enabled && ((user.emailConfirmed && data.email) || (user.phoneConfirmed && data.phone))) {
       throw new Error('User profile has been confirmed');
     }
 
-    const code = generateConfirmation(cache, userId);
+    const code = generateConfirmation(cache, user.id);
 
     // email the code if user is signing up via email
-    if (typeof user.email === 'string') {
+    if (typeof user.email === 'string' && (data.userId || data.email) && !user.emailConfirmed) {
       // sendConfirmationEmail(user.name, user.email, code);
+      logger.debug('Email resent');
     }
 
     // text the code if user is signing up via phone
-    if (typeof user.phone === 'string') {
+    if (typeof user.phone === 'string' && (data.userId || data.phone) && !user.phoneConfirmed) {
       // sendConfirmationText(user.name, user.phone, code);
       // sendConfirmationEsms(user.phone, code);
+      logger.debug('Phone resent');
     }
 
-    return user;
-  },
-
-  // TODO: how does it work if user want to confirm account but has no userId
-  confirmUser: async (parent, { data }, { prisma, cache }, info) => {
-    const matched = await verifyConfirmation(cache, data.code, data.userId);
-    logger.debug(`confirmation matched: ${matched}`);
-    if (!matched) {
-      throw new Error('Unable to confirm user profile');
-    }
-
-    const user = prisma.mutation.updateUser(
-      {
-        where: {
-          id: data.userId,
-        },
-        data: {
-          enabled: true,
-        },
-      },
-      info,
-    );
-
-    return user;
+    return true;
   },
 
   login: async (parent, { data }, { prisma, request, cache }) => {
@@ -181,88 +277,73 @@ const Mutation = {
     const userId = await getUserIDFromRequest(request, cache);
 
     validateUpdateInput(data);
-    removeEmptyProperty(data);
 
-    const { password, currentPassword, securityInfo } = data;
+    const { password, currentPassword } = data;
     delete data.password;
     delete data.currentPassword;
-    delete data.securityInfo;
 
     const updateData = { ...data };
 
     // TODO: For user account recovery purpose, sensitive info like email, phone, password, etc. need to be archived
 
-    // email is about to be changed
-    if (typeof data.email === 'string') {
-      updateData.enabled = false;
+    try {
+      let canUpdate = false;
+      if (currentPassword) {
+        // verify current password
+        const user = await prisma.query.user(
+          {
+            where: {
+              id: userId,
+            },
+          },
+          '{ id name email phone password }',
+        );
 
-      // TODO: Archive current email somewhere else
-    }
+        canUpdate = verifyPassword(currentPassword, user.password);
+        if (!canUpdate) {
+          throw new Error('Unable to update user profile'); // try NOT to provide enough information so hackers can guess
+        }
+      }
 
-    // phone is about to be changed
-    if (typeof data.phone === 'string') {
-      updateData.enabled = false;
+      // email is about to be changed
+      if (typeof data.email === 'string' && canUpdate) {
+        updateData.enabled = false;
 
-      // TODO: Archive current phone somewhere else
-    }
+        // TODO: Archive current email somewhere else
+      }
 
-    // both password and currentPassword present which means password is about to be changed
-    if (typeof password === 'string' && typeof currentPassword === 'string') {
-      // verify current password
-      const user = await prisma.query.user(
+      // phone is about to be changed
+      if (typeof data.phone === 'string' && canUpdate) {
+        updateData.enabled = false;
+
+        // TODO: Archive current phone somewhere else
+      }
+
+      // both password and currentPassword present which means password is about to be changed
+      if (typeof password === 'string' && typeof currentPassword === 'string' && canUpdate) {
+        updateData.password = hashPassword(password);
+
+        // TODO: Archive current password somewhere else
+      }
+
+      // TODO: Should clean all token after email/phone/pwd changed?
+      // deleteAllTokensInCache(cache, userId);
+
+      const updatedUser = prisma.mutation.updateUser(
         {
           where: {
             id: userId,
           },
+          data: updateData,
         },
-        '{ id name email phone password }',
+        info,
       );
 
-      if (!user) {
-        throw new Error('Unable to update user profile'); // try NOT to provide enough information so hackers can guess
-      }
-
-      const matched = verifyPassword(currentPassword, user.password);
-      if (!matched) {
-        throw new Error('Unable to update user profile'); // try NOT to provide enough information so hackers can guess
-      }
-
-      updateData.password = hashPassword(password);
-      // deleteAllTokensInCache(cache, userId);
-
-      // TODO: Archive current password somewhere else
+      return updatedUser;
+    } catch (error) {
+      logger.info(`🛑 UPDATE_USER ${error}`);
+      throw new Error('Unable to update user profile'); // try NOT to provide enough information so hackers can guess
     }
-
-    if (typeof securityInfo === 'object') {
-      // declaration of new data: securityAnswers
-      updateData.securityAnswers = {};
-      // delete old data
-      // TODO: try to find out why we cannot use id_not: 0
-      updateData.securityAnswers.deleteMany = { createdAt_lt: new Date().toISOString() };
-      // create new data
-      updateData.securityAnswers.create = securityInfo.map(pair => ({
-        securityQuestion: {
-          connect: {
-            id: pair.questionId,
-          },
-        },
-        answer: pair.answer,
-      }));
-    }
-
-    // TODO: Clean all token after email/phone/pwd changed
-    // deleteAllTokensInCache(cache, userId);
-
-    const updated = prisma.mutation.updateUser(
-      {
-        where: {
-          id: userId,
-        },
-        data: updateData,
-      },
-      info,
-    );
-    return updated;
   },
 
   deleteUser: async (parent, args, { prisma, request, cache }, info) => {

@@ -29,10 +29,16 @@ const validateIsEmpty = value => {
   if (!value || !value.trim()) throw new Error('Invalid input');
 };
 
+/**
+ * validate input before creating security questions
+ * @param {Object} questionAnswerPairs is array of object, each object has two properties: question or questionId and answer
+ */
 const validateSecurityInfo = questionAnswerPairs => {
   if (questionAnswerPairs.length < 3) throw new Error('Invalid input');
   questionAnswerPairs.forEach(pair => {
-    validateIsEmpty(pair.questionId);
+    if (!pair.questionId && !pair.question) throw new Error('Invalid input');
+    if (pair.questionId) validateIsEmpty(pair.questionId);
+    if (pair.question) validateIsEmpty(pair.question);
     validateIsEmpty(pair.answer);
   });
 };
@@ -51,7 +57,34 @@ const validateCreateInput = data => {
   }
   validateIsEmpty(data.name);
   validatePwd(data.password);
-  validateSecurityInfo(data.securityInfo);
+};
+
+/**
+ * validate inputs before activating user account
+ * @param {Object} data contains userId or email or phone and the code
+ */
+const validateConfirmInput = data => {
+  if (!(!data.userId ^ !data.email ^ !data.phone ^ !(data.userId && data.email && data.phones))) {
+    throw new Error('Invalid input');
+  }
+  if (data.userId) validateIsEmpty(data.userId);
+  if (data.code) validateIsEmpty(data.code);
+  if (data.email) validateEmail(data.email);
+  if (data.phone) validatePhone(data.phone);
+};
+
+/**
+ * validate inputs before resending new confirmation code
+ * only one of three values is accepted
+ * @param {Object} data contains userId or email or phone
+ */
+const validateResendConfirmationInput = data => {
+  if (!(!data.userId ^ !data.email ^ !data.phone ^ !(data.userId && data.email && data.phones))) {
+    throw new Error('Invalid input');
+  }
+  if (data.email) validateEmail(data.email);
+  if (data.phone) validatePhone(data.phone);
+  if (data.userId) validateIsEmpty(data.userId);
 };
 
 /**
@@ -80,6 +113,9 @@ const validateResetPwdInput = data => {
 export {
   removeEmptyProperty,
   validateCreateInput,
+  validateSecurityInfo,
+  validateConfirmInput,
+  validateResendConfirmationInput,
   validateUpdateInput,
   validateResetPwdInput,
   validateEmail,

@@ -1,5 +1,5 @@
 # source: http://localhost:4466/foxiny/dev
-# timestamp: Sun Feb 10 2019 20:17:39 GMT+0700 (Indochina Time)
+# timestamp: Thu Feb 21 2019 13:58:57 GMT+0700 (Indochina Time)
 
 type AggregateSecurityAnswer {
   count: Int!
@@ -839,8 +839,12 @@ type User implements Node {
   email: String
   phone: String
   password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  avatar: String
   securityAnswers(where: SecurityAnswerWhereInput, orderBy: SecurityAnswerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SecurityAnswer!]
   enabled: Boolean
+  recoverable: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -860,7 +864,11 @@ input UserCreateInput {
   email: String
   phone: String
   password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  avatar: String
   enabled: Boolean
+  recoverable: Boolean
   securityAnswers: SecurityAnswerCreateManyWithoutUserInput
 }
 
@@ -874,7 +882,11 @@ input UserCreateWithoutSecurityAnswersInput {
   email: String
   phone: String
   password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  avatar: String
   enabled: Boolean
+  recoverable: Boolean
 }
 
 """An edge in a connection."""
@@ -897,8 +909,16 @@ enum UserOrderByInput {
   phone_DESC
   password_ASC
   password_DESC
+  emailConfirmed_ASC
+  emailConfirmed_DESC
+  phoneConfirmed_ASC
+  phoneConfirmed_DESC
+  avatar_ASC
+  avatar_DESC
   enabled_ASC
   enabled_DESC
+  recoverable_ASC
+  recoverable_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -911,7 +931,11 @@ type UserPreviousValues {
   email: String
   phone: String
   password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  avatar: String
   enabled: Boolean
+  recoverable: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -960,7 +984,11 @@ input UserUpdateInput {
   email: String
   phone: String
   password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  avatar: String
   enabled: Boolean
+  recoverable: Boolean
   securityAnswers: SecurityAnswerUpdateManyWithoutUserInput
 }
 
@@ -969,7 +997,11 @@ input UserUpdateManyMutationInput {
   email: String
   phone: String
   password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  avatar: String
   enabled: Boolean
+  recoverable: Boolean
 }
 
 input UserUpdateOneWithoutSecurityAnswersInput {
@@ -986,7 +1018,11 @@ input UserUpdateWithoutSecurityAnswersDataInput {
   email: String
   phone: String
   password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  avatar: String
   enabled: Boolean
+  recoverable: Boolean
 }
 
 input UserUpsertWithoutSecurityAnswersInput {
@@ -1203,10 +1239,62 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   password_not_ends_with: String
+  emailConfirmed: Boolean
+
+  """All values that are not equal to given value."""
+  emailConfirmed_not: Boolean
+  phoneConfirmed: Boolean
+
+  """All values that are not equal to given value."""
+  phoneConfirmed_not: Boolean
+  avatar: String
+
+  """All values that are not equal to given value."""
+  avatar_not: String
+
+  """All values that are contained in given list."""
+  avatar_in: [String!]
+
+  """All values that are not contained in given list."""
+  avatar_not_in: [String!]
+
+  """All values less than the given value."""
+  avatar_lt: String
+
+  """All values less than or equal the given value."""
+  avatar_lte: String
+
+  """All values greater than the given value."""
+  avatar_gt: String
+
+  """All values greater than or equal the given value."""
+  avatar_gte: String
+
+  """All values containing the given string."""
+  avatar_contains: String
+
+  """All values not containing the given string."""
+  avatar_not_contains: String
+
+  """All values starting with the given string."""
+  avatar_starts_with: String
+
+  """All values not starting with the given string."""
+  avatar_not_starts_with: String
+
+  """All values ending with the given string."""
+  avatar_ends_with: String
+
+  """All values not ending with the given string."""
+  avatar_not_ends_with: String
   enabled: Boolean
 
   """All values that are not equal to given value."""
   enabled_not: Boolean
+  recoverable: Boolean
+
+  """All values that are not equal to given value."""
+  recoverable_not: Boolean
   createdAt: DateTime
 
   """All values that are not equal to given value."""
