@@ -2,74 +2,67 @@
 
 // 'cross-fetch' is Fetch API polyfill which is needed by Apollo Boost to work in Node
 import 'cross-fetch/polyfill';
+import { gql } from 'apollo-boost';
 
 import prisma from '../src/utils/prisma';
-import getGraphQLClient from './utils/get-graphql-client';
-import seedTestData, { seedUserOne } from './utils/seed-test-data';
+import getGraphQLClient, { getGraphQLClientWithTunnel } from './utils/get-graphql-client';
+import seedTestData, {
+  seedUserOne,
+  seedUserFour,
+  seedUserFive,
+  seedSecurityQuestions,
+  questions,
+} from './utils/seed-test-data';
 import operations from './utils/operations';
+import logger from '../src/utils/logger';
+import cache from '../src/utils/cache';
+import * as auth from '../src/utils/authentication';
 
+const ngrok = require('ngrok');
 const graphQLClient = getGraphQLClient();
 
-const testUserOne = {
-  name: 'Jane Doe',
-  email: 'jane@example.com',
-  password: 'dcba4321',
-};
+// TODO: tests each small functions before mutations testing
 
-beforeEach(seedTestData);
+describe(`User test`, () => {
+  // seeds database
+  beforeEach(seedTestData);
 
-test('Should create a new user', async () => {
-  const variables = {
-    data: {
-      ...testUserOne,
-    },
-  };
+  describe('Local ip', () => {
+    // get questions
 
-  const { data } = await graphQLClient.mutate({
-    mutation: operations.createUser,
-    variables,
+    /**
+     *
+     *  --- SIGN UP ---
+     *
+     */
+    // ${'email but name is undefined'}      | ${undefined}        | ${'elbertsoftware.tester@gmail.com'} | ${undefined} | ${'!dcba4321'} | ${questions.map((q, i) => ({ questionId: q.id, answer: i.toString() }))}
+    // ${'email but email is undefined'}     | ${'elbertsoftware'} | ${undefined}                         | ${undefined} | ${'!dcba4321'} | ${questions.map((q, i) => ({ questionId: q.id, answer: i.toString() }))}
+    // ${'email but password is undefined'}  | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined} | ${undefined}   | ${questions.map((q, i) => ({ questionId: q.id, answer: i.toString() }))}
+    // ${'email but questions is undefined'} | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined} | ${'!dcba4321'} | ${questions.map((q, i) => ({ questionId: undefined, answer: i.toString() }))}
+    // ${'email but answer is undefined'}    | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined} | ${'!dcba4321'} | ${questions.map((q, i) => ({ questionId: q.id, answer: undefined }))}
+    // ${'email but lacking of secInfo'}     | ${'elbertsoftware'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined} | ${'!dcba4321'} | ${questions.map((q, i) => ({ questionId: q.id, answer: i.toString() })).slice(0, 1)}
+    // ${'undefined of all'}                 | ${undefined}        | ${undefined}                         | ${undefined} | ${undefined}   | ${[{ questionId: undefined, answer: undefined }, { questionId: undefined, answer: undefined }, { questionId: undefined, answer: undefined }]}
+    // ${'null of all'}                      | ${''}               | ${''}                                | ${''}        | ${''}          | ${[{ questionId: '', answer: '' }, { questionId: '', answer: '' }, { questionId: '', answer: '' }]}
+    // ${'whitespaces of all'}               | ${'  '}             | ${'  '}                              | ${'  '}      | ${'  '}        | ${[{ questionId: '   ', answer: '   ' }, { questionId: '   ', answer: '   ' }, { questionId: '   ', answer: '   ' }]}
+    // ${'null of all'}                      | ${null}             | ${null}                              | ${null}      | ${null}        | ${[{ questionId: null, answer: null }, { questionId: null, answer: null }, { questionId: null, answer: null }]}
+    describe(`Creates a user`, () => {
+      test.each`
+        description                      | name        | email                                | phone        | password       | securityInfo
+        ${'email but name is undefined'} | ${'elbert'} | ${'elbertsoftware.tester@gmail.com'} | ${undefined} | ${'!dcba4321'} | ${questions}
+      `(`Should not create user by: $description`, async ({ name, email, phone, password, securityInfo }) => {
+        logger.debug(JSON.stringify(securityInfo, undefined, 2));
+        const variables = {
+          data: {
+            name: name,
+            email: email,
+            phone: phone,
+            password: password,
+            securityInfo: securityInfo,
+          },
+        };
+        logger.debug(JSON.stringify(variables));
+        await expect(graphQLClient.mutate({ mutation: operations.createUser, variables })).rejects.toThrow();
+      });
+    });
   });
-
-  const exists = await prisma.exists.User({ id: data.createUser.user.id });
-  expect(exists).toBe(true);
-});
-
-test('Should not signup user with invalid password pattern', async () => {
-  const variables = {
-    data: {
-      ...testUserOne,
-      password: 'short', // short password
-    },
-  };
-
-  await expect(graphQLClient.mutate({ mutation: operations.createUser, variables })).rejects.toThrow();
-});
-
-test('Should expose public author profile', async () => {
-  const { data } = await graphQLClient.query({ query: operations.getUsers });
-
-  expect(data.users.length).toBe(1);
-  expect(data.users[0].name).toBe(seedUserOne.user.name);
-  expect(data.users[0].email).toBe(null); // without authentication, email is hidden
-});
-
-test('Should fetch user profile', async () => {
-  const graphQLClientWithToken = getGraphQLClient(seedUserOne.token);
-  const { data } = await graphQLClientWithToken.query({ query: operations.getProfile });
-
-  expect(data.me.id).toBe(seedUserOne.user.id);
-  expect(data.me.name).toBe(seedUserOne.user.name);
-  expect(data.me.email).toBe(seedUserOne.user.email); // with authentication, email is showed
-});
-
-test('Should not login with bad credentials', async () => {
-  const variables = {
-    data: {
-      // login with different user email and password
-      email: testUserOne.email,
-      password: testUserOne.password,
-    },
-  };
-
-  await expect(graphQLClient.mutate({ mutation: operations.login, variables })).rejects.toThrow();
 });

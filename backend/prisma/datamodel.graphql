@@ -4,7 +4,32 @@ type User {
   email: String @unique # required and uniqueness will be handled in foxiny-gateway
   phone: String @unique # required and uniqueness will be handled in foxiny-gateway
   password: String # required will be handled in foxiny-gateway
-  enabled: Boolean @default(value: "false") # required will be handled in foxiny-gateway
+  emailConfirmed: Boolean @default(value: false)
+  phoneConfirmed: Boolean @default(value: false)
+  avatar: String @default(value: "/home/dev/Projects/foxiny/gateway/src/images/1.svg")
+  securityAnswers: [SecurityAnswer] @relation(name: "AnswerToUser", onDelete: CASCADE) # required will be handled in foxiny-gateway
+  enabled: Boolean @default(value: false) # required will be handled in foxiny-gateway
+  recoverable: Boolean @default(value: false)
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+#TODO: consider splitting User into 2 types: User and UserProfiles
+#TODO: consider storing avatar in a separate tables (many to many from User to Avatar)
+
+type SecurityQuestion {
+  id: ID! @unique
+  question: String # required and uniqueness will be handled in foxiny-gateway
+  securityAnswers: [SecurityAnswer] @relation(name: "AnswerToQuestion", onDelete: CASCADE)
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type SecurityAnswer {
+  id: ID! @unique
+  user: User @relation(name: "AnswerToUser", onDelete: CASCADE) # required and uniqueness will be handled in foxiny-gateway
+  securityQuestion: SecurityQuestion @relation(name: "AnswerToQuestion", onDelete: CASCADE) # required and uniqueness will be handled in foxiny-gateway
+  answer: String # required and uniqueness will be handled in foxiny-gateway
   createdAt: DateTime!
   updatedAt: DateTime!
 }

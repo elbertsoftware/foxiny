@@ -10,7 +10,7 @@
     "schema": "graphql get-schema --project foxiny-gateway --dotenv ../config/dev.env",
     "dev": "env-cmd ../config/dev.env nodemon ./src/index.js --exec babel-node --ext js,graphql",
     "debug": "env-cmd ../config/dev.env babel-node ./src/index.js",
-    "test": "env-cmd ../config/test.env jest --watch --runInBand",
+    "test": "env-cmd ../config/test.env jest --watchAll --runInBand",
     "prod": "env-cmd ../config/prod.env node ./dist/index.js",
     "postbuild": "babel src --out-dir dist --copy-files",
     "start": "node ./dist/index.js"
@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "apollo-boost": "^0.1.23",
+    "axios": "^0.18.0",
     "babel-eslint": "^10.0.1",
     "babel-register": "^6.26.0",
     "cross-fetch": "^2.2.3",

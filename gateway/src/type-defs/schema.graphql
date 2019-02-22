@@ -1,16 +1,24 @@
 type Query {
   users(query: String): [User!]!
   me: User!
+  meSecurityInfo: [SecurityInfo]! # get all security questions and answer of logged-in user
+  securityQuestions(query: String): [SecurityQuestion]! # get all security questions
 }
 
+# user must pick three of many security question from database
+# user does not need to create their own security questions
 type Mutation {
   createUser(data: CreateUserInput!): User!
-  resendConfirmation(userId: String!): User!
+  resendConfirmation(data: ResendConfirmation!): Boolean!
   confirmUser(data: ConfirmUserInput): User!
-  login(data: LoginUserInput!): LoginPayload!
-  logout(all: Boolean = false): LogoutPayload!
+  upsertSecurityInfo(securityInfo: [QueAnsPairInput]!): User!
+  login(data: LoginUserInput!): AuthPayload!
+  logout(all: Boolean = false): AuthPayload!
   updateUser(data: UpdateUserInput!): User!
   deleteUser: User!
+
+  requestResetPwd(data: RequestResetPwdInput!): SecPayload!
+  resetPassword(data: ResetPasswordInput!): Boolean!
 }
 
 type User {
@@ -22,10 +30,32 @@ type User {
   email: String
   phone: String
   password: String
+  emailConfirmed: Boolean!
+  phoneConfirmed: Boolean!
+  avatar: String!
 
+  # Value: emailConfirmed OR phoneConfirmed
   enabled: Boolean!
+
+  # Value: securityAnswer
+  recoverable: Boolean!
+
   createdAt: String!
   updatedAt: String!
+}
+
+type SecurityQuestion {
+  id: ID!
+  question: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type SecurityInfo {
+  questionId: ID!
+  question: String!
+  answerId: ID!
+  answer: String!
 }
 
 input CreateUserInput {
@@ -35,9 +65,25 @@ input CreateUserInput {
   password: String!
 }
 
+input QueAnsPairInput {
+  questionId: String
+  question: String
+  answer: String!
+}
+
 input ConfirmUserInput {
-  userId: ID!
+  userId: ID
+  email: String
+  phone: String
   code: String!
+}
+
+# in case User has userId, consider it first
+# in case User wants to confirm and has no userId, he/she has to enter email or phone
+input ResendConfirmation {
+  userId: String
+  email: String
+  phone: String
 }
 
 input LoginUserInput {
@@ -56,10 +102,28 @@ type LogoutPayload {
   userId: String!
 }
 
+# user has to enter currentPWD if he/she wants to change email/phone/pwd
 input UpdateUserInput {
   name: String
   email: String
   phone: String
   password: String
   currentPassword: String
+  avatar: String
+  securityInfo: [QueAnsPairInput]
+}
+
+type SecPayload {
+  token: String!
+  securityQuestions: [SecurityQuestion]!
+}
+
+input RequestResetPwdInput {
+  email: String
+  phone: String
+}
+
+input ResetPasswordInput {
+  securityInfo: [QueAnsPairInput]!
+  password: String!
 }

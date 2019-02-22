@@ -1,5 +1,13 @@
 # source: http://localhost:4466/foxiny/dev
-# timestamp: Wed Jan 02 2019 15:15:21 GMT-0800 (Pacific Standard Time)
+# timestamp: Thu Feb 21 2019 13:58:57 GMT+0700 (Indochina Time)
+
+type AggregateSecurityAnswer {
+  count: Int!
+}
+
+type AggregateSecurityQuestion {
+  count: Int!
+}
 
 type AggregateUser {
   count: Int!
@@ -23,11 +31,23 @@ scalar Long
 
 type Mutation {
   createUser(data: UserCreateInput!): User!
+  createSecurityQuestion(data: SecurityQuestionCreateInput!): SecurityQuestion!
+  createSecurityAnswer(data: SecurityAnswerCreateInput!): SecurityAnswer!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateSecurityQuestion(data: SecurityQuestionUpdateInput!, where: SecurityQuestionWhereUniqueInput!): SecurityQuestion
+  updateSecurityAnswer(data: SecurityAnswerUpdateInput!, where: SecurityAnswerWhereUniqueInput!): SecurityAnswer
   deleteUser(where: UserWhereUniqueInput!): User
+  deleteSecurityQuestion(where: SecurityQuestionWhereUniqueInput!): SecurityQuestion
+  deleteSecurityAnswer(where: SecurityAnswerWhereUniqueInput!): SecurityAnswer
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertSecurityQuestion(where: SecurityQuestionWhereUniqueInput!, create: SecurityQuestionCreateInput!, update: SecurityQuestionUpdateInput!): SecurityQuestion!
+  upsertSecurityAnswer(where: SecurityAnswerWhereUniqueInput!, create: SecurityAnswerCreateInput!, update: SecurityAnswerUpdateInput!): SecurityAnswer!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  updateManySecurityQuestions(data: SecurityQuestionUpdateManyMutationInput!, where: SecurityQuestionWhereInput): BatchPayload!
+  updateManySecurityAnswers(data: SecurityAnswerUpdateManyMutationInput!, where: SecurityAnswerWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManySecurityQuestions(where: SecurityQuestionWhereInput): BatchPayload!
+  deleteManySecurityAnswers(where: SecurityAnswerWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
 }
 
@@ -64,8 +84,14 @@ enum PrismaDatabase {
 
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  securityQuestions(where: SecurityQuestionWhereInput, orderBy: SecurityQuestionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SecurityQuestion]!
+  securityAnswers(where: SecurityAnswerWhereInput, orderBy: SecurityAnswerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SecurityAnswer]!
   user(where: UserWhereUniqueInput!): User
+  securityQuestion(where: SecurityQuestionWhereUniqueInput!): SecurityQuestion
+  securityAnswer(where: SecurityAnswerWhereUniqueInput!): SecurityAnswer
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  securityQuestionsConnection(where: SecurityQuestionWhereInput, orderBy: SecurityQuestionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SecurityQuestionConnection!
+  securityAnswersConnection(where: SecurityAnswerWhereInput, orderBy: SecurityAnswerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SecurityAnswerConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -74,8 +100,737 @@ type Query {
   ): Node
 }
 
+type SecurityAnswer implements Node {
+  id: ID!
+  user: User
+  securityQuestion: SecurityQuestion
+  answer: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type SecurityAnswerConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [SecurityAnswerEdge]!
+  aggregate: AggregateSecurityAnswer!
+}
+
+input SecurityAnswerCreateInput {
+  answer: String
+  user: UserCreateOneWithoutSecurityAnswersInput
+  securityQuestion: SecurityQuestionCreateOneWithoutSecurityAnswersInput
+}
+
+input SecurityAnswerCreateManyWithoutSecurityQuestionInput {
+  create: [SecurityAnswerCreateWithoutSecurityQuestionInput!]
+  connect: [SecurityAnswerWhereUniqueInput!]
+}
+
+input SecurityAnswerCreateManyWithoutUserInput {
+  create: [SecurityAnswerCreateWithoutUserInput!]
+  connect: [SecurityAnswerWhereUniqueInput!]
+}
+
+input SecurityAnswerCreateWithoutSecurityQuestionInput {
+  answer: String
+  user: UserCreateOneWithoutSecurityAnswersInput
+}
+
+input SecurityAnswerCreateWithoutUserInput {
+  answer: String
+  securityQuestion: SecurityQuestionCreateOneWithoutSecurityAnswersInput
+}
+
+"""An edge in a connection."""
+type SecurityAnswerEdge {
+  """The item at the end of the edge."""
+  node: SecurityAnswer!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum SecurityAnswerOrderByInput {
+  id_ASC
+  id_DESC
+  answer_ASC
+  answer_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type SecurityAnswerPreviousValues {
+  id: ID!
+  answer: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input SecurityAnswerScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SecurityAnswerScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SecurityAnswerScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SecurityAnswerScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  answer: String
+
+  """All values that are not equal to given value."""
+  answer_not: String
+
+  """All values that are contained in given list."""
+  answer_in: [String!]
+
+  """All values that are not contained in given list."""
+  answer_not_in: [String!]
+
+  """All values less than the given value."""
+  answer_lt: String
+
+  """All values less than or equal the given value."""
+  answer_lte: String
+
+  """All values greater than the given value."""
+  answer_gt: String
+
+  """All values greater than or equal the given value."""
+  answer_gte: String
+
+  """All values containing the given string."""
+  answer_contains: String
+
+  """All values not containing the given string."""
+  answer_not_contains: String
+
+  """All values starting with the given string."""
+  answer_starts_with: String
+
+  """All values not starting with the given string."""
+  answer_not_starts_with: String
+
+  """All values ending with the given string."""
+  answer_ends_with: String
+
+  """All values not ending with the given string."""
+  answer_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+type SecurityAnswerSubscriptionPayload {
+  mutation: MutationType!
+  node: SecurityAnswer
+  updatedFields: [String!]
+  previousValues: SecurityAnswerPreviousValues
+}
+
+input SecurityAnswerSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SecurityAnswerSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SecurityAnswerSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SecurityAnswerSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: SecurityAnswerWhereInput
+}
+
+input SecurityAnswerUpdateInput {
+  answer: String
+  user: UserUpdateOneWithoutSecurityAnswersInput
+  securityQuestion: SecurityQuestionUpdateOneWithoutSecurityAnswersInput
+}
+
+input SecurityAnswerUpdateManyDataInput {
+  answer: String
+}
+
+input SecurityAnswerUpdateManyMutationInput {
+  answer: String
+}
+
+input SecurityAnswerUpdateManyWithoutSecurityQuestionInput {
+  create: [SecurityAnswerCreateWithoutSecurityQuestionInput!]
+  connect: [SecurityAnswerWhereUniqueInput!]
+  disconnect: [SecurityAnswerWhereUniqueInput!]
+  delete: [SecurityAnswerWhereUniqueInput!]
+  update: [SecurityAnswerUpdateWithWhereUniqueWithoutSecurityQuestionInput!]
+  updateMany: [SecurityAnswerUpdateManyWithWhereNestedInput!]
+  deleteMany: [SecurityAnswerScalarWhereInput!]
+  upsert: [SecurityAnswerUpsertWithWhereUniqueWithoutSecurityQuestionInput!]
+}
+
+input SecurityAnswerUpdateManyWithoutUserInput {
+  create: [SecurityAnswerCreateWithoutUserInput!]
+  connect: [SecurityAnswerWhereUniqueInput!]
+  disconnect: [SecurityAnswerWhereUniqueInput!]
+  delete: [SecurityAnswerWhereUniqueInput!]
+  update: [SecurityAnswerUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [SecurityAnswerUpdateManyWithWhereNestedInput!]
+  deleteMany: [SecurityAnswerScalarWhereInput!]
+  upsert: [SecurityAnswerUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input SecurityAnswerUpdateManyWithWhereNestedInput {
+  where: SecurityAnswerScalarWhereInput!
+  data: SecurityAnswerUpdateManyDataInput!
+}
+
+input SecurityAnswerUpdateWithoutSecurityQuestionDataInput {
+  answer: String
+  user: UserUpdateOneWithoutSecurityAnswersInput
+}
+
+input SecurityAnswerUpdateWithoutUserDataInput {
+  answer: String
+  securityQuestion: SecurityQuestionUpdateOneWithoutSecurityAnswersInput
+}
+
+input SecurityAnswerUpdateWithWhereUniqueWithoutSecurityQuestionInput {
+  where: SecurityAnswerWhereUniqueInput!
+  data: SecurityAnswerUpdateWithoutSecurityQuestionDataInput!
+}
+
+input SecurityAnswerUpdateWithWhereUniqueWithoutUserInput {
+  where: SecurityAnswerWhereUniqueInput!
+  data: SecurityAnswerUpdateWithoutUserDataInput!
+}
+
+input SecurityAnswerUpsertWithWhereUniqueWithoutSecurityQuestionInput {
+  where: SecurityAnswerWhereUniqueInput!
+  update: SecurityAnswerUpdateWithoutSecurityQuestionDataInput!
+  create: SecurityAnswerCreateWithoutSecurityQuestionInput!
+}
+
+input SecurityAnswerUpsertWithWhereUniqueWithoutUserInput {
+  where: SecurityAnswerWhereUniqueInput!
+  update: SecurityAnswerUpdateWithoutUserDataInput!
+  create: SecurityAnswerCreateWithoutUserInput!
+}
+
+input SecurityAnswerWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SecurityAnswerWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SecurityAnswerWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SecurityAnswerWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  answer: String
+
+  """All values that are not equal to given value."""
+  answer_not: String
+
+  """All values that are contained in given list."""
+  answer_in: [String!]
+
+  """All values that are not contained in given list."""
+  answer_not_in: [String!]
+
+  """All values less than the given value."""
+  answer_lt: String
+
+  """All values less than or equal the given value."""
+  answer_lte: String
+
+  """All values greater than the given value."""
+  answer_gt: String
+
+  """All values greater than or equal the given value."""
+  answer_gte: String
+
+  """All values containing the given string."""
+  answer_contains: String
+
+  """All values not containing the given string."""
+  answer_not_contains: String
+
+  """All values starting with the given string."""
+  answer_starts_with: String
+
+  """All values not starting with the given string."""
+  answer_not_starts_with: String
+
+  """All values ending with the given string."""
+  answer_ends_with: String
+
+  """All values not ending with the given string."""
+  answer_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  user: UserWhereInput
+  securityQuestion: SecurityQuestionWhereInput
+}
+
+input SecurityAnswerWhereUniqueInput {
+  id: ID
+}
+
+type SecurityQuestion implements Node {
+  id: ID!
+  question: String
+  securityAnswers(where: SecurityAnswerWhereInput, orderBy: SecurityAnswerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SecurityAnswer!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type SecurityQuestionConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [SecurityQuestionEdge]!
+  aggregate: AggregateSecurityQuestion!
+}
+
+input SecurityQuestionCreateInput {
+  question: String
+  securityAnswers: SecurityAnswerCreateManyWithoutSecurityQuestionInput
+}
+
+input SecurityQuestionCreateOneWithoutSecurityAnswersInput {
+  create: SecurityQuestionCreateWithoutSecurityAnswersInput
+  connect: SecurityQuestionWhereUniqueInput
+}
+
+input SecurityQuestionCreateWithoutSecurityAnswersInput {
+  question: String
+}
+
+"""An edge in a connection."""
+type SecurityQuestionEdge {
+  """The item at the end of the edge."""
+  node: SecurityQuestion!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum SecurityQuestionOrderByInput {
+  id_ASC
+  id_DESC
+  question_ASC
+  question_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type SecurityQuestionPreviousValues {
+  id: ID!
+  question: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type SecurityQuestionSubscriptionPayload {
+  mutation: MutationType!
+  node: SecurityQuestion
+  updatedFields: [String!]
+  previousValues: SecurityQuestionPreviousValues
+}
+
+input SecurityQuestionSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SecurityQuestionSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SecurityQuestionSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SecurityQuestionSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: SecurityQuestionWhereInput
+}
+
+input SecurityQuestionUpdateInput {
+  question: String
+  securityAnswers: SecurityAnswerUpdateManyWithoutSecurityQuestionInput
+}
+
+input SecurityQuestionUpdateManyMutationInput {
+  question: String
+}
+
+input SecurityQuestionUpdateOneWithoutSecurityAnswersInput {
+  create: SecurityQuestionCreateWithoutSecurityAnswersInput
+  connect: SecurityQuestionWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: SecurityQuestionUpdateWithoutSecurityAnswersDataInput
+  upsert: SecurityQuestionUpsertWithoutSecurityAnswersInput
+}
+
+input SecurityQuestionUpdateWithoutSecurityAnswersDataInput {
+  question: String
+}
+
+input SecurityQuestionUpsertWithoutSecurityAnswersInput {
+  update: SecurityQuestionUpdateWithoutSecurityAnswersDataInput!
+  create: SecurityQuestionCreateWithoutSecurityAnswersInput!
+}
+
+input SecurityQuestionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SecurityQuestionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SecurityQuestionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SecurityQuestionWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  question: String
+
+  """All values that are not equal to given value."""
+  question_not: String
+
+  """All values that are contained in given list."""
+  question_in: [String!]
+
+  """All values that are not contained in given list."""
+  question_not_in: [String!]
+
+  """All values less than the given value."""
+  question_lt: String
+
+  """All values less than or equal the given value."""
+  question_lte: String
+
+  """All values greater than the given value."""
+  question_gt: String
+
+  """All values greater than or equal the given value."""
+  question_gte: String
+
+  """All values containing the given string."""
+  question_contains: String
+
+  """All values not containing the given string."""
+  question_not_contains: String
+
+  """All values starting with the given string."""
+  question_starts_with: String
+
+  """All values not starting with the given string."""
+  question_not_starts_with: String
+
+  """All values ending with the given string."""
+  question_ends_with: String
+
+  """All values not ending with the given string."""
+  question_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  securityAnswers_every: SecurityAnswerWhereInput
+  securityAnswers_some: SecurityAnswerWhereInput
+  securityAnswers_none: SecurityAnswerWhereInput
+}
+
+input SecurityQuestionWhereUniqueInput {
+  id: ID
+}
+
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  securityQuestion(where: SecurityQuestionSubscriptionWhereInput): SecurityQuestionSubscriptionPayload
+  securityAnswer(where: SecurityAnswerSubscriptionWhereInput): SecurityAnswerSubscriptionPayload
 }
 
 type User implements Node {
@@ -84,7 +839,12 @@ type User implements Node {
   email: String
   phone: String
   password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  avatar: String
+  securityAnswers(where: SecurityAnswerWhereInput, orderBy: SecurityAnswerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SecurityAnswer!]
   enabled: Boolean
+  recoverable: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -104,7 +864,29 @@ input UserCreateInput {
   email: String
   phone: String
   password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  avatar: String
   enabled: Boolean
+  recoverable: Boolean
+  securityAnswers: SecurityAnswerCreateManyWithoutUserInput
+}
+
+input UserCreateOneWithoutSecurityAnswersInput {
+  create: UserCreateWithoutSecurityAnswersInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutSecurityAnswersInput {
+  name: String
+  email: String
+  phone: String
+  password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  avatar: String
+  enabled: Boolean
+  recoverable: Boolean
 }
 
 """An edge in a connection."""
@@ -127,8 +909,16 @@ enum UserOrderByInput {
   phone_DESC
   password_ASC
   password_DESC
+  emailConfirmed_ASC
+  emailConfirmed_DESC
+  phoneConfirmed_ASC
+  phoneConfirmed_DESC
+  avatar_ASC
+  avatar_DESC
   enabled_ASC
   enabled_DESC
+  recoverable_ASC
+  recoverable_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -141,7 +931,11 @@ type UserPreviousValues {
   email: String
   phone: String
   password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  avatar: String
   enabled: Boolean
+  recoverable: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -190,7 +984,12 @@ input UserUpdateInput {
   email: String
   phone: String
   password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  avatar: String
   enabled: Boolean
+  recoverable: Boolean
+  securityAnswers: SecurityAnswerUpdateManyWithoutUserInput
 }
 
 input UserUpdateManyMutationInput {
@@ -198,7 +997,37 @@ input UserUpdateManyMutationInput {
   email: String
   phone: String
   password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  avatar: String
   enabled: Boolean
+  recoverable: Boolean
+}
+
+input UserUpdateOneWithoutSecurityAnswersInput {
+  create: UserCreateWithoutSecurityAnswersInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: UserUpdateWithoutSecurityAnswersDataInput
+  upsert: UserUpsertWithoutSecurityAnswersInput
+}
+
+input UserUpdateWithoutSecurityAnswersDataInput {
+  name: String
+  email: String
+  phone: String
+  password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  avatar: String
+  enabled: Boolean
+  recoverable: Boolean
+}
+
+input UserUpsertWithoutSecurityAnswersInput {
+  update: UserUpdateWithoutSecurityAnswersDataInput!
+  create: UserCreateWithoutSecurityAnswersInput!
 }
 
 input UserWhereInput {
@@ -410,10 +1239,62 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   password_not_ends_with: String
+  emailConfirmed: Boolean
+
+  """All values that are not equal to given value."""
+  emailConfirmed_not: Boolean
+  phoneConfirmed: Boolean
+
+  """All values that are not equal to given value."""
+  phoneConfirmed_not: Boolean
+  avatar: String
+
+  """All values that are not equal to given value."""
+  avatar_not: String
+
+  """All values that are contained in given list."""
+  avatar_in: [String!]
+
+  """All values that are not contained in given list."""
+  avatar_not_in: [String!]
+
+  """All values less than the given value."""
+  avatar_lt: String
+
+  """All values less than or equal the given value."""
+  avatar_lte: String
+
+  """All values greater than the given value."""
+  avatar_gt: String
+
+  """All values greater than or equal the given value."""
+  avatar_gte: String
+
+  """All values containing the given string."""
+  avatar_contains: String
+
+  """All values not containing the given string."""
+  avatar_not_contains: String
+
+  """All values starting with the given string."""
+  avatar_starts_with: String
+
+  """All values not starting with the given string."""
+  avatar_not_starts_with: String
+
+  """All values ending with the given string."""
+  avatar_ends_with: String
+
+  """All values not ending with the given string."""
+  avatar_not_ends_with: String
   enabled: Boolean
 
   """All values that are not equal to given value."""
   enabled_not: Boolean
+  recoverable: Boolean
+
+  """All values that are not equal to given value."""
+  recoverable_not: Boolean
   createdAt: DateTime
 
   """All values that are not equal to given value."""
@@ -458,6 +1339,9 @@ input UserWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
+  securityAnswers_every: SecurityAnswerWhereInput
+  securityAnswers_some: SecurityAnswerWhereInput
+  securityAnswers_none: SecurityAnswerWhereInput
 }
 
 input UserWhereUniqueInput {
