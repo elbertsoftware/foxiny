@@ -86,7 +86,6 @@ class SignInForm extends React.Component {
         token,
         user: { id, name, email, phone },
       } = data.data.login;
-      console.log('After login ', name, email, phone);
       if (token) {
         setAuthorizationToken(token);
         setUserInfo(id, name);

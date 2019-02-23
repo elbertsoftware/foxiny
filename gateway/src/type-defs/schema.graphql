@@ -12,8 +12,8 @@ type Mutation {
   resendConfirmation(data: ResendConfirmation!): Boolean!
   confirmUser(data: ConfirmUserInput): User!
   upsertSecurityInfo(securityInfo: [QueAnsPairInput]!): User!
-  login(data: LoginUserInput!): AuthPayload!
-  logout(all: Boolean = false): AuthPayload!
+  login(data: LoginUserInput!): LoginPayload!
+  logout(all: Boolean = false): LogoutPayload!
   updateUser(data: UpdateUserInput!): User!
   deleteUser: User!
 

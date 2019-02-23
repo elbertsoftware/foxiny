@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -11,10 +13,15 @@ import { MenuItem, FormControl, InputLabel, FormHelperText, Icon } from '@materi
 import { Field, Form } from 'react-final-form';
 import createDecorator from 'final-form-focus';
 import { toast } from 'react-toastify';
+import { graphql, compose } from 'react-apollo';
 import RFTextField from '../../utils/common/form/RFTextField';
 import Paper from '../../utils/common/Paper';
 import SelectList from './Fields/SelectList';
 import FormButton from '../../utils/common/form/FormButton';
+import getSecurityQuestions from '../../graphql/getSecurityQuestions';
+import createSecurityQuestion from '../../graphql/createUpdateSecurityQues';
+import Loading from '../App/Loading';
+import { required } from '../../utils/common/form/validation';
 
 const focusOnError = createDecorator();
 
@@ -44,18 +51,6 @@ const styles = theme => ({
     minWidth: 400,
   },
 });
-
-const questions = [
-  { questionId: 123, question: 'Người yêu của bạn tên gì?' },
-  { questionId: 456, question: 'Con vật bạn yêu thích nhất?' },
-  { questionId: 789, question: 'Nghề nghiệp của bố bạn?' },
-];
-
-const listQuestions = questions.map(({ questionId, question }) => (
-  <MenuItem key={questionId} value={questionId}>
-    {question}
-  </MenuItem>
-));
 
 function getSteps() {
   return ['Câu hỏi 1', 'Câu hỏi 2', 'Câu hỏi 3'];
@@ -107,16 +102,36 @@ class SecurityQuesForm extends React.Component {
     });
   };
 
-  onSubmit = async values => {
-    console.log(values);
-    console.log(this.state.quesAnsPair);
+  onSubmit = async () => {
+    try {
+      const {
+        data: {
+          data: {
+            createSecurityQuestion: { id, recoverable },
+          },
+        },
+      } = await this.props.createSecurityQuestion({
+        variables: {
+          securityInfo: this.state.quesAnsPair,
+        },
+      });
+      console.log(id, recoverable);
+    } catch (error) {
+      toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !');
+    }
   };
 
   render() {
-    const { classes, history } = this.props;
+    const { classes, history, loading, securityQuestions } = this.props;
     const steps = getSteps();
     const { activeStep, questionError, answerError } = this.state;
 
+    if (loading) return <Loading />;
+    const listQuestions = securityQuestions.map(({ id, question }) => (
+      <MenuItem key={id} value={id}>
+        {question}
+      </MenuItem>
+    ));
     return (
       <div>
         <div className={classes.root}>
@@ -126,7 +141,14 @@ class SecurityQuesForm extends React.Component {
           <Typography variant="h3">Câu hỏi bảo mật</Typography>
         </div>
         <Paper className={classes.rootPaper} background="light">
-          <Form onSubmit={this.onSubmit} subscription={{ submitting: true, values: true }} decorators={[focusOnError]}>
+          <Form
+            onSubmit={this.onSubmit}
+            subscription={{ submitting: true, values: true }}
+            decorators={[focusOnError]}
+            validate={values =>
+              required(['question0', 'question1', 'question2', 'answer0', 'answer1', 'answer2'], values)
+            }
+          >
             {({ handleSubmit, values, submitting }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <Stepper activeStep={activeStep} orientation="vertical">
@@ -135,7 +157,7 @@ class SecurityQuesForm extends React.Component {
                       <StepLabel>
                         {values[`question${index}`] === undefined
                           ? label
-                          : `Câu hỏi: ${questions.find(ele => ele.questionId === values[`question${index}`]).question}`}
+                          : `Câu hỏi: ${securityQuestions.find(ele => ele.id === values[`question${index}`]).question}`}
                       </StepLabel>
                       <StepContent>
                         <FormControl className={classes.formControl}>
@@ -203,4 +225,13 @@ SecurityQuesForm.propTypes = {
   classes: PropTypes.object,
 };
 
-export default withStyles(styles)(SecurityQuesForm);
+export default compose(
+  graphql(getSecurityQuestions, {
+    props: ({ data: { loading, securityQuestions } }) => ({
+      loading,
+      securityQuestions,
+    }),
+  }),
+  graphql(createSecurityQuestion, { name: 'createSecurityQuestion' }),
+  withStyles(styles),
+)(SecurityQuesForm);

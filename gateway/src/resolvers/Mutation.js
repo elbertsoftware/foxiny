@@ -27,13 +27,13 @@ import {
 import logger from '../utils/logger';
 import { sendConfirmationEmail } from '../utils/email';
 import { sendConfirmationText } from '../utils/sms';
-import { sendConfirmationEsms } from '../utils/smsVN';
+// import { sendConfirmationEsms } from '../utils/smsVN';
 
 // TODO: un-comment sendConfirmation functions
 
 const Mutation = {
-  createUser: async (parent, { data }, { prisma, cache, request }, info) => {
-    validateCreateInput(data);
+  createUser: async (parent, { data }, { prisma, cache }, info) => {
+    // validateCreateInput(data);
 
     const password = hashPassword(data.password);
     const user = await prisma.mutation.createUser(
@@ -44,13 +44,14 @@ const Mutation = {
           enabled: false, // user needs to confirm before the account become enabled
         },
       },
-    });
+      info,
+    );
 
     const code = generateConfirmation(cache, user.id);
 
     // email the code if user is signing up via email
     if (typeof data.email === 'string') {
-      // sendConfirmationEmail(data.name, data.email, code);
+      sendConfirmationEmail(data.name, data.email, code);
       if (process.env.TEST_STATE) {
         // TODO: try to count how many time confirmation code is sent to user and
         // try to stop sending to many times
@@ -60,7 +61,7 @@ const Mutation = {
     // text the code if user is signing up via phone
     if (typeof data.phone === 'string') {
       // TODO: try to find out where does the number come from, US or VN or other, to choose the best way to send the code
-      // sendConfirmationText(data.name, data.phone, code);
+      sendConfirmationText(data.name, data.phone, code);
       // sendConfirmationEsms(user.phone, code);
       if (process.env.TEST_STATE) {
         // TODO: try to count how many time confirmation code is sent to user and
@@ -86,7 +87,7 @@ const Mutation = {
     });
 
     if (!user) {
-      logger.info(`🛑 CREATE_SECURITY_INFO: User ${data.userId} not found`);
+      logger.info(`🛑 CREATE_SECURITY_INFO: User ${userId} not found`);
       throw new Error('Unable to confirmUser'); // try NOT to provide enough information so hackers can guess
     }
 
@@ -212,13 +213,13 @@ const Mutation = {
 
     // email the code if user is signing up via email
     if (typeof user.email === 'string' && (data.userId || data.email) && !user.emailConfirmed) {
-      // sendConfirmationEmail(user.name, user.email, code);
+      sendConfirmationEmail(user.name, user.email, code);
       logger.debug('Email resent');
     }
 
     // text the code if user is signing up via phone
     if (typeof user.phone === 'string' && (data.userId || data.phone) && !user.phoneConfirmed) {
-      // sendConfirmationText(user.name, user.phone, code);
+      sendConfirmationText(user.name, user.phone, code);
       // sendConfirmationEsms(user.phone, code);
       logger.debug('Phone resent');
     }
