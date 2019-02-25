@@ -16,6 +16,7 @@ import Homepage from '../Homepage';
 import UserSecurityQuestion from '../User/UserSecurityQuestion';
 import withAuthenticator from '../../utils/RouteProtector';
 import UserResetPassword from '../User/UserResetPassword/UserResetPassword';
+import UserUploadAvatar from '../User/UserAvatar/UserUploadAvatar';
 
 class App extends Component<Props, State> {
   state = {
@@ -74,6 +75,9 @@ class App extends Component<Props, State> {
                 </Switch>
                 <Switch>
                   <Route path="/reset-password" component={UserResetPassword} />
+                </Switch>
+                <Switch>
+                  <Route path="/user-photo" component={withAuthenticator(UserUploadAvatar)} />
                 </Switch>
                 <Switch>
                   <Route path="/profile/:id" component={withAuthenticator(UserDashboard)} />

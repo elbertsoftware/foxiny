@@ -37,27 +37,6 @@ const Query = {
     );
   },
 
-  meSecurityInfo: async (parent, args, { prisma, request, cache }, info) => {
-    const userId = await getUserIDFromRequest(request, cache);
-
-    const query = await prisma.query.user(
-      {
-        where: {
-          id: userId,
-        },
-      },
-      '{ securityAnswers { id securityQuestion { id question } answer createdAt updatedAt } }',
-    );
-
-    // cast to type SecurityInfo
-    return query.securityAnswers.map(item => ({
-      questionId: item.securityQuestion.id,
-      question: item.securityQuestion.question,
-      answerId: item.id,
-      answer: item.answer,
-    }));
-  },
-
   // get all security questions
   securityQuestions: async (parent, args, { prisma, request, cache }, info) => {
     return prisma.query.securityQuestions(null, info);
