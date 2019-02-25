@@ -8,12 +8,14 @@ import Query from './Query';
 import Mutation from './Mutation';
 // import Subscription from './Subscription'
 import User from './User';
+import Avatar from './Avatar';
 
 const resolvers = {
   Query,
   Mutation,
   // Subscription,
   User,
+  Avatar,
 };
 
 // extractFragmentReplacements() goes thru all resolvers and retrieve fragment definitions

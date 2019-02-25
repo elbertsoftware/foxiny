@@ -65,6 +65,7 @@ const generateToken = (userId, request, cache) => {
   const payload = {
     userId,
     iat: Date.now(),
+    // TODO: should contains expiresIn
   };
 
   // synchronous call since no callback supplied

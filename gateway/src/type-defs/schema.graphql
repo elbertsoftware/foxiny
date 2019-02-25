@@ -1,16 +1,15 @@
 type Query {
   users(query: String): [User!]!
   me: User!
-  meSecurityInfo: [SecurityInfo]! # get all security questions and answer of logged-in user
-  securityQuestions(query: String): [SecurityQuestion]! # get all security questions
+  securityQuestions: [SecurityQuestion]! # get all security questions
+  avatars: [Avatar]! # get default avatars
 }
 
 # user must pick three of many security question from database
 # user does not need to create their own security questions
 type Mutation {
   createUser(data: CreateUserInput!): User!
-  resendConfirmation(data: ResendConfirmation!): Boolean!
-  confirmUser(data: ConfirmUserInput): User!
+  confirmUser(data: ConfirmUserInput!): User!
   upsertSecurityInfo(securityInfo: [QueAnsPairInput]!): User!
   login(data: LoginUserInput!): LoginPayload!
   logout(all: Boolean = false): LogoutPayload!
@@ -18,6 +17,9 @@ type Mutation {
   deleteUser: User!
 
   requestResetPwd(mailOrPhone: String!): SecPayload!
+  resendConfirmation(data: ResendConfirmation!): Boolean!
+  uploadAvatar(file: Upload!): Avatar!
+  changeAvatar(avatarId: String): Avatar!
   resetPassword(data: ResetPasswordInput!): Boolean!
 }
 
@@ -32,8 +34,7 @@ type User {
   password: String
   emailConfirmed: Boolean!
   phoneConfirmed: Boolean!
-  avatar: String!
-
+  avatar: Avatar # current avatar
   # Value: emailConfirmed OR phoneConfirmed
   enabled: Boolean!
 
@@ -121,4 +122,11 @@ type SecPayload {
 input ResetPasswordInput {
   securityInfo: [QueAnsPairInput]!
   password: String!
+}
+
+type Avatar {
+  id: ID!
+  user: User
+  url: String! # full static url
+  enabled: Boolean!
 }

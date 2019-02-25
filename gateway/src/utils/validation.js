@@ -102,7 +102,7 @@ const validateUpdateInput = data => {
 };
 
 /**
- *
+ * validate inputs
  * @param {Object} data
  */
 const validateResetPwdInput = data => {
@@ -123,3 +123,15 @@ export {
   validatePwd,
   validateIsEmpty,
 };
+
+const IMAGE_TYPES = ['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'];
+
+/**
+ * validate type of file by checking the mime type from header
+ * @param {String} mimetype MIME type
+ */
+const validateImageFileType = mimetype => {
+  if (!IMAGE_TYPES.includes(mimetype)) throw new Error('File type is not allowed');
+};
+
+export { validateImageFileType };

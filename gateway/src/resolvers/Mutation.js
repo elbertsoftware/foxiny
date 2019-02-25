@@ -1,9 +1,6 @@
 // @flow
 
-import { addFragmentToInfo } from 'graphql-binding';
-import bcrypt from 'bcryptjs';
-import cryptoRandomString from 'crypto-random-string';
-
+import { saveAvatar } from '../utils/fsHelper';
 import {
   hashPassword,
   verifyPassword,
@@ -22,7 +19,7 @@ import {
   validateResendConfirmationInput,
   validateUpdateInput,
   validateResetPwdInput,
-  removeEmptyProperty,
+  validateImageFileType,
 } from '../utils/validation';
 import logger from '../utils/logger';
 import { sendConfirmationEmail } from '../utils/email';
@@ -30,6 +27,9 @@ import { sendConfirmationText } from '../utils/sms';
 // import { sendConfirmationEsms } from '../utils/smsVN';
 
 // TODO: un-comment sendConfirmation functions
+// TODO: optimize mutation - UPLOAD AVT
+// TODO: optimize query - AVATARS
+// TODO: optimize mutation - CHANG AVT
 
 const Mutation = {
   createUser: async (parent, { data }, { prisma, cache }, info) => {
@@ -53,8 +53,8 @@ const Mutation = {
     if (typeof data.email === 'string') {
       sendConfirmationEmail(data.name, data.email, code);
       if (process.env.TEST_STATE) {
-        // TODO: try to count how many time confirmation code is sent to user and
-        // try to stop sending to many times
+        // TODO: in testing: try to count how many time confirmation code is sent to user and
+        // try to stop sending code too many times
       }
     }
 
@@ -64,12 +64,57 @@ const Mutation = {
       sendConfirmationText(data.name, data.phone, code);
       // sendConfirmationEsms(user.phone, code);
       if (process.env.TEST_STATE) {
-        // TODO: try to count how many time confirmation code is sent to user and
-        // try to stop sending to many times
+        // TODO: in testing: try to count how many time confirmation code is sent to user and
+        // try to stop sending code too many times
       }
     }
 
     return user;
+  },
+
+  // TODO: how does it work if user want to confirm account but has no userId --> solved
+  confirmUser: async (parent, { data }, { prisma, cache }, info) => {
+    validateConfirmInput(data);
+
+    const user = await prisma.query.user({
+      where: {
+        id: data.userId,
+        email: data.email,
+        phone: data.phone,
+      },
+    });
+
+    if (!user) {
+      logger.debug(
+        `🛑  CONFIRM_USER: User ${data.userId ? data.userId : data.email ? data.email : data.phone} not found`,
+      );
+      throw new Error('Unable to confirmUser'); // try NOT to provide enough information so hackers can guess
+    }
+
+    const matched = await verifyConfirmation(cache, data.code, data.userId || user.id);
+    logger.debug(`confirmation matched: ${matched}`);
+    if (!matched) {
+      throw new Error('Unable to confirm user profile');
+    }
+
+    // change to true on matched input
+    const updateData = {
+      enabled: true,
+      emailConfirmed: (data.userId || data.email) && !!user.email,
+      phoneConfirmed: (data.userId || data.phone) && !!user.phone,
+    };
+
+    const updatedUser = await prisma.mutation.updateUser(
+      {
+        where: {
+          id: user.id,
+        },
+        data: updateData,
+      },
+      info,
+    );
+
+    return updatedUser;
   },
 
   /**
@@ -87,11 +132,11 @@ const Mutation = {
     });
 
     if (!user) {
-      logger.info(`🛑 CREATE_SECURITY_INFO: User ${userId} not found`);
-      throw new Error('Unable to confirmUser'); // try NOT to provide enough information so hackers can guess
+      logger.debug(`🛑 CREATE_SECURITY_INFO: User ${userId} not found`);
+      throw new Error('Unable to confirm user'); // try NOT to provide enough information so hackers can guess
     }
 
-    // insert new question and restructure to-be-inserted data
+    // insert new question (if user enters) and create to-be-updated data
     const updateData = [];
     for (let i = 0; i < 3; i++) {
       if (securityInfo[i].questionId) {
@@ -140,49 +185,6 @@ const Mutation = {
     return updatedUser;
   },
 
-  // TODO: how does it work if user want to confirm account but has no userId --> solved
-  confirmUser: async (parent, { data }, { prisma, cache }, info) => {
-    validateConfirmInput(data);
-
-    const user = await prisma.query.user({
-      where: {
-        id: data.userId,
-        email: data.email,
-        phone: data.phone,
-      },
-    });
-
-    if (!user) {
-      logger.info(`🛑 CONFIRM_USER: User ${data.userId}${data.email}${data.phone} not found`);
-      throw new Error('Unable to confirmUser'); // try NOT to provide enough information so hackers can guess
-    }
-
-    const matched = await verifyConfirmation(cache, data.code, data.userId || user.id);
-    logger.debug(`confirmation matched: ${matched}`);
-    if (!matched) {
-      throw new Error('Unable to confirm user profile');
-    }
-
-    // change to true on matched input
-    const updateData = {
-      enabled: true,
-      emailConfirmed: (data.userId || data.email) && !!user.email,
-      phoneConfirmed: (data.userId || data.phone) && !!user.phone,
-    };
-
-    const updatedUser = await prisma.mutation.updateUser(
-      {
-        where: {
-          id: user.id,
-        },
-        data: updateData,
-      },
-      info,
-    );
-
-    return updatedUser;
-  },
-
   // reusing this to confirm additional phone/email, or the code is expired/invalid
   resendConfirmation: async (parent, { data }, { prisma, cache }, info) => {
     validateResendConfirmationInput(data);
@@ -225,6 +227,140 @@ const Mutation = {
     }
 
     return true;
+  },
+
+  // TODO: limit the size of uploaded file
+  // TODO: limit the number of file to be uploaded
+  /**
+   * upload avatar
+   */
+  uploadAvatar: async (parent, { file }, { prisma, request, cache }, info) => {
+    const userId = await getUserIDFromRequest(request, cache);
+
+    const user = await prisma.query.user({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      logger.debug(`🛑 UPLOAD_AVATAR: User ${userId} not found`);
+      throw new Error('Unable to upload avatar'); // try NOT to provide enough information so hackers can guess
+    }
+
+    const { createReadStream, filename, mimetype, encoding } = await file;
+
+    // validate mimetype, only accept jpeg, png, svg and gif
+    validateImageFileType(mimetype);
+
+    // NOTE: stream file content into cloud and get the file URL after streamed
+    const { name } = await saveAvatar(filename, userId, createReadStream);
+
+    // disable old avatar
+    await prisma.mutation.updateManyUserAvatars({
+      where: {
+        user: { id: userId },
+        enabled: true,
+      },
+      data: {
+        enabled: false,
+      },
+    });
+
+    // save filename (new avatar) to DB
+    const updatedUser = await prisma.mutation.updateUser(
+      {
+        where: {
+          id: userId,
+        },
+        data: {
+          avatar: {
+            create: {
+              url: name,
+              enabled: true,
+            },
+          },
+        },
+      },
+      `{ id avatar { id url enabled } }`,
+    );
+
+    // NOTE: client uses url to request a static file
+    // NOTE: resolver will change url (now is name) to a truly url (with protocol and host)
+    return updatedUser.avatar.filter(x => x.enabled === true).pop();
+  },
+
+  changeAvatar: async (parent, { avatarId }, { prisma, request, cache }, info) => {
+    const userId = await getUserIDFromRequest(request, cache);
+
+    const user = await prisma.query.user({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      logger.debug(`🛑 UPLOAD_AVATAR: User ${userId} not found`);
+      throw new Error('Unable to change avatar'); // try NOT to provide enough information so hackers can guess
+    }
+
+    // avatarId is null -> default avatar
+    if (!avatarId) {
+      await prisma.mutation.updateUser({
+        where: {
+          id: userId,
+        },
+        data: {
+          avatar: {
+            updateMany: {
+              where: {
+                id_not: 0,
+              },
+              data: {
+                enabled: false,
+              },
+            },
+          },
+        },
+      });
+
+      return { id: null, url: null, enabled: true };
+    }
+
+    // get avatar
+    const avatar = await prisma.query.userAvatar({
+      where: {
+        id: avatarId,
+      },
+    });
+
+    if (!avatar) {
+      logger.debug(`🛑 UPLOAD_AVATAR: Avatar ${avatarId} not found`);
+      throw new Error('Unable to change avatar');
+    }
+
+    await prisma.mutation.updateManyUserAvatars({
+      where: {
+        user: {
+          id: userId,
+        },
+      },
+      data: {
+        enabled: false,
+      },
+    });
+
+    return await prisma.mutation.updateUserAvatar(
+      {
+        where: {
+          id: avatarId,
+        },
+        data: {
+          enabled: true,
+        },
+      },
+      info,
+    );
   },
 
   login: async (parent, { data }, { prisma, request, cache }) => {
@@ -337,7 +473,7 @@ const Mutation = {
 
       return updatedUser;
     } catch (error) {
-      logger.info(`🛑 UPDATE_USER ${error}`);
+      logger.debug(`🛑 UPDATE_USER ${error}`);
       throw new Error('Unable to update user profile'); // try NOT to provide enough information so hackers can guess
     }
   },
