@@ -1,9 +1,21 @@
 import React from 'react';
 import { Redirect } from 'react-router';
+import { Button, Icon, Typography } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import SecurityQuesForm from '../Form/SecurityQuesForm';
 import Loading from '../App/Loading';
 
-const UserSecurityQuestion = ({ isLoggedIn, isLoading, history }) => {
+const styles = () => ({
+  root: {
+    margin: 'auto',
+    maxWidth: '935px',
+    marginTop: '50px',
+    display: 'flex',
+    alignItems: 'baseline',
+  },
+});
+
+const UserSecurityQuestion = ({ isLoggedIn, isLoading, history, classes }) => {
   if (!isLoggedIn()) {
     return <Redirect to="/signin" />;
   }
@@ -12,8 +24,14 @@ const UserSecurityQuestion = ({ isLoggedIn, isLoading, history }) => {
   }
   return (
     <div>
-      <SecurityQuesForm history={history} />
+      <div className={classes.root}>
+        <Button onClick={() => history.goBack()}>
+          <Icon>arrow_back</Icon>
+        </Button>
+        <Typography variant="h3">Câu hỏi bảo mật</Typography>
+      </div>
+      <SecurityQuesForm />
     </div>
   );
 };
-export default UserSecurityQuestion;
+export default withStyles(styles)(UserSecurityQuestion);

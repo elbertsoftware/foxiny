@@ -4,7 +4,6 @@
 import React, { Component } from 'react';
 import { Field, Form } from 'react-final-form';
 import createDecorator from 'final-form-focus';
-import classNames from 'classnames';
 import { ReCaptcha } from 'react-recaptcha-google';
 import { withStyles } from '@material-ui/core/styles';
 import { compose, graphql } from 'react-apollo';

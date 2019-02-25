@@ -7,7 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
   backgroundLight: {
-    backgroundColor: '#fcfcfc',
+    backgroundColor: '#e6e6e6',
   },
   backgroundMain: {
     backgroundColor: theme.palette.secondary.light,
@@ -53,7 +53,7 @@ Paper.propTypes = {
 };
 
 Paper.defaultProps = {
-  background: 'main',
+  background: 'light',
   padding: false,
 };
 

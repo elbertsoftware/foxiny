@@ -15,6 +15,7 @@ import UserDashboard from '../User/UserDashboard';
 import Homepage from '../Homepage';
 import UserSecurityQuestion from '../User/UserSecurityQuestion';
 import withAuthenticator from '../../utils/RouteProtector';
+import UserResetPassword from '../User/UserResetPassword/UserResetPassword';
 
 class App extends Component<Props, State> {
   state = {
@@ -70,6 +71,9 @@ class App extends Component<Props, State> {
                 </Switch>
                 <Switch>
                   <Route path="/confirm/:id" component={ConfirmPage} />
+                </Switch>
+                <Switch>
+                  <Route path="/reset-password" component={UserResetPassword} />
                 </Switch>
                 <Switch>
                   <Route path="/profile/:id" component={withAuthenticator(UserDashboard)} />

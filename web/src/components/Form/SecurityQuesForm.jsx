@@ -9,7 +9,7 @@ import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { MenuItem, FormControl, InputLabel, FormHelperText, Icon } from '@material-ui/core';
+import { MenuItem, FormControl, InputLabel, FormHelperText } from '@material-ui/core';
 import { Field, Form } from 'react-final-form';
 import createDecorator from 'final-form-focus';
 import { toast } from 'react-toastify';
@@ -26,13 +26,6 @@ import { required } from '../../utils/common/form/validation';
 const focusOnError = createDecorator();
 
 const styles = theme => ({
-  root: {
-    margin: 'auto',
-    maxWidth: '935px',
-    marginTop: '50px',
-    display: 'flex',
-    alignItems: 'baseline',
-  },
   rootPaper: {
     border: '1px solid #c6c6c9',
     marginTop: '2%',
@@ -64,14 +57,16 @@ class SecurityQuesForm extends React.Component {
     quesAnsPair: [],
   };
 
-  equivalentQuestion = (questionId, questionList) => questionList.some(ele => questionId === ele.questionId);
+  equivalentQuestion = (questionId, questionList, index) => {
+    return questionList.some((ele, i) => index !== i && ele.questionId === questionId);
+  };
 
   handleNext = values => () => {
     const { activeStep, quesAnsPair } = this.state;
     const questionId = values[`question${activeStep}`];
     const answer = values[`answer${activeStep}`];
 
-    if (this.equivalentQuestion(questionId, quesAnsPair)) {
+    if (this.equivalentQuestion(questionId, quesAnsPair, activeStep)) {
       toast.warn('Câu hỏi đã được chọn. Vui lòng chọn câu hỏi khác.');
       return;
     }
@@ -80,7 +75,8 @@ class SecurityQuesForm extends React.Component {
     } else if (!answer) {
       this.setState({ answerError: true });
     } else {
-      const quesAnsArr = [...quesAnsPair, { questionId, answer }];
+      const quesAnsArr = [...quesAnsPair];
+      quesAnsArr[activeStep] = { questionId, answer };
       this.setState(state => ({
         activeStep: state.activeStep + 1,
         questionError: false,
@@ -122,7 +118,7 @@ class SecurityQuesForm extends React.Component {
   };
 
   render() {
-    const { classes, history, loading, securityQuestions } = this.props;
+    const { classes, loading, securityQuestions } = this.props;
     const steps = getSteps();
     const { activeStep, questionError, answerError } = this.state;
 
@@ -133,90 +129,82 @@ class SecurityQuesForm extends React.Component {
       </MenuItem>
     ));
     return (
-      <div>
-        <div className={classes.root}>
-          <Button onClick={() => history.goBack()}>
-            <Icon>arrow_back</Icon>
-          </Button>
-          <Typography variant="h3">Câu hỏi bảo mật</Typography>
-        </div>
-        <Paper className={classes.rootPaper} background="light">
-          <Form
-            onSubmit={this.onSubmit}
-            subscription={{ submitting: true, values: true }}
-            decorators={[focusOnError]}
-            validate={values =>
-              required(['question0', 'question1', 'question2', 'answer0', 'answer1', 'answer2'], values)
-            }
-          >
-            {({ handleSubmit, values, submitting }) => (
-              <form onSubmit={handleSubmit} noValidate>
-                <Stepper activeStep={activeStep} orientation="vertical">
-                  {steps.map((label, index) => (
-                    <Step key={label}>
-                      <StepLabel>
-                        {values[`question${index}`] === undefined
-                          ? label
-                          : `Câu hỏi: ${securityQuestions.find(ele => ele.id === values[`question${index}`]).question}`}
-                      </StepLabel>
-                      <StepContent>
-                        <FormControl className={classes.formControl}>
-                          <InputLabel htmlFor="age-auto-width">Chọn câu hỏi bảo mật</InputLabel>
-                          <Field component={SelectList} name={`question${index}`} type="text" fullWidth>
-                            {listQuestions}
-                          </Field>
-                          {questionError && <FormHelperText error>Vui lòng chọn câu hỏi</FormHelperText>}
-                          <Field
-                            component={RFTextField}
-                            margin="normal"
-                            label="Câu trả lời của bạn"
-                            name={`answer${index}`}
-                            type="text"
-                            fullWidth
-                          />
-                          {answerError && <FormHelperText error>Vui lòng nhập câu trả lời</FormHelperText>}
-                        </FormControl>
+      <Paper className={classes.rootPaper} background="light">
+        <Form
+          onSubmit={this.onSubmit}
+          subscription={{ submitting: true, values: true }}
+          decorators={[focusOnError]}
+          validate={values =>
+            required(['question0', 'question1', 'question2', 'answer0', 'answer1', 'answer2'], values)
+          }
+        >
+          {({ handleSubmit, values, submitting }) => (
+            <form onSubmit={handleSubmit} noValidate>
+              <Stepper activeStep={activeStep} orientation="vertical">
+                {steps.map((label, index) => (
+                  <Step key={label}>
+                    <StepLabel>
+                      {values[`question${index}`] === undefined
+                        ? label
+                        : `Câu hỏi: ${securityQuestions.find(ele => ele.id === values[`question${index}`]).question}`}
+                    </StepLabel>
+                    <StepContent>
+                      <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="age-auto-width">Chọn câu hỏi bảo mật</InputLabel>
+                        <Field component={SelectList} name={`question${index}`} type="text" fullWidth>
+                          {listQuestions}
+                        </Field>
+                        {questionError && <FormHelperText error>Vui lòng chọn câu hỏi</FormHelperText>}
+                        <Field
+                          component={RFTextField}
+                          margin="normal"
+                          label="Câu trả lời của bạn"
+                          name={`answer${index}`}
+                          type="text"
+                          fullWidth
+                        />
+                        {answerError && <FormHelperText error>Vui lòng nhập câu trả lời</FormHelperText>}
+                      </FormControl>
 
-                        <div className={classes.actionsContainer}>
-                          <div>
-                            <Button disabled={activeStep === 0} onClick={this.handleBack} className={classes.button}>
-                              Back
-                            </Button>
-                            <Button
-                              variant="contained"
-                              size="small"
-                              color="secondary"
-                              onClick={this.handleNext(values)}
-                              className={classes.button}
-                            >
-                              {activeStep === steps.length - 1 ? 'Hoàn thành' : 'Tiếp'}
-                            </Button>
-                          </div>
+                      <div className={classes.actionsContainer}>
+                        <div>
+                          <Button disabled={activeStep === 0} onClick={this.handleBack} className={classes.button}>
+                            Back
+                          </Button>
+                          <Button
+                            variant="contained"
+                            size="small"
+                            color="secondary"
+                            onClick={this.handleNext(values)}
+                            className={classes.button}
+                          >
+                            {activeStep === steps.length - 1 ? 'Hoàn thành' : 'Tiếp'}
+                          </Button>
                         </div>
-                      </StepContent>
-                    </Step>
-                  ))}
-                </Stepper>
-                {activeStep === steps.length && (
-                  <Paper square elevation={0} className={classes.resetContainer} background="light">
-                    <Typography>
-                      Từ nay bạn có thể sử dụng câu hỏi bảo mật để khôi phục lại tài khoản của mình.
-                    </Typography>
-                    <div>
-                      <Button color="secondary" onClick={this.handleReset} className={classes.button} variant="text">
-                        Làm lại
-                      </Button>
-                      <FormButton color="secondary" disabled={submitting} className={classes.button}>
-                        Lưu
-                      </FormButton>
-                    </div>
-                  </Paper>
-                )}
-              </form>
-            )}
-          </Form>
-        </Paper>
-      </div>
+                      </div>
+                    </StepContent>
+                  </Step>
+                ))}
+              </Stepper>
+              {activeStep === steps.length && (
+                <Paper square elevation={0} className={classes.resetContainer} background="light">
+                  <Typography>
+                    Từ nay bạn có thể sử dụng câu hỏi bảo mật để khôi phục lại tài khoản của mình.
+                  </Typography>
+                  <div>
+                    <Button color="secondary" onClick={this.handleReset} className={classes.button} variant="text">
+                      Làm lại
+                    </Button>
+                    <FormButton color="secondary" disabled={submitting} className={classes.button}>
+                      Lưu
+                    </FormButton>
+                  </div>
+                </Paper>
+              )}
+            </form>
+          )}
+        </Form>
+      </Paper>
     );
   }
 }

@@ -78,7 +78,7 @@ class SignIn extends React.Component {
           />
           <Typography
             className={classes.rightBottom}
-            component={linkProps => <Link {...linkProps} to="/" />}
+            component={linkProps => <Link {...linkProps} to="/reset-password" />}
             align="center"
           >
             Quên mật khẩu?

@@ -357,16 +357,15 @@ const Mutation = {
   },
 
   // Step1: user click forgot pwd -> return security questions
-  requestResetPwd: async (parent, { data }, { prisma, request, cache }, info) => {
-    const user = await prisma.query.user(
+  requestResetPwd: async (parent, { mailOrPhone }, { prisma, request, cache }, info) => {
+    const user = (await prisma.query.users(
       {
         where: {
-          email: data.email,
-          phone: data.phone,
+          OR: [{ email: mailOrPhone }, { phone: mailOrPhone }],
         },
       },
       `{ id securityAnswers { securityQuestion { id question } } enabled}`,
-    );
+    )).pop();
 
     if (!user) {
       throw new Error('Account does not exist'); // try NOT to provide enough information so hackers can guess

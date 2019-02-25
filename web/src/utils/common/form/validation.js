@@ -56,6 +56,7 @@ const messages = {
   answer0: 'câu trả lời',
   answer1: 'câu trả lời',
   answer2: 'câu trả lời',
+  emailOrPhone: 'email hoặc số điện thoại',
 };
 
 const isDirty = value => value || value === 0;
