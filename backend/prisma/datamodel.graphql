@@ -6,7 +6,7 @@ type User {
   password: String # required will be handled in foxiny-gateway
   emailConfirmed: Boolean @default(value: false)
   phoneConfirmed: Boolean @default(value: false)
-  avatar: String @default(value: "/home/dev/Projects/foxiny/gateway/src/images/1.svg")
+  avatar: [UserAvatar] @relation(name: "AvatarToUser", onDelete: CASCADE)
   securityAnswers: [SecurityAnswer] @relation(name: "AnswerToUser", onDelete: CASCADE) # required will be handled in foxiny-gateway
   enabled: Boolean @default(value: false) # required will be handled in foxiny-gateway
   recoverable: Boolean @default(value: false)
@@ -30,6 +30,15 @@ type SecurityAnswer {
   user: User @relation(name: "AnswerToUser", onDelete: CASCADE) # required and uniqueness will be handled in foxiny-gateway
   securityQuestion: SecurityQuestion @relation(name: "AnswerToQuestion", onDelete: CASCADE) # required and uniqueness will be handled in foxiny-gateway
   answer: String # required and uniqueness will be handled in foxiny-gateway
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type UserAvatar {
+  id: ID! @unique
+  user: User @relation(name: "AvatarToUser", onDelete: CASCADE)
+  url: String # store file name
+  enabled: Boolean! @default(value: false)
   createdAt: DateTime!
   updatedAt: DateTime!
 }

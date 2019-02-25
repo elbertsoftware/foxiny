@@ -1,5 +1,5 @@
 # source: http://localhost:4466/foxiny/dev
-# timestamp: Thu Feb 21 2019 13:58:57 GMT+0700 (Indochina Time)
+# timestamp: Sun Feb 24 2019 18:18:21 GMT+0700 (Indochina Time)
 
 type AggregateSecurityAnswer {
   count: Int!
@@ -10,6 +10,10 @@ type AggregateSecurityQuestion {
 }
 
 type AggregateUser {
+  count: Int!
+}
+
+type AggregateUserAvatar {
   count: Int!
 }
 
@@ -33,21 +37,27 @@ type Mutation {
   createUser(data: UserCreateInput!): User!
   createSecurityQuestion(data: SecurityQuestionCreateInput!): SecurityQuestion!
   createSecurityAnswer(data: SecurityAnswerCreateInput!): SecurityAnswer!
+  createUserAvatar(data: UserAvatarCreateInput!): UserAvatar!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateSecurityQuestion(data: SecurityQuestionUpdateInput!, where: SecurityQuestionWhereUniqueInput!): SecurityQuestion
   updateSecurityAnswer(data: SecurityAnswerUpdateInput!, where: SecurityAnswerWhereUniqueInput!): SecurityAnswer
+  updateUserAvatar(data: UserAvatarUpdateInput!, where: UserAvatarWhereUniqueInput!): UserAvatar
   deleteUser(where: UserWhereUniqueInput!): User
   deleteSecurityQuestion(where: SecurityQuestionWhereUniqueInput!): SecurityQuestion
   deleteSecurityAnswer(where: SecurityAnswerWhereUniqueInput!): SecurityAnswer
+  deleteUserAvatar(where: UserAvatarWhereUniqueInput!): UserAvatar
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertSecurityQuestion(where: SecurityQuestionWhereUniqueInput!, create: SecurityQuestionCreateInput!, update: SecurityQuestionUpdateInput!): SecurityQuestion!
   upsertSecurityAnswer(where: SecurityAnswerWhereUniqueInput!, create: SecurityAnswerCreateInput!, update: SecurityAnswerUpdateInput!): SecurityAnswer!
+  upsertUserAvatar(where: UserAvatarWhereUniqueInput!, create: UserAvatarCreateInput!, update: UserAvatarUpdateInput!): UserAvatar!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManySecurityQuestions(data: SecurityQuestionUpdateManyMutationInput!, where: SecurityQuestionWhereInput): BatchPayload!
   updateManySecurityAnswers(data: SecurityAnswerUpdateManyMutationInput!, where: SecurityAnswerWhereInput): BatchPayload!
+  updateManyUserAvatars(data: UserAvatarUpdateManyMutationInput!, where: UserAvatarWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManySecurityQuestions(where: SecurityQuestionWhereInput): BatchPayload!
   deleteManySecurityAnswers(where: SecurityAnswerWhereInput): BatchPayload!
+  deleteManyUserAvatars(where: UserAvatarWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
 }
 
@@ -86,12 +96,15 @@ type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   securityQuestions(where: SecurityQuestionWhereInput, orderBy: SecurityQuestionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SecurityQuestion]!
   securityAnswers(where: SecurityAnswerWhereInput, orderBy: SecurityAnswerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SecurityAnswer]!
+  userAvatars(where: UserAvatarWhereInput, orderBy: UserAvatarOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserAvatar]!
   user(where: UserWhereUniqueInput!): User
   securityQuestion(where: SecurityQuestionWhereUniqueInput!): SecurityQuestion
   securityAnswer(where: SecurityAnswerWhereUniqueInput!): SecurityAnswer
+  userAvatar(where: UserAvatarWhereUniqueInput!): UserAvatar
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   securityQuestionsConnection(where: SecurityQuestionWhereInput, orderBy: SecurityQuestionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SecurityQuestionConnection!
   securityAnswersConnection(where: SecurityAnswerWhereInput, orderBy: SecurityAnswerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SecurityAnswerConnection!
+  userAvatarsConnection(where: UserAvatarWhereInput, orderBy: UserAvatarOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserAvatarConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -831,6 +844,7 @@ type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   securityQuestion(where: SecurityQuestionSubscriptionWhereInput): SecurityQuestionSubscriptionPayload
   securityAnswer(where: SecurityAnswerSubscriptionWhereInput): SecurityAnswerSubscriptionPayload
+  userAvatar(where: UserAvatarSubscriptionWhereInput): UserAvatarSubscriptionPayload
 }
 
 type User implements Node {
@@ -841,12 +855,447 @@ type User implements Node {
   password: String
   emailConfirmed: Boolean
   phoneConfirmed: Boolean
-  avatar: String
+  avatar(where: UserAvatarWhereInput, orderBy: UserAvatarOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserAvatar!]
   securityAnswers(where: SecurityAnswerWhereInput, orderBy: SecurityAnswerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SecurityAnswer!]
   enabled: Boolean
   recoverable: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+type UserAvatar implements Node {
+  id: ID!
+  user: User
+  url: String
+  enabled: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type UserAvatarConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [UserAvatarEdge]!
+  aggregate: AggregateUserAvatar!
+}
+
+input UserAvatarCreateInput {
+  url: String
+  enabled: Boolean
+  user: UserCreateOneWithoutAvatarInput
+}
+
+input UserAvatarCreateManyWithoutUserInput {
+  create: [UserAvatarCreateWithoutUserInput!]
+  connect: [UserAvatarWhereUniqueInput!]
+}
+
+input UserAvatarCreateWithoutUserInput {
+  url: String
+  enabled: Boolean
+}
+
+"""An edge in a connection."""
+type UserAvatarEdge {
+  """The item at the end of the edge."""
+  node: UserAvatar!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum UserAvatarOrderByInput {
+  id_ASC
+  id_DESC
+  url_ASC
+  url_DESC
+  enabled_ASC
+  enabled_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type UserAvatarPreviousValues {
+  id: ID!
+  url: String
+  enabled: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input UserAvatarScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserAvatarScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserAvatarScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserAvatarScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  url: String
+
+  """All values that are not equal to given value."""
+  url_not: String
+
+  """All values that are contained in given list."""
+  url_in: [String!]
+
+  """All values that are not contained in given list."""
+  url_not_in: [String!]
+
+  """All values less than the given value."""
+  url_lt: String
+
+  """All values less than or equal the given value."""
+  url_lte: String
+
+  """All values greater than the given value."""
+  url_gt: String
+
+  """All values greater than or equal the given value."""
+  url_gte: String
+
+  """All values containing the given string."""
+  url_contains: String
+
+  """All values not containing the given string."""
+  url_not_contains: String
+
+  """All values starting with the given string."""
+  url_starts_with: String
+
+  """All values not starting with the given string."""
+  url_not_starts_with: String
+
+  """All values ending with the given string."""
+  url_ends_with: String
+
+  """All values not ending with the given string."""
+  url_not_ends_with: String
+  enabled: Boolean
+
+  """All values that are not equal to given value."""
+  enabled_not: Boolean
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+type UserAvatarSubscriptionPayload {
+  mutation: MutationType!
+  node: UserAvatar
+  updatedFields: [String!]
+  previousValues: UserAvatarPreviousValues
+}
+
+input UserAvatarSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserAvatarSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserAvatarSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserAvatarSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: UserAvatarWhereInput
+}
+
+input UserAvatarUpdateInput {
+  url: String
+  enabled: Boolean
+  user: UserUpdateOneWithoutAvatarInput
+}
+
+input UserAvatarUpdateManyDataInput {
+  url: String
+  enabled: Boolean
+}
+
+input UserAvatarUpdateManyMutationInput {
+  url: String
+  enabled: Boolean
+}
+
+input UserAvatarUpdateManyWithoutUserInput {
+  create: [UserAvatarCreateWithoutUserInput!]
+  connect: [UserAvatarWhereUniqueInput!]
+  disconnect: [UserAvatarWhereUniqueInput!]
+  delete: [UserAvatarWhereUniqueInput!]
+  update: [UserAvatarUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [UserAvatarUpdateManyWithWhereNestedInput!]
+  deleteMany: [UserAvatarScalarWhereInput!]
+  upsert: [UserAvatarUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input UserAvatarUpdateManyWithWhereNestedInput {
+  where: UserAvatarScalarWhereInput!
+  data: UserAvatarUpdateManyDataInput!
+}
+
+input UserAvatarUpdateWithoutUserDataInput {
+  url: String
+  enabled: Boolean
+}
+
+input UserAvatarUpdateWithWhereUniqueWithoutUserInput {
+  where: UserAvatarWhereUniqueInput!
+  data: UserAvatarUpdateWithoutUserDataInput!
+}
+
+input UserAvatarUpsertWithWhereUniqueWithoutUserInput {
+  where: UserAvatarWhereUniqueInput!
+  update: UserAvatarUpdateWithoutUserDataInput!
+  create: UserAvatarCreateWithoutUserInput!
+}
+
+input UserAvatarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserAvatarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserAvatarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserAvatarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  url: String
+
+  """All values that are not equal to given value."""
+  url_not: String
+
+  """All values that are contained in given list."""
+  url_in: [String!]
+
+  """All values that are not contained in given list."""
+  url_not_in: [String!]
+
+  """All values less than the given value."""
+  url_lt: String
+
+  """All values less than or equal the given value."""
+  url_lte: String
+
+  """All values greater than the given value."""
+  url_gt: String
+
+  """All values greater than or equal the given value."""
+  url_gte: String
+
+  """All values containing the given string."""
+  url_contains: String
+
+  """All values not containing the given string."""
+  url_not_contains: String
+
+  """All values starting with the given string."""
+  url_starts_with: String
+
+  """All values not starting with the given string."""
+  url_not_starts_with: String
+
+  """All values ending with the given string."""
+  url_ends_with: String
+
+  """All values not ending with the given string."""
+  url_not_ends_with: String
+  enabled: Boolean
+
+  """All values that are not equal to given value."""
+  enabled_not: Boolean
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  user: UserWhereInput
+}
+
+input UserAvatarWhereUniqueInput {
+  id: ID
 }
 
 """A connection to a list of items."""
@@ -866,15 +1315,32 @@ input UserCreateInput {
   password: String
   emailConfirmed: Boolean
   phoneConfirmed: Boolean
-  avatar: String
   enabled: Boolean
   recoverable: Boolean
+  avatar: UserAvatarCreateManyWithoutUserInput
   securityAnswers: SecurityAnswerCreateManyWithoutUserInput
+}
+
+input UserCreateOneWithoutAvatarInput {
+  create: UserCreateWithoutAvatarInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutSecurityAnswersInput {
   create: UserCreateWithoutSecurityAnswersInput
   connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutAvatarInput {
+  name: String
+  email: String
+  phone: String
+  password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  enabled: Boolean
+  recoverable: Boolean
+  securityAnswers: SecurityAnswerCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutSecurityAnswersInput {
@@ -884,9 +1350,9 @@ input UserCreateWithoutSecurityAnswersInput {
   password: String
   emailConfirmed: Boolean
   phoneConfirmed: Boolean
-  avatar: String
   enabled: Boolean
   recoverable: Boolean
+  avatar: UserAvatarCreateManyWithoutUserInput
 }
 
 """An edge in a connection."""
@@ -913,8 +1379,6 @@ enum UserOrderByInput {
   emailConfirmed_DESC
   phoneConfirmed_ASC
   phoneConfirmed_DESC
-  avatar_ASC
-  avatar_DESC
   enabled_ASC
   enabled_DESC
   recoverable_ASC
@@ -933,7 +1397,6 @@ type UserPreviousValues {
   password: String
   emailConfirmed: Boolean
   phoneConfirmed: Boolean
-  avatar: String
   enabled: Boolean
   recoverable: Boolean
   createdAt: DateTime!
@@ -986,9 +1449,9 @@ input UserUpdateInput {
   password: String
   emailConfirmed: Boolean
   phoneConfirmed: Boolean
-  avatar: String
   enabled: Boolean
   recoverable: Boolean
+  avatar: UserAvatarUpdateManyWithoutUserInput
   securityAnswers: SecurityAnswerUpdateManyWithoutUserInput
 }
 
@@ -999,9 +1462,17 @@ input UserUpdateManyMutationInput {
   password: String
   emailConfirmed: Boolean
   phoneConfirmed: Boolean
-  avatar: String
   enabled: Boolean
   recoverable: Boolean
+}
+
+input UserUpdateOneWithoutAvatarInput {
+  create: UserCreateWithoutAvatarInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: UserUpdateWithoutAvatarDataInput
+  upsert: UserUpsertWithoutAvatarInput
 }
 
 input UserUpdateOneWithoutSecurityAnswersInput {
@@ -1013,6 +1484,18 @@ input UserUpdateOneWithoutSecurityAnswersInput {
   upsert: UserUpsertWithoutSecurityAnswersInput
 }
 
+input UserUpdateWithoutAvatarDataInput {
+  name: String
+  email: String
+  phone: String
+  password: String
+  emailConfirmed: Boolean
+  phoneConfirmed: Boolean
+  enabled: Boolean
+  recoverable: Boolean
+  securityAnswers: SecurityAnswerUpdateManyWithoutUserInput
+}
+
 input UserUpdateWithoutSecurityAnswersDataInput {
   name: String
   email: String
@@ -1020,9 +1503,14 @@ input UserUpdateWithoutSecurityAnswersDataInput {
   password: String
   emailConfirmed: Boolean
   phoneConfirmed: Boolean
-  avatar: String
   enabled: Boolean
   recoverable: Boolean
+  avatar: UserAvatarUpdateManyWithoutUserInput
+}
+
+input UserUpsertWithoutAvatarInput {
+  update: UserUpdateWithoutAvatarDataInput!
+  create: UserCreateWithoutAvatarInput!
 }
 
 input UserUpsertWithoutSecurityAnswersInput {
@@ -1247,46 +1735,6 @@ input UserWhereInput {
 
   """All values that are not equal to given value."""
   phoneConfirmed_not: Boolean
-  avatar: String
-
-  """All values that are not equal to given value."""
-  avatar_not: String
-
-  """All values that are contained in given list."""
-  avatar_in: [String!]
-
-  """All values that are not contained in given list."""
-  avatar_not_in: [String!]
-
-  """All values less than the given value."""
-  avatar_lt: String
-
-  """All values less than or equal the given value."""
-  avatar_lte: String
-
-  """All values greater than the given value."""
-  avatar_gt: String
-
-  """All values greater than or equal the given value."""
-  avatar_gte: String
-
-  """All values containing the given string."""
-  avatar_contains: String
-
-  """All values not containing the given string."""
-  avatar_not_contains: String
-
-  """All values starting with the given string."""
-  avatar_starts_with: String
-
-  """All values not starting with the given string."""
-  avatar_not_starts_with: String
-
-  """All values ending with the given string."""
-  avatar_ends_with: String
-
-  """All values not ending with the given string."""
-  avatar_not_ends_with: String
   enabled: Boolean
 
   """All values that are not equal to given value."""
@@ -1339,6 +1787,9 @@ input UserWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
+  avatar_every: UserAvatarWhereInput
+  avatar_some: UserAvatarWhereInput
+  avatar_none: UserAvatarWhereInput
   securityAnswers_every: SecurityAnswerWhereInput
   securityAnswers_some: SecurityAnswerWhereInput
   securityAnswers_none: SecurityAnswerWhereInput

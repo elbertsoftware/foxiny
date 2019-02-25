@@ -3,4 +3,4 @@ datamodel: datamodel.graphql
 secret: ${env:PRISMA_SECRET}
 
 seed:
-  import: securityQuestions.zip
+  import: exported.zip

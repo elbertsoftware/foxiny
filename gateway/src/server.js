@@ -23,6 +23,9 @@ server.use(helmet());
 // body parser middleware to parse application/json based body: authorization token
 server.use(bodyParser.json());
 
+// using static to serve file
+server.use('/images', express.static(process.env.USER_AVATAR_FOLDER));
+
 // other middlewares goes here, like passport, etc.
 // server.use(passport.initialize());
 // configurePassport(passport);
