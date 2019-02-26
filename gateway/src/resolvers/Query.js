@@ -37,30 +37,34 @@ const Query = {
     );
   },
 
-  meSecurityInfo: async (parent, args, { prisma, request, cache }, info) => {
-    const userId = await getUserIDFromRequest(request, cache);
-
-    const query = await prisma.query.user(
-      {
-        where: {
-          id: userId,
-        },
-      },
-      '{ securityAnswers { id securityQuestion { id question } answer createdAt updatedAt } }',
-    );
-
-    // cast to type SecurityInfo
-    return query.securityAnswers.map(item => ({
-      questionId: item.securityQuestion.id,
-      question: item.securityQuestion.question,
-      answerId: item.id,
-      answer: item.answer,
-    }));
-  },
-
   // get all security questions
   securityQuestions: async (parent, args, { prisma, request, cache }, info) => {
     return prisma.query.securityQuestions(null, info);
+  },
+
+  avatars: async (parent, args, { prisma, request, cache }, info) => {
+    const userId = await getUserIDFromRequest(request, cache);
+
+    // get all avatars (uploaded by user)
+    const avatars = await prisma.query.userAvatars({
+      where: {
+        user: {
+          id: userId,
+        },
+      },
+    });
+
+    // always include default avatar to final result
+    // this does not exist in database
+    const defaultAvatar = {
+      id: 'default',
+      url: 'user.sgv',
+      enabled: !avatars.some(x => x.enabled),
+    };
+
+    avatars.push(defaultAvatar);
+
+    return avatars;
   },
 };
 

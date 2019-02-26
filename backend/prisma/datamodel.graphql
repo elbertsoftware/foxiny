@@ -4,8 +4,8 @@ type User {
   email: String @unique # required and uniqueness will be handled in foxiny-gateway
   phone: String @unique # required and uniqueness will be handled in foxiny-gateway
   password: String # required will be handled in foxiny-gateway
-  emailConfirmed: Boolean @default(value: false)
-  phoneConfirmed: Boolean @default(value: false)
+  emailConfirmed: Boolean @default(value: false) # determines email is confirmed or not
+  phoneConfirmed: Boolean @default(value: false) # determines phone is confirmed or not
   avatar: [UserAvatar] @relation(name: "AvatarToUser", onDelete: CASCADE)
   securityAnswers: [SecurityAnswer] @relation(name: "AnswerToUser", onDelete: CASCADE) # required will be handled in foxiny-gateway
   enabled: Boolean @default(value: false) # required will be handled in foxiny-gateway
@@ -15,7 +15,6 @@ type User {
 }
 
 #TODO: consider splitting User into 2 types: User and UserProfiles
-#TODO: consider storing avatar in a separate tables (many to many from User to Avatar)
 
 type SecurityQuestion {
   id: ID! @unique
@@ -38,7 +37,7 @@ type UserAvatar {
   id: ID! @unique
   user: User @relation(name: "AvatarToUser", onDelete: CASCADE)
   url: String # store file name
-  enabled: Boolean! @default(value: false)
+  enabled: Boolean! @default(value: false) # determines which avatar is used
   createdAt: DateTime!
   updatedAt: DateTime!
 }

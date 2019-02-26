@@ -30,8 +30,14 @@ import { sendConfirmationEsms } from '../utils/smsVN';
 // TODO: optimize mutation - UPLOAD AVT
 // TODO: optimize query - AVATARS
 // TODO: optimize mutation - CHANG AVT
+// NOTE: make sure that client has trimmed value before sending a request
+// TODO: handling errors in a frendly way: https://www.youtube.com/watch?v=fUq1iHiDniY
 
 const Mutation = {
+  /**
+   * Create user
+   * user must enter: name, email or phone and pwd
+   */
   createUser: async (parent, { data }, { prisma, cache, request }, info) => {
     validateCreateInput(data);
 
@@ -72,7 +78,10 @@ const Mutation = {
     return user;
   },
 
-  // TODO: how does it work if user want to confirm account but has no userId --> solved
+  /**
+   * Confirm user
+   * Confirm email or phone
+   */
   confirmUser: async (parent, { data }, { prisma, cache }, info) => {
     validateConfirmInput(data);
 
@@ -136,7 +145,7 @@ const Mutation = {
       throw new Error('Unable to confirm user'); // try NOT to provide enough information so hackers can guess
     }
 
-    // insert new question (if user enters) and create to-be-updated data
+    // NOTE: insert new question (if user enters) and create to-be-updated data
     const updateData = [];
     for (let i = 0; i < 3; i++) {
       if (securityInfo[i].questionId) {
@@ -157,7 +166,7 @@ const Mutation = {
       }
     }
 
-    // create new securityInfo to user
+    // NOTE: delete old securityInfo and insert the new one
     const updatedUser = await prisma.mutation.updateUser({
       where: {
         id: userId,
@@ -185,7 +194,10 @@ const Mutation = {
     return updatedUser;
   },
 
-  // reusing this to confirm additional phone/email, or the code is expired/invalid
+  /**
+   * Resend confirmation
+   * using this to send a confirmation code to phone or email
+   */
   resendConfirmation: async (parent, { data }, { prisma, cache }, info) => {
     validateResendConfirmationInput(data);
 
@@ -232,7 +244,8 @@ const Mutation = {
   // TODO: limit the size of uploaded file
   // TODO: limit the number of file to be uploaded
   /**
-   * upload avatar
+   * Upload avatar
+   * one file one time
    */
   uploadAvatar: async (parent, { file }, { prisma, request, cache }, info) => {
     const userId = await getUserIDFromRequest(request, cache);
@@ -248,15 +261,16 @@ const Mutation = {
       throw new Error('Unable to upload avatar'); // try NOT to provide enough information so hackers can guess
     }
 
-    const { createReadStream, filename, mimetype, encoding } = await file;
+    // NOTE: stream is deprecated, but apolo-upload-client didnot updated yet
+    const { stream, filename, mimetype, encoding } = await file;
 
-    // validate mimetype, only accept jpeg, png, svg and gif
+    // NOTE: validate mimetype, only accept jpeg, png, svg and gif
     validateImageFileType(mimetype);
 
     // NOTE: stream file content into cloud and get the file URL after streamed
-    const { name } = await saveAvatar(filename, userId, createReadStream);
+    const { name } = await saveAvatar(filename, userId, stream);
 
-    // disable old avatar
+    // NOTE: disable old avatar
     await prisma.mutation.updateManyUserAvatars({
       where: {
         user: { id: userId },
@@ -304,7 +318,7 @@ const Mutation = {
       throw new Error('Unable to change avatar'); // try NOT to provide enough information so hackers can guess
     }
 
-    // avatarId is null -> default avatar
+    // NOTE: avatarId is null -> default avatar
     if (!avatarId) {
       await prisma.mutation.updateUser({
         where: {
@@ -327,7 +341,7 @@ const Mutation = {
       return { id: null, url: null, enabled: true };
     }
 
-    // get avatar
+    // NOTE: get avatar
     const avatar = await prisma.query.userAvatar({
       where: {
         id: avatarId,
@@ -339,6 +353,7 @@ const Mutation = {
       throw new Error('Unable to change avatar');
     }
 
+    // NOTE: disable old avatar
     await prisma.mutation.updateManyUserAvatars({
       where: {
         user: {
@@ -363,6 +378,9 @@ const Mutation = {
     );
   },
 
+  /**
+   * login
+   */
   login: async (parent, { data }, { prisma, request, cache }) => {
     const user = await prisma.query.user({
       where: {
@@ -390,6 +408,9 @@ const Mutation = {
     };
   },
 
+  /**
+   * log out
+   */
   logout: async (parent, { all }, { request, cache }) => {
     const token = getTokenFromRequest(request);
     const userId = await getUserIDFromRequest(request, cache);
@@ -405,6 +426,10 @@ const Mutation = {
     };
   },
 
+  /**
+   * update user
+   * user must verify before updateing email/phone/pwd
+   */
   updateUser: async (parent, { data }, { prisma, request, cache }, info) => {
     const userId = await getUserIDFromRequest(request, cache);
 
@@ -478,6 +503,9 @@ const Mutation = {
     }
   },
 
+  /**
+   * delete user
+   */
   deleteUser: async (parent, args, { prisma, request, cache }, info) => {
     const userId = await getUserIDFromRequest(request, cache);
 
@@ -492,17 +520,26 @@ const Mutation = {
     );
   },
 
-  // Step1: user click forgot pwd -> return security questions
-  requestResetPwd: async (parent, { data }, { prisma, request, cache }, info) => {
-    const user = await prisma.query.user(
+  /**
+   * request reset password
+   * this will log user out of all devices
+   */
+  requestResetPwd: async (parent, { mailOrPhone }, { prisma, request, cache }, info) => {
+    const user = (await prisma.query.users(
       {
         where: {
-          email: data.email,
-          phone: data.phone,
+          OR: [
+            {
+              email: mailOrPhone,
+            },
+            {
+              phone: mailOrPhone,
+            },
+          ],
         },
       },
       `{ id securityAnswers { securityQuestion { id question } } enabled}`,
-    );
+    )).pop();
 
     if (!user) {
       throw new Error('Account does not exist'); // try NOT to provide enough information so hackers can guess
@@ -512,8 +549,10 @@ const Mutation = {
       throw new Error('Account has not been confirmed or was disabled');
     }
 
-    // log out of all devices
+    // NOTE: log out of all devices
     deleteAllTokensInCache(cache, user.id);
+
+    // TODO: should we disable current account?
 
     return {
       token: generateToken(user.id, request, cache),
@@ -524,7 +563,9 @@ const Mutation = {
     };
   },
 
-  // Step2: user enter the answers and new password
+  /**
+   * reset password
+   */
   resetPassword: async (parent, { data }, { prisma, request, cache }, info) => {
     validateResetPwdInput(data);
     const userId = await getUserIDFromRequest(request, cache);

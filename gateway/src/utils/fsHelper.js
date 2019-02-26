@@ -16,8 +16,8 @@ const writeFile = promisify(fs.writeFile);
  * @param {String} userID id of user account
  * @param {String} fileContent content of file
  */
-const saveAvatar = async (filename, userId, createReadStream) => {
-  const stream = createReadStream();
+const saveAvatar = async (filename, userId, stream) => {
+  // const readStream = stream.createReadStream();
   const name = `${userId}_${new Date().getTime()}${path.extname(filename)}`;
   const url = `${process.env.USER_AVATAR_FOLDER}/${name}`;
   return new Promise((resolve, reject) =>
