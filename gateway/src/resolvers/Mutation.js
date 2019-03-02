@@ -187,7 +187,7 @@ const Mutation = {
 
   // reusing this to confirm additional phone/email, or the code is expired/invalid
   resendConfirmation: async (parent, { data }, { prisma, cache }, info) => {
-    validateResendConfirmationInput(data);
+    // validateResendConfirmationInput(data);
 
     const user = await prisma.query.user({
       where: {
@@ -249,7 +249,6 @@ const Mutation = {
     }
 
     const { createReadStream, filename, mimetype, encoding } = await file;
-
     // validate mimetype, only accept jpeg, png, svg and gif
     validateImageFileType(mimetype);
 
@@ -525,7 +524,7 @@ const Mutation = {
 
   // Step2: user enter the answers and new password
   resetPassword: async (parent, { data }, { prisma, request, cache }, info) => {
-    validateResetPwdInput(data);
+    // validateResetPwdInput(data);
     const userId = await getUserIDFromRequest(request, cache);
     if (!userId) throw new Error('null userid');
     const user = await prisma.query.user(

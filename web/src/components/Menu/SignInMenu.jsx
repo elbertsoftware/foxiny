@@ -1,6 +1,16 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Button, Popper, Paper, MenuItem, MenuList, ClickAwayListener, Fade, Typography } from '@material-ui/core';
+import {
+  Button,
+  Popper,
+  Paper,
+  MenuItem,
+  MenuList,
+  ClickAwayListener,
+  Fade,
+  Typography,
+  Badge,
+} from '@material-ui/core';
 import { Mutation } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { Link } from 'react-router-dom';
@@ -22,6 +32,7 @@ const styles = theme => ({
   },
   popper: {
     zIndex: 1,
+    marginTop: 5,
     '&[x-placement*="bottom"] $arrow': {
       top: 0,
       left: 0,
@@ -88,13 +99,16 @@ const styles = theme => ({
     color: theme.palette.common.white,
   },
   button: {
+    '&:hover': {
+      backgroundColor: 'transparent',
+    },
     marginBottom: '-16px',
   },
   greeting: {
     color: theme.palette.common.white,
     fontSize: '15px',
     paddingLeft: '10px',
-    marginBottom: '-20px',
+    marginBottom: '-18px',
   },
 });
 
@@ -150,18 +164,21 @@ class SignInMenu extends React.Component {
         <Mutation mutation={LOGOUT}>
           {logout => (
             <React.Fragment>
-              <Typography variant="body2" className={classes.greeting}>{`Hi, ${name}`}</Typography>
-              <Button
-                className={classes.button}
-                aria-owns={open ? 'fade-popper' : undefined}
-                variant="text"
-                color="secondary"
-                onMouseEnter={this.handleOpen}
-                onMouseLeave={this.handleClose}
-                onClick={this.handleClick}
-              >
-                Tài khoản
-              </Button>
+              <div className={classes.flex}>
+                <Typography variant="body2" className={classes.greeting}>{`Hi, ${name}`}</Typography>
+
+                <Button
+                  className={classes.button}
+                  aria-owns={open ? 'fade-popper' : undefined}
+                  variant="text"
+                  color="secondary"
+                  onMouseEnter={this.handleOpen}
+                  onMouseLeave={this.handleClose}
+                  onClick={this.handleClick}
+                >
+                  Tài khoản
+                </Button>
+              </div>
               <Popper
                 id="fade-popper"
                 open={open}

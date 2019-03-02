@@ -12,6 +12,7 @@ import { required } from '../../../utils/common/form/validation';
 import AppForm from '../../../utils/common/form/AppForm';
 import requestResetPass from '../../../graphql/requestResetPass';
 import UserAnswerQuestions from './UserAnswerQuestions';
+import { setAuthorizationToken } from '../../../utils/authentication';
 
 const focusOnError = createDecorator();
 
@@ -39,7 +40,7 @@ class UserResetPassword extends Component {
     try {
       const {
         data: {
-          requestResetPwd: { securityQuestions },
+          requestResetPwd: { securityQuestions, token },
         },
       } = await this.props.requestResetPass({
         variables: {
@@ -48,6 +49,7 @@ class UserResetPassword extends Component {
       });
       if (securityQuestions.length !== 0) {
         this.setState({ securityQuestions });
+        setAuthorizationToken(token);
         this.handleNextView();
       }
     } catch (error) {
@@ -102,7 +104,11 @@ class UserResetPassword extends Component {
           <Typography>Trick</Typography>
         )}
         {viewIndex === 1 ? (
-          <UserAnswerQuestions handleBackView={this.handleBackView} securityQuestions={securityQuestions} />
+          <UserAnswerQuestions
+            handleBackView={this.handleBackView}
+            securityQuestions={securityQuestions}
+            history={history}
+          />
         ) : (
           <Typography>Trick</Typography>
         )}

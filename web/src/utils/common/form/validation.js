@@ -49,6 +49,7 @@ const messages = {
   namePhone: 'tên',
   cfrPasswordEmail: 'lại mật khẩu',
   cfrPasswordPhone: 'lại mật khẩu',
+  confirmPassword: 'lại mật khẩu',
   confirmCode: 'mã xác thực',
   question0: 'câu hỏi',
   question1: 'câu hỏi',

@@ -77,9 +77,6 @@ class App extends Component<Props, State> {
                   <Route path="/reset-password" component={UserResetPassword} />
                 </Switch>
                 <Switch>
-                  <Route path="/user-photo" component={withAuthenticator(UserUploadAvatar)} />
-                </Switch>
-                <Switch>
                   <Route path="/profile/:id" component={withAuthenticator(UserDashboard)} />
                 </Switch>
                 <Switch>

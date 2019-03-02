@@ -139,35 +139,37 @@ class UserExpansionForm extends Component {
           },
         },
       });
-      if (values.email) {
-        await this.handleVerifying();
-        // TODO: Pass additional param to determine email/phone should be sent
-      } else if (values.phone) {
-        await this.handleVerifying();
-      }
+      await this.handleVerifying(values.email, phoneNumber);
+      // TODO: Pass additional param to determine email/phone should be sent
       if (values.password && values.currentPassword) {
         // In case update password
         removeAuthorizationToken();
         removeUserInfo();
         history.push('/signin');
       }
-      toast.success('Cập nhật thành công!');
-      window.location.reload();
+      if (!values.email && !values.phone) {
+        window.location.reload();
+      }
     } catch (error) {
       toast.error(error.message.replace('GraphQL error:', '') || 'Cập nhật không thành công !');
     }
   };
 
-  handleVerifying = async () => {
+  handleVerifying = async (email, phone) => {
     const { resendConfirmation, match, history } = this.props;
     try {
       const data = await resendConfirmation({
         variables: {
-          userId: match.params.id,
+          data: {
+            userId: match.params.id,
+            email,
+            phone,
+          },
         },
       });
-      const { id } = data.data.resendConfirmation;
-      history.push(`/confirm/${id}`);
+      if (data.data.resendConfirmation) {
+        history.push(`/confirm/${match.params.id}`);
+      }
     } catch (error) {
       toast.error(error.message.replace('GraphQL error:', '') || 'Cập nhật không thành công !');
     }

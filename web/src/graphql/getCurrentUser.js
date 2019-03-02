@@ -9,6 +9,11 @@ export default gql`
       phone
       createdAt
       enabled
+      avatar {
+        id
+        url
+        enabled
+      }
     }
   }
 `;

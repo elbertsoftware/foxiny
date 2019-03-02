@@ -6,7 +6,8 @@ import { Avatar, Paper, Grid, Typography, Icon, List, ListItem, ListItemText } f
 import { graphql, compose } from 'react-apollo';
 import getCurrentUser from '../../graphql/getCurrentUser';
 import UserExpansionForm from '../Form/UserExpansionForm';
-import Loading from '../App/Loading';
+import UserAvatarModal from './UserAvatar/UserAvatarModal';
+import Tooltip from '../../utils/common/Tooltip';
 
 const styles = theme => ({
   paper: {
@@ -29,6 +30,7 @@ const styles = theme => ({
   avatar: {
     width: 200,
     height: 200,
+    cursor: 'pointer',
   },
   accountInfo: {
     display: 'flex',
@@ -65,15 +67,36 @@ const styles = theme => ({
 });
 
 class UserHeader extends React.Component {
+  state = {
+    open: false,
+  };
+
+  handleClickOpen = () => {
+    this.setState({
+      open: true,
+    });
+  };
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
   render() {
-    const { classes, history, match, loading, user } = this.props;
-    if (loading) return <Loading />;
+    const { classes, history, match, user } = this.props;
     return (
       <React.Fragment>
         <Paper className={classes.paper} elevation={3}>
           <Grid container>
             <Grid item xs={4}>
-              <Avatar className={classes.avatar} src="http://i.pravatar.cc/150?img=68" alt="Avatar" />
+              <Tooltip title="Đổi ảnh đại diện" placement="bottom">
+                <Avatar
+                  onClick={this.handleClickOpen}
+                  className={classes.avatar}
+                  src={user.avatar.url || 'http://localhost:4000/images/1.svg'}
+                  alt="Avatar"
+                />
+              </Tooltip>
+              <UserAvatarModal open={this.state.open} handleClose={this.handleClose} />
               <div className={classes.content}>
                 <div className={classes.personal}>
                   <Typography component="h1" variant="h4" className={classes.lightWeight}>

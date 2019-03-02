@@ -30,7 +30,7 @@ const UserSecurityQuestion = ({ isLoggedIn, isLoading, history, classes }) => {
         </Button>
         <Typography variant="h3">Câu hỏi bảo mật</Typography>
       </div>
-      <SecurityQuesForm />
+      <SecurityQuesForm history={history} />
     </div>
   );
 };

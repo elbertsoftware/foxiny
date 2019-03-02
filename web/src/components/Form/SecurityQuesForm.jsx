@@ -102,16 +102,19 @@ class SecurityQuesForm extends React.Component {
     try {
       const {
         data: {
-          data: {
-            createSecurityQuestion: { id, recoverable },
-          },
+          upsertSecurityInfo: { id, recoverable },
         },
       } = await this.props.createSecurityQuestion({
         variables: {
           securityInfo: this.state.quesAnsPair,
         },
       });
-      console.log(id, recoverable);
+      if (recoverable) {
+        toast.success('Câu trả lời của bạn đã được cập nhật thành công.');
+        this.props.history.goBack();
+      } else {
+        toast.error('Có lỗi xảy ra.');
+      }
     } catch (error) {
       toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !');
     }

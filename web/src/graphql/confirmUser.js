@@ -9,10 +9,8 @@ const CONFIRM_USER = gql`
 `;
 
 const RESEND_CONFIRMATION = gql`
-  mutation resendConfirmation($userId: String!) {
-    resendConfirmation(userId: $userId) {
-      id
-    }
+  mutation resendConfirmation($data: ResendConfirmation!) {
+    resendConfirmation(data: $data)
   }
 `;
 

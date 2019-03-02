@@ -4,6 +4,39 @@ import grey from '@material-ui/core/colors/grey';
 import red from '@material-ui/core/colors/red';
 
 const rawTheme = createMuiTheme({
+  overrides: {
+    MuiExpansionPanelSummary: {
+      expandIcon: {
+        '&:hover': {
+          backgroundColor: '#e0e0e0',
+        },
+      },
+    },
+    MuiIconButton: {
+      colorSecondary: {
+        '&:hover': {
+          backgroundColor: '#ffccbc',
+        },
+      },
+      colorPrimary: {
+        '&:hover': {
+          backgroundColor: '#cfd8dc',
+        },
+      },
+    },
+    MuiButton: {
+      textSecondary: {
+        '&:hover': {
+          backgroundColor: '#ffccbc',
+        },
+      },
+      textPrimary: {
+        '&:hover': {
+          backgroundColor: '#cfd8dc',
+        },
+      },
+    },
+  },
   palette: {
     primary: {
       light: '#5c7184',
@@ -11,7 +44,7 @@ const rawTheme = createMuiTheme({
       dark: '#071f2e',
     },
     secondary: {
-      light: '#ffbb93',
+      light: '#ffccbc',
       main: '#ff512f',
       dark: '#c40e00',
     },
@@ -54,7 +87,7 @@ const theme = {
     ...rawTheme.palette,
     background: {
       ...rawTheme.palette.background,
-      default: rawTheme.palette.common.white,
+      default: '#eeeeee',
       placeholder: grey[300],
     },
   },
@@ -99,6 +132,12 @@ const theme = {
     subtitle1: {
       ...rawTheme.typography.subtitle1,
       fontSize: 20,
+    },
+    subtitle2: {
+      ...rawTheme.typography.subtitle2,
+      fontSize: 18,
+      fontWeight: rawTheme.typography.fontWeightLight,
+      color: grey[600],
     },
     body1: {
       ...rawTheme.typography.body2,
