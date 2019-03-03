@@ -1,6 +1,6 @@
 // @flow
 
-import { saveAvatar } from '../utils/fsHelper';
+import { saveProfileMedia } from '../utils/fsHelper';
 import {
   hashPassword,
   verifyPassword,
@@ -20,6 +20,8 @@ import {
   validateUpdateInput,
   validateResetPwdInput,
   validateImageFileType,
+  stringTrim,
+  classifyEmailPhone,
 } from '../utils/validation';
 import logger from '../utils/logger';
 import { sendConfirmationEmail } from '../utils/email';
@@ -27,11 +29,16 @@ import { sendConfirmationText } from '../utils/sms';
 import { sendConfirmationEsms } from '../utils/smsVN';
 
 // TODO: un-comment sendConfirmation functions
-// TODO: optimize mutation - UPLOAD AVT
-// TODO: optimize query - AVATARS
-// TODO: optimize mutation - CHANG AVT
 // NOTE: make sure that client has trimmed value before sending a request
 // TODO: handling errors in a frendly way: https://www.youtube.com/watch?v=fUq1iHiDniY
+
+const testState = () => {
+  if (process.env.TEST_STATE) {
+    // TODO: in testing: try to count how many times confirmation code was sent to user and
+    // stop sending code
+    logger.debug('TEST STATE');
+  }
+};
 
 const Mutation = {
   /**
@@ -53,15 +60,12 @@ const Mutation = {
       info,
     );
 
-    const code = generateConfirmation(cache, user.id);
+    const code = generateConfirmation(cache, user.id, data.email || data.phone);
 
     // email the code if user is signing up via email
     if (typeof data.email === 'string') {
       // sendConfirmationEmail(data.name, data.email, code);
-      if (process.env.TEST_STATE) {
-        // TODO: in testing: try to count how many time confirmation code is sent to user and
-        // try to stop sending code too many times
-      }
+      testState();
     }
 
     // text the code if user is signing up via phone
@@ -69,10 +73,7 @@ const Mutation = {
       // TODO: try to find out where does the number come from, US or VN or other, choose the best way to send the code
       // sendConfirmationText(data.name, data.phone, code);
       // sendConfirmationEsms(user.phone, code);
-      if (process.env.TEST_STATE) {
-        // TODO: in testing: try to count how many time confirmation code is sent to user and
-        // try to stop sending code too many times
-      }
+      testState();
     }
 
     return user;
@@ -83,47 +84,44 @@ const Mutation = {
    * Confirm email or phone
    */
   confirmUser: async (parent, { data }, { prisma, cache }, info) => {
-    validateConfirmInput(data);
+    const newData = validateConfirmInput(data);
 
     const user = await prisma.query.user({
       where: {
-        id: data.userId,
-        email: data.email,
-        phone: data.phone,
+        id: newData.userId,
+        email: newData.email,
+        phone: newData.phone,
       },
     });
 
     if (!user) {
       logger.debug(
-        `🛑  CONFIRM_USER: User ${data.userId ? data.userId : data.email ? data.email : data.phone} not found`,
+        `🛑  CONFIRM_USER: User ${
+          newData.userId ? newData.userId : newData.email ? newData.email : newData.phone
+        } not found`,
       );
-      throw new Error('Unable to confirmUser'); // try NOT to provide enough information so hackers can guess
+      throw new Error('Unable to confirm user'); // try NOT to provide enough information so hackers can guess
     }
 
-    const matched = await verifyConfirmation(cache, data.code, data.userId || user.id);
+    // NOTE: matched contains email or phone
+    const matched = await verifyConfirmation(cache, newData.code, user.id);
     logger.debug(`confirmation matched: ${matched}`);
     if (!matched) {
-      throw new Error('Unable to confirm user profile');
+      throw new Error('Unable to confirm user');
     }
 
     // change to true on matched input
-    const updateData = {
-      enabled: true,
-      emailConfirmed: (data.userId || data.email) && !!user.email,
-      phoneConfirmed: (data.userId || data.phone) && !!user.phone,
-    };
+    const updateData = classifyEmailPhone(matched);
+    updateData.enabled = true;
 
-    const updatedUser = await prisma.mutation.updateUser(
-      {
-        where: {
-          id: user.id,
-        },
-        data: updateData,
+    await prisma.mutation.updateUser({
+      where: {
+        id: user.id,
       },
-      info,
-    );
+      data: updateData,
+    });
 
-    return updatedUser;
+    return true;
   },
 
   /**
@@ -199,13 +197,13 @@ const Mutation = {
    * using this to send a confirmation code to phone or email
    */
   resendConfirmation: async (parent, { data }, { prisma, cache }, info) => {
-    validateResendConfirmationInput(data);
+    const newData = validateResendConfirmationInput(data);
 
     const user = await prisma.query.user({
       where: {
-        id: data.userId,
-        email: data.email,
-        phone: data.phone,
+        id: newData.userId,
+        email: newData.email,
+        phone: newData.phone,
       },
     });
 
@@ -214,25 +212,40 @@ const Mutation = {
     }
 
     logger.debug(
-      `user id ${user.id}, name ${user.name}, email ${user.email}, password ${user.phone}, emailConfirmed ${
-        user.emailConfirmed
-      }, phoneConfirmed ${user.phoneConfirmed}, enabled ${user.enabled}`,
+      `user id ${user.id}, name ${user.name}, email ${user.email}, password ${user.phone}, enabled ${user.enabled}`,
     );
 
-    if (user.enabled && ((user.emailConfirmed && data.email) || (user.phoneConfirmed && data.phone))) {
+    if (user.enabled && (newData.email === user.email || newData.phone === user.phone)) {
       throw new Error('User profile has been confirmed');
     }
 
-    const code = generateConfirmation(cache, user.id);
+    const code = generateConfirmation(cache, user.id, newData.email || newData.phone || user.email || user.phone);
+
+    // case: user updates info and confirm new info
+    // case: user wants to confirm account after signed up but not confirmed yet (disconnect or ST else)
+    if (user.enabled) {
+      if (typeof newData.email === 'string') {
+        // sendConfirmationEmail(user.name, user.email, code);
+        logger.debug('Email resent');
+      }
+
+      // text the code if user is signing up via phone
+      if (typeof newData.phone === 'string') {
+        // sendConfirmationText(user.name, user.phone, code);
+        // sendConfirmationEsms(user.phone, code);
+        logger.debug('Phone resent');
+      }
+      return true;
+    }
 
     // email the code if user is signing up via email
-    if (typeof user.email === 'string' && (data.userId || data.email) && !user.emailConfirmed) {
+    if (typeof user.email === 'string') {
       // sendConfirmationEmail(user.name, user.email, code);
       logger.debug('Email resent');
     }
 
     // text the code if user is signing up via phone
-    if (typeof user.phone === 'string' && (data.userId || data.phone) && !user.phoneConfirmed) {
+    if (typeof user.phone === 'string') {
       // sendConfirmationText(user.name, user.phone, code);
       // sendConfirmationEsms(user.phone, code);
       logger.debug('Phone resent');
@@ -247,7 +260,7 @@ const Mutation = {
    * Upload avatar
    * one file one time
    */
-  uploadAvatar: async (parent, { file }, { prisma, request, cache }, info) => {
+  uploadProfileMedia: async (parent, { file }, { prisma, request, cache }, info) => {
     const userId = await getUserIDFromRequest(request, cache);
 
     const user = await prisma.query.user({
@@ -257,29 +270,19 @@ const Mutation = {
     });
 
     if (!user) {
-      logger.debug(`🛑 UPLOAD_AVATAR: User ${userId} not found`);
+      logger.debug(`🛑 UPLOAD_PROFILE_MEDIA: User ${userId} not found`);
       throw new Error('Unable to upload avatar'); // try NOT to provide enough information so hackers can guess
     }
 
     // NOTE: stream is deprecated, but apolo-upload-client didnot updated yet
-    const { stream, filename, mimetype, encoding } = await file;
+    const { createReadStream, filename, mimetype, encoding } = await file;
 
     // NOTE: validate mimetype, only accept jpeg, png, svg and gif
     validateImageFileType(mimetype);
 
     // NOTE: stream file content into cloud and get the file URL after streamed
-    const { name } = await saveAvatar(filename, userId, stream);
-
-    // NOTE: disable old avatar
-    await prisma.mutation.updateManyUserAvatars({
-      where: {
-        user: { id: userId },
-        enabled: true,
-      },
-      data: {
-        enabled: false,
-      },
-    });
+    const media = await saveProfileMedia(filename, userId, createReadStream);
+    media.mime = mimetype;
 
     // save filename (new avatar) to DB
     const updatedUser = await prisma.mutation.updateUser(
@@ -288,94 +291,17 @@ const Mutation = {
           id: userId,
         },
         data: {
-          avatar: {
-            create: {
-              url: name,
-              enabled: true,
-            },
+          profileMedia: {
+            create: media,
           },
         },
       },
-      `{ id avatar { id url enabled } }`,
+      `{ id profileMedia { id name ext mime size hash sha256 uri createdAt updatedAt } }`,
     );
 
     // NOTE: client uses url to request a static file
     // NOTE: resolver will change url (now is name) to a truly url (with protocol and host)
-    return updatedUser.avatar.filter(x => x.enabled === true).pop();
-  },
-
-  changeAvatar: async (parent, { avatarId }, { prisma, request, cache }, info) => {
-    const userId = await getUserIDFromRequest(request, cache);
-
-    const user = await prisma.query.user({
-      where: {
-        id: userId,
-      },
-    });
-
-    if (!user) {
-      logger.debug(`🛑 UPLOAD_AVATAR: User ${userId} not found`);
-      throw new Error('Unable to change avatar'); // try NOT to provide enough information so hackers can guess
-    }
-
-    // NOTE: avatarId is null -> default avatar
-    if (!avatarId) {
-      await prisma.mutation.updateUser({
-        where: {
-          id: userId,
-        },
-        data: {
-          avatar: {
-            updateMany: {
-              where: {
-                id_not: 0,
-              },
-              data: {
-                enabled: false,
-              },
-            },
-          },
-        },
-      });
-
-      return { id: null, url: null, enabled: true };
-    }
-
-    // NOTE: get avatar
-    const avatar = await prisma.query.userAvatar({
-      where: {
-        id: avatarId,
-      },
-    });
-
-    if (!avatar) {
-      logger.debug(`🛑 UPLOAD_AVATAR: Avatar ${avatarId} not found`);
-      throw new Error('Unable to change avatar');
-    }
-
-    // NOTE: disable old avatar
-    await prisma.mutation.updateManyUserAvatars({
-      where: {
-        user: {
-          id: userId,
-        },
-      },
-      data: {
-        enabled: false,
-      },
-    });
-
-    return await prisma.mutation.updateUserAvatar(
-      {
-        where: {
-          id: avatarId,
-        },
-        data: {
-          enabled: true,
-        },
-      },
-      info,
-    );
+    return updatedUser.profileMedia;
   },
 
   /**
@@ -414,6 +340,7 @@ const Mutation = {
   logout: async (parent, { all }, { request, cache }) => {
     const token = getTokenFromRequest(request);
     const userId = await getUserIDFromRequest(request, cache);
+
     if (all) {
       deleteAllTokensInCache(cache, userId);
     } else {
@@ -433,13 +360,13 @@ const Mutation = {
   updateUser: async (parent, { data }, { prisma, request, cache }, info) => {
     const userId = await getUserIDFromRequest(request, cache);
 
-    validateUpdateInput(data);
+    const newData = validateUpdateInput(data);
 
-    const { password, currentPassword } = data;
-    delete data.password;
-    delete data.currentPassword;
+    const { password, currentPassword } = newData;
+    delete newData.password;
+    delete newData.currentPassword;
 
-    const updateData = { ...data };
+    const updateData = { ...newData };
 
     // TODO: For user account recovery purpose, sensitive info like email, phone, password, etc. need to be archived
 
@@ -463,16 +390,27 @@ const Mutation = {
       }
 
       // email is about to be changed
-      if (typeof data.email === 'string' && canUpdate) {
-        updateData.enabled = false;
+      if (typeof newData.email === 'string' && canUpdate) {
+        const code = generateConfirmation(cache, userId, newData.email);
 
+        // sendConfirmationEmail(newData.name, newData.email, code);
+
+        delete updateData.email;
+
+        // the update email flow is end when user confirms by enter the code
         // TODO: Archive current email somewhere else
       }
 
       // phone is about to be changed
-      if (typeof data.phone === 'string' && canUpdate) {
-        updateData.enabled = false;
+      if (typeof newData.phone === 'string' && canUpdate) {
+        const code = generateConfirmation(cache, userId, newData.phone);
 
+        // sendConfirmationText(newData.name, newData.phone, code);
+        // sendConfirmationEsms(user.phone, code);
+
+        delete updateData.phone;
+
+        // the update email flow is end when user confirms by enter the code
         // TODO: Archive current phone somewhere else
       }
 
@@ -483,7 +421,7 @@ const Mutation = {
         // TODO: Archive current password somewhere else
       }
 
-      // TODO: Should clean all token after email/phone/pwd changed?
+      // TODO: Should clean all token after email/phone/pwd changing?
       // deleteAllTokensInCache(cache, userId);
 
       const updatedUser = prisma.mutation.updateUser(
@@ -510,6 +448,7 @@ const Mutation = {
     const userId = await getUserIDFromRequest(request, cache);
 
     deleteAllTokensInCache(cache, userId);
+
     return prisma.mutation.deleteUser(
       {
         where: {
@@ -538,7 +477,7 @@ const Mutation = {
           ],
         },
       },
-      `{ id securityAnswers { securityQuestion { id question } } enabled}`,
+      `{ id securityAnswers { securityQuestion { id question } } enabled recoverable}`,
     )).pop();
 
     if (!user) {
@@ -547,6 +486,10 @@ const Mutation = {
 
     if (!user.enabled) {
       throw new Error('Account has not been confirmed or was disabled');
+    }
+
+    if (!user.recoverable) {
+      throw new Error('Cannot recover this account!');
     }
 
     // NOTE: log out of all devices

@@ -2,18 +2,16 @@ type Query {
   users(query: String): [User!]!
   me: User!
   securityQuestions: [SecurityQuestion]! # get all security questions
-  avatars: [Avatar]! # get default avatars
 }
 
 # user must pick three of many security question from database
 # user does not need to create their own security questions
 type Mutation {
   createUser(data: CreateUserInput!): User!
-  confirmUser(data: ConfirmUserInput!): User!
+  confirmUser(data: ConfirmUserInput!): Boolean!
   upsertSecurityInfo(securityInfo: [QueAnsPairInput]!): User!
   resendConfirmation(data: ResendConfirmation!): Boolean!
-  uploadAvatar(file: Upload!): Avatar!
-  changeAvatar(avatarId: String): Avatar!
+  uploadProfileMedia(file: Upload!): Media!
   login(data: LoginUserInput!): AuthPayload!
   logout(all: Boolean = false): AuthPayload!
   updateUser(data: UpdateUserInput!): User!
@@ -24,20 +22,21 @@ type Mutation {
 
 type User {
   id: ID!
+  _version: Int!
 
   name: String!
+  profile: String
+  profileMedia: Media
+  #badgesMedia: [Media]
+  #addresses: [Address]
+  #payments:[Payment]
 
   # In the database, sensitive fields (email, phone, password, etc.) are required, but here, they are not since we need to return null in case of non-authentication
   email: String
   phone: String
   password: String
-  emailConfirmed: Boolean!
-  phoneConfirmed: Boolean!
-  avatar: Avatar # current avatar
-  # Value: emailConfirmed OR phoneConfirmed
-  enabled: Boolean!
 
-  # Value: securityAnswer
+  enabled: Boolean!
   recoverable: Boolean!
 
   createdAt: String!
@@ -46,6 +45,8 @@ type User {
 
 type SecurityQuestion {
   id: ID!
+  _version: Int!
+
   question: String!
   createdAt: String!
   updatedAt: String!
@@ -104,7 +105,6 @@ input UpdateUserInput {
   phone: String
   password: String
   currentPassword: String
-  avatar: String
   securityInfo: [QueAnsPairInput]
 }
 
@@ -118,9 +118,21 @@ input ResetPasswordInput {
   password: String!
 }
 
-type Avatar {
+type Media {
   id: ID!
-  user: User
-  url: String! # full static url
-  enabled: Boolean!
+  _version: Int!
+
+  userProfileMedia: User
+  #userBadgesMedia: [User]
+
+  name: String!
+  ext: String!
+  mime: String!
+  size: Int!
+  hash: String!
+  sha256: String!
+  uri: String!
+
+  createdAt: String
+  updatedAt: String
 }

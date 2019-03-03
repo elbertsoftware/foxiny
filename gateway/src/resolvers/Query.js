@@ -1,6 +1,7 @@
 // @flow
 
 import { getUserIDFromRequest } from '../utils/authentication';
+import logger from '../utils/logger';
 
 const Query = {
   users: (parent, args, { prisma, request }, info) => {
@@ -27,7 +28,7 @@ const Query = {
   me: async (parent, args, { prisma, request, cache }, info) => {
     const userId = await getUserIDFromRequest(request, cache);
 
-    return prisma.query.user(
+    const user = await prisma.query.user(
       {
         where: {
           id: userId,
@@ -35,36 +36,13 @@ const Query = {
       },
       info,
     );
+
+    return user;
   },
 
   // get all security questions
   securityQuestions: async (parent, args, { prisma, request, cache }, info) => {
     return prisma.query.securityQuestions(null, info);
-  },
-
-  avatars: async (parent, args, { prisma, request, cache }, info) => {
-    const userId = await getUserIDFromRequest(request, cache);
-
-    // get all avatars (uploaded by user)
-    const avatars = await prisma.query.userAvatars({
-      where: {
-        user: {
-          id: userId,
-        },
-      },
-    });
-
-    // always include default avatar to final result
-    // this does not exist in database
-    const defaultAvatar = {
-      id: 'default',
-      url: 'user.sgv',
-      enabled: !avatars.some(x => x.enabled),
-    };
-
-    avatars.push(defaultAvatar);
-
-    return avatars;
   },
 };
 

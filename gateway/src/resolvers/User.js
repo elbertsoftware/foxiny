@@ -35,21 +35,6 @@ const User = {
   password: () => {
     return null; // never show password
   },
-
-  avatar: {
-    resolve: (parent, args) => {
-      const avatar = parent.avatar.filter(x => x.enabled === true).pop();
-      if (avatar) {
-        return avatar;
-      } else {
-        return {
-          id: 'default',
-          url: 'user.svg',
-          enabled: true,
-        };
-      }
-    },
-  },
 };
 
 export default User;
