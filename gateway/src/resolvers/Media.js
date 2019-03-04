@@ -50,7 +50,7 @@ const Media = {
       const uri = `${request.protocol}://${request.get('host')}/images/${
         parent.uri ? parent.uri.replace('./', '') : 'user.svg'
       }`;
-      return uri;
+      return parent.uri ? parent.uri : `${request.protocol}://${request.get('host')}/images/user.svg `;
     },
   },
 };

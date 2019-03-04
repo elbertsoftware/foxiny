@@ -21,11 +21,11 @@ const sendConfirmationEsms = (phone, code) => {
       params: data,
     })
     .then(response => {
-      logger.debug(`eSMS requestId: ${response.data.SMSID}`);
+      logger.debug(`🔷  eSMS requestId: ${response.data.SMSID}`);
       return true;
     })
     .catch(error => {
-      logger.debug(`eSMS error: ${error}`);
+      logger.debug(`🔴  eSMS error: ${error}`);
       return false;
     });
 };

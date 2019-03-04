@@ -1,6 +1,6 @@
 // @flow
 
-import { saveProfileMedia } from '../utils/fsHelper';
+import { s3Uploader } from '../utils/s3Uploader';
 import {
   hashPassword,
   verifyPassword,
@@ -96,7 +96,7 @@ const Mutation = {
 
     if (!user) {
       logger.debug(
-        `🛑  CONFIRM_USER: User ${
+        `🛑❌  CONFIRM_USER: User ${
           newData.userId ? newData.userId : newData.email ? newData.email : newData.phone
         } not found`,
       );
@@ -139,7 +139,7 @@ const Mutation = {
     });
 
     if (!user) {
-      logger.debug(`🛑 CREATE_SECURITY_INFO: User ${userId} not found`);
+      logger.debug(`🛑❌  CREATE_SECURITY_INFO: User ${userId} not found`);
       throw new Error('Unable to confirm user'); // try NOT to provide enough information so hackers can guess
     }
 
@@ -270,38 +270,40 @@ const Mutation = {
     });
 
     if (!user) {
-      logger.debug(`🛑 UPLOAD_PROFILE_MEDIA: User ${userId} not found`);
+      logger.debug(`🛑❌  UPLOAD_PROFILE_MEDIA: User ${userId} not found`);
       throw new Error('Unable to upload avatar'); // try NOT to provide enough information so hackers can guess
     }
 
-    // NOTE: stream is deprecated, but apolo-upload-client didnot updated yet
-    const { createReadStream, filename, mimetype, encoding } = await file;
+    return s3Uploader(prisma, file, user.id);
 
-    // NOTE: validate mimetype, only accept jpeg, png, svg and gif
-    validateImageFileType(mimetype);
+    // // NOTE: stream is deprecated, but apolo-upload-client didnot updated yet
+    // const { createReadStream, filename, mimetype, encoding } = await file;
 
-    // NOTE: stream file content into cloud and get the file URL after streamed
-    const media = await saveProfileMedia(filename, userId, createReadStream);
-    media.mime = mimetype;
+    // // NOTE: validate mimetype, only accept jpeg, png, svg and gif
+    // validateImageFileType(mimetype);
 
-    // save filename (new avatar) to DB
-    const updatedUser = await prisma.mutation.updateUser(
-      {
-        where: {
-          id: userId,
-        },
-        data: {
-          profileMedia: {
-            create: media,
-          },
-        },
-      },
-      `{ id profileMedia { id name ext mime size hash sha256 uri createdAt updatedAt } }`,
-    );
+    // // NOTE: stream file content into cloud and get the file URL after streamed
+    // const media = await saveProfileMedia(filename, userId, createReadStream);
+    // media.mime = mimetype;
 
-    // NOTE: client uses url to request a static file
-    // NOTE: resolver will change url (now is name) to a truly url (with protocol and host)
-    return updatedUser.profileMedia;
+    // // save filename (new avatar) to DB
+    // const updatedUser = await prisma.mutation.updateUser(
+    //   {
+    //     where: {
+    //       id: userId,
+    //     },
+    //     data: {
+    //       profileMedia: {
+    //         create: media,
+    //       },
+    //     },
+    //   },
+    //   `{ id profileMedia { id name ext mime size hash sha256 uri createdAt updatedAt } }`,
+    // );
+
+    // // NOTE: client uses url to request a static file
+    // // NOTE: resolver will change url (now is name) to a truly url (with protocol and host)
+    // return updatedUser.profileMedia;
   },
 
   /**
@@ -436,7 +438,7 @@ const Mutation = {
 
       return updatedUser;
     } catch (error) {
-      logger.debug(`🛑 UPDATE_USER ${error}`);
+      logger.debug(`🛑❌  UPDATE_USER ${error}`);
       throw new Error('Unable to update user profile'); // try NOT to provide enough information so hackers can guess
     }
   },
