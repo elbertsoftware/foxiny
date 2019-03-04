@@ -33,7 +33,7 @@ import { sendConfirmationEsms } from '../utils/smsVN';
 // TODO: handling errors in a frendly way: https://www.youtube.com/watch?v=fUq1iHiDniY
 
 const testState = () => {
-  if (process.env.TEST_STATE) {
+  if (process.env.NODE_ENV && process.env.NODE_ENV === 'testing') {
     // TODO: in testing: try to count how many times confirmation code was sent to user and
     // stop sending code
     logger.debug('TEST STATE');

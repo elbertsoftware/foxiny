@@ -18,7 +18,6 @@ type Mutation {
   deleteUser: User!
   requestResetPwd(mailOrPhone: String!): SecPayload!
   resetPassword(data: ResetPasswordInput!): Boolean!
-  signS3(filename: String!, filetype: String!): S3Payload!
 }
 
 type User {
@@ -27,7 +26,7 @@ type User {
 
   name: String!
   profile: String
-  profileMedia: Media
+  profileMedia: Media!
   #badgesMedia: [Media]
   #addresses: [Address]
   #payments:[Payment]
@@ -136,9 +135,4 @@ type Media {
 
   createdAt: String
   updatedAt: String
-}
-
-type S3Payload {
-  signedRequest: String!
-  url: String!
 }
