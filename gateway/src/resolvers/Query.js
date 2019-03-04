@@ -1,6 +1,7 @@
 // @flow
 
 import { getUserIDFromRequest } from '../utils/authentication';
+import logger from '../utils/logger';
 
 const Query = {
   users: (parent, args, { prisma, request }, info) => {
@@ -27,7 +28,7 @@ const Query = {
   me: async (parent, args, { prisma, request, cache }, info) => {
     const userId = await getUserIDFromRequest(request, cache);
 
-    return prisma.query.user(
+    const user = await prisma.query.user(
       {
         where: {
           id: userId,
@@ -35,6 +36,8 @@ const Query = {
       },
       info,
     );
+
+    return user;
   },
 
   // get all security questions

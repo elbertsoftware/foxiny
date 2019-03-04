@@ -8,7 +8,9 @@ import cryptoRandomString from 'crypto-random-string';
 
 import logger from './logger';
 
+// TODO: clean expired tokens periodically and automatically
 // TODO: more password rules will be enforced later
+
 const isValidPassword = password => password.length >= 8 && !password.toLowerCase().includes('password');
 
 const hashPassword = password => {
@@ -23,27 +25,37 @@ const verifyPassword = (password, hashedPassword) => bcrypt.compareSync(password
 
 const getRequestIPAddress = request => requestId.getClientIp(request);
 
-const generateConfirmation = (cache, userId) => {
+const generateConfirmation = (cache, userId, emailOrPhone) => {
   const code = cryptoRandomString(parseInt(process.env.CONFIRMATION_LENGTH, 10));
   logger.debug(`generated new confirmation code ${code} for userId ${userId}`);
 
-  cache.set(code, userId, 'EX', ms(process.env.CONFIRMATION_EXPIRATION) / 1000); // convert to seconds
+  cache.set(
+    code,
+    JSON.stringify({ userId: userId, emailOrPhone: emailOrPhone }),
+    'EX',
+    ms(process.env.CONFIRMATION_EXPIRATION) / 1000,
+  ); // convert to seconds
   return code;
 };
 
 const verifyConfirmation = async (cache, code, userId) => {
-  const cacheUserId = await cache.get(code);
-  logger.debug(`verifying confirmation code ${code} for userId ${userId} upon the cached userId ${cacheUserId}`);
+  const data = JSON.parse(await cache.get(code));
+
+  if (!data) throw new Error('Invalid confirmation code');
+
+  logger.debug(`verifying confirmation code ${code} for userId ${userId} upon the cached userId ${data.userId}`);
 
   // delete the code after verifying
   cache.del(code);
   logger.debug(`the confirmation code ${code} for userId ${userId} has been deleted from cache`);
 
-  return cacheUserId === userId;
+  return data.userId === userId && data.emailOrPhone;
 };
 
 const saveTokenToCache = (cache, userId, token, data, exp) => {
-  cache.hset(userId, token, JSON.stringify(data), 'EX', exp);
+  // NOTE: this line doesnt set lifetime for token (each key-value pair in one hash store) so I replace with the second one, we will save an object of ip and createdAt time into one key (as a json object)
+  // cache.hset(userId, token, JSON.stringify(data), 'EX', exp);
+  cache.hset(userId, token, JSON.stringify({ ip: data, createdAt: new Date().getTime() }));
 };
 
 const loadTokenFromCache = async (cache, userId, token) => {
@@ -102,13 +114,19 @@ const getUserIDFromRequest = async (request, cache, requireAuthentication = true
       let { userId } = payload;
 
       const ip = getRequestIPAddress(request);
-      const cacheIp = await loadTokenFromCache(cache, userId, token);
-      logger.debug(`userId ${userId}, ip ${ip}, cacheIp ${cacheIp}`);
+      const data = await loadTokenFromCache(cache, userId, token);
+      logger.debug(`userId ${userId}, ip ${ip}, cacheIp ${data.ip}, tokenCreatedAt ${Date(data.createdAt)}`);
 
       let validated = true;
-      if (ip !== cacheIp) {
-        // check IP address
+
+      // check IP address and token lifetime
+      if (
+        ip !== data.ip ||
+        new Date().getTime() > Number(data.createdAt) + Number(process.env.JWT_EXPIRATION) * 60 * 60 * 1000
+      ) {
         validated = false;
+        // remove expired token
+        deleteTokenInCache(cache, userId, token);
       }
 
       // more validation goes here
