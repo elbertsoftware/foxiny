@@ -199,9 +199,10 @@ const Mutation = {
   resendConfirmation: async (parent, { data }, { prisma, cache }, info) => {
     const newData = validateResendConfirmationInput(data);
 
+    const userId = await getUserIDFromRequest(request, cache);
     const user = await prisma.query.user({
       where: {
-        id: newData.userId,
+        id: newData.userId || userId,
         email: newData.email,
         phone: newData.phone,
       },

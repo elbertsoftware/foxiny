@@ -118,8 +118,8 @@ const validateConfirmInput = data => {
     throw new Error('Invalid input');
   }
   const refined = {};
-  if (data.userId) refined.userId = validateIsEmpty(data.userId);
   if (data.code) refined.code = validateIsEmpty(data.code);
+  if (data.userId) refined.userId = validateIsEmpty(data.userId);
   if (data.email) refined.email = validateEmail(data.email);
   if (data.phone) refined.phone = validatePhone(data.phone);
 
