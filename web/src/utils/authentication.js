@@ -1,7 +1,6 @@
 // @flow
 
 const AUTHORIZATION_TOKEN_KEY = 'authorizationToken';
-const USERNAME = 'userName';
 const USERID = 'userID';
 
 // retrieve authencation token from browser localStorage/session
@@ -24,26 +23,21 @@ const removeAuthorizationToken = () => {
   localStorage.removeItem(AUTHORIZATION_TOKEN_KEY);
 };
 
-const setUserInfo = (userId, userName) => {
+const setUserInfo = userId => {
   if (localStorage) {
-    localStorage.setItem(USERNAME, userName);
     localStorage.setItem(USERID, userId);
   }
 };
 
 const getUserInfo = () => {
   if (localStorage) {
-    return {
-      id: localStorage.getItem(USERID),
-      name: localStorage.getItem(USERNAME),
-    };
+    return localStorage.getItem(USERID);
   }
   return '';
 };
 
 const removeUserInfo = () => {
   localStorage.removeItem(USERID);
-  localStorage.removeItem(USERNAME);
 };
 
 export {

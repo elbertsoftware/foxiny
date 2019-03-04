@@ -1,11 +1,9 @@
 /* eslint-disable import/named */
 import React from 'react';
 import PropTypes from 'prop-types';
-import compose from 'recompose/compose';
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import { Typography, Tabs, Tab } from '@material-ui/core';
-import withRoot from '../../utils/withTheme';
 import AppForm from '../../utils/common/form/AppForm';
 import SignUpForm from '../Form/SignUpForm';
 
@@ -79,7 +77,4 @@ SignUp.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default compose(
-  withRoot,
-  withStyles(styles, { withTheme: true }),
-)(SignUp);
+export default withStyles(styles, { withTheme: true })(SignUp);

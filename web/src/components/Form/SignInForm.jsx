@@ -88,7 +88,6 @@ class SignInForm extends React.Component {
       } = data.data.login;
       if (token) {
         setAuthorizationToken(token);
-        setUserInfo(id, name);
         this.props.history.push('/');
       }
     } catch (error) {

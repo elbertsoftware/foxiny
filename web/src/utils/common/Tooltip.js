@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import MuiTooltip from '@material-ui/core/Tooltip';
 import { withStyles } from '@material-ui/core/styles';

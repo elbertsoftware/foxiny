@@ -58,7 +58,7 @@ const styles = theme => ({
 });
 
 const validate = values => {
-  const errors = required(['answer0', 'answer1', 'answer2', 'password', 'currentPassword', 'confirmPassword'], values);
+  const errors = required(['answer0', 'answer1', 'answer2', 'password', 'confirmPassword'], values);
   if (!errors.confirmPassword) {
     const confirmError = confirm(values.password, values.confirmPassword);
     if (confirmError) {
@@ -139,7 +139,6 @@ const UserAnswerQuestions = ({ classes, handleBackView, securityQuestions, reset
                     <div className={classes.dividerContainer}>
                       <Typography variant="h4">Đặt lại mật khẩu</Typography>
                     </div>
-                    <Field component={RFTextField} label="Mật khẩu hiện tại" name="currentPassword" type="password" />
                     <Field component={RFTextField} label="Mật khẩu mới" name="password" type="password" />
                     <Field
                       component={RFTextField}

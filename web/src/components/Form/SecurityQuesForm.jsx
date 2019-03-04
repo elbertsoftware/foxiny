@@ -102,7 +102,7 @@ class SecurityQuesForm extends React.Component {
     try {
       const {
         data: {
-          upsertSecurityInfo: { id, recoverable },
+          upsertSecurityInfo: { recoverable },
         },
       } = await this.props.createSecurityQuestion({
         variables: {

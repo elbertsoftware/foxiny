@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import { Typography, withStyles } from '@material-ui/core';
 import AvatarEditor from 'react-avatar-editor';
 import { toast } from 'react-toastify';
+import Loading from '../../App/Loading';
 
 const UPLOAD_AVATAR = gql`
   mutation($file: Upload!) {
@@ -51,6 +52,7 @@ class UserUploadAvatar extends React.Component {
   state = {
     image: {},
     isRejected: false,
+    loading: false,
   };
 
   componentDidMount() {
@@ -74,7 +76,7 @@ class UserUploadAvatar extends React.Component {
           try {
             const {
               data: {
-                uploadAvatar: { id, url },
+                uploadAvatar: { url },
               },
             } = await this.props.uploadAvatar({
               variables: {
@@ -82,6 +84,7 @@ class UserUploadAvatar extends React.Component {
               },
             });
             if (url) {
+              this.setState({ loading: true });
               window.location.reload();
             }
           } catch (error) {
@@ -99,7 +102,7 @@ class UserUploadAvatar extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { image, isRejected } = this.state;
+    const { image, isRejected, loading } = this.state;
     return (
       <React.Fragment>
         {!image.name ? (
@@ -132,14 +135,17 @@ class UserUploadAvatar extends React.Component {
             }}
           </Dropzone>
         ) : (
-          <AvatarEditor
-            ref={this.setEditorRef}
-            width={200}
-            height={200}
-            border={[200, 100]}
-            borderRadius={100}
-            image={image}
-          />
+          <React.Fragment>
+            <AvatarEditor
+              ref={this.setEditorRef}
+              width={200}
+              height={200}
+              border={[200, 100]}
+              borderRadius={100}
+              image={image}
+            />
+            {loading && <Loading />}
+          </React.Fragment>
         )}
       </React.Fragment>
     );

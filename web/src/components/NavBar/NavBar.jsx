@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { AppBar, Typography, Toolbar } from '@material-ui/core';
 import SignInMenu from '../Menu/SignInMenu';
 import SignUpMenu from '../Menu/SignUpMenu';
-import { getUserInfo } from '../../utils/authentication';
+import { getAuthorizationToken } from '../../utils/authentication';
 import NavLang from './NavLang';
 
 const styles = theme => ({
@@ -24,12 +24,17 @@ const styles = theme => ({
   signUpMenu: {
     display: 'flex',
   },
+  button: {
+    '&:hover': {
+      backgroundColor: 'transparent',
+    },
+  },
 });
 
 class NavBar extends React.Component {
   render() {
     const { classes, handleSetLanguage } = this.props;
-    const userInfo = getUserInfo();
+    const token = getAuthorizationToken();
 
     return (
       <AppBar position="static" color="primary">
@@ -40,7 +45,7 @@ class NavBar extends React.Component {
           <Typography variant="h6" color="inherit" className={classes.grow}>
             Foxiny
           </Typography>
-          {userInfo.id ? <SignInMenu userInfo={userInfo} /> : <SignUpMenu classes={classes} />}
+          {token ? <SignInMenu /> : <SignUpMenu classes={classes} />}
         </Toolbar>
       </AppBar>
     );

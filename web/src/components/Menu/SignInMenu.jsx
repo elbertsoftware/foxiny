@@ -10,16 +10,33 @@ import {
   Fade,
   Typography,
   Badge,
+  Grid,
+  Avatar,
 } from '@material-ui/core';
-import { Mutation } from 'react-apollo';
+import { Mutation, compose, graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { Link } from 'react-router-dom';
-import { removeAuthorizationToken, removeUserInfo } from '../../utils/authentication';
+import { removeAuthorizationToken } from '../../utils/authentication';
+import Loading from '../App/Loading';
 
 const LOGOUT = gql`
   mutation logout($all: Boolean = false) {
     logout(all: $all) {
       token
+    }
+  }
+`;
+const GET_USER_INFO = gql`
+  query {
+    me {
+      id
+      name
+      recoverable
+      avatar {
+        id
+        url
+        enabled
+      }
     }
   }
 `;
@@ -110,6 +127,12 @@ const styles = theme => ({
     paddingLeft: '10px',
     marginBottom: '-18px',
   },
+  avatar: {
+    margin: 0,
+  },
+  badge: {
+    margin: 0,
+  },
 });
 
 class SignInMenu extends React.Component {
@@ -151,98 +174,104 @@ class SignInMenu extends React.Component {
 
   handleAfterLogout = () => {
     removeAuthorizationToken();
-    removeUserInfo();
     window.location.href = '/';
   };
 
   render() {
     const { anchorEl, open, arrowRef } = this.state;
-    const { classes, userInfo } = this.props;
-    const name = userInfo.name.split(' ')[0]; // Get first name
+    const { classes, user, loading } = this.props;
+    if (loading) return <Loading />;
+    const name = user.name.split(' ')[0]; // Get first name
     return (
       <div>
         <Mutation mutation={LOGOUT}>
           {logout => (
             <React.Fragment>
-              <div className={classes.flex}>
-                <Typography variant="body2" className={classes.greeting}>{`Hi, ${name}`}</Typography>
+              <Grid container alignItems="center" justify="space-around">
+                <Badge color="error" badgeContent={1} className={classes.badge} invisible={user.recoverable}>
+                  <Avatar alt="user-avatar" src={user.avatar.url} className={classes.avatar} />
+                </Badge>
+                <div>
+                  <Typography variant="body2" className={classes.greeting}>{`Hi, ${name}`}</Typography>
 
-                <Button
-                  className={classes.button}
-                  aria-owns={open ? 'fade-popper' : undefined}
-                  variant="text"
-                  color="secondary"
-                  onMouseEnter={this.handleOpen}
-                  onMouseLeave={this.handleClose}
-                  onClick={this.handleClick}
-                >
-                  Tài khoản
-                </Button>
-              </div>
-              <Popper
-                id="fade-popper"
-                open={open}
-                anchorEl={anchorEl}
-                placement="bottom-end"
-                className={classes.popper}
-                modifiers={{
-                  flip: {
-                    enabled: true,
-                  },
-                  arrow: {
-                    enabled: true,
-                    element: arrowRef,
-                  },
-                }}
-                transition
-              >
-                {({ TransitionProps }) => (
-                  <Fade {...TransitionProps} timeout={200}>
-                    <React.Fragment>
-                      <span className={classes.arrow} ref={this.handleArrowRef} />
-                      <Paper className={classes.paper}>
-                        <ClickAwayListener onClickAway={this.handleClose}>
-                          <MenuList>
-                            <MenuItem component={Link} to={`/profile/${userInfo.id}`} className={classes.menuItem}>
-                              Trang cá nhân
-                            </MenuItem>
-                            <MenuItem
-                              className={classes.menuItem}
-                              onClick={event => {
-                                this.handleClose(event);
-                                logout().then(({ data }) => {
-                                  if (data.logout.token) {
-                                    this.handleAfterLogout();
-                                  }
-                                });
-                              }}
-                            >
-                              Đăng xuất
-                            </MenuItem>
-                            <MenuItem
-                              className={classes.menuItem}
-                              onClick={event => {
-                                this.handleClose(event);
-                                logout({
-                                  variables: {
-                                    all: true,
-                                  },
-                                }).then(({ data }) => {
-                                  if (data.logout.token) {
-                                    this.handleAfterLogout();
-                                  }
-                                });
-                              }}
-                            >
-                              Đăng xuất tất cả các thiết bị
-                            </MenuItem>
-                          </MenuList>
-                        </ClickAwayListener>
-                      </Paper>
-                    </React.Fragment>
-                  </Fade>
-                )}
-              </Popper>
+                  <Button
+                    className={classes.button}
+                    aria-owns={open ? 'fade-popper' : undefined}
+                    variant="text"
+                    color="secondary"
+                    onMouseEnter={this.handleOpen}
+                    onMouseLeave={this.handleClose}
+                    onClick={this.handleClick}
+                  >
+                    Tài khoản
+                  </Button>
+
+                  <Popper
+                    id="fade-popper"
+                    open={open}
+                    anchorEl={anchorEl}
+                    placement="bottom-end"
+                    className={classes.popper}
+                    modifiers={{
+                      flip: {
+                        enabled: true,
+                      },
+                      arrow: {
+                        enabled: true,
+                        element: arrowRef,
+                      },
+                    }}
+                    transition
+                  >
+                    {({ TransitionProps }) => (
+                      <Fade {...TransitionProps} timeout={200}>
+                        <React.Fragment>
+                          <span className={classes.arrow} ref={this.handleArrowRef} />
+                          <Paper className={classes.paper}>
+                            <ClickAwayListener onClickAway={this.handleClose}>
+                              <MenuList>
+                                <MenuItem component={Link} to={`/profile/${user.id}`} className={classes.menuItem}>
+                                  Trang cá nhân
+                                </MenuItem>
+                                <MenuItem
+                                  className={classes.menuItem}
+                                  onClick={event => {
+                                    this.handleClose(event);
+                                    logout().then(({ data }) => {
+                                      if (data.logout.token) {
+                                        this.handleAfterLogout();
+                                      }
+                                    });
+                                  }}
+                                >
+                                  Đăng xuất
+                                </MenuItem>
+                                <MenuItem
+                                  className={classes.menuItem}
+                                  onClick={event => {
+                                    this.handleClose(event);
+                                    logout({
+                                      variables: {
+                                        all: true,
+                                      },
+                                    }).then(({ data }) => {
+                                      if (data.logout.token) {
+                                        this.handleAfterLogout();
+                                      }
+                                    });
+                                  }}
+                                >
+                                  Đăng xuất tất cả các thiết bị
+                                </MenuItem>
+                              </MenuList>
+                            </ClickAwayListener>
+                          </Paper>
+                        </React.Fragment>
+                      </Fade>
+                    )}
+                  </Popper>
+                </div>
+              </Grid>
             </React.Fragment>
           )}
         </Mutation>
@@ -251,4 +280,12 @@ class SignInMenu extends React.Component {
   }
 }
 
-export default withStyles(styles)(SignInMenu);
+export default compose(
+  graphql(GET_USER_INFO, {
+    props: ({ data: { me, loading } }) => ({
+      loading,
+      user: me,
+    }),
+  }),
+  withStyles(styles),
+)(SignInMenu);

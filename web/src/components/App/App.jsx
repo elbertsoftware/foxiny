@@ -16,7 +16,6 @@ import Homepage from '../Homepage';
 import UserSecurityQuestion from '../User/UserSecurityQuestion';
 import withAuthenticator from '../../utils/RouteProtector';
 import UserResetPassword from '../User/UserResetPassword/UserResetPassword';
-import UserUploadAvatar from '../User/UserAvatar/UserUploadAvatar';
 
 class App extends Component<Props, State> {
   state = {

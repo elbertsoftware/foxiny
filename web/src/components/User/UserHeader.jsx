@@ -8,6 +8,7 @@ import getCurrentUser from '../../graphql/getCurrentUser';
 import UserExpansionForm from '../Form/UserExpansionForm';
 import UserAvatarModal from './UserAvatar/UserAvatarModal';
 import Tooltip from '../../utils/common/Tooltip';
+import Loading from '../App/Loading';
 
 const styles = theme => ({
   paper: {
@@ -82,7 +83,8 @@ class UserHeader extends React.Component {
   };
 
   render() {
-    const { classes, history, match, user } = this.props;
+    const { classes, history, match, user, loading } = this.props;
+    if (loading) return <Loading />;
     return (
       <React.Fragment>
         <Paper className={classes.paper} elevation={3}>
@@ -152,7 +154,8 @@ class UserHeader extends React.Component {
 }
 export default compose(
   graphql(getCurrentUser, {
-    props: ({ data: { me } }) => ({
+    props: ({ data: { me, loading } }) => ({
+      loading,
       user: me,
     }),
   }),
