@@ -26,12 +26,7 @@ const focusOnError = createDecorator();
 const LOGIN = gql`
   mutation login($data: LoginUserInput!) {
     login(data: $data) {
-      user {
-        id
-        name
-        email
-        phone
-      }
+      userId
       token
     }
   }
@@ -82,10 +77,7 @@ class SignInForm extends React.Component {
           },
         });
       }
-      const {
-        token,
-        user: { id, name, email, phone },
-      } = data.data.login;
+      const { userId, token } = data.data.login;
       if (token) {
         setAuthorizationToken(token);
         this.props.history.push('/');

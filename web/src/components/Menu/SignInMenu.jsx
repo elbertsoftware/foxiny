@@ -1,42 +1,18 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import {
-  Button,
-  Popper,
-  Paper,
-  MenuItem,
-  MenuList,
-  ClickAwayListener,
-  Fade,
-  Typography,
-  Badge,
-  Grid,
-  Avatar,
-} from '@material-ui/core';
-import { Mutation, compose, graphql } from 'react-apollo';
+import { Button, Typography, Badge, Grid, Avatar, IconButton } from '@material-ui/core';
+import { Mutation, compose } from 'react-apollo';
 import { gql } from 'apollo-boost';
-import { Link } from 'react-router-dom';
 import { removeAuthorizationToken } from '../../utils/authentication';
 import Loading from '../App/Loading';
+import PopperAccount from './PopperAccount';
+import PopperNotification from './PopperNotification';
+import UserContext from '../../utils/context';
 
 const LOGOUT = gql`
   mutation logout($all: Boolean = false) {
     logout(all: $all) {
       token
-    }
-  }
-`;
-const GET_USER_INFO = gql`
-  query {
-    me {
-      id
-      name
-      recoverable
-      avatar {
-        id
-        url
-        enabled
-      }
     }
   }
 `;
@@ -61,35 +37,19 @@ const styles = theme => ({
         borderColor: `transparent transparent ${theme.palette.common.white} transparent`,
       },
     },
-    '&[x-placement*="top"] $arrow': {
-      bottom: 0,
+  },
+  popperNoti: {
+    zIndex: 1,
+    marginTop: 17,
+    '&[x-placement*="bottom"] $arrow': {
+      top: 0,
       left: 0,
-      marginBottom: '-0.9em',
+      marginTop: '-0.9em',
       width: '3em',
       height: '1em',
       '&::before': {
-        borderWidth: '1em 1em 0 1em',
-        borderColor: `${theme.palette.common.white} transparent transparent transparent`,
-      },
-    },
-    '&[x-placement*="right"] $arrow': {
-      left: 0,
-      marginLeft: '-0.9em',
-      height: '3em',
-      width: '1em',
-      '&::before': {
-        borderWidth: '1em 1em 1em 0',
-        borderColor: `transparent ${theme.palette.common.white} transparent transparent`,
-      },
-    },
-    '&[x-placement*="left"] $arrow': {
-      right: 0,
-      marginRight: '-0.9em',
-      height: '3em',
-      width: '1em',
-      '&::before': {
-        borderWidth: '1em 0 1em 1em',
-        borderColor: `transparent transparent transparent ${theme.palette.common.white}`,
+        borderWidth: '0 1em 1em 1em',
+        borderColor: `transparent transparent ${theme.palette.common.white} transparent`,
       },
     },
   },
@@ -108,6 +68,9 @@ const styles = theme => ({
     },
   },
   paper: {
+    maxWidth: 400,
+  },
+  paperNoti: {
     maxWidth: 400,
   },
   typo: {
@@ -133,20 +96,49 @@ const styles = theme => ({
   badge: {
     margin: 0,
   },
+  iconButton: {
+    padding: 0,
+    opacity: 0.75,
+    transition: 'opacity .5s ease-in-out',
+    '&:hover': {
+      opacity: 1,
+    },
+  },
+  listItem: {
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.light,
+    },
+  },
 });
 
 class SignInMenu extends React.Component {
   state = {
     open: false,
+    openNoti: false,
     anchorEl: null,
     arrowRef: null,
+    anchorElNoti: null,
+    arrowRefNoti: null,
+    invisible: true,
   };
+
+  componentDidMount() {
+    this.setState({ invisible: this.context.recoverable });
+  }
 
   handleClick = event => {
     const { currentTarget } = event;
     this.setState(state => ({
       anchorEl: currentTarget,
       open: !state.open,
+    }));
+  };
+
+  handleClickNoti = event => {
+    const { currentTarget } = event;
+    this.setState(state => ({
+      anchorElNoti: currentTarget,
+      openNoti: !state.openNoti,
     }));
   };
 
@@ -158,6 +150,15 @@ class SignInMenu extends React.Component {
     });
   };
 
+  handleOpenNoti = event => {
+    const { currentTarget } = event;
+    this.setState(state => ({
+      anchorElNoti: currentTarget,
+      openNoti: !state.openNoti,
+      invisible: !state.invisible,
+    }));
+  };
+
   handleClose = event => {
     const { anchorEl } = this.state;
     if (anchorEl.contains(event.target)) {
@@ -166,9 +167,23 @@ class SignInMenu extends React.Component {
     this.setState({ anchorEl: null, open: false });
   };
 
+  handleCloseNoti = event => {
+    const { anchorElNoti } = this.state;
+    if (anchorElNoti.contains(event.target)) {
+      return;
+    }
+    this.setState(state => ({ anchorElNoti: null, openNoti: false, invisible: !state.invisible }));
+  };
+
   handleArrowRef = node => {
     this.setState({
       arrowRef: node,
+    });
+  };
+
+  handleArrowRefNoti = node => {
+    this.setState({
+      arrowRefNoti: node,
     });
   };
 
@@ -178,101 +193,63 @@ class SignInMenu extends React.Component {
   };
 
   render() {
-    const { anchorEl, open, arrowRef } = this.state;
-    const { classes, user, loading } = this.props;
-    if (loading) return <Loading />;
-    const name = user.name.split(' ')[0]; // Get first name
+    const { anchorEl, open, arrowRef, openNoti, anchorElNoti, arrowRefNoti, invisible } = this.state;
+    const { classes } = this.props;
     return (
       <div>
         <Mutation mutation={LOGOUT}>
           {logout => (
-            <React.Fragment>
-              <Grid container alignItems="center" justify="space-around">
-                <Badge color="error" badgeContent={1} className={classes.badge} invisible={user.recoverable}>
-                  <Avatar alt="user-avatar" src={user.avatar.url} className={classes.avatar} />
-                </Badge>
-                <div>
-                  <Typography variant="body2" className={classes.greeting}>{`Hi, ${name}`}</Typography>
+            <UserContext.Consumer>
+              {user => (
+                <Grid container alignItems="center" justify="space-around">
+                  <Badge color="error" badgeContent={1} className={classes.badge} invisible={invisible}>
+                    <IconButton
+                      onClick={user.recoverable ? () => {} : this.handleOpenNoti}
+                      className={classes.iconButton}
+                    >
+                      <Avatar alt="user-avatar" src={user.profileMedia.uri} className={classes.avatar} />
+                    </IconButton>
+                  </Badge>
 
-                  <Button
-                    className={classes.button}
-                    aria-owns={open ? 'fade-popper' : undefined}
-                    variant="text"
-                    color="secondary"
-                    onMouseEnter={this.handleOpen}
-                    onMouseLeave={this.handleClose}
-                    onClick={this.handleClick}
-                  >
-                    Tài khoản
-                  </Button>
+                  <div>
+                    <Typography variant="body2" className={classes.greeting}>{`Hi, ${
+                      user.name.split(' ')[0]
+                    }`}</Typography>
 
-                  <Popper
-                    id="fade-popper"
-                    open={open}
-                    anchorEl={anchorEl}
-                    placement="bottom-end"
-                    className={classes.popper}
-                    modifiers={{
-                      flip: {
-                        enabled: true,
-                      },
-                      arrow: {
-                        enabled: true,
-                        element: arrowRef,
-                      },
-                    }}
-                    transition
-                  >
-                    {({ TransitionProps }) => (
-                      <Fade {...TransitionProps} timeout={200}>
-                        <React.Fragment>
-                          <span className={classes.arrow} ref={this.handleArrowRef} />
-                          <Paper className={classes.paper}>
-                            <ClickAwayListener onClickAway={this.handleClose}>
-                              <MenuList>
-                                <MenuItem component={Link} to={`/profile/${user.id}`} className={classes.menuItem}>
-                                  Trang cá nhân
-                                </MenuItem>
-                                <MenuItem
-                                  className={classes.menuItem}
-                                  onClick={event => {
-                                    this.handleClose(event);
-                                    logout().then(({ data }) => {
-                                      if (data.logout.token) {
-                                        this.handleAfterLogout();
-                                      }
-                                    });
-                                  }}
-                                >
-                                  Đăng xuất
-                                </MenuItem>
-                                <MenuItem
-                                  className={classes.menuItem}
-                                  onClick={event => {
-                                    this.handleClose(event);
-                                    logout({
-                                      variables: {
-                                        all: true,
-                                      },
-                                    }).then(({ data }) => {
-                                      if (data.logout.token) {
-                                        this.handleAfterLogout();
-                                      }
-                                    });
-                                  }}
-                                >
-                                  Đăng xuất tất cả các thiết bị
-                                </MenuItem>
-                              </MenuList>
-                            </ClickAwayListener>
-                          </Paper>
-                        </React.Fragment>
-                      </Fade>
-                    )}
-                  </Popper>
-                </div>
-              </Grid>
-            </React.Fragment>
+                    <Button
+                      className={classes.button}
+                      aria-owns={open ? 'fade-popper' : undefined}
+                      variant="text"
+                      color="secondary"
+                      onMouseEnter={this.handleOpen}
+                      onMouseLeave={this.handleClose}
+                      onClick={this.handleClick}
+                    >
+                      Tài khoản
+                    </Button>
+                    <PopperNotification
+                      openNoti={openNoti}
+                      anchorElNoti={anchorElNoti}
+                      arrowRefNoti={arrowRefNoti}
+                      classes={classes}
+                      handleArrowRefNoti={this.handleArrowRefNoti}
+                      handleCloseNoti={this.handleCloseNoti}
+                    />
+                    <PopperAccount
+                      open={open}
+                      anchorEl={anchorEl}
+                      arrowRef={arrowRef}
+                      classes={classes}
+                      handleArrowRef={this.handleArrowRef}
+                      handleClose={this.handleClose}
+                      handleAfterLogout={this.handleAfterLogout}
+                      userId={user.id}
+                      logout={logout}
+                    />
+                  </div>
+                </Grid>
+              )}
+            </UserContext.Consumer>
           )}
         </Mutation>
       </div>
@@ -280,12 +257,6 @@ class SignInMenu extends React.Component {
   }
 }
 
-export default compose(
-  graphql(GET_USER_INFO, {
-    props: ({ data: { me, loading } }) => ({
-      loading,
-      user: me,
-    }),
-  }),
-  withStyles(styles),
-)(SignInMenu);
+SignInMenu.contextType = UserContext;
+
+export default withStyles(styles)(SignInMenu);

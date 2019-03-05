@@ -11,10 +11,9 @@ import Loading from '../../App/Loading';
 
 const UPLOAD_AVATAR = gql`
   mutation($file: Upload!) {
-    uploadAvatar(file: $file) {
+    uploadProfileMedia(file: $file) {
       id
-      url
-      enabled
+      uri
     }
   }
 `;
@@ -73,17 +72,19 @@ class UserUploadAvatar extends React.Component {
       fetch(canvasScaled)
         .then(res => res.blob())
         .then(async blob => {
+          const file = await blob;
+          file.name = this.state.image.name;
           try {
             const {
               data: {
-                uploadAvatar: { url },
+                uploadProfileMedia: { uri },
               },
-            } = await this.props.uploadAvatar({
+            } = await this.props.uploadProfileMedia({
               variables: {
-                file: blob,
+                file,
               },
             });
-            if (url) {
+            if (uri) {
               this.setState({ loading: true });
               window.location.reload();
             }
@@ -157,6 +158,6 @@ UserUploadAvatar.propTypes = {
 };
 
 export default compose(
-  graphql(UPLOAD_AVATAR, { name: 'uploadAvatar' }),
+  graphql(UPLOAD_AVATAR, { name: 'uploadProfileMedia' }),
   withStyles(styles),
 )(UserUploadAvatar);

@@ -6,6 +6,7 @@ import SignInMenu from '../Menu/SignInMenu';
 import SignUpMenu from '../Menu/SignUpMenu';
 import { getAuthorizationToken } from '../../utils/authentication';
 import NavLang from './NavLang';
+import UserContext from '../../utils/context';
 
 const styles = theme => ({
   root: {},
@@ -37,17 +38,21 @@ class NavBar extends React.Component {
     const token = getAuthorizationToken();
 
     return (
-      <AppBar position="static" color="primary">
-        <Toolbar>
-          <a href="/">
-            <img alt="Foxiny Inc - We care your needs" src="/assets/foxiny_logo.png" className={classes.image} />
-          </a>
-          <Typography variant="h6" color="inherit" className={classes.grow}>
-            Foxiny
-          </Typography>
-          {token ? <SignInMenu /> : <SignUpMenu classes={classes} />}
-        </Toolbar>
-      </AppBar>
+      <UserContext.Consumer>
+        {user => (
+          <AppBar position="static" color="primary">
+            <Toolbar>
+              <a href="/">
+                <img alt="Foxiny Inc - We care your needs" src="/assets/foxiny_logo.png" className={classes.image} />
+              </a>
+              <Typography variant="h6" color="inherit" className={classes.grow}>
+                Foxiny
+              </Typography>
+              {token && user.name ? <SignInMenu /> : <SignUpMenu classes={classes} />}
+            </Toolbar>
+          </AppBar>
+        )}
+      </UserContext.Consumer>
     );
   }
 }

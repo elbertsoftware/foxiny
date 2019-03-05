@@ -225,13 +225,13 @@ const Mutation = {
     // case: user wants to confirm account after signed up but not confirmed yet (disconnect or ST else)
     if (user.enabled) {
       if (typeof newData.email === 'string') {
-        // sendConfirmationEmail(user.name, user.email, code);
+        sendConfirmationEmail(user.name, user.email, code);
         logger.debug('Email resent');
       }
 
       // text the code if user is signing up via phone
       if (typeof newData.phone === 'string') {
-        // sendConfirmationText(user.name, user.phone, code);
+        sendConfirmationText(user.name, user.phone, code);
         // sendConfirmationEsms(user.phone, code);
         logger.debug('Phone resent');
       }
@@ -331,8 +331,8 @@ const Mutation = {
     }
 
     return {
+      userId: user.id,
       token: generateToken(user.id, request, cache),
-      user,
     };
   },
 
@@ -374,16 +374,16 @@ const Mutation = {
 
     try {
       let canUpdate = false;
+      const user = await prisma.query.user(
+        {
+          where: {
+            id: userId,
+          },
+        },
+        '{ id name email phone password }',
+      );
       if (currentPassword) {
         // verify current password
-        const user = await prisma.query.user(
-          {
-            where: {
-              id: userId,
-            },
-          },
-          '{ id name email phone password }',
-        );
 
         canUpdate = verifyPassword(currentPassword, user.password);
         if (!canUpdate) {
@@ -395,7 +395,7 @@ const Mutation = {
       if (typeof newData.email === 'string' && canUpdate) {
         const code = generateConfirmation(cache, userId, newData.email);
 
-        // sendConfirmationEmail(newData.name, newData.email, code);
+        sendConfirmationEmail(user.name, newData.email, code);
 
         delete updateData.email;
 
@@ -407,7 +407,7 @@ const Mutation = {
       if (typeof newData.phone === 'string' && canUpdate) {
         const code = generateConfirmation(cache, userId, newData.phone);
 
-        // sendConfirmationText(newData.name, newData.phone, code);
+        sendConfirmationText(user.name, newData.phone, code);
         // sendConfirmationEsms(user.phone, code);
 
         delete updateData.phone;
@@ -425,7 +425,7 @@ const Mutation = {
 
       // TODO: Should clean all token after email/phone/pwd changing?
       // deleteAllTokensInCache(cache, userId);
-
+      console.log(updateData);
       const updatedUser = prisma.mutation.updateUser(
         {
           where: {

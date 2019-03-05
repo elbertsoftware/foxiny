@@ -79,7 +79,7 @@ class ConfirmPage extends React.Component {
                   },
                 })
                 .then(({ data }) => {
-                  if (data.confirmUser.enabled) {
+                  if (data.confirmUser) {
                     toast.success('Xác thực thành công !');
                     this.setState(
                       {
@@ -94,8 +94,9 @@ class ConfirmPage extends React.Component {
                     );
                   }
                 })
-                .catch(() => {
+                .catch(error => {
                   toast.error('Xác thực thất bại. Vui lòng thử lại.');
+                  toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi khi đăng nhập !');
                   this.setState({
                     loading: false,
                   });

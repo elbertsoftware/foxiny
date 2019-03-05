@@ -36,7 +36,7 @@ const focusOnError = createDecorator();
 
 let resetForm;
 
-const styles = theme => ({
+const styles = () => ({
   root: {
     margin: '20px 0px',
   },
@@ -65,17 +65,8 @@ class UserExpansionForm extends Component {
 
   recaptchaRef = React.createRef();
 
-  _initData;
-
-  componentDidMount() {
-    const { user } = this.props;
-    this._initData = {
-      name: user.name,
-      countryCode: 84,
-    };
-  }
-
   handleChange = panel => (event, expanded) => {
+    resetForm();
     this.setState({
       expanded: expanded ? panel : false,
     });
@@ -85,7 +76,6 @@ class UserExpansionForm extends Component {
     this.setState({
       expanded: false,
     });
-    resetForm();
   };
 
   onLoadRecaptcha = () => {
@@ -104,7 +94,7 @@ class UserExpansionForm extends Component {
 
   onSubmit = async values => {
     const { captchaResponse } = this.state;
-    const { updateUser, history } = this.props;
+    const { updateUser, history, match } = this.props;
     // Checked Captcha or not
     if (values.email || values.phone) {
       const capRes = captchaResponse;
@@ -119,7 +109,7 @@ class UserExpansionForm extends Component {
 
       const result = await captChaVerification(captchaResponse);
       if (!result.data.success) {
-        toast.error('Cập nhật không thành công !');
+        toast.error('Vui lòng xác thực bạn không phải là người máy.');
         return;
       }
     }
@@ -135,20 +125,19 @@ class UserExpansionForm extends Component {
             email: values.email,
             phone: phoneNumber,
             password: values.password,
-            currentPassword: values.currentPassword,
+            currentPassword: values.currentPassword || values.passwordEmail || values.passwordPhone,
           },
         },
       });
-      await this.handleVerifying(values.email, phoneNumber);
-      // TODO: Pass additional param to determine email/phone should be sent
-      if (values.password && values.currentPassword) {
+      if (values.name) {
+        window.location.reload();
+      } else if (values.name || phoneNumber) {
+        history.push(`/confirm/${match.params.id}`);
+      } else if (values.password && values.currentPassword) {
         // In case update password
         removeAuthorizationToken();
         removeUserInfo();
         history.push('/signin');
-      }
-      if (!values.email && !values.phone) {
-        window.location.reload();
       }
     } catch (error) {
       toast.error(error.message.replace('GraphQL error:', '') || 'Cập nhật không thành công !');
@@ -158,10 +147,10 @@ class UserExpansionForm extends Component {
   handleVerifying = async (email, phone) => {
     const { resendConfirmation, match, history } = this.props;
     try {
+      // Rule from backend: In case of update/add new email or phone, just provide userId
       const data = await resendConfirmation({
         variables: {
           data: {
-            userId: match.params.id,
             email,
             phone,
           },
@@ -188,7 +177,7 @@ class UserExpansionForm extends Component {
           subscription={{ submitting: true }}
           validate={validate(expanded)}
           decorators={[focusOnError]}
-          initialValues={this._initData}
+          initialValues={{ countryCode: 84 }}
         >
           {({ handleSubmit, submitting, form: { reset } }) => {
             resetForm = reset;

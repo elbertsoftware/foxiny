@@ -2,9 +2,7 @@ import gql from 'graphql-tag';
 
 const CONFIRM_USER = gql`
   mutation confirmUser($data: ConfirmUserInput!) {
-    confirmUser(data: $data) {
-      enabled
-    }
+    confirmUser(data: $data)
   }
 `;
 

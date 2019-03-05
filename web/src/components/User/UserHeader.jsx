@@ -2,7 +2,20 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment';
-import { Avatar, Paper, Grid, Typography, Icon, List, ListItem, ListItemText } from '@material-ui/core';
+import {
+  Avatar,
+  Paper,
+  Grid,
+  Typography,
+  Icon,
+  List,
+  ListItem,
+  ListItemText,
+  Button,
+  Fade,
+  IconButton,
+} from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import { graphql, compose } from 'react-apollo';
 import getCurrentUser from '../../graphql/getCurrentUser';
 import UserExpansionForm from '../Form/UserExpansionForm';
@@ -65,11 +78,39 @@ const styles = theme => ({
     paddingLeft: 0,
     borderBottom: '1px solid grey',
   },
+  popup: {
+    padding: 20,
+    maxWidth: 250,
+    position: 'absolute',
+    top: 80,
+    right: 80,
+  },
 });
 
 class UserHeader extends React.Component {
   state = {
     open: false,
+    visible: true,
+  };
+
+  componentDidMount() {
+    if (!this.props.user.recoverable) {
+      this.setTimer();
+    }
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this._timer);
+  }
+
+  setTimer = () => {
+    if (this._timer != null) {
+      clearTimeout(this._timer);
+    }
+
+    this._timer = setTimeout(() => {
+      this.setState({ visible: false });
+    }, 4000);
   };
 
   handleClickOpen = () => {
@@ -87,6 +128,21 @@ class UserHeader extends React.Component {
     if (loading) return <Loading />;
     return (
       <React.Fragment>
+        {!user.recoverable && (
+          <Fade in={this.state.visible} timeout={{ enter: 2000, exit: 1000 }}>
+            <Paper className={classes.popup} elevation={5}>
+              <Grid container direction="column" alignItems="center" justify="space-around">
+                <Typography variant="subtitle2" gutterBottom>
+                  Chỉ cần một vài phút để tài khoản của bạn trở nên bảo mật.
+                </Typography>
+                <br />
+                <Button component={Link} to="/security-question" size="small" variant="contained" color="secondary">
+                  Cập nhật
+                </Button>
+              </Grid>
+            </Paper>
+          </Fade>
+        )}
         <Paper className={classes.paper} elevation={3}>
           <Grid container>
             <Grid item xs={4}>
@@ -94,7 +150,7 @@ class UserHeader extends React.Component {
                 <Avatar
                   onClick={this.handleClickOpen}
                   className={classes.avatar}
-                  src={user.avatar.url || 'http://localhost:4000/images/1.svg'}
+                  src={user.profileMedia.uri || 'http://localhost:4000/images/user.svg'}
                   alt="Avatar"
                 />
               </Tooltip>

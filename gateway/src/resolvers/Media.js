@@ -44,15 +44,6 @@ const Media = {
   sha256: {
     resolve: (parent, args, { request }) => null,
   },
-
-  uri: {
-    resolve: (parent, args, { request }) => {
-      const uri = `${request.protocol}://${request.get('host')}/images/${
-        parent.uri ? parent.uri.replace('./', '') : 'user.svg'
-      }`;
-      return parent.uri ? parent.uri : `${request.protocol}://${request.get('host')}/images/user.svg `;
-    },
-  },
 };
 
 export default Media;
