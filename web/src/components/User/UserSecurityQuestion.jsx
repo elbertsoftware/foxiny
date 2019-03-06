@@ -15,12 +15,9 @@ const styles = () => ({
   },
 });
 
-const UserSecurityQuestion = ({ isLoggedIn, isLoading, history, classes }) => {
-  if (!isLoggedIn()) {
+const UserSecurityQuestion = ({ userLoggedIn, history, classes }) => {
+  if (!userLoggedIn()) {
     return <Redirect to="/signin" />;
-  }
-  if (isLoading()) {
-    return <Loading />;
   }
   return (
     <div>

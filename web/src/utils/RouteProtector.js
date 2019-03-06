@@ -9,21 +9,15 @@ import Loading from '../components/App/Loading';
 export default ProtectedRoute => {
   class AuthHOC extends Component {
     // Check if there is validated user logged
-    isLoggedIn = () => {
+    userLoggedIn = () => {
       return this.props.user;
     };
 
-    // Check if the Authorization query is loading
-    isLoading = () => {
-      return this.props.loading;
-    };
-
     render() {
-      if (this.isLoading()) {
-        return <Loading />;
-      }
+      const { loading } = this.props;
+      if (loading) return <Loading />;
       // Pass the received 'props' and created functions to the ProtectedRoute component
-      return <ProtectedRoute {...this.props} isLoggedIn={this.isLoggedIn} isLoading={this.isLoading} />;
+      return <ProtectedRoute {...this.props} userLoggedIn={this.userLoggedIn} />;
     }
   }
 

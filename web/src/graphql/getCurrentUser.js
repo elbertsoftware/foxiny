@@ -12,6 +12,7 @@ export default gql`
       profileMedia {
         uri
       }
+      recoverable
     }
   }
 `;

@@ -2,26 +2,12 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment';
-import {
-  Avatar,
-  Paper,
-  Grid,
-  Typography,
-  Icon,
-  List,
-  ListItem,
-  ListItemText,
-  Button,
-  Fade,
-  IconButton,
-} from '@material-ui/core';
+import { Avatar, Paper, Grid, Typography, Icon, List, ListItem, ListItemText, Button, Fade } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { graphql, compose } from 'react-apollo';
-import getCurrentUser from '../../graphql/getCurrentUser';
+
 import UserExpansionForm from '../Form/UserExpansionForm';
 import UserAvatarModal from './UserAvatar/UserAvatarModal';
 import Tooltip from '../../utils/common/Tooltip';
-import Loading from '../App/Loading';
 
 const styles = theme => ({
   paper: {
@@ -79,11 +65,18 @@ const styles = theme => ({
     borderBottom: '1px solid grey',
   },
   popup: {
-    padding: 20,
+    padding: 25,
     maxWidth: 250,
+    minHeight: 220,
     position: 'absolute',
     top: 80,
     right: 80,
+  },
+  popupDiv: {
+    height: 180,
+  },
+  marginBottom: {
+    marginBottom: 20,
   },
 });
 
@@ -110,7 +103,7 @@ class UserHeader extends React.Component {
 
     this._timer = setTimeout(() => {
       this.setState({ visible: false });
-    }, 4000);
+    }, 5000);
   };
 
   handleClickOpen = () => {
@@ -124,22 +117,33 @@ class UserHeader extends React.Component {
   };
 
   render() {
-    const { classes, history, match, user, loading } = this.props;
-    if (loading) return <Loading />;
+    const { classes, history, match, user } = this.props;
     return (
       <React.Fragment>
         {!user.recoverable && (
           <Fade in={this.state.visible} timeout={{ enter: 2000, exit: 1000 }}>
             <Paper className={classes.popup} elevation={5}>
-              <Grid container direction="column" alignItems="center" justify="space-around">
-                <Typography variant="subtitle2" gutterBottom>
-                  Chỉ cần một vài phút để tài khoản của bạn trở nên bảo mật.
+              {console.log(user)}
+              <div className={classes.popupDiv}>
+                <Typography className={classes.marginBottom} variant="subtitle1" gutterBottom>
+                  <span role="img" aria-label="idea emoji">
+                    💡 Trả lời câu hỏi bảo mật
+                  </span>
                 </Typography>
-                <br />
-                <Button component={Link} to="/security-question" size="small" variant="contained" color="secondary">
+                <Typography className={classes.marginBottom} variant="subtitle2" gutterBottom>
+                  Chỉ vài phút để giúp tài khoản của bạn trở nên bảo mật hơn.
+                </Typography>
+                <Button
+                  fullWidth
+                  component={Link}
+                  to="/security-question"
+                  size="small"
+                  variant="contained"
+                  color="secondary"
+                >
                   Cập nhật
                 </Button>
-              </Grid>
+              </div>
             </Paper>
           </Fade>
         )}
@@ -150,7 +154,7 @@ class UserHeader extends React.Component {
                 <Avatar
                   onClick={this.handleClickOpen}
                   className={classes.avatar}
-                  src={user.profileMedia.uri || 'http://localhost:4000/images/user.svg'}
+                  src={user.profileMedia.uri}
                   alt="Avatar"
                 />
               </Tooltip>
@@ -208,12 +212,4 @@ class UserHeader extends React.Component {
     );
   }
 }
-export default compose(
-  graphql(getCurrentUser, {
-    props: ({ data: { me, loading } }) => ({
-      loading,
-      user: me,
-    }),
-  }),
-  withStyles(styles),
-)(UserHeader);
+export default withStyles(styles)(UserHeader);

@@ -94,8 +94,22 @@ class UserExpansionForm extends Component {
 
   onSubmit = async values => {
     const { captchaResponse } = this.state;
-    const { updateUser, history, match } = this.props;
+    const { updateUser, history, match, user } = this.props;
     // Checked Captcha or not
+    if (values.email) {
+      if (values.email === user.email) {
+        toast.warn('Địa chỉ email này đã được sử dụng');
+        return;
+      }
+    }
+    let phoneNumber;
+    if (values.phone) {
+      phoneNumber = formatInternationalPhone(values.phone, values.countryCode);
+      if (phoneNumber === user.phone) {
+        toast.warn('Số điện thoại này đã được sử dụng');
+        return;
+      }
+    }
     if (values.email || values.phone) {
       const capRes = captchaResponse;
       if (capRes.length !== 0) {
@@ -113,10 +127,6 @@ class UserExpansionForm extends Component {
         return;
       }
     }
-    let phoneNumber;
-    if (values.phone) {
-      phoneNumber = formatInternationalPhone(values.phone, values.countryCode);
-    }
     try {
       await updateUser({
         variables: {
@@ -131,33 +141,13 @@ class UserExpansionForm extends Component {
       });
       if (values.name) {
         window.location.reload();
-      } else if (values.name || phoneNumber) {
+      } else if (values.email || phoneNumber) {
         history.push(`/confirm/${match.params.id}`);
       } else if (values.password && values.currentPassword) {
         // In case update password
         removeAuthorizationToken();
         removeUserInfo();
         history.push('/signin');
-      }
-    } catch (error) {
-      toast.error(error.message.replace('GraphQL error:', '') || 'Cập nhật không thành công !');
-    }
-  };
-
-  handleVerifying = async (email, phone) => {
-    const { resendConfirmation, match, history } = this.props;
-    try {
-      // Rule from backend: In case of update/add new email or phone, just provide userId
-      const data = await resendConfirmation({
-        variables: {
-          data: {
-            email,
-            phone,
-          },
-        },
-      });
-      if (data.data.resendConfirmation) {
-        history.push(`/confirm/${match.params.id}`);
       }
     } catch (error) {
       toast.error(error.message.replace('GraphQL error:', '') || 'Cập nhật không thành công !');

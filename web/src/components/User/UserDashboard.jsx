@@ -2,18 +2,18 @@
 import React from 'react';
 import { Redirect } from 'react-router';
 import UserHeader from './UserHeader';
-import Loading from '../App/Loading';
 
 class UserDashboard extends React.Component {
   render() {
-    const { history, match, isLoggedIn, isLoading } = this.props;
-    if (!isLoggedIn()) {
+    const { history, match, userLoggedIn } = this.props;
+    if (!userLoggedIn()) {
       return <Redirect to="/signin" />;
     }
-    if (isLoading()) {
-      return <Loading />;
-    }
-    return <UserHeader user={isLoggedIn} history={history} match={match} />;
+    return (
+      <React.Fragment>
+        {userLoggedIn() && <UserHeader user={userLoggedIn()} history={history} match={match} />}
+      </React.Fragment>
+    );
   }
 }
 export default UserDashboard;
