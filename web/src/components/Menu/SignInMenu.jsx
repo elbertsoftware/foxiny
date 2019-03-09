@@ -1,13 +1,12 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Button, Typography, Badge, Grid, Avatar, IconButton } from '@material-ui/core';
-import { Mutation, compose } from 'react-apollo';
+import { Mutation } from 'react-apollo';
 import { gql } from 'apollo-boost';
+import { Redirect } from 'react-router-dom';
 import { removeAuthorizationToken } from '../../utils/authentication';
-import Loading from '../App/Loading';
 import PopperAccount from './PopperAccount';
 import PopperNotification from './PopperNotification';
-import UserContext from '../../utils/context';
 
 const LOGOUT = gql`
   mutation logout($all: Boolean = false) {
@@ -120,10 +119,12 @@ class SignInMenu extends React.Component {
     anchorElNoti: null,
     arrowRefNoti: null,
     invisible: true,
+    userExpired: false,
   };
 
   componentDidMount() {
-    this.setState({ invisible: this.context.recoverable });
+    const { user } = this.props;
+    this.setState({ invisible: user.recoverable, userExpired: user.error });
   }
 
   handleClick = event => {
@@ -193,70 +194,60 @@ class SignInMenu extends React.Component {
   };
 
   render() {
-    const { anchorEl, open, arrowRef, openNoti, anchorElNoti, arrowRefNoti, invisible } = this.state;
-    const { classes } = this.props;
+    const { anchorEl, open, arrowRef, openNoti, anchorElNoti, arrowRefNoti, invisible, userExpired } = this.state;
+    const { classes, user } = this.props;
+    if (userExpired) return <Redirect to="/signin" />;
     return (
       <div>
         <Mutation mutation={LOGOUT}>
           {logout => (
-            <UserContext.Consumer>
-              {user => (
-                <Grid container alignItems="center" justify="space-around">
-                  <Badge color="error" badgeContent={1} className={classes.badge} invisible={invisible}>
-                    <IconButton
-                      onClick={user.recoverable ? () => {} : this.handleOpenNoti}
-                      className={classes.iconButton}
-                    >
-                      <Avatar alt="user-avatar" src={user.profileMedia.uri} className={classes.avatar} />
-                    </IconButton>
-                  </Badge>
+            <Grid container alignItems="center" justify="space-around">
+              <Badge color="error" badgeContent={1} className={classes.badge} invisible={invisible}>
+                <IconButton onClick={user.recoverable ? () => {} : this.handleOpenNoti} className={classes.iconButton}>
+                  <Avatar alt="user-avatar" src={user.profileMedia.uri} className={classes.avatar} />
+                </IconButton>
+              </Badge>
 
-                  <div>
-                    <Typography variant="body2" className={classes.greeting}>{`Hi, ${
-                      user.name.split(' ')[0]
-                    }`}</Typography>
+              <div>
+                <Typography variant="body2" className={classes.greeting}>{`Hi, ${user.name.split(' ')[0]}`}</Typography>
 
-                    <Button
-                      className={classes.button}
-                      aria-owns={open ? 'fade-popper' : undefined}
-                      variant="text"
-                      color="secondary"
-                      onMouseEnter={this.handleOpen}
-                      onMouseLeave={this.handleClose}
-                      onClick={this.handleClick}
-                    >
-                      Tài khoản
-                    </Button>
-                    <PopperNotification
-                      openNoti={openNoti}
-                      anchorElNoti={anchorElNoti}
-                      arrowRefNoti={arrowRefNoti}
-                      classes={classes}
-                      handleArrowRefNoti={this.handleArrowRefNoti}
-                      handleCloseNoti={this.handleCloseNoti}
-                    />
-                    <PopperAccount
-                      open={open}
-                      anchorEl={anchorEl}
-                      arrowRef={arrowRef}
-                      classes={classes}
-                      handleArrowRef={this.handleArrowRef}
-                      handleClose={this.handleClose}
-                      handleAfterLogout={this.handleAfterLogout}
-                      userId={user.id}
-                      logout={logout}
-                    />
-                  </div>
-                </Grid>
-              )}
-            </UserContext.Consumer>
+                <Button
+                  className={classes.button}
+                  aria-owns={open ? 'fade-popper' : undefined}
+                  variant="text"
+                  color="secondary"
+                  onMouseEnter={this.handleOpen}
+                  onMouseLeave={this.handleClose}
+                  onClick={this.handleClick}
+                >
+                  Tài khoản
+                </Button>
+                <PopperNotification
+                  openNoti={openNoti}
+                  anchorElNoti={anchorElNoti}
+                  arrowRefNoti={arrowRefNoti}
+                  classes={classes}
+                  handleArrowRefNoti={this.handleArrowRefNoti}
+                  handleCloseNoti={this.handleCloseNoti}
+                />
+                <PopperAccount
+                  open={open}
+                  anchorEl={anchorEl}
+                  arrowRef={arrowRef}
+                  classes={classes}
+                  handleArrowRef={this.handleArrowRef}
+                  handleClose={this.handleClose}
+                  handleAfterLogout={this.handleAfterLogout}
+                  userId={user.id}
+                  logout={logout}
+                />
+              </div>
+            </Grid>
           )}
         </Mutation>
       </div>
     );
   }
 }
-
-SignInMenu.contextType = UserContext;
 
 export default withStyles(styles)(SignInMenu);

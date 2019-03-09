@@ -2,14 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { AppBar, Typography, Toolbar } from '@material-ui/core';
+import { compose } from 'react-apollo';
 import SignInMenu from '../Menu/SignInMenu';
 import SignUpMenu from '../Menu/SignUpMenu';
 import { getAuthorizationToken } from '../../utils/authentication';
 import NavLang from './NavLang';
-import UserContext from '../../utils/context';
+import withAuthenticator from '../../utils/RouteProtector';
 
 const styles = theme => ({
-  root: {},
+  root: {
+    minHeight: '100px',
+  },
   grow: {
     flexGrow: 1,
     textTransform: 'uppercase',
@@ -34,25 +37,21 @@ const styles = theme => ({
 
 class NavBar extends React.Component {
   render() {
-    const { classes, handleSetLanguage } = this.props;
+    const { classes, handleSetLanguage, userLoggedIn, error } = this.props;
     const token = getAuthorizationToken();
-
+    const user = userLoggedIn();
     return (
-      <UserContext.Consumer>
-        {user => (
-          <AppBar position="static" color="primary">
-            <Toolbar>
-              <a href="/">
-                <img alt="Foxiny Inc - We care your needs" src="/assets/foxiny_logo.png" className={classes.image} />
-              </a>
-              <Typography variant="h6" color="inherit" className={classes.grow}>
-                Foxiny
-              </Typography>
-              {token && user.name ? <SignInMenu /> : <SignUpMenu classes={classes} />}
-            </Toolbar>
-          </AppBar>
-        )}
-      </UserContext.Consumer>
+      <AppBar position="static" color="primary">
+        <Toolbar className={classes.root}>
+          <a href="/">
+            <img alt="Foxiny Inc - We care your needs" src="/assets/foxiny_logo.png" className={classes.image} />
+          </a>
+          <Typography variant="h6" color="inherit" className={classes.grow}>
+            Foxiny
+          </Typography>
+          {token && user ? <SignInMenu user={user} error={error} /> : <SignUpMenu classes={classes} />}
+        </Toolbar>
+      </AppBar>
     );
   }
 }
@@ -61,4 +60,7 @@ NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(NavBar);
+export default compose(
+  withAuthenticator,
+  withStyles(styles),
+)(NavBar);

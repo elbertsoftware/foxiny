@@ -33,3 +33,48 @@ a:visited {
 .Toastify__toast--success {
   background: #5cb85c !important;
 }
+/* Override Gliderjs to meet our needs*/
+.glider-dot.active {
+  background: #ffccbc !important;
+}
+.glider-prev {
+  left: 23px !important;
+}
+.glider-next {
+  right: 23px !important;
+  border-radius: 3px 0 0 3px;
+}
+.glider-prev,
+.glider-next {
+  top: 40% !important;
+  color: white !important;
+}
+.glider-prev:hover,
+.glider-next:hover {
+  color: #ff512f !important;
+}
+/* Fading animation */
+.fade {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}

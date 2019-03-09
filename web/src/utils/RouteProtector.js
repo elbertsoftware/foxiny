@@ -14,10 +14,10 @@ export default ProtectedRoute => {
     };
 
     render() {
-      const { loading } = this.props;
+      const { loading, error } = this.props;
       if (loading) return <Loading />;
       // Pass the received 'props' and created functions to the ProtectedRoute component
-      return <ProtectedRoute {...this.props} userLoggedIn={this.userLoggedIn} />;
+      return <ProtectedRoute {...this.props} userLoggedIn={this.userLoggedIn} error={error} />;
     }
   }
 
@@ -26,9 +26,10 @@ export default ProtectedRoute => {
   };
 
   return graphql(getCurrentUser, {
-    props: ({ data: { loading, me } }) => ({
+    props: ({ data: { loading, me, error } }) => ({
       loading,
       user: me,
+      error,
     }),
   })(withRouter(AuthHOC));
 };
