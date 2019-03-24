@@ -1,0 +1,14 @@
+[
+  {
+    "name": "users",
+    "data": [{ "expected": true, "loggedIn": true }, { "expected": true, "loggedIn": false }]
+  },
+  {
+    "name": "me",
+    "data": [{ "expected": true }, { "expected": false }]
+  },
+  {
+    "name": "securityQuestions",
+    "data": [{ "expected": true }]
+  }
+]

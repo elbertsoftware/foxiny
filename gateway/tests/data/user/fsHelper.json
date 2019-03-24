@@ -1,0 +1,6 @@
+[
+  {
+    "name": "getFileInfo",
+    "data": [{ "expected": true, "filename": "test.jpg", "userId": "abc123", "createReadStream": true }]
+  }
+]

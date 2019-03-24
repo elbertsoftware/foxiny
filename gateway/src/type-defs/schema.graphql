@@ -105,7 +105,6 @@ input UpdateUserInput {
   phone: String
   password: String
   currentPassword: String
-  securityInfo: [QueAnsPairInput]
 }
 
 type SecPayload {

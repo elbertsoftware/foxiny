@@ -1,5 +1,7 @@
+// @flow
+
 import AWS from 'aws-sdk';
-import { saveProfileMedia } from './fsHelper';
+import { getFileInfo } from './fsHelper';
 import logger from './logger';
 
 AWS.config.update({
@@ -20,25 +22,26 @@ const s3Uploader = async (prisma, upload, userId) => {
     throw new Error('🛑❌  S3UPLOADER: NO FILE');
   }
   try {
-    const { createReadStream, filename, mimetype, encoding } = await upload;
-    const readStream = createReadStream();
+    const { createReadStream, filename, mimetype, encoding } = upload;
 
-    const data = await saveProfileMedia(filename, userId, createReadStream);
+    let readStream;
+
+    if (process.env.NODE_ENV && process.env.NODE_ENV === 'testing') readStream = createReadStream;
+    else readStream = createReadStream();
+
+    const data = await getFileInfo(filename, userId, createReadStream);
 
     const key = `${userId}_${new Date().getTime()}.${data.ext}`; // pattern: userID_tick.extention
-
-    logger.debug(`🔵✅  READ FILE: done. UPLOADING to S3...`);
+    logger.debug(`🔵✅  READ FILE: done. UPLOADING ${key} TO S3...`);
     // Upload to S3
-    const response = await s3
-      .upload({
-        Key: `images/${key}`,
-        ACL: `public-read`,
-        Body: readStream,
-      })
-      .promise();
+    const response = await s3.upload({
+      Key: `images/${key}`,
+      ACL: `public-read`,
+      Body: readStream,
+    });
 
     data.uri = response.Location;
-    logger.debug(`🔵✅  UPLOADED to S3: file location ${data.uri}`);
+    logger.debug(`🔵✅  UPLOADED: file location ${data.uri}`);
 
     const updatedUser = await prisma.mutation.updateUser(
       {

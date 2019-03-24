@@ -1,15 +1,9 @@
 // @flow
 
 import fs from 'fs';
-import crypto from 'crypto';
-import { promisify } from 'util';
 import path from 'path';
+import crypto from 'crypto';
 import logger from './logger';
-
-// TODO: we can stream the file into other cloud services
-
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
 
 /**
  * write avatar img and return an object contains uri, name, extension, filesize, hash by md5 and sha256
@@ -17,8 +11,12 @@ const writeFile = promisify(fs.writeFile);
  * @param {String} userID id of user account
  * @param {String} fileContent content of file
  */
-const saveProfileMedia = async (filename, userId, createReadStream) => {
-  const readStream = createReadStream();
+const getFileInfo = async (filename, userId, createReadStream) => {
+  let readStream;
+
+  if (process.env.NODE_ENV && process.env.NODE_ENV === 'testing') readStream = createReadStream;
+  else readStream = createReadStream();
+
   const ext = path.extname(filename).replace('.', ''); // file's extension ex: jpg, gif, tiff...
   const name = `${userId}_${new Date().getTime()}.${ext}`; // pattern: userID_tick.extention
   const md5 = crypto.createHash('md5'); // md5 hasher instance
@@ -42,11 +40,10 @@ const saveProfileMedia = async (filename, userId, createReadStream) => {
       .on('end', () => {
         const md5ed = md5.digest('hex');
         const sha256ed = sha256.digest('hex');
-        logger.debug(`🔷  Hash of file ${name} - ${size}bytes is md5: ${md5ed} | sha256: ${sha256ed}`);
+        logger.debug(`🔷  Hash of file is ${name} - ${size}bytes | md5: ${md5ed} | sha256: ${sha256ed}`);
         resolve({ name: name, ext: ext, size: size, hash: md5ed, sha256: sha256ed });
       }),
   );
 };
 
-export { readFile, writeFile };
-export { saveProfileMedia };
+export { getFileInfo };

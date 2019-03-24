@@ -17,7 +17,17 @@
   },
   "jest": {
     "globalSetup": "./tests/jest/start-test-server.js",
-    "globalTeardown": "./tests/jest/stop-test-server.js"
+    "globalTeardown": "./tests/jest/stop-test-server.js",
+    "collectCoverage": true,
+    "moduleDirectories": [
+      "node_modules",
+      "./tests/data"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "svg"
+    ]
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",

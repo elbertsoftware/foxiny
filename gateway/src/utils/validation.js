@@ -1,4 +1,16 @@
+// @flow
+
+import path from 'path';
+
 const stringTrim = text => text && text.replace(/\s\s+/g, ' ').trim();
+
+const validateIsEmpty = value => {
+  const refined = stringTrim(value);
+  // Throw error if input is empty/null/undefined or white spaces
+  if (!refined) throw new Error('Invalid input');
+
+  return refined;
+};
 
 const classifyEmailPhone = emailOrPhone => {
   const emailRegex = /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+-+)|([A-Za-z0-9]+\.+))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/;
@@ -17,21 +29,16 @@ const classifyEmailPhone = emailOrPhone => {
   return null;
 };
 
-const removeEmptyProperty = obj => {
-  Object.keys(obj).forEach(key => !obj[key] && obj[key] !== undefined && delete obj[key]);
-  return obj;
-};
-
-export { stringTrim, classifyEmailPhone, removeEmptyProperty };
+export { stringTrim, classifyEmailPhone, validateIsEmpty };
 
 const validateEmail = email => {
   const emailRegex = /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+-+)|([A-Za-z0-9]+\.+))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/;
 
+  if (!emailRegex.test(email)) throw new Error('Invalid input');
+
   // make sure domain contains only lowercase characters
   const [name, domain] = stringTrim(email).split('@');
   const refined = `${name}@${domain.toLowerCase()}`;
-
-  if (!emailRegex.test(refined)) throw new Error('Invalid input');
 
   return refined;
 };
@@ -41,26 +48,29 @@ const validatePhone = phone => {
   // Phone can contains plus sign at the beginning
   const phoneRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
 
-  const refined = stringTrim(phone);
+  if (!phoneRegex.test(phone)) throw new Error('Invalid input');
 
-  if (!phoneRegex.test(refined)) throw new Error('Invalid input');
+  const refined = stringTrim(phone).replace(/-|_|\s|\.|\//g, '');
+
+  // Phone number digits cannot greater than 15
+  if (refined.length > 15) throw new Error('Invalid input');
 
   return refined;
 };
 
 const validatePwd = password => {
   // Pwd must containts uppercase & lowercase letters, & numbers & special characters
-  // Pwd must be at lease 8
+  // Pwd must be at lease 8 and not over 63 letters
   const pwdRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
   if (!password || !pwdRegex.test(password)) throw new Error('Invalid input');
 
   return password;
 };
 
-const validateIsEmpty = value => {
-  const refined = stringTrim(value);
-  // Throw error if input is empty/null/undefined or white spaces
-  if (!refined) throw new Error('Invalid input');
+const validateName = name => {
+  const refined = validateIsEmpty(name);
+
+  if (refined.length > 127) throw new Error('Invalid input');
 
   return refined;
 };
@@ -77,16 +87,21 @@ const validateSecurityInfo = questionAnswerPairs => {
     if (pair.question) validateIsEmpty(pair.question);
     validateIsEmpty(pair.answer);
   });
+
   const refined = questionAnswerPairs.map(pair => {
     const refinedQuestion = stringTrim(pair.question);
     const refinedAnswer = stringTrim(pair.answer);
+
     const newPair = {};
+
     if (!pair.questionId && !refinedQuestion) throw new Error('Invalid input');
     if (pair.questionId) newPair.questionId = validateIsEmpty(pair.questionId);
     if (pair.question) newPair.question = validateIsEmpty(refinedQuestion);
-    newPair.answer = validateIsEmpty(refinedAnswer);
+    newPair.answer = validateIsEmpty(refinedAnswer).toLowerCase();
+
     return newPair;
   });
+
   return refined;
 };
 
@@ -96,14 +111,16 @@ const validateSecurityInfo = questionAnswerPairs => {
  */
 const validateCreateInput = data => {
   // To create a user, either email or phone is required
-  if (!data.email && !data.phone) throw new Error('Invalid input');
+  if ((!data.email && !data.phone) || (data.email && data.phone)) throw new Error('Invalid input');
+
   const refined = {};
+
   if (data.email) {
     refined.email = validateEmail(data.email);
   } else {
     refined.phone = validatePhone(data.phone);
   }
-  refined.name = validateIsEmpty(data.name);
+  refined.name = validateName(data.name);
   refined.password = validatePwd(data.password);
 
   return refined;
@@ -114,11 +131,13 @@ const validateCreateInput = data => {
  * @param {Object} data contains userId or email or phone and the code
  */
 const validateConfirmInput = data => {
-  if (!(!data.userId ^ !data.email ^ !data.phone ^ !(data.userId && data.email && data.phones))) {
+  if (!(!data.userId ^ !data.email ^ !data.phone ^ !(data.userId && data.email && data.phone))) {
     throw new Error('Invalid input');
   }
+
   const refined = {};
-  if (data.code) refined.code = validateIsEmpty(data.code);
+
+  refined.code = validateIsEmpty(data.code);
   if (data.userId) refined.userId = validateIsEmpty(data.userId);
   if (data.email) refined.email = validateEmail(data.email);
   if (data.phone) refined.phone = validatePhone(data.phone);
@@ -132,13 +151,16 @@ const validateConfirmInput = data => {
  * @param {Object} data contains userId or email or phone
  */
 const validateResendConfirmationInput = data => {
-  if (!(!data.userId ^ !data.email ^ !data.phone ^ !(data.userId && data.email && data.phones))) {
+  if (!(!data.userId ^ !data.email ^ !data.phone ^ !(data.userId && data.email && data.phone))) {
     throw new Error('Invalid input');
   }
+
   const refined = {};
+
   if (data.email) refined.email = validateEmail(data.email);
   if (data.phone) refined.phone = validatePhone(data.phone);
   if (data.userId) refined.userId = validateIsEmpty(data.userId);
+
   return refined;
 };
 
@@ -148,11 +170,13 @@ const validateResendConfirmationInput = data => {
  */
 const validateUpdateInput = data => {
   const refined = {};
-  if (data.name) refined.name = validateIsEmpty(data.name);
+
+  if (data.name) refined.name = validateName(data.name);
   if (data.email) refined.email = validateEmail(data.email);
   if (data.phone) refined.phone = validatePhone(data.phone);
   if (data.password) refined.password = validatePwd(data.password);
   if (data.currentPassword) refined.currentPassword = validatePwd(data.currentPassword);
+
   return refined;
 };
 
@@ -162,8 +186,10 @@ const validateUpdateInput = data => {
  */
 const validateResetPwdInput = data => {
   const refined = {};
+
   refined.securityInfo = validateSecurityInfo(data.securityInfo);
   refined.password = validatePwd(data.password);
+
   return refined;
 };
 
@@ -174,10 +200,10 @@ export {
   validateResendConfirmationInput,
   validateUpdateInput,
   validateResetPwdInput,
+  validateName,
   validateEmail,
   validatePhone,
   validatePwd,
-  validateIsEmpty,
 };
 
 const IMAGE_TYPES = ['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'];
@@ -187,7 +213,21 @@ const IMAGE_TYPES = ['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'];
  * @param {String} mimetype MIME type
  */
 const validateImageFileType = mimetype => {
+  if (!mimetype) throw new Error('Invalid input');
   if (!IMAGE_TYPES.includes(mimetype)) throw new Error('File type is not allowed');
 };
 
-export { validateImageFileType };
+const validateImageUploadInput = upload => {
+  if (!upload) throw new Error('Invalid Input');
+
+  const { createReadStream, filename, mimetype, encoding } = upload;
+
+  if (!createReadStream) throw new Error('Invalid input');
+  if (!filename || !path.extname(filename)) throw new Error('Invalid input');
+  if (!mimetype) throw new Error('Invalid input');
+  if (!encoding) throw new Error('Invalid input');
+
+  validateImageFileType(mimetype);
+};
+
+export { validateImageFileType, validateImageUploadInput };
