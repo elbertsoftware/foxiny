@@ -17,9 +17,15 @@ const s3 = new AWS.S3({
   },
 });
 
-const s3Uploader = async (prisma, upload, userId) => {
+/**
+ * Upload profile media to aws s3
+ * @param {Object} prisma prisma server
+ * @param {Object} upload upload stream
+ * @param {String} userId Id of user
+ */
+const s3ProfileMediaUploader = async (prisma, upload, userId) => {
   if (!upload) {
-    throw new Error('🛑❌  S3UPLOADER: NO FILE');
+    throw new Error('🛑❌  S3PROFILEMEDIAUPLOADER: NO FILE');
   }
   try {
     const { createReadStream, filename, mimetype, encoding } = upload;
@@ -34,13 +40,16 @@ const s3Uploader = async (prisma, upload, userId) => {
     const key = `${userId}_${new Date().getTime()}.${data.ext}`; // pattern: userID_tick.extention
     logger.debug(`🔵✅  READ FILE: done. UPLOADING ${key} TO S3...`);
     // Upload to S3
-    const response = await s3.upload({
-      Key: `images/${key}`,
-      ACL: `public-read`,
-      Body: readStream,
-    });
+    const response = await s3
+      .upload({
+        Key: `images/${key}`,
+        ACL: `public-read`,
+        Body: readStream,
+      })
+      .promise();
 
     data.uri = response.Location;
+    data.mime = mimetype;
     logger.debug(`🔵✅  UPLOADED: file location ${data.uri}`);
 
     const updatedUser = await prisma.mutation.updateUser(
@@ -57,12 +66,19 @@ const s3Uploader = async (prisma, upload, userId) => {
       `{ id profileMedia { id name ext mime size hash sha256 uri createdAt updatedAt } }`,
     );
 
+    // for transact-log
+    logger.info(
+      `UPLOAD_AVATAR | ${userId} | ${data.uri} | ${data.name} | ${data.ext} | ${data.mime} | ${data.hash} | ${
+        data.sha256
+      } | ${data.size}`,
+    );
+
     return updatedUser.profileMedia;
   } catch (error) {
-    logger.info(`[foxiny-gateway] s3Uploader error`);
-    logger.info(JSON.stringify(error, undefined, 2));
+    logger.debug(`🔴❌  [foxiny-gateway] s3ProfileMediaUploader error`);
+    logger.debug(JSON.stringify(error, undefined, 2));
     throw new Error(`Cannot upload file`);
   }
 };
 
-export { s3Uploader };
+export { s3ProfileMediaUploader };

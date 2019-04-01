@@ -4,38 +4,39 @@ import { getUserIDFromRequest } from '../utils/authentication';
 import logger from '../utils/logger';
 
 /**
- * make sure default avatar (user.svg) is always returned if user has no avatar
- * the url is transformed to a full url with protocol, host and directory (/images)
+ * make sure default avatar (user.svg) is always returned if user has not set avatar yet
  */
 
 const Media = {
-  id: {
-    resolve: (parent, args, { request }) => {
-      if (!parent.id) return 'default';
-      return parent.id;
-    },
-  },
+  // id: {
+  //   resolve: (parent, args, { request }) => {
+  //     return parent.id;
+  //   },
+  // },
 
-  name: {
-    resolve: (parent, args, { request }) => {
-      if (!parent.name) return 'default;';
-      return parent.name;
-    },
-  },
+  // name: {
+  //   resolve: (parent, args, { request }) => {
+  //     return parent.name;
+  //   },
+  // },
 
-  ext: {
-    resolve: (parent, args, { request }) => {
-      if (!parent.ext) return 'svg';
-      return parent.ext;
-    },
-  },
+  // ext: {
+  //   resolve: (parent, args, { request }) => {
+  //     return parent.ext;
+  //   },
+  // },
 
-  size: {
-    resolve: (parent, args, { request }) => {
-      if (!parent.size) return 1085;
-      return parent.size;
-    },
-  },
+  // size: {
+  //   resolve: (parent, args, { request }) => {
+  //     return parent.size;
+  //   },
+  // },
+
+  // uri: {
+  //   resolve: (parent, args, { request }) => {
+  //     return parent.uri;
+  //   },
+  // },
 
   hash: {
     resolve: (parent, args, { request }) => null,

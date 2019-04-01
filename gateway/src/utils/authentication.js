@@ -11,7 +11,7 @@ import logger from './logger';
 // TODO: clean expired tokens periodically and automatically
 // TODO: more password rules will be enforced later
 
-const isValidPassword = password => password.length >= 8 && !password.toLowerCase().includes('password');
+const isValidPassword = password => password.length >= 8 && !password.toLowerCase().includes('password'); // repkace by the new one in validation.js
 
 const hashPassword = password => {
   // if (!isValidPassword(password)) {
@@ -80,7 +80,7 @@ const generateToken = (userId, request, cache, options = null) => {
     // iat: Date.now(), // NOTE: claimed by default
   };
 
-  // NOTE: options (object) for test or other reasons
+  // NOTE: options (object) is used for test or other reasons
   // synchronous call since no callback supplied
   const expiresIn = options && options.expiresIn ? options.expiresIn : process.env.JWT_EXPIRATION;
   const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
@@ -112,7 +112,7 @@ const getUserIDFromRequest = async (request, cache, requireAuthentication = true
     // the verify() will throw Error if the token has been expired
     try {
       const expiresIn = options && options.expiresIn ? options.expiresIn : process.env.JWT_EXPIRATION;
-      // NOTE: add the verifyOoptions (expiresIn): same as the signOptions (jwt needs it for checking token's lifetime)
+      // NOTE: add the verifyOoptions (expiresIn): same as the signOptions in generateToken (jwt needs it for checking token's lifetime)
       const payload = jwt.verify(token, process.env.JWT_SECRET, { expiresIn }); // synchronous call since no callback supplied
       let { userId } = payload;
 
@@ -143,7 +143,7 @@ const getUserIDFromRequest = async (request, cache, requireAuthentication = true
     } catch (error) {
       // suppress error if authentication is not required
       if (requireAuthentication) {
-        logger.info(JSON.stringify(error, undefined, 2));
+        logger.debug(JSON.stringify(error, undefined, 2));
         throw new Error('Authentication required'); // invalid token or token expired
       }
     }
@@ -156,7 +156,7 @@ const getUserIDFromRequest = async (request, cache, requireAuthentication = true
   return null;
 };
 
-// use this function in each login time, this will scan all key in user's hash, remove the expired tokens
+// use this function in each time user login, this will scan all key in user's hashed-set, remove the expired tokens
 /**
  * Scan and remove expired tokens of one user
  * @param {String} userId id of user
@@ -169,7 +169,7 @@ const cleanToken = async (userId, cache) => {
   // check each token and delete if expired
   for (let token in allTokens) {
     const payload = jwt.decode(token);
-    // NOTE: jwt token iat take the unix timestamp in second, convert it to ms before comparation
+    // NOTE: jwt token iat takes the unix timestamp in second, convert it to ms before compare to now
     if (payload.exp * 1000 < Date.now()) {
       logger.debug(`Token ${token} is expired. This will be removed.`);
       deleteTokenInCache(cache, userId, token);

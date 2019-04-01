@@ -13,6 +13,8 @@ const validateIsEmpty = value => {
 };
 
 const classifyEmailPhone = emailOrPhone => {
+  // email pattern: mailbox @ domain
+  // email address is no longer than 63 character
   const emailRegex = /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+-+)|([A-Za-z0-9]+\.+))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/;
 
   if (emailRegex.test(emailOrPhone)) {
@@ -32,6 +34,8 @@ const classifyEmailPhone = emailOrPhone => {
 export { stringTrim, classifyEmailPhone, validateIsEmpty };
 
 const validateEmail = email => {
+  // email pattern: mailbox @ domain
+  // email address is no longer than 63 character
   const emailRegex = /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+-+)|([A-Za-z0-9]+\.+))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/;
 
   if (!emailRegex.test(email)) throw new Error('Invalid input');
@@ -50,6 +54,7 @@ const validatePhone = phone => {
 
   if (!phoneRegex.test(phone)) throw new Error('Invalid input');
 
+  // remove all special character except plus sign
   const refined = stringTrim(phone).replace(/-|_|\s|\.|\//g, '');
 
   // Phone number digits cannot greater than 15

@@ -6,7 +6,7 @@ import crypto from 'crypto';
 import logger from './logger';
 
 /**
- * write avatar img and return an object contains uri, name, extension, filesize, hash by md5 and sha256
+ * return an object contains uri, name, extension, filesize, hash by md5 and sha256
  * @param {String} filename name of file, ex: abc.jpg
  * @param {String} userID id of user account
  * @param {String} fileContent content of file
@@ -14,6 +14,7 @@ import logger from './logger';
 const getFileInfo = async (filename, userId, createReadStream) => {
   let readStream;
 
+  // for testing
   if (process.env.NODE_ENV && process.env.NODE_ENV === 'testing') readStream = createReadStream;
   else readStream = createReadStream();
 
@@ -22,6 +23,7 @@ const getFileInfo = async (filename, userId, createReadStream) => {
   const md5 = crypto.createHash('md5'); // md5 hasher instance
   const sha256 = crypto.createHash('sha256'); // sha256 hasher instance
   let size = 0;
+
   return new Promise((resolve, reject) =>
     readStream
       // .on('error', error => {

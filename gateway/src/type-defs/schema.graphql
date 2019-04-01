@@ -128,8 +128,8 @@ type Media {
   ext: String!
   mime: String!
   size: Int!
-  hash: String!
-  sha256: String!
+  hash: String
+  sha256: String
   uri: String!
 
   createdAt: String

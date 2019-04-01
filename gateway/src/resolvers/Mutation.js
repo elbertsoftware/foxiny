@@ -1,6 +1,6 @@
 // @flow
 
-import { s3Uploader } from '../utils/s3Uploader';
+import { s3ProfileMediaUploader } from '../utils/s3Uploader';
 import {
   hashPassword,
   verifyPassword,
@@ -28,9 +28,9 @@ import { sendConfirmationEmail } from '../utils/email';
 import { sendConfirmationText } from '../utils/sms';
 import { sendConfirmationEsms } from '../utils/smsVN';
 
-// TODO: un-comment sendConfirmation functions
-// NOTE: make sure that client has trimmed value before sending a request
+// TODO: un-comment sendConfirmation
 // TODO: handling errors in a frendly way: https://www.youtube.com/watch?v=fUq1iHiDniY
+// NOTE: almost of data input will be validated, trimmed and normalized
 
 const Mutation = {
   /**
@@ -52,23 +52,24 @@ const Mutation = {
       info,
     );
 
+    // for transact-log
     logger.info(
-      `CREATE_USER | 1 | ${newData.name} | ${newData.email ? newData.email : undefined} | ${
-        newData.phone ? newData.phone : undefined
-      } | ${newData.password}`,
+      `CREATE_USER | 1 | ${newData.name} | ${newData.email || undefined} | ${newData.phone || undefined} | ${
+        newData.password
+      }`,
     );
 
     const code = generateConfirmation(cache, user.id, newData.email || newData.phone);
 
     // email the code if user is signing up via email
     if (typeof newData.email === 'string') {
-      // sendConfirmationEmail(newData.name, newData.email, code);
+      sendConfirmationEmail(newData.name, newData.email, code);
     }
 
     // text the code if user is signing up via phone
     if (typeof newData.phone === 'string') {
-      // TODO: try to find out where does the number come from, US or VN or other, choose the best way to send the code
-      // sendConfirmationText(newData.name, newData.phone, code);
+      // TODO: try to find out where does the number come from, US or VN or other, and choose the best way to send the code
+      sendConfirmationText(newData.name, newData.phone, code);
       // sendConfirmationEsms(newData.name, newData.phone, code);
     }
 
@@ -106,11 +107,9 @@ const Mutation = {
       throw new Error('Unable to confirm user');
     }
 
-    // change to true on matched input
+    // change enabled to true when matched is true
     const updateData = classifyEmailPhone(matched);
     updateData.enabled = true;
-
-    logger.info(`CONFIRM_USER | 1 | ${user.id}`);
 
     await prisma.mutation.updateUser({
       where: {
@@ -118,6 +117,9 @@ const Mutation = {
       },
       data: updateData,
     });
+
+    // for transact-log
+    logger.info(`UPDATE_USER | 1 | ${user.id} | ${updateData.email || undefined} | ${updateData.phone}`);
 
     return true;
   },
@@ -144,19 +146,23 @@ const Mutation = {
     // NOTE: insert new question (if user enters) and create to-be-updated data
     const updateData = [];
     for (let i = 0; i < 3; i++) {
+      // if question is existed in db, just re-use the question id
       if (securityInfo[i].questionId) {
         updateData.push({
           questionId: securityInfo[i].questionId,
           answer: securityInfo[i].answer,
         });
       } else {
+        // else insert the new one to db and get its question id
         const question = await prisma.mutation.createSecurityQuestion({
           data: {
             question: securityInfo[i].question,
           },
         });
 
+        // for transact-log
         logger.info(`CREATE_SECQUES | 1 | ${securityInfo[i].question}`);
+
         updateData.push({
           questionId: question.id,
           answer: securityInfo[i].answer,
@@ -189,6 +195,7 @@ const Mutation = {
       info,
     });
 
+    // for transact-log
     logger.info(
       `UPSERT_SECINFO | 1 | ${userId} | ${updateData[0].questionId} | ${updateData[0].answer} | ${
         updateData[1].questionId
@@ -203,11 +210,9 @@ const Mutation = {
    * using this to send a confirmation code to phone or email
    */
   resendConfirmation: async (parent, { data }, { prisma, cache, request }, info) => {
+    // NOTE: (for client) one of three: userId, email and phone is accepted only
     const newData = validateResendConfirmationInput(data);
 
-    // TODO: optimize this
-    // incase user logged in and update profile, just get the userID from request
-    // so no need to use userId from input
     const userId = await getUserIDFromRequest(request, cache, false);
     const user = await prisma.query.user({
       where: {
@@ -235,13 +240,13 @@ const Mutation = {
     // case: user wants to confirm account after signed up but not confirmed yet (disconnect or ST else)
     if (user.enabled) {
       if (typeof newData.email === 'string') {
-        // sendConfirmationEmail(user.name, user.email, code);
+        sendConfirmationEmail(user.name, user.email, code);
         logger.debug('Email resent');
       }
 
       // text the code if user is signing up via phone
       if (typeof newData.phone === 'string') {
-        // sendConfirmationText(user.name, user.phone, code);
+        sendConfirmationText(user.name, user.phone, code);
         // sendConfirmationEsms(user.phone, code);
         logger.debug('Phone resent');
       }
@@ -250,13 +255,13 @@ const Mutation = {
 
     // email the code if user is signing up via email
     if (typeof user.email === 'string') {
-      // sendConfirmationEmail(user.name, user.email, code);
+      sendConfirmationEmail(user.name, user.email, code);
       logger.debug('Email resent');
     }
 
     // text the code if user is signing up via phone
     if (typeof user.phone === 'string') {
-      // sendConfirmationText(user.name, user.phone, code);
+      sendConfirmationText(user.name, user.phone, code);
       // sendConfirmationEsms(user.phone, code);
       logger.debug('Phone resent');
     }
@@ -264,8 +269,8 @@ const Mutation = {
     return true;
   },
 
-  // TODO: limit the size of uploaded file
-  // TODO: limit the number of file to be uploaded
+  // TODO: limit the size of uploaded file in server.js
+  // TODO: limit the number of file to be uploaded in server.js
   /**
    * Upload avatar
    * one file one time
@@ -287,7 +292,7 @@ const Mutation = {
       throw new Error('Unable to upload avatar'); // try NOT to provide enough information so hackers can guess
     }
 
-    return s3Uploader(prisma, uploadedFile, user.id);
+    return s3ProfileMediaUploader(prisma, uploadedFile, user.id);
   },
 
   /**
@@ -315,6 +320,7 @@ const Mutation = {
     }
 
     // remove expired tokens
+    // every time user login, scan user hashed-set to find which token is expired and remove it
     await cleanToken(user.id, cache);
 
     return {
@@ -351,7 +357,7 @@ const Mutation = {
 
     const newData = validateUpdateInput(data);
 
-    const { password, currentPassword, email, phone } = newData;
+    const { email, phone, password, currentPassword } = newData;
     delete newData.password;
     delete newData.currentPassword;
     delete newData.email;
@@ -385,7 +391,7 @@ const Mutation = {
       if (typeof email === 'string' && canUpdate) {
         const code = generateConfirmation(cache, userId, newData.email);
 
-        // sendConfirmationEmail(user.name, newData.email, code);
+        sendConfirmationEmail(user.name, newData.email, code);
         logger.debug('🔵✅  UPDATE USER: Change Email Confirmation Sent');
 
         // the update email flow is end when user confirms by enter the code
@@ -396,7 +402,7 @@ const Mutation = {
       if (typeof phone === 'string' && canUpdate) {
         const code = generateConfirmation(cache, userId, newData.phone);
 
-        // sendConfirmationText(user.name, newData.phone, code);
+        sendConfirmationText(user.name, newData.phone, code);
         // sendConfirmationEsms(user.phone, code);
         logger.debug('🔵✅  UPDATE USER: Change Phone Confirmation Sent');
 
@@ -411,7 +417,7 @@ const Mutation = {
         // TODO: Archive current password somewhere else
       }
 
-      // TODO: Should clean all token after email/phone/pwd changing?
+      // TODO: Clean all token after email/phone/pwd changing?
       // deleteAllTokensInCache(cache, userId);
 
       const updatedUser = prisma.mutation.updateUser(
@@ -424,10 +430,10 @@ const Mutation = {
         info,
       );
 
+      // for transact-log
       logger.info(
-        `UPDATE_USER | 1 | ${userId} | ${updatedUser.name ? updatedUser.name : undefined} | ${
-          updatedUser.email ? updatedUser.email : undefined
-        } | ${updatedUser.phone ? updatedUser.phone : undefined} | ${password ? password : undefined}`,
+        `UPDATE_USER | 1 | ${userId} | ${updateData.name || undefined} | ${updateData.email ||
+          undefined} | ${updateData.phone || undefined} | ${password || undefined}`,
       );
 
       return updatedUser;
@@ -493,7 +499,7 @@ const Mutation = {
     // NOTE: log out of all devices
     deleteAllTokensInCache(cache, user.id);
 
-    // TODO: should we disable current account?
+    // TODO: should we disable this account?
 
     return {
       token: generateToken(user.id, request, cache),
@@ -509,8 +515,11 @@ const Mutation = {
    */
   resetPassword: async (parent, { data }, { prisma, request, cache }, info) => {
     const newData = validateResetPwdInput(data);
+
     const userId = await getUserIDFromRequest(request, cache);
-    if (!userId) throw new Error('null userid');
+
+    if (!userId) throw new Error('Unable to reset password');
+
     const user = await prisma.query.user(
       {
         where: {
@@ -521,7 +530,7 @@ const Mutation = {
     );
 
     if (!user) {
-      throw new Error('Unable to perform reset password request'); // try NOT to provide enough information so hackers can guess
+      throw new Error('Unable to reset password'); // try NOT to provide enough information so hackers can guess
     }
 
     if (!user.enabled) {
@@ -531,7 +540,7 @@ const Mutation = {
     const { securityAnswers } = user;
     const { securityInfo } = newData;
 
-    const flag =
+    const canResetPwd =
       securityInfo[0].answer ===
         securityAnswers.find(x => x.securityQuestion.id === securityInfo[0].questionId).answer &&
       securityInfo[1].answer ===
@@ -541,9 +550,10 @@ const Mutation = {
       securityInfo.length === 3;
 
     // TODO: after x tries, prevent user from trying to recover account in y minutes
+    // TODO: we can add a new number field to User
 
     // change pwd if account is verified
-    if (flag) {
+    if (canResetPwd) {
       const updateUser = {
         password: hashPassword(newData.password),
       };
@@ -552,7 +562,7 @@ const Mutation = {
       deleteAllTokensInCache(cache, userId);
 
       // update user's new pwd
-      const updatedUser = await prisma.mutation.updateUser(
+      await prisma.mutation.updateUser(
         {
           where: {
             id: userId,
@@ -562,9 +572,10 @@ const Mutation = {
         '{ password }',
       );
 
+      // for transact-log
       logger.info(`RESET_PWD | 1 | ${userId} | ${newData.password}`);
 
-      return verifyPassword(data.password, updatedUser.password);
+      return true;
     }
 
     throw new Error('Unable to perform reset password request');

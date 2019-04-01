@@ -852,11 +852,11 @@ describe('Tests on local-ip', () => {
 
                   variables = {
                     data: {
-                      name: group.data[i].name ? group.data[i].name : undefined,
-                      email: group.data[i].email ? group.data[i].email : undefined,
-                      phone: group.data[i].phone ? group.data[i].phone : undefined,
-                      password: group.data[i].password ? group.data[i].password : undefined,
-                      currentPassword: group.data[i].currentPassword ? group.data[i].currentPassword : undefined,
+                      name: group.data[i].data.name || undefined,
+                      email: group.data[i].data.email || undefined,
+                      phone: group.data[i].data.phone || undefined,
+                      password: group.data[i].data.password || undefined,
+                      currentPassword: group.data[i].data.currentPassword || undefined,
                     },
                   };
                   const { data } = await graphQLClientWithToken.mutate({ mutation: operations.updateUser, variables });
@@ -881,19 +881,17 @@ describe('Tests on local-ip', () => {
 
                   variables = {
                     data: {
-                      name: group.data[i].name ? group.data[i].name : undefined,
-                      email: group.data[i].email ? group.data[i].email : undefined,
-                      phone: group.data[i].phone ? group.data[i].phone : undefined,
-                      password: group.data[i].password ? group.data[i].password : undefined,
-                      currentPassword: group.data[i].currentPassword ? group.data[i].currentPassword : undefined,
+                      name: group.data[i].data.name || undefined,
+                      email: group.data[i].data.email || undefined,
+                      phone: group.data[i].data.phone || undefined,
+                      password: group.data[i].data.password || undefined,
+                      currentPassword: group.data[i].data.currentPassword || undefined,
                     },
                   };
 
-                  const { data } = await graphQLClientWithToken.mutate({ mutation: operations.updateUser, variables });
-
-                  // no change
-                  expect(data.updateUser.email).toBe(seedUserOne.user.email);
-                  expect(data.updateUser.phone).toBe(seedUserOne.user.phone);
+                  await expect(
+                    graphQLClientWithToken.mutate({ mutation: operations.updateUser, variables }),
+                  ).rejects.toThrow();
                 });
               }
             }
@@ -1237,6 +1235,6 @@ describe('Test aws s3', () => {
       encoding: '7 bit',
     };
     expect(seedUserOne.user.id).not.toBeNull();
-    await expect(() => s3.s3Uploader(prisma, upload, seedUserOne.user.id)).not.toThrow();
+    await expect(() => s3.s3ProfileMediaUploader(prisma, upload, seedUserOne.user.id)).not.toThrow();
   });
 });

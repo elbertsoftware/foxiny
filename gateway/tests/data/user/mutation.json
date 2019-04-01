@@ -264,7 +264,7 @@
       {
         "expected": false,
         "data": {
-          "name": "",
+          "name": "  ",
           "currentPassword": "!abcd1234"
         }
       }
