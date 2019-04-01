@@ -186,7 +186,7 @@ class UserHeader extends React.Component {
           <Grid container direction="row">
             <Grid item xs={8}>
               <Typography variant="h5">Cách mà chúng tôi có thể xác minh bạn chính là chủ sở hữu tài khoản</Typography>
-              <Typography variant="h6">
+              <Typography variant="h7">
                 Nếu bạn quên mật khẩu hoặc email, tùy chọn này có thể giúp bạn khôi phục lại tài khoản của mình.
               </Typography>
             </Grid>

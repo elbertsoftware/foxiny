@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import { loadReCaptcha } from 'react-recaptcha-google';
 import { Route, Switch, withRouter } from 'react-router';
+import { AppBar } from '@material-ui/core';
 import { I18nProvider } from '@lingui/react';
 import compose from 'recompose/compose';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,10 +13,12 @@ import SignIn from '../SignIn/SignIn';
 import SignUp from '../SignUp/SignUp';
 import ConfirmPage from '../Form/ConfirmPage';
 import UserDashboard from '../User/UserDashboard';
-import Homepage from '../Homepage';
+import Homepage from '../HomePage/Homepage';
 import UserSecurityQuestion from '../User/UserSecurityQuestion';
 import withAuthenticator from '../../utils/RouteProtector';
 import UserResetPassword from '../User/UserResetPassword/UserResetPassword';
+import ProductCard from '../Product/ProductCard';
+import ProductDetailPage from '../Product/ProductDetail/ProductDetailPage';
 
 class App extends Component<Props, State> {
   state = {
@@ -68,7 +71,9 @@ class App extends Component<Props, State> {
           path="/(.+)"
           render={() => (
             <React.Fragment>
-              <NavBar handleSetLanguage={this.handleSetLanguage} />
+              <AppBar position="static" color="primary">
+                <NavBar handleSetLanguage={this.handleSetLanguage} />
+              </AppBar>
               <Switch>
                 <Route path="/signin" component={SignIn} />
               </Switch>
@@ -86,6 +91,12 @@ class App extends Component<Props, State> {
               </Switch>
               <Switch>
                 <Route path="/security-question" component={withAuthenticator(UserSecurityQuestion)} />
+              </Switch>
+              <Switch>
+                <Route path="/productcard" component={ProductCard} />
+              </Switch>
+              <Switch>
+                <Route path="/products" component={ProductDetailPage} />
               </Switch>
             </React.Fragment>
           )}

@@ -15,7 +15,7 @@ const rawTheme = createMuiTheme({
     MuiIconButton: {
       colorSecondary: {
         '&:hover': {
-          backgroundColor: '#ffccbc',
+          backgroundColor: 'rgba(0, 0, 0, 0.08)',
         },
       },
       colorPrimary: {
@@ -27,7 +27,7 @@ const rawTheme = createMuiTheme({
     MuiButton: {
       textSecondary: {
         '&:hover': {
-          backgroundColor: '#ffccbc',
+          backgroundColor: '#rgba(0, 0, 0, 0.08)',
         },
       },
       textPrimary: {
@@ -35,8 +35,14 @@ const rawTheme = createMuiTheme({
           backgroundColor: '#cfd8dc',
         },
       },
+      containedSecondary: {
+        '&:hover': {
+          backgroundColor: '#c17b00',
+        },
+      },
     },
   },
+
   palette: {
     primary: {
       light: '#5c7184',
@@ -44,9 +50,9 @@ const rawTheme = createMuiTheme({
       dark: '#071f2e',
     },
     secondary: {
-      light: '#ffccbc',
-      main: '#ff512f',
-      dark: '#c40e00',
+      light: '#ffdc65',
+      main: '#F9AA33',
+      dark: '#c17b00',
     },
     warning: {
       main: '#ffc071',
@@ -77,8 +83,9 @@ const rawTheme = createMuiTheme({
 
 const fontHeader = {
   color: rawTheme.palette.primary.dark,
-  fontWeight: rawTheme.typography.fontWeightMedium,
+  fontWeight: rawTheme.typography.fontWeightLight,
   fontFamily: rawTheme.typography.fontFamilySecondary,
+  letterSpacing: 1,
 };
 
 const theme = {
@@ -87,7 +94,7 @@ const theme = {
     ...rawTheme.palette,
     background: {
       ...rawTheme.palette.background,
-      default: '#eeeeee',
+      default: '#fff',
       placeholder: grey[300],
     },
   },
@@ -97,18 +104,22 @@ const theme = {
     h1: {
       ...rawTheme.typography.h1,
       ...fontHeader,
-      letterSpacing: 0,
-      fontSize: 62,
+      wordSpacing: 3,
+      fontSize: '240%',
+      textTransform: 'uppercase',
     },
     h2: {
       ...rawTheme.typography.h2,
       ...fontHeader,
-      fontSize: 50,
+      fontSize: '180%',
+      wordSpacing: 2,
+      textTransform: 'uppercase',
     },
     h3: {
       ...rawTheme.typography.h3,
       ...fontHeader,
-      fontSize: 44,
+      fontSize: '110%',
+      textTransform: 'uppercase',
     },
     h4: {
       ...rawTheme.typography.h4,
@@ -125,9 +136,9 @@ const theme = {
     h6: {
       ...rawTheme.typography.h6,
       color: rawTheme.palette.text.secondary,
-      fontSize: 20,
-      fontWeight: rawTheme.typography.fontWeightLight,
-      lineHeight: 'normal',
+      fontSize: 23,
+      fontWeight: rawTheme.typography.fontWeightMedium,
+      lineHeight: 1.5,
     },
     subtitle1: {
       ...rawTheme.typography.subtitle1,
@@ -140,13 +151,13 @@ const theme = {
       color: grey[600],
     },
     body1: {
-      ...rawTheme.typography.body2,
+      ...rawTheme.typography.body1,
       fontWeight: rawTheme.typography.fontWeightRegular,
       fontSize: 20,
     },
     body2: {
-      ...rawTheme.typography.body1,
-      fontSize: 18,
+      ...rawTheme.typography.body2,
+      fontSize: 21.5,
     },
   },
 };
