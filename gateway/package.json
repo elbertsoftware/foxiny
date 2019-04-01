@@ -17,7 +17,17 @@
   },
   "jest": {
     "globalSetup": "./tests/jest/start-test-server.js",
-    "globalTeardown": "./tests/jest/stop-test-server.js"
+    "globalTeardown": "./tests/jest/stop-test-server.js",
+    "collectCoverage": true,
+    "moduleDirectories": [
+      "node_modules",
+      "./tests/data"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "svg"
+    ]
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
@@ -43,6 +53,7 @@
   },
   "devDependencies": {
     "apollo-boost": "^0.1.23",
+    "aws-sdk": "^2.413.0",
     "axios": "^0.18.0",
     "babel-eslint": "^10.0.1",
     "babel-register": "^6.26.0",

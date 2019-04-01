@@ -1,28 +1,71 @@
 type User {
   id: ID! @unique
-  name: String # required will be handled in foxiny-gateway
+  _version: Int! @default(value: "1")
+
+  # Generic data"1")
+  name: String! # required will be handled in foxiny-gateway
+  profile: String #
+  profileMedia: Media @relation(name: "MemberProfileToMedia", onDelete: CASCADE)
+  #badgeMedias: [Media] @relation(name: "MemberBadgeToMedia", onDelete: SET_NULL) # badge images are predefined, do not remove them when deleting member
+  # addresses: [Address!]!
+  # payments: [Payment!]!
+
+  # Fields needed for email or phone authentication
   email: String @unique # required and uniqueness will be handled in foxiny-gateway
   phone: String @unique # required and uniqueness will be handled in foxiny-gateway
   password: String # required will be handled in foxiny-gateway
-  questionA: String!
-  answerA: String!
-  questionB: String!
-  answerB: String!
-  # answers: [Answer]!
-  enabled: Boolean @default(value: "false") # required will be handled in foxiny-gateway
+  # security info
+  securityAnswers: [SecurityAnswer] @relation(name: "AnswerToUser", onDelete: CASCADE)
+
+  # account state
+  enabled: Boolean @default(value: false) # required will be handled in foxiny-gateway
+  recoverable: Boolean @default(value: false)
+  #blocked: Boolean! @default(value: "false")
+
   createdAt: DateTime!
   updatedAt: DateTime!
 }
 
-# type SecurityQuestion {
-#   id: ID! @unique
-#   question: String!
-#   answer: [Answer]!
-# }
+#TODO: consider splitting User into 2 types: User and UserProfiles
 
-# type Answer {
-#   id: ID! @unique
-#   user: User!
-#   question: Question!
-#   answer: String!
-# }
+type SecurityQuestion {
+  id: ID! @unique
+  _version: Int! @default(value: "1")
+
+  question: String # required and uniqueness will be handled in foxiny-gateway
+  securityAnswers: [SecurityAnswer] @relation(name: "AnswerToQuestion", onDelete: CASCADE)
+
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type SecurityAnswer {
+  id: ID! @unique
+  _version: Int! @default(value: "1")
+
+  answer: String # required and uniqueness will be handled in foxiny-gateway
+  user: User @relation(name: "AnswerToUser", onDelete: SET_NULL)
+  securityQuestion: SecurityQuestion @relation(name: "AnswerToQuestion", onDelete: SET_NULL)
+
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Media {
+  id: ID! @unique
+  _version: Int! @default(value: "1")
+
+  userProfileMedia: User @relation(name: "MemberProfileToMedia", onDelete: SET_NULL)
+  #userBadgesMedia: [User] @relation(name: "MemberBadgeToMedia", onDelete: SET_NULL)
+
+  name: String
+  ext: String
+  mime: String
+  size: Int # in byte
+  hash: String # hashed binary content for legitimation
+  sha256: String
+  uri: String
+
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}

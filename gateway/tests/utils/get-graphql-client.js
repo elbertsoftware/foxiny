@@ -12,7 +12,7 @@ const getGraphQLClient = token => {
           headers: {
             // Set JWT token to HTTP request header
             Authorization: `Bearer ${token}`,
-            'accept-language': 'en-US,en;q=0.9',
+            'Accept-Language': 'en-US',
           },
         });
       }
@@ -31,7 +31,7 @@ const getGraphQLClientWithTunnel = (token, url) => {
           headers: {
             // Set JWT token to HTTP request header
             Authorization: `Bearer ${token}`,
-            'accept-language': 'en-US,en;q=0.9',
+            'Accept-Language': 'en-US',
           },
         });
       }
