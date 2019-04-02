@@ -10,6 +10,12 @@ type Mutation {
   createUser(data: CreateUserInput!): User!
   confirmUser(data: ConfirmUserInput!): Boolean!
   upsertSecurityInfo(securityInfo: [QueAnsPairInput]!): User!
+  # old
+  resendConfirmation(userId: String!): User!
+  confirmUser(data: ConfirmUserInput): User!
+  login(data: LoginUserInput!): LoginPayload!
+  logout(all: Boolean = false): LogoutPayload!
+  #new
   resendConfirmation(data: ResendConfirmation!): Boolean!
   uploadProfileMedia(file: Upload!): Media!
   login(data: LoginUserInput!): AuthPayload!
