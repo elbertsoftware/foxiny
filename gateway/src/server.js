@@ -46,6 +46,14 @@ const graphQLServer = new ApolloServer({
       cache,
     };
   },
+  uploads: {
+    // Limits here should be stricter than config for surrounding
+    // infrastructure such as Nginx so errors can be handled elegantly by
+    // graphql-upload:
+    // https://github.com/jaydenseric/graphql-upload#type-uploadoptions
+    maxFileSize: 2097152, // 2MB
+    maxFiles: 5, // at the same time
+  },
   fragmentReplacements, // send fragment definitions to this graphql server
 });
 
