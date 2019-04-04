@@ -247,7 +247,7 @@ const Mutation = {
       // text the code if user is signing up via phone
       if (typeof newData.phone === 'string') {
         sendConfirmationText(user.name, user.phone, code);
-        // sendConfirmationEsms(user.phone, code);
+        // sendConfirmationEsms(user.name, user.phone, code);
         logger.debug('Phone resent');
       }
       return true;
@@ -262,7 +262,7 @@ const Mutation = {
     // text the code if user is signing up via phone
     if (typeof user.phone === 'string') {
       sendConfirmationText(user.name, user.phone, code);
-      // sendConfirmationEsms(user.phone, code);
+      // sendConfirmationEsms(user.name, user.phone, code);
       logger.debug('Phone resent');
     }
 
@@ -324,8 +324,8 @@ const Mutation = {
     await cleanToken(user.id, cache);
 
     return {
+      userId: user.id,
       token: generateToken(user.id, request, cache),
-      user,
     };
   },
 
@@ -363,6 +363,8 @@ const Mutation = {
     delete newData.email;
     delete newData.phone;
 
+    logger.debug(phone);
+
     const updateData = { ...newData };
 
     // TODO: For user account recovery purpose, sensitive info like email, phone, password, etc. need to be archived
@@ -389,9 +391,9 @@ const Mutation = {
 
       // email is about to be changed
       if (typeof email === 'string' && canUpdate) {
-        const code = generateConfirmation(cache, userId, newData.email);
+        const code = generateConfirmation(cache, userId, email);
 
-        sendConfirmationEmail(user.name, newData.email, code);
+        sendConfirmationEmail(user.name, email, code);
         logger.debug('🔵✅  UPDATE USER: Change Email Confirmation Sent');
 
         // the update email flow is end when user confirms by enter the code
@@ -400,10 +402,10 @@ const Mutation = {
 
       // phone is about to be changed
       if (typeof phone === 'string' && canUpdate) {
-        const code = generateConfirmation(cache, userId, newData.phone);
+        const code = generateConfirmation(cache, userId, phone);
 
-        sendConfirmationText(user.name, newData.phone, code);
-        // sendConfirmationEsms(user.phone, code);
+        sendConfirmationText(user.name, phone, code);
+        // sendConfirmationEsms(user.name, phone, code);
         logger.debug('🔵✅  UPDATE USER: Change Phone Confirmation Sent');
 
         // the update email flow is end when user confirms by enter the code

@@ -10,10 +10,10 @@ type Mutation {
   createUser(data: CreateUserInput!): User!
   confirmUser(data: ConfirmUserInput!): Boolean!
   upsertSecurityInfo(securityInfo: [QueAnsPairInput]!): User!
-  resendConfirmation(userId: String!): User!
-  confirmUser(data: ConfirmUserInput): User!
-  login(data: LoginUserInput!): LoginPayload!
-  logout(all: Boolean = false): LogoutPayload!
+  resendConfirmation(data: ResendConfirmation!): Boolean!
+  uploadProfileMedia(file: Upload!): Media!
+  login(data: LoginUserInput!): AuthPayload!
+  logout(all: Boolean = false): AuthPayload!
   updateUser(data: UpdateUserInput!): User!
   deleteUser: User!
   requestResetPwd(mailOrPhone: String!): SecPayload!
@@ -93,14 +93,9 @@ input LoginUserInput {
   password: String!
 }
 
-type LoginPayload {
+type AuthPayload {
+  userId: ID!
   token: String!
-  user: User!
-}
-
-type LogoutPayload {
-  token: String!
-  userId: String!
 }
 
 # user has to enter currentPWD if he/she wants to change email/phone/pwd

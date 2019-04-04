@@ -526,31 +526,31 @@ describe('Tests on local-ip', () => {
           break;
 
         case 'sendSMS':
-          // describe('Send confirmation text (TWILIO)', () => {
-          //   for (let i = 0; i < group.data.length; i++) {
-          //     if (group.data[i].expected) {
-          //       test('should send confirmation text', () => {
-          //         expect(() =>
-          //           sms.sendConfirmationText(group.data[i].name, group.data[i].to, group.data[i].code),
-          //         ).not.toThrow();
-          //       });
-          //     }
-          //   }
-          // });
+          describe('Send confirmation text (TWILIO)', () => {
+            for (let i = 0; i < group.data.length; i++) {
+              if (group.data[i].expected) {
+                test('should send confirmation text', () => {
+                  expect(() =>
+                    sms.sendConfirmationText(group.data[i].name, group.data[i].to, group.data[i].code),
+                  ).not.toThrow();
+                });
+              }
+            }
+          });
           break;
 
         case 'sendSMSVN':
-          // describe('Send confirmation text (VHAT ESMS)', () => {
-          //   for (let i = 0; i < group.data.length; i++) {
-          //     if (group.data[i].expected) {
-          //       test('should send confirmation text', () => {
-          //         expect(() =>
-          //           smsVN.sendConfirmationEsms(group.data[i].name, group.data[i].to, group.data[i].code),
-          //         ).not.toThrow();
-          //       });
-          //     }
-          //   }
-          // });
+          describe('Send confirmation text (VHAT ESMS)', () => {
+            for (let i = 0; i < group.data.length; i++) {
+              if (group.data[i].expected) {
+                test('should send confirmation text', () => {
+                  expect(() =>
+                    smsVN.sendConfirmationEsms(group.data[i].name, group.data[i].to, group.data[i].code),
+                  ).not.toThrow();
+                });
+              }
+            }
+          });
           break;
 
         default:
