@@ -16,6 +16,7 @@ class Slider extends Component {
   componentDidMount() {
     const glider = new Glider(document.querySelector('.glider'), {
       slidesToShow: 4,
+      duration: 3,
       draggable: true,
       arrows: {
         prev: '.glider-prev',

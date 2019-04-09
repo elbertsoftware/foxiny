@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Glider from 'glider-js';
+import SwipeableViews from 'react-swipeable-views';
 import {
   Grid,
   withStyles,
@@ -13,12 +14,15 @@ import {
   ExpansionPanelDetails,
   ExpansionPanelSummary,
   Button,
+  Tabs,
+  Tab,
 } from '@material-ui/core';
 import ProductCard from '../ProductCard';
 import '../../../utils/style/commonStyle.css';
 import ImgGalleryModal from './ImgGalerryModal';
 import '../../../utils/style/buyBox.css';
 import CustomerReviews from '../CustomerReviews/CustomerReviews';
+import ProductDescription from './ProductDescription';
 
 const styles = theme => ({
   root: {
@@ -82,6 +86,9 @@ const styles = theme => ({
   },
   expandSummary: {
     padding: 0,
+  },
+  tabs: {
+    marginTop: 20,
   },
 });
 
@@ -381,7 +388,6 @@ const RelatedProduct = ({ classes }) => {
   useEffect(() => {
     const glider = new Glider(document.querySelector('.glider-related-product'), {
       slidesToShow: 6,
-      draggable: true,
       arrows: {
         prev: '.glider-prev-related-product',
         next: '.glider-next-related-product',
@@ -424,80 +430,48 @@ const RelatedProduct = ({ classes }) => {
   );
 };
 
-const styleProductDescrip = theme => ({
-  rootDescription: {
-    position: 'relative',
-    minHeight: 500,
-    backgroundImage: 'url(/assets/images/white-bg-2.jpg)',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-  },
-  decorDiv: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: '20%',
-    height: '100%',
-    backgroundColor: '#f5f5f6',
-    zIndex: 1,
-  },
-  imageZone: {
-    zIndex: 2,
-  },
-  heroImg: {
-    width: '80%',
-    height: 400,
-    objectFit: 'cover',
-    backgroundColor: '#000',
-    opacity: 0.7,
-    transition: 'opacity 1s',
-    boxShadow: '0px 4px 5px -2px rgba(0,0,0,0.2), 0px 7px 10px 1px rgba(0,0,0,0.14), 0px 2px 16px 1px rgba(0,0,0,0.12)',
-    '&:hover': {
-      opacity: 1,
-      cursor: 'pointer',
-    },
-  },
-  paragraphSpacing: {
-    margin: `${theme.spacing.unit * 5}px 0`,
-  },
-});
-
 const descriptionData = [
   ' Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc',
   'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc',
 ];
 
-const ProductDescription = withStyles(styleProductDescrip)(({ classes, heroImg, title, descriptions }) => {
-  return (
-    <div className={classes.rootDescription}>
-      <div className={classes.decorDiv} />
-      <Grid className="maintain-height" container alignItems="center">
-        <Grid className="well" item md={8}>
-          <Typography className="spacing-top-bottom" gutterBottom variant="h2">
-            {title}
-          </Typography>
-          {descriptions.map((descrip, index) => (
-            <Typography key={index} className={classes.paragraphSpacing}>
-              {descrip}
-            </Typography>
-          ))}
-        </Grid>
-        <Grid className={`well ${classes.imageZone}`} item md={4}>
-          <Grid container justify="center">
-            <img alt="hero-image" src={heroImg} className={classes.heroImg} />
-          </Grid>
-        </Grid>
-      </Grid>
-    </div>
-  );
-});
-
-const ProductDetailPage = ({ classes }) => {
+const ProductDetailPage = ({ classes, theme }) => {
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImg] = useState(
     'http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_cobalththr_model_front_072014.jpg',
   );
+  const [tabValue, setTabChange] = useState(0);
+  const descriptionArr = [
+    <ProductDescription
+      heroImg="https://images.unsplash.com/photo-1553670092-786cf228510b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
+      title="Lorem ipsum dolor sit amet 1"
+      descriptions={descriptionData}
+    />,
+    <ProductDescription
+      heroImg="https://images.unsplash.com/photo-1554167838-07aa5723df3a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80"
+      title="Lorem ipsum dolor sit amet 2"
+      descriptions={descriptionData}
+      imgLeftContentRight
+    />,
+    <ProductDescription
+      heroImg="https://images.unsplash.com/photo-1554220273-0c1b6c89951d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1055&q=80"
+      title="Lorem ipsum dolor sit amet 3"
+      descriptions={descriptionData}
+    />,
+  ];
+  const transitionDuration = {
+    enter: theme.transitions.duration.enteringScreen,
+    exit: theme.transitions.duration.leavingScreen,
+  };
+  function TabContainer(props) {
+    const { children, dir } = props;
+
+    return (
+      <Typography component="div" dir={dir}>
+        {children}
+      </Typography>
+    );
+  }
   return (
     <React.Fragment>
       <Grid container className={classes.root} spacing={16}>
@@ -523,15 +497,37 @@ const ProductDetailPage = ({ classes }) => {
           </Grid>
         </Grid>
       </Grid>
-      <ProductDescription
-        heroImg="https://images.unsplash.com/photo-1553670092-786cf228510b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
-        title="Lorem ipsum dolor sit amet"
-        descriptions={descriptionData}
-      />
+
+      <Tabs
+        className={classes.tabs}
+        value={tabValue}
+        onChange={(event, value) => setTabChange(value)}
+        indicatorColor="primary"
+        textColor="primary"
+        variant="scrollable"
+        scrollButtons="auto"
+      >
+        {descriptionArr.map((element, index) => (
+          <Tab key={index} label={`Description ${index + 1}`} />
+        ))}
+      </Tabs>
+      <SwipeableViews
+        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+        index={tabValue}
+        onChangeIndex={index => setTabChange(index)}
+      >
+        {descriptionArr.map((element, index) => (
+          <TabContainer key={index} dir={theme.direction}>
+            {element}
+          </TabContainer>
+        ))}
+      </SwipeableViews>
+
       <RelatedProduct classes={classes} />
+
       <CustomerReviews />
     </React.Fragment>
   );
 };
 
-export default withStyles(styles)(ProductDetailPage);
+export default withStyles(styles, { withTheme: true })(ProductDetailPage);

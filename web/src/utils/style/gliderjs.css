@@ -1,3 +1,9 @@
+/*  Apart from styling Gliderjs from index.css 
+    for the common style, we overide in this separated file also 
+    to meet more specific need - the small slide inside product card
+    Cannot define in Product component cuz glider-slide is automatically generated
+    TODO: Consider another way to avoid separating file just for a little bit code like that.
+*/
 .glider-slide {
   min-width: 80px;
   border-radius: 10px;

@@ -14,6 +14,7 @@ import {
   Button,
   Zoom,
   Tooltip,
+  SvgIcon,
 } from '@material-ui/core';
 import '../../utils/style/gliderjs.css';
 
@@ -22,6 +23,8 @@ const styles = theme => ({
     position: 'relative',
     paddingBottom: 8,
     maxWidth: 220,
+    zIndex: 1000,
+    borderRadius: 10,
   },
   cardPrice: {
     marginLeft: theme.spacing.unit * 2,
@@ -64,13 +67,24 @@ const styles = theme => ({
     marginRight: 8,
     padding: '2px 4px',
   },
+  iconButtonRoot: {
+    marginRight: 8,
+    padding: '2px 4px',
+  },
   gliderContainer: {
     width: 220,
     height: 50,
   },
   tooltip: {
     fontSize: 16,
-  }
+    zIndex: 10,
+  },
+  buttonFlipGuide: {
+    position: 'absolute',
+    top: 18,
+    right: 0,
+    zIndex: 10,
+  },
 });
 const fitImage = { width: '100%', height: '50px', objectFit: 'contain' };
 const listImage = [
@@ -83,11 +97,12 @@ const listImage = [
 const listImgRef = listImage.map(ele => {
   return { ...ele, ref: React.createRef() };
 });
-const ListProduct = withStyles(styles)(({ classes, handleEnter, handleLeave, setActiveImg }) => {
+const ListProduct = withStyles(styles)(({ handleEnter, handleLeave, setActiveImg }) => {
   useEffect(() => {
     const glider = new Glider(document.querySelector('.glider-product-card'), {
       slidesToShow: 3,
       draggable: true,
+      duration: 5,
       rewind: true,
     });
     setInterval(() => glider.scrollItem('next'), 2000);
@@ -114,16 +129,11 @@ const ListProduct = withStyles(styles)(({ classes, handleEnter, handleLeave, set
   );
 });
 
-const CardPrice = withStyles(styles)(({ children, classes, handleSetOrien, orientation }) => {
+const CardPrice = withStyles(styles)(({ children, classes }) => {
   return (
     <div className={classes.cardPrice}>
       <div className={classes.flexBetween}>
         <Typography variant="body1">{children}</Typography>
-        <Tooltip classes={{tooltip: classes.tooltip}} placement="top" title={orientation === 'vertical' ? 'Vui lòng lật sang trái để xem đánh giá của sản phẩm' : 'Vui lòng lật từ dưới lên để biết thông tin chi tiết của sản phẩm'} >
-          <Button classes={{ textSecondary: classes.buttonContained }} color="secondary" onClick={handleSetOrien}>
-            {orientation === 'vertical' ? '⬅' : '⬆'}
-          </Button>
-        </Tooltip>
       </div>
       <div className={classes.flexBetween}>
         <div className={classes.flexCenter}>
@@ -160,6 +170,38 @@ const ProductCard = ({ classes }) => {
           <ListProduct setActiveImg={setActiveImg} handleEnter={handleEnter} handleLeave={handleLeave} />
         </Zoom>
       )}
+      <Tooltip
+        classes={{ tooltip: classes.tooltip }}
+        placement="top"
+        title={
+          orientation === 'horizontal'
+            ? 'Vui lòng lật sang trái để xem đánh giá của sản phẩm.'
+            : 'Vui lòng lật từ dưới lên để biết thông tin chi tiết của sản phẩm. Click vào để chuyển sang chế độ Xem đánh giá của sản phẩm.'
+        }
+      >
+        <IconButton
+          className={classes.buttonFlipGuide}
+          classes={{ root: classes.iconButtonRoot }}
+          color="secondary"
+          onClick={handleSetOrien}
+        >
+          {orientation === 'vertical' ? (
+            <SvgIcon>
+              <path d="M6,.5v23a.5.5,0,0,1-1,0V.5a.5.5,0,0,1,1,0Z" />
+              <path d="M11,5.5a.47.47,0,0,1-.15.35.48.48,0,0,1-.7,0L5.5,1.21.85,5.85a.48.48,0,0,1-.7,0,.48.48,0,0,1,0-.7l5-5a.48.48,0,0,1,.7,0l5,5A.47.47,0,0,1,11,5.5Z" />
+              <path d="M15,.5v23a.5.5,0,0,1-1,0V.5a.5.5,0,0,1,1,0Z" />
+              <path d="M20,18.5a.47.47,0,0,1-.15.35l-5,5a.48.48,0,0,1-.7,0l-5-5a.49.49,0,0,1,.7-.7l4.65,4.64,4.65-4.64a.48.48,0,0,1,.7,0A.47.47,0,0,1,20,18.5Z" />
+            </SvgIcon>
+          ) : (
+            <SvgIcon>
+              <path d="M23.5,6H.5a.5.5,0,0,1,0-1h23a.5.5,0,0,1,0,1Z" />
+              <path d="M18.5,11a.47.47,0,0,1-.35-.15.48.48,0,0,1,0-.7L22.79,5.5,18.15.85a.48.48,0,0,1,0-.7.48.48,0,0,1,.7,0l5,5a.48.48,0,0,1,0,.7l-5,5A.47.47,0,0,1,18.5,11Z" />
+              <path d="M23.5,15H.5a.5.5,0,0,1,0-1h23a.5.5,0,0,1,0,1Z" />
+              <path d="M5.5,20a.47.47,0,0,1-.35-.15l-5-5a.48.48,0,0,1,0-.7l5-5a.49.49,0,0,1,.7.7L1.21,14.5l4.64,4.65a.48.48,0,0,1,0,.7A.47.47,0,0,1,5.5,20Z" />
+            </SvgIcon>
+          )}
+        </IconButton>
+      </Tooltip>
       <FlipPage uncutPages orientation={orientation} width={220} height={385} showSwipeHint>
         <div className={classes.flexColumn}>
           <CardMedia
