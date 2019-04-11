@@ -172,16 +172,14 @@ const ProductInfo = withStyles(styles)(({ classes }) => {
         </span>
       </div>
       <Divider className="spacing-top-bottom" />
-      <Typography className="spacing-top-bottom" variant="h6" color="secondary">
-        $ 445
-      </Typography>
-      <Divider className="spacing-top-bottom" />
       <Typography style={{ margin: '32px 0' }}>
         <strong>===PLEASE READ REQUIREMENT OF POWER SUPPLY ===</strong> <br />{' '}
         <strong>===MAKE SURE YOUR CHARGER IS PD COMPATIBLE ===</strong> <br />
         Check the output power and voltage: <br /> <strong>12V</strong> or <strong>15V</strong> output is must <br />{' '}
         <strong>45W</strong> or greater is recommended.
-        <br /> Example: A typical USB PD voltage/amperage profiles - 5V/3A, 9V/3A, 12V/3A, 15V/3A, 20V/2.25A
+        <br /> Example: A typical USB PD voltage/amperage profiles - 5V/3A, 9V/3A, 12V/3A, 15V/3A, 20V/2.25A Kindly
+        remind: <br /> 18W, 24W and 29W MAY NOT WORK. If your USB-C charger came with your phone or iPad, IT WILL NOT
+        WORK.
       </Typography>
       <ExpansionPanel className={classes.expandPanel} expanded={expanded} onChange={handleOnChange}>
         <ExpansionPanelSummary className={classes.expandSummary}>
@@ -189,8 +187,6 @@ const ProductInfo = withStyles(styles)(({ classes }) => {
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <Typography>
-            Kindly remind: <br /> 18W, 24W and 29W MAY NOT WORK. If your USB-C charger came with your phone or iPad, IT
-            WILL NOT WORK.
             <br /> <br />
             <br />
             MOST APPLE USB-C CHARGERS WILL NOT WORK BECAUSE MOST MODELS DO NOT SUPPORT 12V or 15V OUTPUT

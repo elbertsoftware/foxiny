@@ -1,5 +1,7 @@
-import React from 'react';
-import { AppBar, Typography, withStyles, Grid, GridList, GridListTile, GridListTileBar } from '@material-ui/core';
+import React, { useEffect } from 'react';
+import { AppBar, Typography, withStyles, Grid, GridList, GridListTile, GridListTileBar, Icon } from '@material-ui/core';
+import Glider from 'glider-js';
+
 import NavBar from '../NavBar/NavBar';
 import Banner from '../NavBar/Banner';
 
@@ -101,7 +103,9 @@ const styles = () => ({
     width: '100%',
     height: '100%',
     transform: 'translateZ(0)',
-    borderRadius: 10,
+    borderRadius: 30,
+    overflow: 'hidden',
+    boxShadow: '0px 4px 5px -2px rgba(0,0,0,0.2), 0px 7px 10px 1px rgba(0,0,0,0.14), 0px 2px 16px 1px rgba(0,0,0,0.12)',
   },
   gridListTitle: {
     overflow: 'hidden',
@@ -141,15 +145,9 @@ const styles = () => ({
     height: '100%',
   },
   categoryGrid: {
-    padding: '30px',
-    opacity: 0.9,
-  },
-  categoriesContainer: {
     position: 'relative',
-    width: '100%',
-    margin: '0 auto',
-    boxShadow: '0px 4px 5px -2px rgba(0,0,0,0.2), 0px 7px 10px 1px rgba(0,0,0,0.14), 0px 2px 16px 1px rgba(0,0,0,0.12)',
-    borderRadius: 10,
+    opacity: 0.9,
+    paddingRight: '2rem',
   },
   favorite: {
     position: 'relative',
@@ -166,85 +164,126 @@ const styles = () => ({
   overflow: {
     overflow: 'hidden',
   },
+  arrowLeft: {
+    position: 'absolute',
+    top: '41%',
+    left: '1rem',
+    cursor: 'pointer',
+  },
+  arrowRight: {
+    position: 'absolute',
+    top: '41%',
+    right: '2.7rem',
+    cursor: 'pointer',
+  },
 });
 
-const Homepage = ({ classes }) => (
-  <AppBar classes={{ root: classes.rootAppBar }} position="static" color="primary">
-    <NavBar />
-    <div className={classes.home}>
-      <div className={classes.greetingContainer}>
-        <Grid className={classes.maintainHeight} container justify="center" alignItems="center">
-          <Grid className={`${classes.greetingMessage} ${classes.maintainHeight}`} item md={6}>
-            <Grid container direction="column" justify="space-between" alignItems="center">
-              <div style={{ display: 'inline-flex', marginBottom: 10 }}>
-                <Typography className={classes.heroText} gutterBottom color="inherit" variant="h1">
-                  FOXINY Inc |
-                </Typography>
-                <Typography className={classes.heroSubText} gutterBottom color="inherit" variant="h5">
-                  Mua sắm trong tầm tay
-                </Typography>
-              </div>
-              <Grid container>
-                <Grid item md={6}>
-                  <div className={`${classes.favorite} ${classes.maintainHeight}`}>
-                    <Typography gutterBottom color="inherit">
-                      Men's Dress Shoes
-                    </Typography>
-                    <div className={classes.overflow}>
-                      <a href="#">
-                        <img
-                          className={classes.imgMedium}
-                          src="https://images-na.ssl-images-amazon.com/images/G/01/amazonglobal/images/Fuji/Dash/2019/January/mShoes_1X._CB455678051_SY260_.jpg"
-                          alt="favorite"
-                        />
-                      </a>
+const Homepage = ({ classes }) => {
+  useEffect(() => {
+    const glider = new Glider(document.querySelector('.product-categories'), {
+      slidesToShow: 1,
+      arrows: {
+        prev: '.glider-prev-product-category',
+        next: '.glider-next-product-category',
+      },
+    });
+  }, []);
+  return (
+    <AppBar classes={{ root: classes.rootAppBar }} position="static" color="primary">
+      <NavBar />
+      <div className={classes.home}>
+        <div className={classes.greetingContainer}>
+          <Grid className={classes.maintainHeight} container justify="center" alignItems="center">
+            <Grid className={`${classes.greetingMessage} ${classes.maintainHeight}`} item md={6}>
+              <Grid container direction="column" justify="space-between" alignItems="center">
+                <div style={{ display: 'inline-flex', marginBottom: 10 }}>
+                  <Typography className={classes.heroText} gutterBottom color="inherit" variant="h1">
+                    FOXINY Inc |
+                  </Typography>
+                  <Typography className={classes.heroSubText} gutterBottom color="inherit" variant="h5">
+                    Mua sắm trong tầm tay
+                  </Typography>
+                </div>
+                <Grid container>
+                  <Grid item md={6}>
+                    <div className={`${classes.favorite} ${classes.maintainHeight}`}>
+                      <Typography gutterBottom color="inherit">
+                        Men's Dress Shoes
+                      </Typography>
+                      <div className={classes.overflow}>
+                        <a href="#">
+                          <img
+                            className={classes.imgMedium}
+                            src="https://images-na.ssl-images-amazon.com/images/G/01/amazonglobal/images/Fuji/Dash/2019/January/mShoes_1X._CB455678051_SY260_.jpg"
+                            alt="favorite"
+                          />
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                </Grid>
-                <Grid item md={6}>
-                  <div className={`${classes.favorite} ${classes.maintainHeight}`}>
-                    <Typography gutterBottom color="inherit">
-                      Women's Dresses
-                    </Typography>
-                    <div className={classes.overflow}>
-                      <a href="#">
-                        <img
-                          className={classes.imgMedium}
-                          src="https://images-na.ssl-images-amazon.com/images/G/01/amazonglobal/images/Fuji/Dash/2019/January/W_Dresses_1X._CB455677604_SY260_.jpg"
-                          alt="favorite"
-                        />
-                      </a>
+                  </Grid>
+                  <Grid item md={6}>
+                    <div className={`${classes.favorite} ${classes.maintainHeight}`}>
+                      <Typography gutterBottom color="inherit">
+                        Women's Dresses
+                      </Typography>
+                      <div className={classes.overflow}>
+                        <a href="#">
+                          <img
+                            className={classes.imgMedium}
+                            src="https://images-na.ssl-images-amazon.com/images/G/01/amazonglobal/images/Fuji/Dash/2019/January/W_Dresses_1X._CB455677604_SY260_.jpg"
+                            alt="favorite"
+                          />
+                        </a>
+                      </div>
                     </div>
-                  </div>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
+            <Grid className={`${classes.categoryGrid} ${classes.maintainHeight}`} item md={6}>
+              <div className="product-categories">
+                <GridList cols={5} cellHeight={220} spacing={2} className={classes.gridList}>
+                  {tileData.slice(0, 6).map(tile => (
+                    <GridListTile className={classes.gridListTitle} key={tile.img} cols={tile.cols} rows={1}>
+                      <img src={tile.img} alt={tile.title} />
+                      <GridListTileBar
+                        title={
+                          <a className={classes.linkColor} href="#">
+                            {tile.title}
+                          </a>
+                        }
+                        titlePosition="bottom"
+                        className={classes.titleBar}
+                      />
+                    </GridListTile>
+                  ))}
+                </GridList>
+                <GridList cols={5} cellHeight={220} spacing={2} className={classes.gridList}>
+                  {tileData.slice(6, 12).map(tile => (
+                    <GridListTile className={classes.gridListTitle} key={tile.img} cols={tile.cols} rows={1}>
+                      <img src={tile.img} alt={tile.title} />
+                      <GridListTileBar
+                        title={
+                          <a className={classes.linkColor} href="#">
+                            {tile.title}
+                          </a>
+                        }
+                        titlePosition="bottom"
+                        className={classes.titleBar}
+                      />
+                    </GridListTile>
+                  ))}
+                </GridList>
+              </div>
+              <Icon className={`glider-prev-product-category ${classes.arrowLeft}`}>arrow_back_ios</Icon>
+              <Icon className={`glider-next-product-category ${classes.arrowRight}`}>arrow_forward_ios</Icon>
+            </Grid>
           </Grid>
-          <Grid className={`${classes.categoryGrid} ${classes.maintainHeight}`} item md={6}>
-            <div className={`${classes.categoriesContainer} ${classes.maintainHeight}`}>
-              <GridList cols={5} cellHeight={200} spacing={2} className={classes.gridList}>
-                {tileData.map(tile => (
-                  <GridListTile className={classes.gridListTitle} key={tile.img} cols={tile.cols} rows={1}>
-                    <img src={tile.img} alt={tile.title} />
-                    <GridListTileBar
-                      title={
-                        <a className={classes.linkColor} href="#">
-                          {tile.title}
-                        </a>
-                      }
-                      titlePosition="bottom"
-                      className={classes.titleBar}
-                    />
-                  </GridListTile>
-                ))}
-              </GridList>
-            </div>
-          </Grid>
-        </Grid>
+        </div>
+        <Banner />
       </div>
-      <Banner />
-    </div>
-  </AppBar>
-);
+    </AppBar>
+  );
+};
 
 export default withStyles(styles)(Homepage);
