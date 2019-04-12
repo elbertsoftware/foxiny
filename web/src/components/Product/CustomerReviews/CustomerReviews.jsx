@@ -26,7 +26,7 @@ const styles = theme => ({
     padding: 30,
   },
   card: {
-    marginBottom: 10,
+    marginBottom: 24,
     position: 'relative',
     borderRadius: 15,
   },
@@ -37,6 +37,7 @@ const styles = theme => ({
       boxShadow: '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)',
     },
     backgroundColor: '#071f2e',
+    marginBottom: 24,
   },
   ellipse: {
     position: 'absolute',
@@ -100,7 +101,7 @@ const styles = theme => ({
   },
 });
 
-const ReviewCard = withStyles(styles)(({ classes, topReview }) => {
+export const ReviewCard = withStyles(styles)(({ classes, topReview }) => {
   return (
     <Card className={topReview ? `${classes.card} ${classes.topReviewCard}` : `${classes.card}`}>
       {topReview && <div className={classes.ellipse} />}
@@ -178,7 +179,7 @@ ReviewCard.defaultProps = {
   topReview: false,
 };
 
-const CustomerReviews = ({ classes }) => {
+export const CustomerReviews = withStyles(styles)(({ classes }) => {
   const [reviewType, setReviewType] = useState(0);
   return (
     <Grid container className={classes.customerReview} spacing={24}>
@@ -227,6 +228,4 @@ const CustomerReviews = ({ classes }) => {
       </Grid>
     </Grid>
   );
-};
-
-export default withStyles(styles)(CustomerReviews);
+});

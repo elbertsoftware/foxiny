@@ -21,8 +21,9 @@ import ProductCard from '../ProductCard';
 import '../../../utils/style/commonStyle.css';
 import ImgGalleryModal from './ImgGalerryModal';
 import '../../../utils/style/buyBox.css';
-import CustomerReviews from '../CustomerReviews/CustomerReviews';
+import { CustomerReviews } from '../CustomerReviews/CustomerReviews';
 import ProductDescription from './ProductDescription';
+import TabContainer from '../../../utils/common/TabContainer';
 
 const styles = theme => ({
   root: {
@@ -455,19 +456,7 @@ const ProductDetailPage = ({ classes, theme }) => {
       descriptions={descriptionData}
     />,
   ];
-  const transitionDuration = {
-    enter: theme.transitions.duration.enteringScreen,
-    exit: theme.transitions.duration.leavingScreen,
-  };
-  function TabContainer(props) {
-    const { children, dir } = props;
 
-    return (
-      <Typography component="div" dir={dir}>
-        {children}
-      </Typography>
-    );
-  }
   return (
     <React.Fragment>
       <Grid container className={classes.root} spacing={16}>

@@ -19,6 +19,7 @@ import withAuthenticator from '../../utils/RouteProtector';
 import UserResetPassword from '../User/UserResetPassword/UserResetPassword';
 import ProductCard from '../Product/ProductCard';
 import ProductDetailPage from '../Product/ProductDetail/ProductDetailPage';
+import ProductReviews from '../Product/CustomerReviews/ProductReviews';
 
 class App extends Component<Props, State> {
   state = {
@@ -97,6 +98,9 @@ class App extends Component<Props, State> {
               </Switch>
               <Switch>
                 <Route path="/products" component={ProductDetailPage} />
+              </Switch>
+              <Switch>
+                <Route path="/product-reviews" component={ProductReviews} />
               </Switch>
             </React.Fragment>
           )}

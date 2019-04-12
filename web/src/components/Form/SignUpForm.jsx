@@ -15,7 +15,7 @@ import { Mutation } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
 import { gql } from 'apollo-boost';
 import { toast } from 'react-toastify';
-import TabContainer from '../../utils/common/form/TabContainer';
+import TabContainer from '../../utils/common/TabContainer';
 import RFTextField from '../../utils/common/form/RFTextField';
 import FormButton from '../../utils/common/form/FormButton';
 import {

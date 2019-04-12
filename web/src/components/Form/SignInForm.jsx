@@ -14,7 +14,7 @@ import { gql } from 'apollo-boost';
 import { toast } from 'react-toastify';
 import RFTextField from '../../utils/common/form/RFTextField';
 import FormButton from '../../utils/common/form/FormButton';
-import TabContainer from '../../utils/common/form/TabContainer';
+import TabContainer from '../../utils/common/TabContainer';
 import SelectList from './Fields/SelectList';
 import { email, phone, required, formatInternationalPhone } from '../../utils/common/form/validation';
 import { countries } from '../../utils/callingcodes';
