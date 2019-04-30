@@ -1,0 +1,5 @@
+// @floww
+
+const validateCreateNewProductInput = (data) => {
+  
+}

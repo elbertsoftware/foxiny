@@ -1,17 +1,17 @@
 // @flow
 
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import ms from 'ms';
-import requestId from 'request-ip';
-import cryptoRandomString from 'crypto-random-string';
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import ms from "ms";
+import requestId from "request-ip";
+import cryptoRandomString from "crypto-random-string";
 
-import logger from './logger';
+import logger from "./logger";
 
 // TODO: clean expired tokens periodically and automatically
 // TODO: more password rules will be enforced later
 
-const isValidPassword = password => password.length >= 8 && !password.toLowerCase().includes('password'); // repkace by the new one in validation.js
+const isValidPassword = password => password.length >= 8 && !password.toLowerCase().includes("password"); // repkace by the new one in validation.js
 
 const hashPassword = password => {
   // if (!isValidPassword(password)) {
@@ -32,7 +32,7 @@ const generateConfirmation = (cache, userId, emailOrPhone) => {
   cache.set(
     code,
     JSON.stringify({ userId: userId, emailOrPhone: emailOrPhone }),
-    'EX',
+    "EX",
     ms(process.env.CONFIRMATION_EXPIRATION) / 1000,
   ); // convert to seconds
   return code;
@@ -41,7 +41,7 @@ const generateConfirmation = (cache, userId, emailOrPhone) => {
 const verifyConfirmation = async (cache, code, userId) => {
   const data = JSON.parse(await cache.get(code));
 
-  if (!data) throw new Error('Invalid confirmation code');
+  if (!data) throw new Error("Invalid confirmation code");
 
   logger.debug(`verifying confirmation code ${code} for userId ${userId} upon the cached userId ${data.userId}`);
 
@@ -100,7 +100,7 @@ const getTokenFromRequest = request => {
     : request.connection.context.Authorization; // 2.
 
   // remove ther prefix 'Bearer '
-  const token = authorization ? authorization.replace('Bearer ', '') : null;
+  const token = authorization ? authorization.replace("Bearer ", "") : null;
   logger.debug(`authorization token ${token}`);
 
   return token;
@@ -135,7 +135,7 @@ const getUserIDFromRequest = async (request, cache, requireAuthentication = true
 
         // suppress error if authentication is not required
         if (requireAuthentication) {
-          throw new Error('Authentication required'); // invalid token
+          throw new Error("Authentication required"); // invalid token
         }
       }
 
@@ -144,13 +144,13 @@ const getUserIDFromRequest = async (request, cache, requireAuthentication = true
       // suppress error if authentication is not required
       if (requireAuthentication) {
         logger.debug(JSON.stringify(error, undefined, 2));
-        throw new Error('Authentication required'); // invalid token or token expired
+        throw new Error("Authentication required"); // invalid token or token expired
       }
     }
   }
 
   if (requireAuthentication) {
-    throw new Error('Authentication required'); // custom return error message
+    throw new Error("Authentication required"); // custom return error message
   }
 
   return null;
@@ -177,6 +177,34 @@ const cleanToken = async (userId, cache) => {
   }
 };
 
+const checkRights = async (prisma, cache, ownerId, request) => {
+  // NOTE: this does not check manufacturer-assignment in user
+  // TODO: add manufacturer
+  // TODO: optimize this by using cache (save assignment to cache)
+  const userId = await getUserIDFromRequest(request, cache);
+
+  const user = await prisma.query.user(
+    {
+      where: {
+        id: userId,
+      },
+    },
+    // `{ id assignment { id retailers { id } manufacturer { id }} }`,
+    `{ id assignment { id retailers { id }`,
+  );
+
+  if (!user) {
+    throw new Error("Access is denied");
+  }
+
+  // const canGoNext =  user.assignment.retailers.includes(ownerId) || user.assignment.manufacturer.includes(ownerId);
+  const canGoNext = user.assignment.retailers.includes(ownerId);
+
+  if (!canGoNext) {
+    throw new Error("Access is denied");
+  }
+};
+
 export {
   hashPassword,
   verifyPassword,
@@ -188,4 +216,5 @@ export {
   getTokenFromRequest,
   getUserIDFromRequest,
   cleanToken,
+  checkRights,
 };

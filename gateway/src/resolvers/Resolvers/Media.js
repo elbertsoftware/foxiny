@@ -1,13 +1,13 @@
 // @flow
 
-import { getUserIDFromRequest } from '../utils/authentication';
-import logger from '../utils/logger';
+import { getUserIDFromRequest } from '../../utils/authentication';
+import logger from '../../utils/logger';
 
 /**
  * make sure default avatar (user.svg) is always returned if user has not set avatar yet
  */
 
-const Media = {
+export const Media = {
   // id: {
   //   resolve: (parent, args, { request }) => {
   //     return parent.id;
@@ -46,5 +46,3 @@ const Media = {
     resolve: (parent, args, { request }) => null,
   },
 };
-
-export default Media;

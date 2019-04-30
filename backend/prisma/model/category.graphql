@@ -1,0 +1,25 @@
+type Category {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  name: String @unique
+  parentId: [Category!] @relation(link: TABLE, name: "Product")
+  products: [Product!] @relation(onDelete: SET_NULL)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Brand {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  brandName: String @unique
+  products: [Product!] @relation(onDelete: SET_NULL)
+  # manufacturer: Manufacturer @relation(name: "ManufacturerToBrand", onDelete: SET_NULL)
+
+  # brandOrigin: Region # takes the region enum (from address schema)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}

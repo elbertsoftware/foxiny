@@ -1,7 +1,7 @@
 // @flow
 
-import { getUserIDFromRequest } from '../utils/authentication';
-import logger from '../utils/logger';
+import { getUserIDFromRequest } from '../../utils/authentication';
+import logger from '../../utils/logger';
 
 // How to lock down sensitive fields on non-authenticated users
 const resolveField = async (parent, request, cache, value) => {
@@ -16,7 +16,7 @@ const resolveField = async (parent, request, cache, value) => {
 };
 
 // fragment is needed to be sure User.id included no matter what the clients ask for it in the selection
-const User = {
+export const User = {
   email: {
     fragment: 'fragment userIdForEmail on User { id }',
 
@@ -56,5 +56,3 @@ const User = {
     },
   },
 };
-
-export default User;

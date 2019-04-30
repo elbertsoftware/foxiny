@@ -9,6 +9,7 @@ import bodyParser from 'body-parser';
 import { ApolloServer, gql } from 'apollo-server-express';
 
 import { resolvers, fragmentReplacements } from './resolvers';
+import { schema as typeDefs } from './type-defs';
 import prisma from './utils/prisma';
 import cache from './utils/cache';
 import logger from './utils/logger';
@@ -31,9 +32,9 @@ server.use(bodyParser.json());
 // server.use(path, aMiddleware)
 
 // GraphQL server using Apollo Server 2.x with Middleware option
-const typeDefs = gql`
-  ${fs.readFileSync(__dirname.concat('/type-defs/schema.graphql'), 'utf8')}
-`;
+// const typeDefs = gql`
+//   ${fs.readFileSync(__dirname.concat('/type-defs/schema.graphql'), 'utf8')}
+// `;
 
 const graphQLServer = new ApolloServer({
   typeDefs, // link this graphql server to our implemented schema

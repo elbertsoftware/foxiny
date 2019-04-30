@@ -1,0 +1,25 @@
+# type Manufacturer {
+#   id: ID! @id
+#   _version: Int! @default(value: 1)
+
+#   assistants: [Assignment!] @relation(name: "AssignmentToManufacturer", onDelete: SET_NULL)
+
+#   profileMedia: Media @relation(name: "ManufacturerToMedia", onDelete: CASCADE) # Avatar
+#   businessName: String @unique #  displayed on Retailer profile and foxiny listings
+#   address: Address @relation(name: "ManufacturerToAddress", onDelete: CASCADE) # one to one
+#   phone: String @unique # maybe different to user's phone
+#   # Products
+
+#   # Reviews, reminder to use interface/union in yoga to resolve reviews
+#   #reviews: [ID!]! # list of reviews this vendor received from another members
+
+#   # Rewards
+
+#   # Orders
+#   # Tax
+#   # Billing
+#   # Warehouse
+
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+# }

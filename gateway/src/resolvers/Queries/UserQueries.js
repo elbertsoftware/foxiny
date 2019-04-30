@@ -1,9 +1,9 @@
 // @flow
 
-import { getUserIDFromRequest } from '../utils/authentication';
-import logger from '../utils/logger';
+import { getUserIDFromRequest } from "../../utils/authentication";
+import logger from "../../utils/logger";
 
-const Query = {
+export const Query = {
   users: (parent, args, { prisma, request }, info) => {
     const opArgs = {};
 
@@ -44,6 +44,22 @@ const Query = {
   securityQuestions: async (parent, args, { prisma, request, cache }, info) => {
     return prisma.query.securityQuestions(null, info);
   },
-};
 
-export default Query;
+  meAssignments: async (parent, args, { prisma, request, cache }, info) => {
+    const userId = await getUserIDFromRequest(request, cache);
+
+    const userAssignment = await prisma.query.user(
+      {
+        where: {
+          id: userId,
+        },
+      },
+      // `{ assignment { id retailers { id } manufacturers { id }} }`
+      `{ assignment { id retailers { id } } }`,
+    );
+    return (meAssigns = {
+      retailerIds: userAssignment.retailers ? userAssignment.retailers.map(retailer => retailer.id) : [],
+      manufacturerIds: userAssignment.manufacturers ? userAssignment.manufacturers.map(manu => manu.id) : [],
+    });
+  },
+};

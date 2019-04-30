@@ -1,18 +1,26 @@
 // @flow
 
 import { extractFragmentReplacements } from 'prisma-binding';
+import { merge } from 'lodash';
 
 import logger from '../utils/logger';
 
-import Query from './Query';
-import Mutation from './Mutation';
+import { Query as userQueries } from './Queries/UserQueries';
+import { Mutation as userMutations } from './Mutations/UserMutations';
+import { Query as categoryQueries } from './Queries/CategoryQueries';
+import { Mutation as categoryMutations } from './Mutations/CategoryMutations';
+import { Query as productQueries } from './Queries/ProductQueries';
+import { Mutation as productMutations } from './Mutations/ProductMutations';
+import { Mutation as retailerMutations } from "./Mutations/RetailerMutations";
+import { Query as retailerQueries } from "./Queries/RetailerQueries";
+
 // import Subscription from './Subscription'
-import User from './User';
-import Media from './Media';
+import { User } from './Resolvers/User';
+import { Media } from './Resolvers/Media';
 
 const resolvers = {
-  Query,
-  Mutation,
+  Query: merge(userQueries, categoryQueries, productQueries, retailerQueries),
+  Mutation: merge(userMutations, categoryMutations, productMutations, retailerMutations),
   // Subscription,
   User,
   Media,

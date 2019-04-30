@@ -1,8 +1,9 @@
 // @flow
 
-import AWS from 'aws-sdk';
-import { getFileInfo } from './fsHelper';
-import logger from './logger';
+import AWS from "aws-sdk";
+import cuid from "cuid";
+import { getFileInfo } from "./fsHelper";
+import logger from "./logger";
 
 AWS.config.update({
   accessKeyId: process.env.S3_ACCESS_KEY,
@@ -11,7 +12,7 @@ AWS.config.update({
 });
 
 const s3 = new AWS.S3({
-  apiVersion: '2006-03-01',
+  apiVersion: "2006-03-01",
   params: {
     Bucket: process.env.S3_IMAGES_BUCKET,
   },
@@ -25,14 +26,14 @@ const s3 = new AWS.S3({
  */
 const s3ProfileMediaUploader = async (prisma, upload, userId) => {
   if (!upload) {
-    throw new Error('🛑❌  S3PROFILEMEDIAUPLOADER: NO FILE');
+    throw new Error("🛑❌  S3PROFILEMEDIAUPLOADER: NO FILE");
   }
   try {
     const { createReadStream, filename, mimetype, encoding } = upload;
 
     let readStream;
 
-    if (process.env.NODE_ENV && process.env.NODE_ENV === 'testing') readStream = createReadStream;
+    if (process.env.NODE_ENV && process.env.NODE_ENV === "testing") readStream = createReadStream;
     else readStream = createReadStream();
 
     const data = await getFileInfo(filename, userId, createReadStream);
@@ -81,4 +82,54 @@ const s3ProfileMediaUploader = async (prisma, upload, userId) => {
   }
 };
 
-export { s3ProfileMediaUploader };
+const s3ProductMediasUploader = async (prisma, upload) => {
+  if (!upload) {
+    throw new Error("🛑❌  S3PRODUCTMEDIASUPLOADER: NO FILE");
+  }
+  try {
+    const { createReadStream, filename, mimetype, encoding } = upload;
+
+    let readStream;
+
+    if (process.env.NODE_ENV && process.env.NODE_ENV === "testing") readStream = createReadStream;
+    else readStream = createReadStream();
+
+    const randomCuid = cuid();
+
+    const data = await getFileInfo(filename, randomCuid, createReadStream);
+
+    const key = `product_${randomCuid}.${data.ext}`; // pattern: productId_tick.extention
+    logger.debug(`🔵✅  READ FILE: done. UPLOADING ${key} TO S3...`);
+    // Upload to S3
+    const response = await s3
+      .upload({
+        Key: `products/${key}`,
+        ACL: `public-read`,
+        Body: readStream,
+      })
+      .promise();
+
+    data.uri = response.Location;
+    data.mime = mimetype;
+    logger.debug(`🔵✅  UPLOADED: file location ${data.uri}`);
+
+    const media = await prisma.mutation.createMedia({
+      data,
+    });
+
+    // for transact-log
+    logger.info(
+      `UPLOAD_AVATAR | ${productId} | ${data.uri} | ${data.name} | ${data.ext} | ${data.mime} | ${data.hash} | ${
+        data.sha256
+      } | ${data.size}`,
+    );
+
+    return media;
+  } catch (error) {
+    logger.debug(`🔴❌  [foxiny-gateway] s3ProductMediasUploader error`);
+    logger.debug(JSON.stringify(error, undefined, 2));
+    throw new Error(`Cannot upload file`);
+  }
+};
+
+export { s3ProfileMediaUploader, s3ProductMediasUploader };

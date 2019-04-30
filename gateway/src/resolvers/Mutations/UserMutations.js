@@ -1,6 +1,6 @@
 // @flow
 
-import { s3ProfileMediaUploader } from '../utils/s3Uploader';
+import { s3ProfileMediaUploader } from '../../utils/s3Uploader';
 import {
   hashPassword,
   verifyPassword,
@@ -12,7 +12,7 @@ import {
   getTokenFromRequest,
   getUserIDFromRequest,
   cleanToken,
-} from '../utils/authentication';
+} from '../../utils/authentication';
 import {
   validateCreateInput,
   validateConfirmInput,
@@ -22,17 +22,17 @@ import {
   validateResetPwdInput,
   validateImageUploadInput,
   classifyEmailPhone,
-} from '../utils/validation';
-import logger from '../utils/logger';
-import { sendConfirmationEmail } from '../utils/email';
-import { sendConfirmationText } from '../utils/sms';
-import { sendConfirmationEsms } from '../utils/smsVN';
+} from '../../utils/validation';
+import logger from '../../utils/logger';
+import { sendConfirmationEmail } from '../../utils/email';
+import { sendConfirmationText } from '../../utils/sms';
+import { sendConfirmationEsms } from '../../utils/smsVN';
 
 // TODO: un-comment sendConfirmation
 // TODO: handling errors in a frendly way: https://www.youtube.com/watch?v=fUq1iHiDniY
 // NOTE: almost of data input will be validated, trimmed and normalized
 
-const Mutation = {
+export const Mutation = {
   /**
    * Create user
    * user must enter: name, email or phone and pwd
@@ -128,7 +128,7 @@ const Mutation = {
    * Insert or update user's security info
    */
   upsertSecurityInfo: async (parent, { securityInfo }, { prisma, cache, request }, info) => {
-    validateSecurityInfo(securityInfo);
+    const newData = validateSecurityInfo(securityInfo);
 
     const userId = await getUserIDFromRequest(request, cache);
 
@@ -147,25 +147,25 @@ const Mutation = {
     const updateData = [];
     for (let i = 0; i < 3; i++) {
       // if question is existed in db, just re-use the question id
-      if (securityInfo[i].questionId) {
+      if (newData[i].questionId) {
         updateData.push({
-          questionId: securityInfo[i].questionId,
-          answer: securityInfo[i].answer,
+          questionId: newData[i].questionId,
+          answer: newData[i].answer,
         });
       } else {
         // else insert the new one to db and get its question id
         const question = await prisma.mutation.createSecurityQuestion({
           data: {
-            question: securityInfo[i].question,
+            question: newData[i].question,
           },
         });
 
         // for transact-log
-        logger.info(`CREATE_SECQUES | 1 | ${securityInfo[i].question}`);
+        logger.info(`CREATE_SECQUES | 1 | ${newData[i].question}`);
 
         updateData.push({
           questionId: question.id,
-          answer: securityInfo[i].answer,
+          answer: newData[i].answer,
         });
       }
     }
@@ -240,14 +240,14 @@ const Mutation = {
     // case: user wants to confirm account after signed up but not confirmed yet (disconnect or ST else)
     if (user.enabled) {
       if (typeof newData.email === 'string') {
-        sendConfirmationEmail(user.name, user.email, code);
+        sendConfirmationEmail(user.name, newData.email, code);
         logger.debug('Email resent');
       }
 
       // text the code if user is signing up via phone
       if (typeof newData.phone === 'string') {
-        sendConfirmationText(user.name, user.phone, code);
-        // sendConfirmationEsms(user.name, user.phone, code);
+        sendConfirmationText(user.name, newData.phone, code);
+        // sendConfirmationEsms(user.name, newData.phone, code);
         logger.debug('Phone resent');
       }
       return true;
@@ -269,8 +269,6 @@ const Mutation = {
     return true;
   },
 
-  // TODO: limit the size of uploaded file in server.js
-  // TODO: limit the number of file to be uploaded in server.js
   /**
    * Upload avatar
    * one file one time
@@ -518,7 +516,7 @@ const Mutation = {
   resetPassword: async (parent, { data }, { prisma, request, cache }, info) => {
     const newData = validateResetPwdInput(data);
 
-    const userId = await getUserIDFromRequest(request, cache);
+    const userId = await getUserIDFromRequest(request, cache, false);
 
     if (!userId) throw new Error('Unable to reset password');
 
@@ -583,5 +581,3 @@ const Mutation = {
     throw new Error('Unable to perform reset password request');
   },
 };
-
-export default Mutation;

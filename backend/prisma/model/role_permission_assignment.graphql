@@ -1,0 +1,40 @@
+type Permission {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  type: String
+  # controller: String
+  # action: String
+  # policy: String
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Role {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  name: String # Administrator, Assistant, Owner
+  description: String
+  type: String # root, assistant, authenticated, public
+  permissions: [Permission!] @relation(link: TABLE, name: "RoleToPermission", onDelete: SET_NULL)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Assignment {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  user: User @relation(link: INLINE, onDelete: SET_NULL)
+  retailers: [Retailer!] @relation(link: TABLE, onDelete: SET_NULL)
+  # manufacturers [Manufacturer!] @relation(link: TABLE, onDelete: SET_NULL)
+
+  roles: [Role!] @relation(onDelete: SET_NULL)
+  permissions: [Permission!] @relation(link: TABLE, onDelete: SET_NULL)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}

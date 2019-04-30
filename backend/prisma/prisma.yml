@@ -1,5 +1,14 @@
 endpoint: ${env:PRISMA_ENDPOINT}
-datamodel: datamodel.graphql
+datamodel:
+  - model/user.graphql
+  - model/role_permission_assignment.graphql
+  - model/media.graphql
+  - model/address.graphql
+  - model/manufacturer.graphql
+  - model/retailer.graphql
+  - model/category.graphql
+  - model/product.graphql
+  - model/review.graphql
 secret: ${env:PRISMA_SECRET}
 
 seed:
