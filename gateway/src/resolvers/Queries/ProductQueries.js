@@ -1,29 +1,41 @@
 // @flow
 
 import logger from "../../utils/logger";
+import { checkPermission } from "../../utils/productUtils/permissionChecker";
+import { restructureProductWoTemplate2FriendlyProduct } from "../../utils/productUtils/dataHelper";
 
 export const Query = {
-  productsAfterCreated: async (parent, { query }, { prisma, request }, info) => {
-    
+  productsWoTemplateAfterCreated: async (parent, { sellerId, approved }, { prisma, cache, request }, info) => {
+    // NOTE: check permission
+    await checkPermission(prisma, cache, request, sellerId);
 
-    const newInfo = `{ id productMedias { uri } productRetailers { listPrice sellPrice stockQuantity inStock productMedias { uri } retailer { id businessName } rating approved } options { id attribute { id name } value { id name} } sku }`;
+    const newInfo = `{ id productName productMedias { uri } productRetailers { listPrice sellPrice stockQuantity inStock productMedias { uri } retailer { id businessName } rating approved } options { id attribute { id name } value { id name} } sku }`;
 
-    const opArgs = {};
-
-    if (query) {
-      opArgs.where = {
-        OR: [
+    const opArgs = {
+      where: {
+        AND: [
           {
-            id_contains: query,
-          },
-          {
-            productName_contains: query,
+            productRetailers_every: {
+              retailer: {
+                id_contains: sellerId,
+              },
+            },
           },
         ],
-      };
+      },
+    };
+
+    if (approved) {
+      opArgs.where.AND.push({
+        productRetailers_every: {
+          approved: approved,
+        },
+      });
     }
 
     const products = await prisma.query.products(opArgs, newInfo);
-    console.log(JSON.stringify(products, undefined, 2));
+    const friendlyProducts = restructureProductWoTemplate2FriendlyProduct(products);
+
+    return friendlyProducts;
   },
 };
