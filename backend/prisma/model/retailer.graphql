@@ -1,0 +1,26 @@
+type Retailer {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  owner: Assignment @relation(onDelete: CASCADE)
+
+  profileMedia: Media @relation(link: INLINE, onDelete: CASCADE) # Avatar
+  businessName: String @unique #  displayed on Retailer profile and foxiny listings
+  address: Address @relation(link: INLINE, onDelete: CASCADE) # one to one
+  phone: String @unique # maybe different to user's phone
+  # Products
+  products: [ProductRetailer!] @relation(link: TABLE, onDelete: CASCADE)
+
+  # Reviews, reminder to use interface/union in yoga to resolve reviews
+  #reviews: [ID!]! # list of reviews this vendor received from another members
+
+  # Rewards
+
+  # Orders
+  # Tax
+  # Billing
+  # Warehouse
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}

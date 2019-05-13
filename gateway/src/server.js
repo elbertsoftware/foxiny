@@ -9,6 +9,7 @@ import bodyParser from 'body-parser';
 import { ApolloServer, gql } from 'apollo-server-express';
 
 import { resolvers, fragmentReplacements } from './resolvers';
+import { schema as typeDefs } from './type-defs';
 import prisma from './utils/prisma';
 import cache from './utils/cache';
 import logger from './utils/logger';
@@ -23,9 +24,6 @@ server.use(helmet());
 // body parser middleware to parse application/json based body: authorization token
 server.use(bodyParser.json());
 
-// using static to serve file
-server.use('/images', express.static(process.env.USER_AVATAR_FOLDER));
-
 // other middlewares goes here, like passport, etc.
 // server.use(passport.initialize());
 // configurePassport(passport);
@@ -34,9 +32,9 @@ server.use('/images', express.static(process.env.USER_AVATAR_FOLDER));
 // server.use(path, aMiddleware)
 
 // GraphQL server using Apollo Server 2.x with Middleware option
-const typeDefs = gql`
-  ${fs.readFileSync(__dirname.concat('/type-defs/schema.graphql'), 'utf8')}
-`;
+// const typeDefs = gql`
+//   ${fs.readFileSync(__dirname.concat('/type-defs/schema.graphql'), 'utf8')}
+// `;
 
 const graphQLServer = new ApolloServer({
   typeDefs, // link this graphql server to our implemented schema
@@ -48,6 +46,14 @@ const graphQLServer = new ApolloServer({
       request,
       cache,
     };
+  },
+  uploads: {
+    // Limits here should be stricter than config for surrounding
+    // infrastructure such as Nginx so errors can be handled elegantly by
+    // graphql-upload:
+    // https://github.com/jaydenseric/graphql-upload#type-uploadoptions
+    maxFileSize: 2097152, // 2MB
+    maxFiles: 5, // at the same time
   },
   fragmentReplacements, // send fragment definitions to this graphql server
 });

@@ -36,7 +36,7 @@ const getUsers = gql`
       email
       phone
       password
-      password
+      enabled
     }
   }
 `;
@@ -44,6 +44,7 @@ const getUsers = gql`
 const login = gql`
   mutation($data: LoginUserInput!) {
     login(data: $data) {
+      userId
       token
     }
   }
@@ -52,8 +53,8 @@ const login = gql`
 const logout = gql`
   mutation($all: Boolean) {
     logout(all: $all) {
-      userId
       token
+      userId
     }
   }
 `;
@@ -73,27 +74,13 @@ const getProfile = gql`
 
 const confirmUser = gql`
   mutation($data: ConfirmUserInput!) {
-    confirmUser(data: $data) {
-      id
-      name
-      email
-      phone
-      password
-      enabled
-    }
+    confirmUser(data: $data)
   }
 `;
 
 const resendConfirmation = gql`
-  mutation($userId: String!) {
-    resendConfirmation(userId: $userId) {
-      id
-      name
-      email
-      phone
-      password
-      enabled
-    }
+  mutation($data: ResendConfirmation!) {
+    resendConfirmation(data: $data)
   }
 `;
 const updateUser = gql`
@@ -103,11 +90,6 @@ const updateUser = gql`
       name
       email
       phone
-      password
-      questionA
-      answerA
-      questionB
-      answerB
       enabled
     }
   }
@@ -122,11 +104,13 @@ const deleteUser = gql`
 `;
 
 const requestResetPwd = gql`
-  mutation($data: RequestResetPwdInput!) {
-    requestResetPwd(data: $data) {
+  mutation($mailOrPhone: String!) {
+    requestResetPwd(mailOrPhone: $mailOrPhone) {
       token
-      questionA
-      questionB
+      securityQuestions {
+        id
+        question
+      }
     }
   }
 `;
@@ -134,6 +118,29 @@ const requestResetPwd = gql`
 const resetPassword = gql`
   mutation($data: ResetPasswordInput!) {
     resetPassword(data: $data)
+  }
+`;
+
+const upsertSecurityInfo = gql`
+  mutation($securityInfo: [QueAnsPairInput]!) {
+    upsertSecurityInfo(securityInfo: $securityInfo) {
+      id
+      name
+      email
+      phone
+      password
+      enabled
+      recoverable
+    }
+  }
+`;
+
+const getSecurityQuestions = gql`
+  query {
+    securityQuestions {
+      id
+      question
+    }
   }
 `;
 
@@ -149,6 +156,8 @@ const operations = {
   deleteUser,
   requestResetPwd,
   resetPassword,
+  upsertSecurityInfo,
+  getSecurityQuestions,
 };
 
 export default operations;

@@ -1,0 +1,23 @@
+[
+  {
+    "name": "sendConfirmationEmail",
+    "data": [
+      { "expected": true, "name": "Foxiny", "to": "elbersoftware.tester@gmail.com", "code": "1a2b3c" },
+      { "expected": false, "name": "Foxiny", "to": "elbersoftware.tester", "code": "1a2b3c" }
+    ]
+  },
+  {
+    "name": "sendSMS",
+    "data": [
+      { "expected": true, "name": "Foxiny", "to": "+84938499460", "code": "1a2b3c" },
+      { "expected": false, "name": "Foxiny", "to": "+8403899999999", "code": "1a2b3c" }
+    ]
+  },
+  {
+    "name": "sendSMSVN",
+    "data": [
+      { "expected": true, "name": "Foxiny", "to": "0938499460", "code": "4d5e6f" },
+      { "expected": false, "name": "Foxiny", "to": "038999999999", "code": "4d5e6f" }
+    ]
+  }
+]

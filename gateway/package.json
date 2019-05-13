@@ -17,7 +17,17 @@
   },
   "jest": {
     "globalSetup": "./tests/jest/start-test-server.js",
-    "globalTeardown": "./tests/jest/stop-test-server.js"
+    "globalTeardown": "./tests/jest/stop-test-server.js",
+    "collectCoverage": true,
+    "moduleDirectories": [
+      "node_modules",
+      "./tests/data"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "svg"
+    ]
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
@@ -48,6 +58,7 @@
     "babel-eslint": "^10.0.1",
     "babel-register": "^6.26.0",
     "cross-fetch": "^2.2.3",
+    "cuid": "^2.1.6",
     "env-cmd": "^8.0.2",
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "^17.1.0",
@@ -59,6 +70,8 @@
     "flow-bin": "^0.86.0",
     "graphql-cli": "^3.0.3",
     "jest": "^23.6.0",
-    "nodemon": "^1.18.7"
+    "lodash": "^4.17.11",
+    "ngrok": "^3.1.0",
+    "nodemon": "^1.18.6"
   }
 }

@@ -1,0 +1,28 @@
+Conflict:
+
+1. gateway/src/type-defs/schema.graphql
+    type Mutation {
+        createUser(data: CreateUserInput!): User!
+    +<<<<<<< destination:6d46286790607e84b790fb1aac6496844860ace2
+        resendConfirmation(userId: String!): User!
+        confirmUser(data: ConfirmUserInput): User!
+        login(data: LoginUserInput!): LoginPayload!
+        logout(all: Boolean = false): LogoutPayload!
+    +=======
+        +  confirmUser(data: ConfirmUserInput!): Boolean!
+        +  upsertSecurityInfo(securityInfo: [QueAnsPairInput]!): User!
+        +  resendConfirmation(data: ResendConfirmation!): Boolean!
+        +  uploadProfileMedia(file: Upload!): Media!
+        +  login(data: LoginUserInput!): AuthPayload!
+        +  logout(all: Boolean = false): AuthPayload!
+    +>>>>>>> source:d047d100d60acec226c4ac3ee3ec3e3fd496ed22
+
+    <<<<<<< destination:6d46286790607e84b790fb1aac6496844860ace2
+    +=======
+        +  #new
+        +  resendConfirmation(data: ResendConfirmation!): Boolean!
+        +  uploadProfileMedia(file: Upload!): Media!
+        +  login(data: LoginUserInput!): AuthPayload!
+        +  logout(all: Boolean = false): AuthPayload!
+    +>>>>>>> source:19bb1cf96193dc76a6b1a529a81cb93b98e91fc6
+

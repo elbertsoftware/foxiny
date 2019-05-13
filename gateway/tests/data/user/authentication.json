@@ -1,0 +1,103 @@
+[
+  {
+    "name": "isValidPassword",
+    "data": [
+      { "expected": false, "password": "123456" },
+      { "expected": false, "password": "abcdef" },
+      { "expected": false, "password": "~!@#$%" },
+      { "expected": false, "password": "abc123" },
+      { "expected": false, "password": "123~!@" },
+      { "expected": false, "password": "abc~!@" },
+      { "expected": true, "password": "@abc1234" }
+    ]
+  },
+  {
+    "name": "hashPassword",
+    "data": [{ "expected": true, "password": "@abc1234" }]
+  },
+  {
+    "name": "verifyPassword",
+    "data": [
+      { "expected": true, "password": "@abc1234", "hasedPassword": true },
+      { "expected": false, "password": "@abc1234", "hasedPassword": false }
+    ]
+  },
+  {
+    "name": "getRequestIPAddress",
+    "data": [{ "expected": true }, { "expected": false }]
+  },
+  {
+    "name": "generateConfirmation",
+    "data": [{ "expected": true, "cache": true, "userId": "abc123", "emailOrPhone": "foxiny@foxiny.com" }]
+  },
+  {
+    "name": "verifyConfirmation",
+    "data": [
+      {
+        "expected": true,
+        "cache": true,
+        "code": "aaaaaa",
+        "userId": "abc123",
+        "emailOrPhone": "foxiny@foxiny.com",
+        "output": "foxiny@foxiny.com"
+      },
+      {
+        "expected": false,
+        "cache": true,
+        "code": "aaaaaa",
+        "userId": "cba321",
+        "emailOrPhone": "foxiny@foxiny.com",
+        "output": false
+      }
+    ]
+  },
+  {
+    "name": "generateToken",
+    "data": [{ "expected": true, "userId": "abc123", "request": true, "cache": true }]
+  },
+  {
+    "name": "getTokenFromRequest",
+    "data": [{ "expected": true, "userId": "abc123" }, { "expected": false, "userId": "abc123" }]
+  },
+  {
+    "name": "getUserIdFromRequest",
+    "data": [
+      {
+        "expected": true,
+        "request": true,
+        "cache": true,
+        "userId": "abc123",
+        "requireAuthentication": true,
+        "validUserId": "abc123"
+      },
+      {
+        "expected": true,
+        "request": true,
+        "cache": true,
+        "userId": "abc123",
+        "requireAuthentication": false,
+        "validUserId": "abc123"
+      },
+      {
+        "expected": false,
+        "request": false,
+        "cache": true,
+        "userId": "abc123",
+        "requireAuthentication": true,
+        "validUserId": "abc123"
+      },
+      {
+        "expected": false,
+        "request": false,
+        "cache": true,
+        "userId": "abc123",
+        "requireAuthentication": false,
+        "validUserId": "abc123"
+      }
+    ]
+  },
+  {
+    "name": "checkTokenExpiration",
+    "data": [{ "expected": true, "expiration": "3s" }, { "expected": false, "expiration": "1s" }]
+  }
+]

@@ -1,0 +1,14 @@
+type Review {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  productId: String # this can be a product or a review
+  user: User @relation(onDelete: SET_NULL)
+  title: String!
+  body: String!
+  stars: Int! # rating
+  contentMedia: [Media!] @relation(link: TABLE, onDelete: CASCADE)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}

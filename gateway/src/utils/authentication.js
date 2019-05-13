@@ -1,22 +1,22 @@
 // @flow
 
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import ms from 'ms';
-import requestId from 'request-ip';
-import cryptoRandomString from 'crypto-random-string';
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import ms from "ms";
+import requestId from "request-ip";
+import cryptoRandomString from "crypto-random-string";
 
-import logger from './logger';
+import logger from "./logger";
 
 // TODO: clean expired tokens periodically and automatically
 // TODO: more password rules will be enforced later
 
-const isValidPassword = password => password.length >= 8 && !password.toLowerCase().includes('password');
+const isValidPassword = password => password.length >= 8 && !password.toLowerCase().includes("password"); // repkace by the new one in validation.js
 
 const hashPassword = password => {
-  if (!isValidPassword(password)) {
-    throw new Error('Invalid password pattern'); // try NOT to provide enough information so hackers can guess
-  }
+  // if (!isValidPassword(password)) {
+  //   throw new Error('Invalid password pattern'); // try NOT to provide enough information so hackers can guess
+  // }
 
   return bcrypt.hashSync(password, 12); // length of salt to be generated
 };
@@ -32,7 +32,7 @@ const generateConfirmation = (cache, userId, emailOrPhone) => {
   cache.set(
     code,
     JSON.stringify({ userId: userId, emailOrPhone: emailOrPhone }),
-    'EX',
+    "EX",
     ms(process.env.CONFIRMATION_EXPIRATION) / 1000,
   ); // convert to seconds
   return code;
@@ -41,7 +41,7 @@ const generateConfirmation = (cache, userId, emailOrPhone) => {
 const verifyConfirmation = async (cache, code, userId) => {
   const data = JSON.parse(await cache.get(code));
 
-  if (!data) throw new Error('Invalid confirmation code');
+  if (!data) throw new Error("Invalid confirmation code");
 
   logger.debug(`verifying confirmation code ${code} for userId ${userId} upon the cached userId ${data.userId}`);
 
@@ -53,9 +53,10 @@ const verifyConfirmation = async (cache, code, userId) => {
 };
 
 const saveTokenToCache = (cache, userId, token, data, exp) => {
-  // NOTE: this line doesnt set lifetime for token (each key-value pair in one hash store) so I replace with the second one, we will save an object of ip and createdAt time into one key (as a json object)
+  // NOTE: the line below doesnt set lifetime for token (each key-value pair in one hashset) so I replace with the second one, we will save an object of only ip
   // cache.hset(userId, token, JSON.stringify(data), 'EX', exp);
-  cache.hset(userId, token, JSON.stringify({ ip: data, createdAt: new Date().getTime() }));
+
+  cache.hset(userId, token, JSON.stringify({ ip: data }));
 };
 
 const loadTokenFromCache = async (cache, userId, token) => {
@@ -73,15 +74,15 @@ const deleteAllTokensInCache = (cache, userId) => {
   cache.del(userId);
 };
 
-const generateToken = (userId, request, cache) => {
+const generateToken = (userId, request, cache, options = null) => {
   const payload = {
     userId,
-    iat: Date.now(),
-    // TODO: should contains expiresIn
+    // iat: Date.now(), // NOTE: claimed by default
   };
 
+  // NOTE: options (object) is used for test or other reasons
   // synchronous call since no callback supplied
-  const expiresIn = process.env.JWT_EXPIRATION;
+  const expiresIn = options && options.expiresIn ? options.expiresIn : process.env.JWT_EXPIRATION;
   const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
   const ip = getRequestIPAddress(request);
 
@@ -99,34 +100,31 @@ const getTokenFromRequest = request => {
     : request.connection.context.Authorization; // 2.
 
   // remove ther prefix 'Bearer '
-  const token = authorization ? authorization.replace('Bearer ', '') : null;
+  const token = authorization ? authorization.replace("Bearer ", "") : null;
   logger.debug(`authorization token ${token}`);
 
   return token;
 };
 
-const getUserIDFromRequest = async (request, cache, requireAuthentication = true) => {
+const getUserIDFromRequest = async (request, cache, requireAuthentication = true, options = null) => {
   const token = getTokenFromRequest(request);
   if (token) {
     // the verify() will throw Error if the token has been expired
     try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET); // synchronous call since no callback supplied
+      const expiresIn = options && options.expiresIn ? options.expiresIn : process.env.JWT_EXPIRATION;
+      // NOTE: add the verifyOoptions (expiresIn): same as the signOptions in generateToken (jwt needs it for checking token's lifetime)
+      const payload = jwt.verify(token, process.env.JWT_SECRET, { expiresIn }); // synchronous call since no callback supplied
       let { userId } = payload;
 
       const ip = getRequestIPAddress(request);
       const data = await loadTokenFromCache(cache, userId, token);
-      logger.debug(`userId ${userId}, ip ${ip}, cacheIp ${data.ip}, tokenCreatedAt ${Date(data.createdAt)}`);
+      logger.debug(`userId ${userId}, ip ${ip}, cacheIp ${data.ip}`);
 
       let validated = true;
 
       // check IP address and token lifetime
-      if (
-        ip !== data.ip ||
-        new Date().getTime() > Number(data.createdAt) + Number(process.env.JWT_EXPIRATION) * 60 * 60 * 1000
-      ) {
+      if (ip !== data.ip) {
         validated = false;
-        // remove expired token
-        deleteTokenInCache(cache, userId, token);
       }
 
       // more validation goes here
@@ -137,7 +135,7 @@ const getUserIDFromRequest = async (request, cache, requireAuthentication = true
 
         // suppress error if authentication is not required
         if (requireAuthentication) {
-          throw new Error('Authentication required'); // invalid token
+          throw new Error("Authentication required"); // invalid token
         }
       }
 
@@ -145,16 +143,66 @@ const getUserIDFromRequest = async (request, cache, requireAuthentication = true
     } catch (error) {
       // suppress error if authentication is not required
       if (requireAuthentication) {
-        throw new Error('Authentication required'); // invalid token or token expired
+        logger.debug(JSON.stringify(error, undefined, 2));
+        throw new Error("Authentication required"); // invalid token or token expired
       }
     }
   }
 
   if (requireAuthentication) {
-    throw new Error('Authentication required'); // custom return error message
+    throw new Error("Authentication required"); // custom return error message
   }
 
   return null;
+};
+
+// use this function in each time user login, this will scan all key in user's hashed-set, remove the expired tokens
+/**
+ * Scan and remove expired tokens of one user
+ * @param {String} userId id of user
+ * @param {Object} cache redis instance
+ */
+const cleanToken = async (userId, cache) => {
+  // get all token from userId hset
+  const allTokens = await cache.hgetall(userId);
+
+  // check each token and delete if expired
+  for (let token in allTokens) {
+    const payload = jwt.decode(token);
+    // NOTE: jwt token iat takes the unix timestamp in second, convert it to ms before compare to now
+    if (payload.exp * 1000 < Date.now()) {
+      logger.debug(`Token ${token} is expired. This will be removed.`);
+      deleteTokenInCache(cache, userId, token);
+    }
+  }
+};
+
+const checkRights = async (prisma, cache, ownerId, request) => {
+  // NOTE: this does not check manufacturer-assignment in user
+  // TODO: add manufacturer
+  // TODO: optimize this by using cache (save assignment to cache)
+  const userId = await getUserIDFromRequest(request, cache);
+
+  const user = await prisma.query.user(
+    {
+      where: {
+        id: userId,
+      },
+    },
+    // `{ id assignment { id retailers { id } manufacturer { id }} }`,
+    `{ id assignment { id retailers { id }`,
+  );
+
+  if (!user) {
+    throw new Error("Access is denied");
+  }
+
+  // const canGoNext =  user.assignment.retailers.includes(ownerId) || user.assignment.manufacturer.includes(ownerId);
+  const canGoNext = user.assignment.retailers.includes(ownerId);
+
+  if (!canGoNext) {
+    throw new Error("Access is denied");
+  }
 };
 
 export {
@@ -167,4 +215,6 @@ export {
   deleteAllTokensInCache,
   getTokenFromRequest,
   getUserIDFromRequest,
+  cleanToken,
+  checkRights,
 };

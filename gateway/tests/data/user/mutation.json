@@ -1,0 +1,319 @@
+[
+  {
+    "name": "createUser",
+    "data": [
+      {
+        "expected": true,
+        "user": {
+          "name": "Foxiny",
+          "email": "elbertsoftware.tester@gmail.com",
+          "password": "@abc1234"
+        }
+      },
+      {
+        "expected": true,
+        "user": {
+          "name": "Foxiny",
+          "phone": "0386824579",
+          "password": "@abc1234"
+        }
+      },
+      {
+        "expected": false,
+        "user": {
+          "email": "elbertsoftware.tester@gmail.com",
+          "password": "@abc1234"
+        }
+      },
+      {
+        "expected": false,
+        "user": {
+          "name": "Foxiny",
+          "password": "@abc1234"
+        }
+      },
+      {
+        "expected": false,
+        "user": {
+          "name": "Foxiny",
+          "email": "elbertsoftware.tester1@gmail.com"
+        }
+      }
+    ]
+  },
+  {
+    "name": "confirmUser",
+    "data": [
+      {
+        "expected": true,
+        "data": {
+          "code": true,
+          "userId": true
+        }
+      },
+      {
+        "expected": true,
+        "data": {
+          "code": true,
+          "email": true
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "code": false,
+          "userId": true
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "code": true,
+          "userId": false
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "code": true,
+          "userId": true,
+          "email": true
+        }
+      }
+    ]
+  },
+  {
+    "name": "resendConfirmation",
+    "data": [
+      {
+        "expected": true,
+        "data": {
+          "userId": true
+        }
+      },
+      {
+        "expected": true,
+        "data": {
+          "email": true
+        }
+      },
+      {
+        "expected": true,
+        "data": {
+          "phone": true
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "userId": true,
+          "email": true
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "email": true,
+          "phone": true
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "userId": true,
+          "email": true,
+          "phone": true
+        }
+      }
+    ]
+  },
+  {
+    "name": "login",
+    "data": [
+      { "expected": true, "data": { "email": true, "password": true } },
+      { "expected": true, "data": { "phone": true, "password": true } },
+      { "expected": false, "data": { "confirmed": false, "phone": true, "password": true } },
+      { "expected": false, "data": { "confirmed": true, "email": false, "password": true } },
+      { "expected": false, "data": { "confirmed": true, "phone": true, "password": false } }
+    ]
+  },
+  {
+    "name": "logout",
+    "data": [{ "expected": true, "all": false }, { "expected": true, "all": true }, { "expected": false, "all": true }]
+  },
+  {
+    "name": "upsertSecurityInfo",
+    "data": [
+      {
+        "expected": true,
+        "securityInfo": [
+          {
+            "questionId": "cjsfy31e502mp0704i38pasnk",
+            "answer": "answer a"
+          },
+          {
+            "questionId": "cjsfy3dmz02n10704c6ifw2vr",
+            "answer": "answer b"
+          },
+          {
+            "questionId": "cjsfy3ks502nb0704on8wiffq",
+            "answer": "answer c"
+          }
+        ]
+      },
+      {
+        "expected": false,
+        "securityInfo": [
+          {
+            "questionId": "",
+            "answer": "answer a"
+          },
+          {
+            "questionId": "cjsfy3dmz02n10704c6ifw2vr",
+            "answer": "answer b"
+          },
+          {
+            "questionId": "cjsfy3ks502nb0704on8wiffq",
+            "answer": "answer c"
+          }
+        ]
+      },
+      {
+        "expected": false,
+        "securityInfo": [
+          {
+            "questionId": "cjsfy31e502mp0704i38pasnk",
+            "answer": "answer a"
+          },
+          {
+            "questionId": "cjsfy3dmz02n10704c6ifw2vr",
+            "answer": ""
+          },
+          {
+            "questionId": "cjsfy3ks502nb0704on8wiffq",
+            "answer": "answer c"
+          }
+        ]
+      },
+      {
+        "expected": false,
+        "securityInfo": [
+          {
+            "questionId": "cjsfy31e502mp0704i38pasnk",
+            "answer": "answer a"
+          },
+          {
+            "questionId": "cjsfy3dmz02n10704c6ifw2vr",
+            "answer": "answer b"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "updateUser",
+    "data": [
+      {
+        "expected": true,
+        "data": {
+          "name": "New Foxiny"
+        }
+      },
+      {
+        "expected": true,
+        "data": {
+          "email": "new.foxiny@foxiny.com",
+          "currentPassword": "!abcd1234"
+        }
+      },
+      {
+        "expected": true,
+        "data": {
+          "phone": "9876543210",
+          "currentPassword": "!abcd1234"
+        }
+      },
+      {
+        "expected": true,
+        "data": {
+          "password": "!cba4321",
+          "currentPassword": "!abcd1234"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "email": "new.foxiny@foxiny.com",
+          "currentPassword": "abcd1234"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "phone": "9876543210",
+          "currentPassword": "abcd1234"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "password": "!cba4321",
+          "currentPassword": "abcd1234"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "  ",
+          "currentPassword": "!abcd1234"
+        }
+      }
+    ]
+  },
+  {
+    "name": "requestResetPwd",
+    "data": [
+      { "expected": true, "mailOrPhone": "john3@example.com" },
+      { "expected": true, "mailOrPhone": "0123456799" },
+      { "expected": false, "mailOrPhone": "john2@example.com" },
+      { "expected": false, "mailOrPhone": "elbertsoftware@gmail.com" },
+      { "expected": false, "mailOrPhone": "9876543210" }
+    ]
+  },
+  {
+    "name": "resetPassword",
+    "data": [
+      {
+        "expected": true,
+        "data": {
+          "token": true,
+          "securityInfo": true,
+          "password": "@dcba4321"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "token": false,
+          "securityInfo": true,
+          "password": "@dcba4321"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "token": true,
+          "securityInfo": false,
+          "password": "@dcba4321"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "token": true,
+          "securityInfo": true
+        }
+      }
+    ]
+  }
+]
