@@ -34,12 +34,13 @@ const restructureProductAttributes = product => {
 const restrutureProductTemplate2FriendlyProduct = productTemplate => {
   // TODO: lacking of description from manufacturer
 
-  const friendlyProduct = productTemplate.products.map(product => ({
+  const friendlyProducts = productTemplate.products.map(product => ({
     productTemplateId: productTemplate.id,
     productId: product.id,
 
     name: productTemplate.name,
     productName: product.productName,
+    productMedias: product.productMedias,
     briefDescription: productTemplate.briefDescription,
     brand: productTemplate.brand.brandName,
     category: productTemplate.category,
@@ -61,7 +62,31 @@ const restrutureProductTemplate2FriendlyProduct = productTemplate => {
     })),
   }));
 
-  return friendlyProduct;
+  return friendlyProducts;
 };
 
-export { restructureProductAttributes, restrutureProductTemplate2FriendlyProduct };
+const restructureProductWoTemplate2FriendlyProduct = products => {
+  const friendlyProducts = products.map(product => ({
+    productId: product.id,
+    productName: product.productName,
+    productMedias: product.productMedias,
+    sku: product.sku,
+    listPrice: product.productRetailers[0].listPrice,
+    sellPrice: product.productRetailers[0].sellPrice,
+    stockQuantity: product.productRetailers[0].stockQuantity,
+    inStock: product.productRetailers[0].inStock,
+    approved: product.productRetailers[0].approved,
+
+    attributes: product.options.map(option => ({
+      name: option.attribute.name,
+      value: option.value.name,
+    })),
+  }));
+  return friendlyProducts;
+};
+
+export {
+  restructureProductAttributes,
+  restrutureProductTemplate2FriendlyProduct,
+  restructureProductWoTemplate2FriendlyProduct,
+};

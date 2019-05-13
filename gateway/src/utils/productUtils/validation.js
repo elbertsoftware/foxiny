@@ -12,20 +12,25 @@ const validateIsSmallerThanX = (price, x = 0) => {
 const validateProductAttribute = attribute => {
   const newData = {};
 
-  newData.attributeName = validateIsEmpty(attribute.attributeName);
-  newData.value = validateIsEmpty(attribute.value);
+  newData.attributeName = validateIsEmpty(attribute.attributeName).toLowerCase();
+  newData.value = validateIsEmpty(attribute.value).toLowerCase();
 
   return newData;
 };
 
-const validateProducts = product => {
+const validateProduct = product => {
   const newData = {};
 
-  newData.productName = validateIsEmpty(product.productName);
+  // if (!product.productMediaIds || product.productMediaIds.length === 0) {
+  //   throw new Error("Invalid input");
+  // }
+
+  newData.productName = validateIsEmpty(product.productName).toLowerCase();
   newData.listPrice = validateIsSmallerThanX(product.listPrice);
   newData.sellPrice = validateIsSmallerThanX(product.sellPrice);
   newData.stockQuantity = validateIsSmallerThanX(product.stockQuantity, 1);
   newData.attributes = product.attributes.map(attribute => validateProductAttribute(attribute));
+  newData.productMediaIds = product.productMediaIds;
 
   return newData;
 };
@@ -45,11 +50,11 @@ const validateCreateNewProductInput = data => {
     throw new Error("Invalid input");
   }
 
-  newData.name = validateIsEmpty(data.name);
+  newData.name = validateIsEmpty(data.name).toLowerCase();
   newData.briefDescription = validateIsEmpty(data.briefDescription);
   newData.categoryIds = data.categoryIds;
   newData.detailDescription = data.detailDescription;
-  newData.products = data.products.map(product => validateProducts(product));
+  newData.products = data.products.map(product => validateProduct(product));
 
   return newData;
 };

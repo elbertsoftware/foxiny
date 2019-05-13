@@ -82,7 +82,7 @@ const s3ProfileMediaUploader = async (prisma, upload, userId) => {
   }
 };
 
-const s3ProductMediasUploader = async (prisma, upload) => {
+const s3ProductMediasUploader = async (prisma, upload, userId) => {
   if (!upload) {
     throw new Error("🛑❌  S3PRODUCTMEDIASUPLOADER: NO FILE");
   }
@@ -98,7 +98,7 @@ const s3ProductMediasUploader = async (prisma, upload) => {
 
     const data = await getFileInfo(filename, randomCuid, createReadStream);
 
-    const key = `product_${randomCuid}.${data.ext}`; // pattern: productId_tick.extention
+    const key = `product_${randomCuid}.${data.ext}`; // pattern: userId_tick.extention
     logger.debug(`🔵✅  READ FILE: done. UPLOADING ${key} TO S3...`);
     // Upload to S3
     const response = await s3
@@ -119,7 +119,7 @@ const s3ProductMediasUploader = async (prisma, upload) => {
 
     // for transact-log
     logger.info(
-      `UPLOAD_AVATAR | ${productId} | ${data.uri} | ${data.name} | ${data.ext} | ${data.mime} | ${data.hash} | ${
+      `UPLOAD_PRODUCT_MEDIA | ${userId} | ${data.uri} | ${data.name} | ${data.ext} | ${data.mime} | ${data.hash} | ${
         data.sha256
       } | ${data.size}`,
     );

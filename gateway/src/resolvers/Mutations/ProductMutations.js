@@ -7,16 +7,20 @@ import {
   restrutureProductTemplate2FriendlyProduct,
 } from "../../utils/productUtils/dataHelper";
 import { validateCreateNewProductInput } from "../../utils/productUtils/validation";
+import { checkPermission } from "../../utils/productUtils/permissionChecker";
+import { s3ProductMediasUploader } from "../../utils/s3Uploader";
 
+// TODO:
 // log transaction
+// generate sku
 
 export const Mutation = {
   createBrandNewProductWVariants: async (parent, { sellerId, data }, { prisma, request, cache }, info) => {
     try {
-      // TODO: check permission
-      
+      // NOTE: check permission
+      await checkPermission(prisma, cache, request, sellerId);
 
-      // TODO: validate input
+      // NOTE: validate input
       const newData = validateCreateNewProductInput(data);
 
       // NOTE: 1 - create product attributes & it's values
@@ -91,9 +95,14 @@ export const Mutation = {
                 },
               },
             },
-            productMedias: {
-              connect: product.productMediaIds,
-            },
+            productMedias:
+              product.productMediaIds && product.productMediaIds.length > 0
+                ? {
+                    connect: product.productMediaIds.map(mediaId => ({
+                      id: mediaId,
+                    })),
+                  }
+                : undefined,
             options: {
               create: product.attributes.map(att => ({
                 attribute: {

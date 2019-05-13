@@ -10,28 +10,28 @@ export const productSchema = gql`
     id: ID!
     name: String!
     briefDescription: String!
-    category:[Category!]!
+    category: [Category!]!
 
     products: [FriendlyProduct!]
   }
 
   # friendly view (one variant)
   type FriendlyProduct {
-    productTemplateId: ID!
+    productTemplateId: ID
     productId: ID!
 
-    name: String!
+    name: String
     productName: String!
-    briefDescription: String!
-    brand: String!
-    category: [Category!]!
+    briefDescription: String
+    brand: String
+    category: [Category!]
 
-    descriptions: Description!
+    descriptions: Description
     productMedias: [Media!]
 
     sku: String
 
-    listPrice: Int
+    listPrice: Int!
     sellPrice: Int!
     stockQuantity: Int!
 
@@ -57,7 +57,7 @@ export const productSchema = gql`
   }
 
   extend type Query {
-    productsAfterCreated(query: String): [FriendlyProduct!]!
+    productsWoTemplateAfterCreated(sellerId: String!, query: String): [FriendlyProduct!]!
     # productsManufacturers(query: String): [ProductManufacturer!]!
     # productsRetailers(query: String): [ProductRetailer!]!
   }
@@ -72,7 +72,7 @@ export const productSchema = gql`
     briefDescription: String!
     categoryIds: [String!]!
 
-    products: [CreateProductInput!]
+    products: [CreateProductInput!]!
 
     brandName: String!
     detailDescription: String! # this will be moved to Description Table
