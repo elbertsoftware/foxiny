@@ -7,7 +7,8 @@ export const categorySchema = gql`
 
     name: String!
     parentId: [Category!]
-    products: [Product!]
+    productTemplates: [ProductTemplate!]
+    products: [FriendlyProduct!]
 
     createdAt: String!
     updatedAt: String!
@@ -17,7 +18,7 @@ export const categorySchema = gql`
     id: ID!
 
     brandName: String
-    products: [Product!]
+    products: [FriendlyProduct!]
     # manufacturer: Manufacturer @relation(name: "ManufacturerToBrand", onDelete: SET_NULL)
 
     createdAt: String!

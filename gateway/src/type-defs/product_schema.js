@@ -6,20 +6,30 @@ import { gql } from "apollo-server-express";
 // TODO: constrain unique on product name/product option name
 
 export const productSchema = gql`
-  # friendly view (one variant)
-  type FriendlyProduct {
-    productId: ID!
-    productVariantId: ID!
-
+  type ProductTemplate {
+    id: ID!
     name: String!
     briefDescription: String!
-    brand: Brand!
+    category:[Category!]!
+
+    products: [FriendlyProduct!]
+  }
+
+  # friendly view (one variant)
+  type FriendlyProduct {
+    productTemplateId: ID!
+    productId: ID!
+
+    name: String!
+    productName: String!
+    briefDescription: String!
+    brand: String!
     category: [Category!]!
 
-    descriptions: [Description!]!
-    productMedias: [Media!]!
+    descriptions: Description!
+    productMedias: [Media!]
 
-    sku: String!
+    sku: String
 
     listPrice: Int
     sellPrice: Int!
@@ -30,159 +40,60 @@ export const productSchema = gql`
     approved: Boolean
 
     # other properties
+    attributes: [ProductAttributeValue!]
 
     createdAt: String! # variant's
     updatedAt: String! # variants
   }
 
+  type ProductAttributeValue {
+    name: String!
+    value: String!
+  }
+
   type Description {
-    fromManufacturer: String
+    # fromManufacturer: String
     fromRetailers: [String!]
   }
 
-  # structured view (one product has many variants)
-  type Product {
-    id: ID!
-
-    name: String!
-    briefDescription: String!
-    category: [Category!]!
-
-    variants: [ProductVariant!]!
-
-    brand: Brand!
-
-    descriptions: [Description!]!
-
-    # other properties
-
-    createdAt: String!
-    updatedAt: String!
-  }
-
-  type ProductVariant {
-    id: ID!
-    sku: String!
-    productMedias: [String!]!
-
-    listPrice: Int
-    sellPrice: Int!
-    stockQuantity: Int!
-
-    inStock: Boolean!
-
-    option_1_name: String
-    option_1_values: String
-    option_2_name: String
-    option_2_values: String
-
-    approved: Boolean
-
-    createdAt: String!
-    updatedAt: String!
-  }
-
-  type ProductVariantsList {
-    productVariantsId: ID!
-    productId: ID!
-
-    name: String!
-    briefDescription: String!
-    brand: Brand!
-    category: [Category!]!
-
-    descriptions: [Description!]!
-    productMedias: [Media!]!
-
-    sku: String!
-
-    option_1_name: String
-    option_1_values: [String!]
-    option_2_name: String
-    option_2_values: [String!]
-
-    createdAt: String!
-    updatedAt: String!
-  }
-
-  type Variant {
-    id: ID!
-
-    optionName: String!
-
-    createdAt: String!
-    updatedAt: String!
-  }
-
   extend type Query {
-    friendlyProducts(query: String): [FriendlyProduct!]!
-    productVariants(productId: String!): [ProductVariant!]!
-    products(query: String): [Product!]!
-    productDescription(query: String): [Description!]!
+    productsAfterCreated(query: String): [FriendlyProduct!]!
     # productsManufacturers(query: String): [ProductManufacturer!]!
     # productsRetailers(query: String): [ProductRetailer!]!
   }
 
   extend type Mutation {
     # one product but many options, ex: Product A -> A size S, A size M
-    createBrandNewProductWVariants(sellerId: String!, data: [CreateNewProductInput!]): [FriendlyProduct!]
-    updateProduct(sellerId: String!, data: UpdateProductInput!): Product!
-    deleteProduct(sellerId: String!, productId: String!): Product!
-
-    approveProduct(data: ApproveProductInput!): Product!
-
-    createVariantType(data: [CreateVariantTypeInput!]): [Variant!]!
-    deleteVariantType(variantIds: [String!]): [Variant!]!
+    createBrandNewProductWVariants(sellerId: String!, data: CreatProductWithTemplateInput!): [FriendlyProduct!]
   }
 
-  input CreateNewProductInput {
+  input CreatProductWithTemplateInput {
     name: String!
     briefDescription: String!
     categoryIds: [String!]!
 
-    variants: [CreateProductVariantInput!]
+    products: [CreateProductInput!]
 
-    brandId: String!
+    brandName: String!
     detailDescription: String! # this will be moved to Description Table
 
     # other properties
   }
-  input CreateProductVariantInput {
+
+  input CreateProductInput {
+    productName: String!
+
     listPrice: Int!
     sellPrice: Int!
     stockQuantity: Int!
 
     # sku: String
-    productMediaIds: [String!]!
-
-    option_1_Id: String
-    option_1_value: String
-    option_2_Id: String
-    option_2_value: String
+    productMediaIds: [String!]
+    attributes: [CreateProductAttributeValue!]
   }
 
-  input UpdateProductInput {
-    id: String!
-
-    name: String!
-    briefDescription: String!
-    categoryIds: [String!]!
-    brandId: String!
-    detailDescription: String! # this will be moved to Description Table
-    price: Int!
-    stockQuantity: Int!
-    productMediaIds: [String!]!
-    # unit: Unit
-
-    # other properties
-  }
-
-  input ApproveProductInput {
-    productId: String!
-    approveOrNot: Boolean!
-  }
-
-  input CreateVariantTypeInput {
-    optionName: String!
+  input CreateProductAttributeValue {
+    attributeName: String!
+    value: String!
   }
 `;

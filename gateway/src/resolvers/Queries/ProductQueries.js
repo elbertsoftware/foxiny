@@ -1,9 +1,13 @@
 // @flow
 
-import logger from '../../utils/logger';
+import logger from "../../utils/logger";
 
 export const Query = {
-  products: (parent, { query }, { prisma, request }, info) => {
+  productsAfterCreated: async (parent, { query }, { prisma, request }, info) => {
+    
+
+    const newInfo = `{ id productMedias { uri } productRetailers { listPrice sellPrice stockQuantity inStock productMedias { uri } retailer { id businessName } rating approved } options { id attribute { id name } value { id name} } sku }`;
+
     const opArgs = {};
 
     if (query) {
@@ -13,15 +17,13 @@ export const Query = {
             id_contains: query,
           },
           {
-            name_contains: query,
-          },
-          {
-            description_contains: query,
+            productName_contains: query,
           },
         ],
       };
     }
 
-    return prisma.query.products(opArgs, info);
+    const products = await prisma.query.products(opArgs, newInfo);
+    console.log(JSON.stringify(products, undefined, 2));
   },
 };

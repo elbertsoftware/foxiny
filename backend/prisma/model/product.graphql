@@ -1,4 +1,4 @@
-type Product {
+type ProductTemplate {
   id: ID! @id
   _version: Int! @default(value: 1)
 
@@ -7,7 +7,7 @@ type Product {
   category: [Category!] @relation(link: TABLE, onDelete: SET_NULL)
   # unit: Unit
 
-  variants: [ProductVariants!] @relation(link: TABLE, onDelete: CASCADE)
+  products: [Product!] @relation(link: TABLE, onDelete: CASCADE)
 
   # other properties
 
@@ -28,28 +28,60 @@ type Description {
   product: Product @relation(onDelete: SET_NULL)
 
   description: String
-  properties: Json
 
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }
 
-type ProductVariants {
+type Product {
   id: ID! @id
   _version: Int! @default(value: 1)
 
-  product: Product @relation(onDelete: SET_NULL)
+  # name
+
+  productTemplate: ProductTemplate @relation(onDelete: SET_NULL)
   productMedias: [Media!] @relation(link: TABLE, onDelete: CASCADE)
   productRetailers: [ProductRetailer!] @relation(link: TABLE, onDelete: SET_NULL)
 
-  sku: String @unique TA01-MD         Mau:M Xanh:X Do:D Vang:V
+  productName: String @unique
+  sku: String @unique
 
-  option_1: ProductPropertiesName @relation(name: "ProductVariantsToPropertiesName1", link: INLINE, onDelete: SET_NULL)
-  option_1_value: ProductPropertiesValue
-    @relation(name: "ProductVariantsToPropertiesValue1", link: INLINE, onDelete: SET_NULL)
-  option_2: ProductPropertiesName @relation(name: "ProductVariantsToPropertiesName2", link: INLINE, onDelete: SET_NULL)
-  option_2_value: ProductPropertiesValue
-    @relation(name: "ProductVariantsToPropertiesValue2", link: INLINE, onDelete: SET_NULL)
+  options: [ProductOption!] @relation(link: TABLE, ondelete: CASCADE)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type ProductOption {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  attribute: ProductAttribute! @relation(ondelete: SET_NULL)
+  value: ProductAttributeValue! @relation(ondelete: SET_NULL)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type ProductAttribute {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  name: String @unique
+  values: [ProductAttributeValue] @relation(link: TABLE, name: "ProductAttributeToValue", onDelete: CASCADE)
+  productOption: [ProductOption!] @relation(link: TABLE)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type ProductAttributeValue {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  attribute: [ProductAttribute!] @relation(name: "ProductAttributeToValue", onDelete: SET_NULL)
+  name: String @unique
+  productOption: [ProductOption!] @relation(link: TABLE)
 
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
@@ -87,7 +119,7 @@ type ProductRetailer {
   inStock: Boolean @default(value: false)
   productMedias: [Media!] @relation(link: TABLE, onDelete: CASCADE)
 
-  productVariants: ProductVariants @relation(onDelete: SET_NULL)
+  product: Product @relation(onDelete: SET_NULL)
   retailer: Retailer @relation(onDelete: SET_NULL)
 
   rating: Int @default(value: 0)
@@ -95,28 +127,6 @@ type ProductRetailer {
   #warehouse
 
   approved: Boolean
-
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
-}
-
-type ProductPropertiesName {
-  id: ID! @id
-  _version: Int! @default(value: 1)
-
-  name: String @unique Color, Size
-  values: [ProductPropertiesValue] @relation(link: TABLE, onDelete: CASCADE)
-
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
-}
-
-type ProductPropertiesValue {
-  id: ID! @id
-  _version: Int! @default(value: 1)
-
-  property: ProductPropertiesName @relation(onDelete: SET_NULL)
-  name: String @unique Red, Yellow
 
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
