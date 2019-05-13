@@ -20,6 +20,9 @@ import UserResetPassword from '../User/UserResetPassword/UserResetPassword';
 import ProductCard from '../Product/ProductCard';
 import ProductDetailPage from '../Product/ProductDetail/ProductDetailPage';
 import ProductReviews from '../Product/CustomerReviews/ProductReviews';
+import LayoutSellerCenter from '../SellerCenter/LayoutSellerCenter/LayoutSellerCenter';
+import RequestProduct from '../SellerCenter/AddProduct/RequestProduct';
+import AddProduct from '../SellerCenter/AddProduct/AddProduct';
 
 class App extends Component<Props, State> {
   state = {
@@ -68,43 +71,68 @@ class App extends Component<Props, State> {
         <Switch>
           <Route exact path="/" component={() => <Homepage />} />
         </Switch>
-        <Route
-          path="/(.+)"
-          render={() => (
-            <React.Fragment>
-              <AppBar position="static" color="primary">
-                <NavBar handleSetLanguage={this.handleSetLanguage} />
-              </AppBar>
-              <Switch>
-                <Route path="/signin" component={SignIn} />
-              </Switch>
-              <Switch>
-                <Route path="/signup" component={SignUp} />
-              </Switch>
-              <Switch>
-                <Route path="/confirm/:id" component={ConfirmPage} />
-              </Switch>
-              <Switch>
-                <Route path="/reset-password" component={UserResetPassword} />
-              </Switch>
-              <Switch>
-                <Route path="/profile/:id" component={withAuthenticator(UserDashboard)} />
-              </Switch>
-              <Switch>
-                <Route path="/security-question" component={withAuthenticator(UserSecurityQuestion)} />
-              </Switch>
-              <Switch>
-                <Route path="/productcard" component={ProductCard} />
-              </Switch>
-              <Switch>
-                <Route path="/products" component={ProductDetailPage} />
-              </Switch>
-              <Switch>
-                <Route path="/product-reviews" component={ProductReviews} />
-              </Switch>
-            </React.Fragment>
-          )}
-        />
+        <Switch>
+          {/* Place two Route in Switch component, the /seller/(.*) will be matched before /(.+) path */}
+          <Route
+            exact
+            path="/seller/(.*)"
+            render={() => (
+              <LayoutSellerCenter>
+                <Switch>
+                  <Route path="/seller/request-product" component={RequestProduct} />
+                </Switch>
+                <Switch>
+                  <Route path="/seller/add-product" component={AddProduct} />
+                </Switch>
+              </LayoutSellerCenter>
+            )}
+          />
+
+          <Route
+            exact
+            path="/(.+)"
+            render={() => {
+              // const urlString = match.url;
+              // if (urlString.includes('seller')) {
+              //   return '';
+              // }
+              return (
+                <React.Fragment>
+                  <AppBar position="static" color="primary">
+                    <NavBar handleSetLanguage={this.handleSetLanguage} />
+                  </AppBar>
+                  <Switch>
+                    <Route path="/signin" component={SignIn} />
+                  </Switch>
+                  <Switch>
+                    <Route path="/signup" component={SignUp} />
+                  </Switch>
+                  <Switch>
+                    <Route path="/confirm/:id" component={ConfirmPage} />
+                  </Switch>
+                  <Switch>
+                    <Route path="/reset-password" component={UserResetPassword} />
+                  </Switch>
+                  <Switch>
+                    <Route path="/profile/:id" component={withAuthenticator(UserDashboard)} />
+                  </Switch>
+                  <Switch>
+                    <Route path="/security-question" component={withAuthenticator(UserSecurityQuestion)} />
+                  </Switch>
+                  <Switch>
+                    <Route path="/productcard" component={ProductCard} />
+                  </Switch>
+                  <Switch>
+                    <Route path="/products" component={ProductDetailPage} />
+                  </Switch>
+                  <Switch>
+                    <Route path="/product-reviews" component={ProductReviews} />
+                  </Switch>
+                </React.Fragment>
+              );
+            }}
+          />
+        </Switch>
       </I18nProvider>
     );
   }

@@ -52,7 +52,7 @@ const ImgGalleryContent = withStyles(styles)(({ classes, listImage }) => {
         <div className="img-wrapper maintain-height">
           <div className="ig-inner maintain-height">
             {/* <Loading circle /> */}
-            <img id="zoom-image" className={classes.imgFit} src={listImage[activeIndex].src} />
+            <img id="zoom-image" className={classes.imgFit} src={listImage[activeIndex]} />
           </div>
         </div>
       </Grid>
@@ -64,8 +64,8 @@ const ImgGalleryContent = withStyles(styles)(({ classes, listImage }) => {
               activeIndex === index ? ` ${classes.selected}` : ''
             } fit-img-div`;
             return (
-              <a key={index} href="#" onClick={() => handleChangeImg(index)} data-url={ele.src}>
-                <div className={className} style={{ backgroundImage: `url(${ele.src})` }} />
+              <a key={index} href="#" onClick={() => handleChangeImg(index)} data-url={ele}>
+                <div className={className} style={{ backgroundImage: `url(${ele})` }} />
               </a>
             );
           })}

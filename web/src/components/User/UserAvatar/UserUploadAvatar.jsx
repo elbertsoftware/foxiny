@@ -111,6 +111,7 @@ class UserUploadAvatar extends React.Component {
             accept="image/jpeg, image/png, image/svg, image/gif"
             onDropAccepted={this.onDropAccepted}
             onDropRejected={this.onDropRejected}
+            multiple={false}
             maxSize={1000000}
           >
             {({ getRootProps, getInputProps, isDragActive, isDragReject, isDragAccept }) => {

@@ -120,8 +120,8 @@ const styles = () => ({
   },
   imgMedium: {
     width: '100%',
-    height: 200,
-    objectFit: 'cover',
+    height: '100%',
+    objectFit: 'contain',
     filter: 'brightness(70%)',
     transform: 'scale(1.15)',
     transition: 'transform 0.5s filter 0.5s',
@@ -150,6 +150,8 @@ const styles = () => ({
     paddingRight: '2rem',
   },
   favorite: {
+    height: 350,
+    overflow: 'hidden',
     position: 'relative',
     width: '80%',
     margin: '0 auto',
@@ -195,7 +197,13 @@ const Homepage = ({ classes }) => {
         <div className={classes.greetingContainer}>
           <Grid className={classes.maintainHeight} container justify="center" alignItems="center">
             <Grid className={`${classes.greetingMessage} ${classes.maintainHeight}`} item md={6}>
-              <Grid container direction="column" justify="space-between" alignItems="center">
+              <Grid
+                className={classes.maintainHeight}
+                container
+                direction="column"
+                justify="flex-start"
+                alignItems="center"
+              >
                 <div style={{ display: 'inline-flex', marginBottom: 10 }}>
                   <Typography className={classes.heroText} gutterBottom color="inherit" variant="h1">
                     FOXINY Inc |
@@ -204,33 +212,15 @@ const Homepage = ({ classes }) => {
                     Mua sắm trong tầm tay
                   </Typography>
                 </div>
-                <Grid container>
-                  <Grid item md={6}>
+                <Grid container justify="center">
+                  <Grid item md={8}>
                     <div className={`${classes.favorite} ${classes.maintainHeight}`}>
-                      <Typography gutterBottom color="inherit">
-                        Men's Dress Shoes
-                      </Typography>
+                      <Typography color="inherit">Men's Dress Shoes</Typography>
                       <div className={classes.overflow}>
                         <a href="#">
                           <img
                             className={classes.imgMedium}
                             src="https://images-na.ssl-images-amazon.com/images/G/01/amazonglobal/images/Fuji/Dash/2019/January/mShoes_1X._CB455678051_SY260_.jpg"
-                            alt="favorite"
-                          />
-                        </a>
-                      </div>
-                    </div>
-                  </Grid>
-                  <Grid item md={6}>
-                    <div className={`${classes.favorite} ${classes.maintainHeight}`}>
-                      <Typography gutterBottom color="inherit">
-                        Women's Dresses
-                      </Typography>
-                      <div className={classes.overflow}>
-                        <a href="#">
-                          <img
-                            className={classes.imgMedium}
-                            src="https://images-na.ssl-images-amazon.com/images/G/01/amazonglobal/images/Fuji/Dash/2019/January/W_Dresses_1X._CB455677604_SY260_.jpg"
                             alt="favorite"
                           />
                         </a>

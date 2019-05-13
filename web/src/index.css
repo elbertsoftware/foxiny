@@ -10,7 +10,6 @@ body {
   overflow-x: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: all 1s ease-in-out;
   min-width: 1000px;
 }
 

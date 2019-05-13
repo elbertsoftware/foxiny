@@ -43,6 +43,12 @@ const styles = theme => ({
     top: 43,
     left: 16,
   },
+  images: {
+    width: 260,
+    margin: '0 0 0 16px',
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
   thumbText: {
     cursor: 'pointer',
     marginLeft: 16,
@@ -109,48 +115,96 @@ const listImage = [
   { src: 'http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_vintagehthr_model_front_072014.jpg' },
 ];
 
-const ProductImage = withStyles(styles)(({ classes, activeImage }) => {
+const ProductImage = withStyles(styles)(({ classes, productImages, isPreviewed }) => {
   const [openModal, setOpenModal] = useState(false);
   const handleOpen = () => {
+    if (isPreviewed) return;
     setOpenModal(true);
   };
   const handleClose = () => {
     setOpenModal(false);
   };
   return (
-    <div>
+    <Paper square elevation={0}>
       <div style={{ margin: '10px 0', height: 360 }}>
         <div style={{ position: 'relative' }}>
           <Paper
             elevation={7}
             className={`${classes.imgCanvas} fit-img-div`}
-            style={{ backgroundImage: `url(${activeImage})` }}
+            style={{ backgroundImage: `url(${productImages[0]})` }}
           />
         </div>
       </div>
-      <div
-        onClick={handleOpen}
-        style={{ width: 260, margin: '0 0 0 16px', display: 'flex', justifyContent: 'space-between' }}
-      >
-        {listImage.slice(0, 4).map((ele, index) => {
-          return (
-            <div
-              key={index}
-              className={`${classes.imgBlockThumb} fit-img-div`}
-              style={{ backgroundImage: `url(${ele.src})` }}
-            />
-          );
-        })}
-      </div>
-      <span onClick={handleOpen} className={classes.thumbText}>
-        <span className="a-color-link">Xem tất cả 9 ảnh</span>
+      <Paper square elevation={0} onClick={handleOpen} role="presentation" className={classes.images}>
+        {productImages &&
+          productImages.map((ele, index) => {
+            return (
+              <div
+                key={index}
+                className={`${classes.imgBlockThumb} fit-img-div`}
+                style={{ backgroundImage: `url(${ele})` }}
+              />
+            );
+          })}
+      </Paper>
+      <span role="presentation" onClick={handleOpen} className={classes.thumbText}>
+        <span className="a-color-link">Xem tất cả {productImages && productImages.length} ảnh</span>
       </span>
-      <ImgGalleryModal listImage={listImage} handleClose={handleClose} open={openModal} />
-    </div>
+      {productImages && !isPreviewed && (
+        <ImgGalleryModal listImage={productImages} handleClose={handleClose} open={openModal} />
+      )}
+    </Paper>
   );
 });
+/* --------------------------------- */
+/* OPTION ITEMS */
+/* --------------------------------- */
+// Destruct options array would be passed as props into name and listItems
+const optionStyles = theme => ({
+  activeItem: {
+    background: theme.palette.primary.main,
+    color: 'white',
+    borderColor: theme.palette.primary.main,
+  },
+  inactive: {},
+});
+const OptionItems = withStyles(optionStyles)(
+  ({ classes, option, selectedOption, handleSelectOption, handleSetProductImage }) => {
+    const { name, listItems } = option;
+    const [selected, setSelected] = useState('');
+    const handeSetSelected = item => () => {
+      setSelected(item);
+      handleSelectOption(item);
+    };
+    useEffect(() => {
+      handleSetProductImage();
+    }, [selectedOption]);
+    return (
+      <React.Fragment>
+        <Typography className="spacing-top-bottom" variant="h5">
+          {name}
+        </Typography>
+        <div id="items">
+          <ul>
+            {listItems.map(item => (
+              <li
+                key={item}
+                className={selected === item ? classes.activeItem : classes.inactive}
+                onClick={handeSetSelected(item)}
+                data-item={item}
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <Divider className="spacing-top-bottom" />
+      </React.Fragment>
+    );
+  },
+);
 
-const ProductInfo = withStyles(styles)(({ classes }) => {
+const ProductInfo = withStyles(styles)(({ classes, textData }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleOnChange = (e, exp) => {
@@ -159,10 +213,7 @@ const ProductInfo = withStyles(styles)(({ classes }) => {
 
   return (
     <Paper className="maintain-height well">
-      <Typography variant="h6">
-        BETOP Surface Connect to USB-C Charging dongle, Requires PD Power Supply, Compatible with Microsoft Surface Pro
-        6 Pro 4 Pro 3 Surface Laptop 2 Surface Pro Surface Laptop & Surface Book
-      </Typography>
+      <Typography variant="h6">{textData.productName}</Typography>
       <div className={`${classes.flexCenter} spacing-top-bottom`}>
         <IconButton classes={{ root: classes.rootIconButton }}>
           <Icon>thumb_up_alt</Icon>
@@ -173,23 +224,18 @@ const ProductInfo = withStyles(styles)(({ classes }) => {
         </span>
       </div>
       <Divider className="spacing-top-bottom" />
-      <Typography style={{ margin: '32px 0' }}>
-        <strong>===PLEASE READ REQUIREMENT OF POWER SUPPLY ===</strong> <br />{' '}
-        <strong>===MAKE SURE YOUR CHARGER IS PD COMPATIBLE ===</strong> <br />
-        Check the output power and voltage: <br /> <strong>12V</strong> or <strong>15V</strong> output is must <br />{' '}
-        <strong>45W</strong> or greater is recommended.
-        <br /> Example: A typical USB PD voltage/amperage profiles - 5V/3A, 9V/3A, 12V/3A, 15V/3A, 20V/2.25A Kindly
-        remind: <br /> 18W, 24W and 29W MAY NOT WORK. If your USB-C charger came with your phone or iPad, IT WILL NOT
-        WORK.
-      </Typography>
+      {textData.briefDescription &&
+        textData.briefDescription.split('\n').map(description => (
+          <Typography style={{ margin: '16px 0' }}>
+            <strong>{description}</strong>
+          </Typography>
+        ))}
       <ExpansionPanel className={classes.expandPanel} expanded={expanded} onChange={handleOnChange}>
         <ExpansionPanelSummary className={classes.expandSummary}>
           <a className="a-color-link">{expanded ? 'Rút gọn' : 'Xem thêm'}</a>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <Typography>
-            <br /> <br />
-            <br />
             MOST APPLE USB-C CHARGERS WILL NOT WORK BECAUSE MOST MODELS DO NOT SUPPORT 12V or 15V OUTPUT
             <br /> About Apple Macbook power adapter
             <br /> Some Apple PD power chargers has no 12v or 15v output, some new models have. Here is the list:
@@ -207,7 +253,7 @@ const ProductInfo = withStyles(styles)(({ classes }) => {
   );
 });
 
-const ColorItems = ({ setActiveImg }) => {
+/* const ColorItems = ({ setActiveImg }) => {
   const handleOnClick = event => {
     const imgUrl = event.target.dataset.colorImg;
     const { color } = event.target.dataset;
@@ -297,30 +343,10 @@ const ColorItems = ({ setActiveImg }) => {
     </React.Fragment>
   );
 };
-
-const SizeItems = ({ classes }) => {
-  return (
-    <React.Fragment>
-      <Typography className="spacing-top-bottom" variant="h5">
-        Sizes
-      </Typography>
-      <div id="sizes">
-        <ul>
-          <li data-size="xs">xs</li>
-          <li data-size="s">s</li>
-          <li data-size="m">m</li>
-          <li data-size="l">l</li>
-          <li data-size="xl">xl</li>
-          <li data-size="2x" data-price="2">
-            2x
-          </li>
-        </ul>
-      </div>
-      <Divider className="spacing-top-bottom" />
-    </React.Fragment>
-  );
-};
-
+*/
+/* --------------------------------- */
+/* QUANTITY */
+/* --------------------------------- */
 const QuantityButton = ({ classes, quantity, setQuantity, className }) => {
   const increQuan = () => {
     setQuantity(quantity + 1);
@@ -341,19 +367,20 @@ const QuantityButton = ({ classes, quantity, setQuantity, className }) => {
     </div>
   );
 };
-
-const BuyBox = ({ classes, quantity, setQuantity, setActiveImg, colorOptions, sizeOptions }) => (
+/* --------------------------------- */
+/* BUY BOX */
+/* --------------------------------- */
+const BuyBox = ({ classes, quantity, setQuantity, optionList, textData: { price, brandName } }) => (
   <Paper classes={{ root: classes.colorPaper }}>
     <div className="product-options well">
       <div className="flex">
         <Typography variant="h5">Mua mới</Typography>
         <Typography variant="h4" color="secondary">
-          $ 445
+          VND {price}
         </Typography>
       </div>
       <Divider className="spacing-top-bottom" />
-      {colorOptions && <ColorItems setActiveImg={setActiveImg} />}
-      {sizeOptions && <SizeItems />}
+      {optionList}
       <Typography className="spacing-top-bottom" variant="h5">
         Số lượng
       </Typography>
@@ -362,7 +389,7 @@ const BuyBox = ({ classes, quantity, setQuantity, setActiveImg, colorOptions, si
         Còn hàng.
       </Typography>
       <Typography className="spacing-top-bottom" variant="subtitle1">
-        Được bán bởi <span className="a-color-link">Saphei Shop</span>
+        Được bán bởi <span className="a-color-link">{brandName}</span>
       </Typography>
       <Button variant="contained" className="spacing-top" color="secondary" fullWidth>
         Thêm vào giỏ
@@ -372,15 +399,11 @@ const BuyBox = ({ classes, quantity, setQuantity, setActiveImg, colorOptions, si
 );
 BuyBox.propTypes = {
   classes: PropTypes.object.isRequired,
-  colorOptions: PropTypes.bool,
-  sizeOptions: PropTypes.bool,
+  optionList: PropTypes.any,
 };
-
-BuyBox.defaultProps = {
-  colorOptions: false,
-  sizeOptions: false,
-};
-
+/* --------------------------------- */
+/* RELATED PRODUCT SECTION */
+/* --------------------------------- */
 const RelatedProduct = ({ classes }) => {
   useEffect(() => {
     const glider = new Glider(document.querySelector('.glider-related-product'), {
@@ -426,17 +449,59 @@ const RelatedProduct = ({ classes }) => {
     </div>
   );
 };
-
+/* --------------------------------- */
+/* PRODUCT DETAIL PAGE */
+/* --------------------------------- */
 const descriptionData = [
   ' Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc',
   'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc',
 ];
-
-const ProductDetailPage = ({ classes, theme }) => {
+// const productImageData = {
+//   XanhS: [
+//     'http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_cobalththr_model_front_072014.jpg',
+//     'http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_cobalththr_model_front_072014.jpg',
+//   ],
+//   XanhM: ['http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_cobalththr_model_front_072014.jpg'],
+//   ĐỏS: [
+//     'http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_scarleththr_model_front_072014.jpg',
+//     'http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_scarleththr_model_front_072014.jpg',
+//     'http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_scarleththr_model_front_072014.jpg',
+//   ],
+// };
+// Data for Buy box. This data will get from SelectOptionModal
+// const optionList = [
+//   {
+//     key: '0',
+//     name: 'Màu sắc',
+//     listItems: ['Xanh', 'Đỏ', 'Tím', 'Vàng'],
+//   },
+//   {
+//     key: '1',
+//     name: 'Kích cỡ',
+//     listItems: ['S', 'M', 'L', 'XL'],
+//   },
+// ];
+const ProductDetailPage = ({ classes, theme, optionList, productImageData, textData, preview }) => {
   const [quantity, setQuantity] = useState(1);
-  const [activeImage, setActiveImg] = useState(
-    'http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_cobalththr_model_front_072014.jpg',
-  );
+
+  const defaultSelectOption = optionList.map(option => option.listItems[0]);
+  // selectedOption is an array containing: [selectedOption in option1, selectedOption in option2, ...]
+  const [selectedOption, setSelectedOption] = useState(defaultSelectOption);
+  const handleSelectOption = optionKey => option => {
+    // optionKey is a cue to know which set of options is (Color, Size, ...)
+    // option is value receiving from OptionItem component
+    const newArr = [...selectedOption];
+    newArr[optionKey] = option;
+    setSelectedOption(newArr);
+  };
+
+  const [productImages, setProductImages] = useState(productImageData[selectedOption.join('')]); // pattern: option1option2, ex: XanhS
+  const handleSetProductImage = () => {
+    const cloneArr = [...selectedOption]; // [Xanh, S]
+    const key = cloneArr.join(''); // => XanhS
+    setProductImages(productImageData[key]);
+  };
+
   const [tabValue, setTabChange] = useState(0);
   const descriptionArr = [
     <ProductDescription
@@ -456,63 +521,86 @@ const ProductDetailPage = ({ classes, theme }) => {
       descriptions={descriptionData}
     />,
   ];
+  // Using component composition technique to avoid passing props through many level
+  const optionItem = (
+    <React.Fragment>
+      {optionList.map((option, index) => (
+        <OptionItems
+          selectedOption={selectedOption}
+          key={option.name}
+          option={option}
+          handleSelectOption={handleSelectOption(index)}
+          handleSetProductImage={handleSetProductImage}
+        />
+      ))}
+    </React.Fragment>
+  );
 
   return (
-    <React.Fragment>
+    <Paper square elevation={0}>
       <Grid container className={classes.root} spacing={16}>
         <Grid item xs={2} sm={6} lg={2}>
-          <ProductImage activeImage={activeImage} />
+          <ProductImage isPreviewed={preview} productImages={productImages} />
         </Grid>
         <Grid item xs={6} sm={6} lg={6}>
-          <ProductInfo />
+          <ProductInfo textData={textData} />
         </Grid>
         <Grid item xs={4} sm={4} lg={4}>
           <Grid container className="maintain-height">
             <Grid item lg={1} />
             <Grid item lg={11}>
               <BuyBox
-                colorOptions
-                sizeOptions
-                setActiveImg={setActiveImg}
+                optionList={optionItem}
                 quantity={quantity}
                 setQuantity={setQuantity}
                 classes={classes}
+                textData={textData}
               />
             </Grid>
           </Grid>
         </Grid>
       </Grid>
+      {!preview && (
+        <React.Fragment>
+          <Tabs
+            className={classes.tabs}
+            value={tabValue}
+            onChange={(event, value) => setTabChange(value)}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="scrollable"
+            scrollButtons="auto"
+          >
+            {descriptionArr.map((element, index) => (
+              <Tab key={index} label={`Description ${index + 1}`} />
+            ))}
+          </Tabs>
+          <SwipeableViews
+            axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+            index={tabValue}
+            onChangeIndex={index => setTabChange(index)}
+          >
+            {descriptionArr.map((element, index) => (
+              <TabContainer key={index} dir={theme.direction}>
+                {element}
+              </TabContainer>
+            ))}
+          </SwipeableViews>
 
-      <Tabs
-        className={classes.tabs}
-        value={tabValue}
-        onChange={(event, value) => setTabChange(value)}
-        indicatorColor="primary"
-        textColor="primary"
-        variant="scrollable"
-        scrollButtons="auto"
-      >
-        {descriptionArr.map((element, index) => (
-          <Tab key={index} label={`Description ${index + 1}`} />
-        ))}
-      </Tabs>
-      <SwipeableViews
-        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-        index={tabValue}
-        onChangeIndex={index => setTabChange(index)}
-      >
-        {descriptionArr.map((element, index) => (
-          <TabContainer key={index} dir={theme.direction}>
-            {element}
-          </TabContainer>
-        ))}
-      </SwipeableViews>
+          <RelatedProduct classes={classes} />
 
-      <RelatedProduct classes={classes} />
-
-      <CustomerReviews />
-    </React.Fragment>
+          <CustomerReviews />
+        </React.Fragment>
+      )}
+    </Paper>
   );
+};
+
+ProductDetailPage.propsTypes = {
+  preview: PropTypes.bool,
+};
+ProductDetailPage.defaultProps = {
+  preview: false,
 };
 
 export default withStyles(styles, { withTheme: true })(ProductDetailPage);

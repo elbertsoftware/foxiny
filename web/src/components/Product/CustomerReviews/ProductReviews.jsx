@@ -64,6 +64,9 @@ const styles = theme => ({
   productInfoList: {
     margin: '1rem 0',
   },
+  amountOfReviews: {
+    marginLeft: 8,
+  },
 });
 
 const ReviewedProductInfo = withStyles(styles)(({ classes, image, title, price, retailer }) => {
@@ -90,7 +93,7 @@ const ReviewedProductInfo = withStyles(styles)(({ classes, image, title, price, 
 
 const CustomerAlsoView = withStyles(styles)(({ classes }) => {
   return (
-    <Grid className={classes.productInfoList} container justify="center">
+    <Grid className={classes.productInfoList} container justify="flex-end">
       <Typography gutterBottom variant="h6">
         Khách hàng cũng đã xem những sản phẩm này ...
       </Typography>
@@ -177,7 +180,9 @@ const ProductReviews = ({ classes }) => {
             </Select>
           </div>
         </div>
-
+        <Typography className={classes.amountOfReviews} gutterBottom variant="subtitle2">
+          Hiển thị 1-10 trong tổng số 1000 lượt đánh giá
+        </Typography>
         <ReviewCard topReview />
         <ReviewCard topReview />
         <ReviewCard topReview />
