@@ -1,12 +1,12 @@
 // @flow
 
-import logger from "../../utils/logger";
-import { getUserIDFromRequest, checkRights } from "../../utils/authentication";
+import logger from '../../utils/logger';
+import { getUserIDFromRequest, checkRights } from '../../utils/authentication';
 import {
   restructureProductAttributes,
   restrutureProductTemplate2FriendlyProduct,
-} from "../../utils/productUtils/dataHelper";
-import { validateCreateNewProductInput } from "../../utils/productUtils/validation";
+} from '../../utils/productUtils/dataHelper';
+import { validateCreateNewProductInput } from '../../utils/productUtils/validation';
 
 // log transaction
 
@@ -14,7 +14,6 @@ export const Mutation = {
   createBrandNewProductWVariants: async (parent, { sellerId, data }, { prisma, request, cache }, info) => {
     try {
       // TODO: check permission
-      
 
       // TODO: validate input
       const newData = validateCreateNewProductInput(data);

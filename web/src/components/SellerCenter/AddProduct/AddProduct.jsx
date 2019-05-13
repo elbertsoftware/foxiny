@@ -1,6 +1,10 @@
+/* eslint-disable implicit-arrow-linebreak */
 import React, { useState } from 'react';
 import { Paper, Typography, withStyles, Stepper, Step, StepLabel, Button } from '@material-ui/core';
 import { Form } from 'react-final-form';
+import { graphql, compose } from 'react-apollo';
+import { gql } from 'apollo-boost';
+import { toast } from 'react-toastify';
 import arrayMutators from 'final-form-arrays';
 import CascadingMenuCategory from './CascadingMenuCategory';
 import BasicInfo from './BasicInfo/BasicInfo';
@@ -8,6 +12,39 @@ import ProductProperties from './ProductProperties/ProductProperties';
 import AttachmentSection from './Attachment/AttachmentSection';
 import AddProductImage from './AddProductImages/AddProductImage';
 import ProductDataContext from '../../../utils/context/ProductDataContext';
+import FormButton from '../../../utils/common/form/FormButton';
+
+const CREATE_NEW_PRODUCT = gql`
+  mutation createBrandNewProductWVariants($sellerId: String!, $data: CreateProductWithTemplateInput!) {
+    createBrandNewProductWVariants(sellerId: $sellerId, data: $data) {
+      productTemplateId
+      productId
+      name
+      productName
+      briefDescription
+      brand
+      category {
+        id
+        name
+      }
+      descriptions {
+        fromRetailers
+      }
+      productMedias {
+        id
+      }
+      listPrice
+      sellPrice
+      stockQuantity
+      inStock
+      approved
+      attributes {
+        name
+        value
+      }
+    }
+  }
+`;
 
 const styles = theme => ({
   paper: {
@@ -48,11 +85,18 @@ function getStepContent(step) {
     case 4:
       return <AttachmentSection />;
     default:
-      return 'Unknown step';
+      return (
+        <Paper square elevation={0}>
+          <Typography>
+            Các bước thêm sản phẩm đã hoàn tất, nhấn Tạo mới để tạo sản phẩm, chúng tôi sẽ kiểm duyệt yêu cầu của bạn
+            trong vòng 24h.
+          </Typography>
+        </Paper>
+      );
   }
 }
 
-const AddProduct = ({ classes }) => {
+const AddProduct = ({ classes, createNewProduct }) => {
   const [activeStep, setActiveStep] = useState(0);
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -61,8 +105,53 @@ const AddProduct = ({ classes }) => {
     setActiveStep(activeStep - 1);
   };
   const steps = getSteps();
-  const onSubmit = values => {
-    window.alert(JSON.stringify(values, 0, 2));
+  const onSubmit = async values => {
+    // Format the shape of data to pass to mutation
+    // Adding attributes array for each product
+    const { products, options } = values;
+    const attributeArrOfAllProduct = [];
+    for (let i = 0; i < products.length; i++) {
+      const attributeArrEachPro = [];
+      for (let y = 0; y < options.length; y++) {
+        const attributeObject = {
+          attributeName: options[y].name,
+          value: products[i][`option${y}`],
+        };
+        attributeArrEachPro.push(attributeObject);
+      }
+      attributeArrOfAllProduct.push(attributeArrEachPro);
+    }
+    const newProducts = products.map((product, index) =>
+      Object.assign(
+        {},
+        {
+          productName: product.productName,
+          listPrice: +product.listPrice / 1000,
+          sellPrice: +product.sellPrice / 1000,
+          stockQuantity: +product.stockQuantity,
+          attributes: attributeArrOfAllProduct[index],
+        },
+      ),
+    );
+    try {
+      const returnData = await createNewProduct({
+        variables: {
+          sellerId: 'cjurxpx4o00az07063f7imdn3',
+          data: {
+            name: values.productName,
+            briefDescription: values.briefDescription,
+            categoryIds: ['cjuqqr6lb008b0806ngt5fe6h', 'cjuqqrc7l008j0806a88o4xhq'],
+            products: newProducts,
+            brandName: values.brandName,
+            detailDescription: 'Hello from Tan Binh',
+          },
+        },
+      });
+      console.log(returnData);
+      toast.success('Tạo sản phẩm thành công !');
+    } catch (error) {
+      toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi khi đăng nhập !');
+    }
   };
   return (
     <Paper className={classes.paper}>
@@ -77,69 +166,62 @@ const AddProduct = ({ classes }) => {
         ))}
       </Stepper>
       <div>
-        {activeStep === steps.length ? (
-          <Paper square elevation={0} className={classes.finishedContainer}>
-            <Typography>
-              Các bước thêm sản phẩm đã hoàn tất, chúng tôi sẽ kiểm duyệt yêu cầu của bạn trong vòng 24h.
-            </Typography>
-            <div>
-              <Button onClick={handleBack} className={classes.button}>
-                Quay lại
-              </Button>
-              <Button variant="contained" color="secondary" className={classes.button}>
-                Tạo mới
-              </Button>
-            </div>
-          </Paper>
-        ) : (
-          <Paper square elevation={0} className={classes.finishedContainer}>
-            <Form
-              onSubmit={onSubmit}
-              mutators={{
-                setValue: ([field, value], state, { changeValue }) => {
-                  changeValue(state, field, () => value);
-                },
-                ...arrayMutators,
-              }}
-              render={({
-                handleSubmit,
-                submitting,
-                form: {
-                  mutators: { setValue, push, pop, remove },
-                },
-                values,
-              }) => (
-                <form onSubmit={handleSubmit} noValidate>
-                  <ProductDataContext.Provider value={{ data: values }}>
-                    {activeStep === 2 ? (
-                      <ProductProperties setValue={setValue} push={push} pop={pop} remove={remove} />
+        <Paper square elevation={0} className={classes.finishedContainer}>
+          <Form
+            onSubmit={onSubmit}
+            mutators={{
+              setValue: ([field, value], state, { changeValue }) => {
+                changeValue(state, field, () => value);
+              },
+              ...arrayMutators,
+            }}
+            render={({
+              handleSubmit,
+              submitting,
+              form: {
+                mutators: { setValue, push, pop, remove },
+              },
+              values,
+            }) => (
+              <form onSubmit={handleSubmit} noValidate>
+                <ProductDataContext.Provider value={{ data: values }}>
+                  {activeStep === 2 ? (
+                    <ProductProperties setValue={setValue} push={push} pop={pop} remove={remove} />
+                  ) : (
+                    <React.Fragment>
+                      {activeStep === 3 ? <AddProductImage setValue={setValue} /> : getStepContent(activeStep)}
+                    </React.Fragment>
+                  )}
+                  {/*<ProductProperties setValue={setValue} push={push} pop={pop} remove={remove} />*/}
+                </ProductDataContext.Provider>
+                <div className={classes.actionsContainer}>
+                  <div className={classes.grow} />
+                  <div>
+                    <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
+                      Quay lại
+                    </Button>
+                    {activeStep === steps.length ? (
+                      <FormButton className={classes.button} disabled={submitting} color="secondary" fullWidth>
+                        {submitting ? 'Thực hiện...' : 'Tạo mới'}
+                      </FormButton>
                     ) : (
-                      <React.Fragment>
-                        {activeStep === 3 ? <AddProductImage setValue={setValue} /> : getStepContent(activeStep)}
-                      </React.Fragment>
-                    )}
-                    {/*<ProductProperties setValue={setValue} push={push} pop={pop} remove={remove} />*/}
-                  </ProductDataContext.Provider>
-                  <div className={classes.actionsContainer}>
-                    <div className={classes.grow} />
-                    <div>
-                      <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
-                        Quay lại
-                      </Button>
                       <Button variant="contained" color="secondary" onClick={handleNext} className={classes.button}>
                         {activeStep === steps.length - 1 ? 'Hoàn thành' : 'Tiếp'}
                       </Button>
-                    </div>
+                    )}
                   </div>
-                  <pre>{JSON.stringify(values, 0, 2)}</pre>
-                </form>
-              )}
-            />
-          </Paper>
-        )}
+                </div>
+                <pre>{JSON.stringify(values, 0, 2)}</pre>
+              </form>
+            )}
+          />
+        </Paper>
       </div>
     </Paper>
   );
 };
 
-export default withStyles(styles)(AddProduct);
+export default compose(
+  graphql(CREATE_NEW_PRODUCT, { name: 'createNewProduct' }),
+  withStyles(styles),
+)(AddProduct);

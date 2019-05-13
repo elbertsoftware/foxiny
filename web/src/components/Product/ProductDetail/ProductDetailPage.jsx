@@ -370,13 +370,13 @@ const QuantityButton = ({ classes, quantity, setQuantity, className }) => {
 /* --------------------------------- */
 /* BUY BOX */
 /* --------------------------------- */
-const BuyBox = ({ classes, quantity, setQuantity, optionList, textData: { price, brandName } }) => (
+const BuyBox = ({ classes, quantity, setQuantity, optionList, textData: { sellPrice, brandName } }) => (
   <Paper classes={{ root: classes.colorPaper }}>
     <div className="product-options well">
       <div className="flex">
         <Typography variant="h5">Mua mới</Typography>
         <Typography variant="h4" color="secondary">
-          VND {price}
+          VND {sellPrice}
         </Typography>
       </div>
       <Divider className="spacing-top-bottom" />

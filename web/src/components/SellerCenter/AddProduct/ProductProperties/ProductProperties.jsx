@@ -61,8 +61,8 @@ const attributeArr = [
   { productId: 'name', caption: 'Tên sản phẩm' },
   { productId: 'id', caption: 'Mã sản phẩm' },
   { productId: 'listPrice', caption: 'Giá niêm yết' },
-  { productId: 'price', caption: 'Giá bán' },
-  { productId: 'inventoryNum', caption: 'Số lượng tồn kho' },
+  { productId: 'sellPrice', caption: 'Giá bán' },
+  { productId: 'stockQuantity', caption: 'Số lượng tồn kho' },
 ];
 const ProductProperties = ({ classes, setValue, push, pop, remove }) => {
   const productData = useContext(ProductDataContext);
@@ -314,7 +314,7 @@ const ProductProperties = ({ classes, setValue, push, pop, remove }) => {
                           component={TextField}
                           required
                           margin="normal"
-                          name={`${name}.price`}
+                          name={`${name}.sellPrice`}
                           type="text"
                           variant="outlined"
                         />
@@ -328,7 +328,7 @@ const ProductProperties = ({ classes, setValue, push, pop, remove }) => {
                           component={TextField}
                           required
                           margin="normal"
-                          name={`${name}.inventoryNum`}
+                          name={`${name}.stockQuantity`}
                           type="text"
                           variant="outlined"
                         />

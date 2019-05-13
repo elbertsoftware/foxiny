@@ -1,5 +1,5 @@
 // @flow
-import { gql } from "apollo-server-express";
+import { gql } from 'apollo-server-express';
 
 // TODO: claim a field to handle upload stream: productMedias
 // TODO: claim enabled field to handle status of options
@@ -10,7 +10,7 @@ export const productSchema = gql`
     id: ID!
     name: String!
     briefDescription: String!
-    category:[Category!]!
+    category: [Category!]!
 
     products: [FriendlyProduct!]
   }
@@ -64,10 +64,10 @@ export const productSchema = gql`
 
   extend type Mutation {
     # one product but many options, ex: Product A -> A size S, A size M
-    createBrandNewProductWVariants(sellerId: String!, data: CreatProductWithTemplateInput!): [FriendlyProduct!]
+    createBrandNewProductWVariants(sellerId: String!, data: CreateProductWithTemplateInput!): [FriendlyProduct!]
   }
 
-  input CreatProductWithTemplateInput {
+  input CreateProductWithTemplateInput {
     name: String!
     briefDescription: String!
     categoryIds: [String!]!

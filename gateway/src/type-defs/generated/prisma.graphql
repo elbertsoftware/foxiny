@@ -1,5 +1,5 @@
 # source: http://localhost:4466/foxiny/dev
-# timestamp: Tue Apr 30 2019 06:38:23 GMT+0700 (Indochina Time)
+# timestamp: Mon May 13 2019 22:18:46 GMT+0700 (Indochina Time)
 
 type Address implements Node {
   id: ID!
@@ -1257,11 +1257,15 @@ type AggregateProduct {
   count: Int!
 }
 
-type AggregateProductPropertiesName {
+type AggregateProductAttribute {
   count: Int!
 }
 
-type AggregateProductPropertiesValue {
+type AggregateProductAttributeValue {
+  count: Int!
+}
+
+type AggregateProductOption {
   count: Int!
 }
 
@@ -1269,7 +1273,7 @@ type AggregateProductRetailer {
   count: Int!
 }
 
-type AggregateProductVariants {
+type AggregateProductTemplate {
   count: Int!
 }
 
@@ -1431,13 +1435,6 @@ input AssignmentUpdateManyMutationInput {
   _version: Int
 }
 
-input AssignmentUpdateOneRequiredWithoutUserInput {
-  create: AssignmentCreateWithoutUserInput
-  connect: AssignmentWhereUniqueInput
-  update: AssignmentUpdateWithoutUserDataInput
-  upsert: AssignmentUpsertWithoutUserInput
-}
-
 input AssignmentUpdateOneWithoutRetailersInput {
   create: AssignmentCreateWithoutRetailersInput
   connect: AssignmentWhereUniqueInput
@@ -1445,6 +1442,15 @@ input AssignmentUpdateOneWithoutRetailersInput {
   delete: Boolean
   update: AssignmentUpdateWithoutRetailersDataInput
   upsert: AssignmentUpsertWithoutRetailersInput
+}
+
+input AssignmentUpdateOneWithoutUserInput {
+  create: AssignmentCreateWithoutUserInput
+  connect: AssignmentWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: AssignmentUpdateWithoutUserDataInput
+  upsert: AssignmentUpsertWithoutUserInput
 }
 
 input AssignmentUpdateWithoutRetailersDataInput {
@@ -1611,7 +1617,7 @@ type Brand implements Node {
   id: ID!
   _version: Int!
   brandName: String
-  products(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Product!]
+  productTemplates(where: ProductTemplateWhereInput, orderBy: ProductTemplateOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductTemplate!]
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -1630,15 +1636,15 @@ input BrandCreateInput {
   id: ID
   _version: Int
   brandName: String
-  products: ProductCreateManyWithoutBrandInput
+  productTemplates: ProductTemplateCreateManyWithoutBrandInput
 }
 
-input BrandCreateOneWithoutProductsInput {
-  create: BrandCreateWithoutProductsInput
+input BrandCreateOneWithoutProductTemplatesInput {
+  create: BrandCreateWithoutProductTemplatesInput
   connect: BrandWhereUniqueInput
 }
 
-input BrandCreateWithoutProductsInput {
+input BrandCreateWithoutProductTemplatesInput {
   id: ID
   _version: Int
   brandName: String
@@ -1716,7 +1722,7 @@ input BrandSubscriptionWhereInput {
 input BrandUpdateInput {
   _version: Int
   brandName: String
-  products: ProductUpdateManyWithoutBrandInput
+  productTemplates: ProductTemplateUpdateManyWithoutBrandInput
 }
 
 input BrandUpdateManyMutationInput {
@@ -1724,23 +1730,23 @@ input BrandUpdateManyMutationInput {
   brandName: String
 }
 
-input BrandUpdateOneWithoutProductsInput {
-  create: BrandCreateWithoutProductsInput
+input BrandUpdateOneWithoutProductTemplatesInput {
+  create: BrandCreateWithoutProductTemplatesInput
   connect: BrandWhereUniqueInput
   disconnect: Boolean
   delete: Boolean
-  update: BrandUpdateWithoutProductsDataInput
-  upsert: BrandUpsertWithoutProductsInput
+  update: BrandUpdateWithoutProductTemplatesDataInput
+  upsert: BrandUpsertWithoutProductTemplatesInput
 }
 
-input BrandUpdateWithoutProductsDataInput {
+input BrandUpdateWithoutProductTemplatesDataInput {
   _version: Int
   brandName: String
 }
 
-input BrandUpsertWithoutProductsInput {
-  update: BrandUpdateWithoutProductsDataInput!
-  create: BrandCreateWithoutProductsInput!
+input BrandUpsertWithoutProductTemplatesInput {
+  update: BrandUpdateWithoutProductTemplatesDataInput!
+  create: BrandCreateWithoutProductTemplatesInput!
 }
 
 input BrandWhereInput {
@@ -1898,9 +1904,9 @@ input BrandWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
-  products_every: ProductWhereInput
-  products_some: ProductWhereInput
-  products_none: ProductWhereInput
+  productTemplates_every: ProductTemplateWhereInput
+  productTemplates_some: ProductTemplateWhereInput
+  productTemplates_none: ProductTemplateWhereInput
 }
 
 input BrandWhereUniqueInput {
@@ -1913,7 +1919,7 @@ type Category implements Node {
   _version: Int!
   name: String
   parentId(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category!]
-  products(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Product!]
+  productTemplates(where: ProductTemplateWhereInput, orderBy: ProductTemplateOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductTemplate!]
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -1933,7 +1939,7 @@ input CategoryCreateInput {
   _version: Int
   name: String
   parentId: CategoryCreateManyInput
-  products: ProductCreateManyWithoutCategoryInput
+  productTemplates: ProductTemplateCreateManyWithoutCategoryInput
 }
 
 input CategoryCreateManyInput {
@@ -1941,12 +1947,12 @@ input CategoryCreateManyInput {
   connect: [CategoryWhereUniqueInput!]
 }
 
-input CategoryCreateManyWithoutProductsInput {
-  create: [CategoryCreateWithoutProductsInput!]
+input CategoryCreateManyWithoutProductTemplatesInput {
+  create: [CategoryCreateWithoutProductTemplatesInput!]
   connect: [CategoryWhereUniqueInput!]
 }
 
-input CategoryCreateWithoutProductsInput {
+input CategoryCreateWithoutProductTemplatesInput {
   id: ID
   _version: Int
   name: String
@@ -2183,14 +2189,14 @@ input CategoryUpdateDataInput {
   _version: Int
   name: String
   parentId: CategoryUpdateManyInput
-  products: ProductUpdateManyWithoutCategoryInput
+  productTemplates: ProductTemplateUpdateManyWithoutCategoryInput
 }
 
 input CategoryUpdateInput {
   _version: Int
   name: String
   parentId: CategoryUpdateManyInput
-  products: ProductUpdateManyWithoutCategoryInput
+  productTemplates: ProductTemplateUpdateManyWithoutCategoryInput
 }
 
 input CategoryUpdateManyDataInput {
@@ -2215,16 +2221,16 @@ input CategoryUpdateManyMutationInput {
   name: String
 }
 
-input CategoryUpdateManyWithoutProductsInput {
-  create: [CategoryCreateWithoutProductsInput!]
+input CategoryUpdateManyWithoutProductTemplatesInput {
+  create: [CategoryCreateWithoutProductTemplatesInput!]
   connect: [CategoryWhereUniqueInput!]
   set: [CategoryWhereUniqueInput!]
   disconnect: [CategoryWhereUniqueInput!]
   delete: [CategoryWhereUniqueInput!]
-  update: [CategoryUpdateWithWhereUniqueWithoutProductsInput!]
+  update: [CategoryUpdateWithWhereUniqueWithoutProductTemplatesInput!]
   updateMany: [CategoryUpdateManyWithWhereNestedInput!]
   deleteMany: [CategoryScalarWhereInput!]
-  upsert: [CategoryUpsertWithWhereUniqueWithoutProductsInput!]
+  upsert: [CategoryUpsertWithWhereUniqueWithoutProductTemplatesInput!]
 }
 
 input CategoryUpdateManyWithWhereNestedInput {
@@ -2232,7 +2238,7 @@ input CategoryUpdateManyWithWhereNestedInput {
   data: CategoryUpdateManyDataInput!
 }
 
-input CategoryUpdateWithoutProductsDataInput {
+input CategoryUpdateWithoutProductTemplatesDataInput {
   _version: Int
   name: String
   parentId: CategoryUpdateManyInput
@@ -2243,9 +2249,9 @@ input CategoryUpdateWithWhereUniqueNestedInput {
   data: CategoryUpdateDataInput!
 }
 
-input CategoryUpdateWithWhereUniqueWithoutProductsInput {
+input CategoryUpdateWithWhereUniqueWithoutProductTemplatesInput {
   where: CategoryWhereUniqueInput!
-  data: CategoryUpdateWithoutProductsDataInput!
+  data: CategoryUpdateWithoutProductTemplatesDataInput!
 }
 
 input CategoryUpsertWithWhereUniqueNestedInput {
@@ -2254,10 +2260,10 @@ input CategoryUpsertWithWhereUniqueNestedInput {
   create: CategoryCreateInput!
 }
 
-input CategoryUpsertWithWhereUniqueWithoutProductsInput {
+input CategoryUpsertWithWhereUniqueWithoutProductTemplatesInput {
   where: CategoryWhereUniqueInput!
-  update: CategoryUpdateWithoutProductsDataInput!
-  create: CategoryCreateWithoutProductsInput!
+  update: CategoryUpdateWithoutProductTemplatesDataInput!
+  create: CategoryCreateWithoutProductTemplatesInput!
 }
 
 input CategoryWhereInput {
@@ -2418,9 +2424,9 @@ input CategoryWhereInput {
   parentId_every: CategoryWhereInput
   parentId_some: CategoryWhereInput
   parentId_none: CategoryWhereInput
-  products_every: ProductWhereInput
-  products_some: ProductWhereInput
-  products_none: ProductWhereInput
+  productTemplates_every: ProductTemplateWhereInput
+  productTemplates_some: ProductTemplateWhereInput
+  productTemplates_none: ProductTemplateWhereInput
 }
 
 input CategoryWhereUniqueInput {
@@ -2436,7 +2442,6 @@ type Description implements Node {
   retailer: Retailer
   product: Product
   description: String
-  properties: Json
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -2455,22 +2460,13 @@ input DescriptionCreateInput {
   id: ID
   _version: Int
   description: String
-  properties: Json
   retailer: RetailerCreateOneInput
-  product: ProductCreateOneWithoutDescriptionsInput
+  product: ProductCreateOneInput
 }
 
-input DescriptionCreateManyWithoutProductInput {
-  create: [DescriptionCreateWithoutProductInput!]
+input DescriptionCreateManyInput {
+  create: [DescriptionCreateInput!]
   connect: [DescriptionWhereUniqueInput!]
-}
-
-input DescriptionCreateWithoutProductInput {
-  id: ID
-  _version: Int
-  description: String
-  properties: Json
-  retailer: RetailerCreateOneInput
 }
 
 """An edge in a connection."""
@@ -2489,8 +2485,6 @@ enum DescriptionOrderByInput {
   _version_DESC
   description_ASC
   description_DESC
-  properties_ASC
-  properties_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -2501,7 +2495,6 @@ type DescriptionPreviousValues {
   id: ID!
   _version: Int!
   description: String
-  properties: Json
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -2702,36 +2695,40 @@ input DescriptionSubscriptionWhereInput {
   node: DescriptionWhereInput
 }
 
+input DescriptionUpdateDataInput {
+  _version: Int
+  description: String
+  retailer: RetailerUpdateOneInput
+  product: ProductUpdateOneInput
+}
+
 input DescriptionUpdateInput {
   _version: Int
   description: String
-  properties: Json
   retailer: RetailerUpdateOneInput
-  product: ProductUpdateOneWithoutDescriptionsInput
+  product: ProductUpdateOneInput
 }
 
 input DescriptionUpdateManyDataInput {
   _version: Int
   description: String
-  properties: Json
+}
+
+input DescriptionUpdateManyInput {
+  create: [DescriptionCreateInput!]
+  connect: [DescriptionWhereUniqueInput!]
+  set: [DescriptionWhereUniqueInput!]
+  disconnect: [DescriptionWhereUniqueInput!]
+  delete: [DescriptionWhereUniqueInput!]
+  update: [DescriptionUpdateWithWhereUniqueNestedInput!]
+  updateMany: [DescriptionUpdateManyWithWhereNestedInput!]
+  deleteMany: [DescriptionScalarWhereInput!]
+  upsert: [DescriptionUpsertWithWhereUniqueNestedInput!]
 }
 
 input DescriptionUpdateManyMutationInput {
   _version: Int
   description: String
-  properties: Json
-}
-
-input DescriptionUpdateManyWithoutProductInput {
-  create: [DescriptionCreateWithoutProductInput!]
-  connect: [DescriptionWhereUniqueInput!]
-  set: [DescriptionWhereUniqueInput!]
-  disconnect: [DescriptionWhereUniqueInput!]
-  delete: [DescriptionWhereUniqueInput!]
-  update: [DescriptionUpdateWithWhereUniqueWithoutProductInput!]
-  updateMany: [DescriptionUpdateManyWithWhereNestedInput!]
-  deleteMany: [DescriptionScalarWhereInput!]
-  upsert: [DescriptionUpsertWithWhereUniqueWithoutProductInput!]
 }
 
 input DescriptionUpdateManyWithWhereNestedInput {
@@ -2739,22 +2736,15 @@ input DescriptionUpdateManyWithWhereNestedInput {
   data: DescriptionUpdateManyDataInput!
 }
 
-input DescriptionUpdateWithoutProductDataInput {
-  _version: Int
-  description: String
-  properties: Json
-  retailer: RetailerUpdateOneInput
+input DescriptionUpdateWithWhereUniqueNestedInput {
+  where: DescriptionWhereUniqueInput!
+  data: DescriptionUpdateDataInput!
 }
 
-input DescriptionUpdateWithWhereUniqueWithoutProductInput {
+input DescriptionUpsertWithWhereUniqueNestedInput {
   where: DescriptionWhereUniqueInput!
-  data: DescriptionUpdateWithoutProductDataInput!
-}
-
-input DescriptionUpsertWithWhereUniqueWithoutProductInput {
-  where: DescriptionWhereUniqueInput!
-  update: DescriptionUpdateWithoutProductDataInput!
-  create: DescriptionCreateWithoutProductInput!
+  update: DescriptionUpdateDataInput!
+  create: DescriptionCreateInput!
 }
 
 input DescriptionWhereInput {
@@ -3916,109 +3906,115 @@ type Mutation {
   createSecurityAnswer(data: SecurityAnswerCreateInput!): SecurityAnswer!
   createAssignment(data: AssignmentCreateInput!): Assignment!
   createBrand(data: BrandCreateInput!): Brand!
-  createProduct(data: ProductCreateInput!): Product!
-  createDescription(data: DescriptionCreateInput!): Description!
-  createProductVariants(data: ProductVariantsCreateInput!): ProductVariants!
+  createProductTemplate(data: ProductTemplateCreateInput!): ProductTemplate!
+  createProductAttribute(data: ProductAttributeCreateInput!): ProductAttribute!
+  createProductAttributeValue(data: ProductAttributeValueCreateInput!): ProductAttributeValue!
   createProductRetailer(data: ProductRetailerCreateInput!): ProductRetailer!
   createReview(data: ReviewCreateInput!): Review!
-  createCategory(data: CategoryCreateInput!): Category!
+  createProductOption(data: ProductOptionCreateInput!): ProductOption!
+  createProduct(data: ProductCreateInput!): Product!
   createPermission(data: PermissionCreateInput!): Permission!
-  createProductPropertiesValue(data: ProductPropertiesValueCreateInput!): ProductPropertiesValue!
+  createCategory(data: CategoryCreateInput!): Category!
   createMedia(data: MediaCreateInput!): Media!
   createAddress(data: AddressCreateInput!): Address!
   createRetailer(data: RetailerCreateInput!): Retailer!
   createRole(data: RoleCreateInput!): Role!
-  createProductPropertiesName(data: ProductPropertiesNameCreateInput!): ProductPropertiesName!
+  createDescription(data: DescriptionCreateInput!): Description!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateSecurityQuestion(data: SecurityQuestionUpdateInput!, where: SecurityQuestionWhereUniqueInput!): SecurityQuestion
   updateSecurityAnswer(data: SecurityAnswerUpdateInput!, where: SecurityAnswerWhereUniqueInput!): SecurityAnswer
   updateAssignment(data: AssignmentUpdateInput!, where: AssignmentWhereUniqueInput!): Assignment
   updateBrand(data: BrandUpdateInput!, where: BrandWhereUniqueInput!): Brand
-  updateProduct(data: ProductUpdateInput!, where: ProductWhereUniqueInput!): Product
-  updateDescription(data: DescriptionUpdateInput!, where: DescriptionWhereUniqueInput!): Description
-  updateProductVariants(data: ProductVariantsUpdateInput!, where: ProductVariantsWhereUniqueInput!): ProductVariants
+  updateProductTemplate(data: ProductTemplateUpdateInput!, where: ProductTemplateWhereUniqueInput!): ProductTemplate
+  updateProductAttribute(data: ProductAttributeUpdateInput!, where: ProductAttributeWhereUniqueInput!): ProductAttribute
+  updateProductAttributeValue(data: ProductAttributeValueUpdateInput!, where: ProductAttributeValueWhereUniqueInput!): ProductAttributeValue
   updateProductRetailer(data: ProductRetailerUpdateInput!, where: ProductRetailerWhereUniqueInput!): ProductRetailer
   updateReview(data: ReviewUpdateInput!, where: ReviewWhereUniqueInput!): Review
-  updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
+  updateProductOption(data: ProductOptionUpdateInput!, where: ProductOptionWhereUniqueInput!): ProductOption
+  updateProduct(data: ProductUpdateInput!, where: ProductWhereUniqueInput!): Product
   updatePermission(data: PermissionUpdateInput!, where: PermissionWhereUniqueInput!): Permission
-  updateProductPropertiesValue(data: ProductPropertiesValueUpdateInput!, where: ProductPropertiesValueWhereUniqueInput!): ProductPropertiesValue
+  updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
   updateMedia(data: MediaUpdateInput!, where: MediaWhereUniqueInput!): Media
   updateAddress(data: AddressUpdateInput!, where: AddressWhereUniqueInput!): Address
   updateRetailer(data: RetailerUpdateInput!, where: RetailerWhereUniqueInput!): Retailer
   updateRole(data: RoleUpdateInput!, where: RoleWhereUniqueInput!): Role
-  updateProductPropertiesName(data: ProductPropertiesNameUpdateInput!, where: ProductPropertiesNameWhereUniqueInput!): ProductPropertiesName
+  updateDescription(data: DescriptionUpdateInput!, where: DescriptionWhereUniqueInput!): Description
   deleteUser(where: UserWhereUniqueInput!): User
   deleteSecurityQuestion(where: SecurityQuestionWhereUniqueInput!): SecurityQuestion
   deleteSecurityAnswer(where: SecurityAnswerWhereUniqueInput!): SecurityAnswer
   deleteAssignment(where: AssignmentWhereUniqueInput!): Assignment
   deleteBrand(where: BrandWhereUniqueInput!): Brand
-  deleteProduct(where: ProductWhereUniqueInput!): Product
-  deleteDescription(where: DescriptionWhereUniqueInput!): Description
-  deleteProductVariants(where: ProductVariantsWhereUniqueInput!): ProductVariants
+  deleteProductTemplate(where: ProductTemplateWhereUniqueInput!): ProductTemplate
+  deleteProductAttribute(where: ProductAttributeWhereUniqueInput!): ProductAttribute
+  deleteProductAttributeValue(where: ProductAttributeValueWhereUniqueInput!): ProductAttributeValue
   deleteProductRetailer(where: ProductRetailerWhereUniqueInput!): ProductRetailer
   deleteReview(where: ReviewWhereUniqueInput!): Review
-  deleteCategory(where: CategoryWhereUniqueInput!): Category
+  deleteProductOption(where: ProductOptionWhereUniqueInput!): ProductOption
+  deleteProduct(where: ProductWhereUniqueInput!): Product
   deletePermission(where: PermissionWhereUniqueInput!): Permission
-  deleteProductPropertiesValue(where: ProductPropertiesValueWhereUniqueInput!): ProductPropertiesValue
+  deleteCategory(where: CategoryWhereUniqueInput!): Category
   deleteMedia(where: MediaWhereUniqueInput!): Media
   deleteAddress(where: AddressWhereUniqueInput!): Address
   deleteRetailer(where: RetailerWhereUniqueInput!): Retailer
   deleteRole(where: RoleWhereUniqueInput!): Role
-  deleteProductPropertiesName(where: ProductPropertiesNameWhereUniqueInput!): ProductPropertiesName
+  deleteDescription(where: DescriptionWhereUniqueInput!): Description
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertSecurityQuestion(where: SecurityQuestionWhereUniqueInput!, create: SecurityQuestionCreateInput!, update: SecurityQuestionUpdateInput!): SecurityQuestion!
   upsertSecurityAnswer(where: SecurityAnswerWhereUniqueInput!, create: SecurityAnswerCreateInput!, update: SecurityAnswerUpdateInput!): SecurityAnswer!
   upsertAssignment(where: AssignmentWhereUniqueInput!, create: AssignmentCreateInput!, update: AssignmentUpdateInput!): Assignment!
   upsertBrand(where: BrandWhereUniqueInput!, create: BrandCreateInput!, update: BrandUpdateInput!): Brand!
-  upsertProduct(where: ProductWhereUniqueInput!, create: ProductCreateInput!, update: ProductUpdateInput!): Product!
-  upsertDescription(where: DescriptionWhereUniqueInput!, create: DescriptionCreateInput!, update: DescriptionUpdateInput!): Description!
-  upsertProductVariants(where: ProductVariantsWhereUniqueInput!, create: ProductVariantsCreateInput!, update: ProductVariantsUpdateInput!): ProductVariants!
+  upsertProductTemplate(where: ProductTemplateWhereUniqueInput!, create: ProductTemplateCreateInput!, update: ProductTemplateUpdateInput!): ProductTemplate!
+  upsertProductAttribute(where: ProductAttributeWhereUniqueInput!, create: ProductAttributeCreateInput!, update: ProductAttributeUpdateInput!): ProductAttribute!
+  upsertProductAttributeValue(where: ProductAttributeValueWhereUniqueInput!, create: ProductAttributeValueCreateInput!, update: ProductAttributeValueUpdateInput!): ProductAttributeValue!
   upsertProductRetailer(where: ProductRetailerWhereUniqueInput!, create: ProductRetailerCreateInput!, update: ProductRetailerUpdateInput!): ProductRetailer!
   upsertReview(where: ReviewWhereUniqueInput!, create: ReviewCreateInput!, update: ReviewUpdateInput!): Review!
-  upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
+  upsertProductOption(where: ProductOptionWhereUniqueInput!, create: ProductOptionCreateInput!, update: ProductOptionUpdateInput!): ProductOption!
+  upsertProduct(where: ProductWhereUniqueInput!, create: ProductCreateInput!, update: ProductUpdateInput!): Product!
   upsertPermission(where: PermissionWhereUniqueInput!, create: PermissionCreateInput!, update: PermissionUpdateInput!): Permission!
-  upsertProductPropertiesValue(where: ProductPropertiesValueWhereUniqueInput!, create: ProductPropertiesValueCreateInput!, update: ProductPropertiesValueUpdateInput!): ProductPropertiesValue!
+  upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
   upsertMedia(where: MediaWhereUniqueInput!, create: MediaCreateInput!, update: MediaUpdateInput!): Media!
   upsertAddress(where: AddressWhereUniqueInput!, create: AddressCreateInput!, update: AddressUpdateInput!): Address!
   upsertRetailer(where: RetailerWhereUniqueInput!, create: RetailerCreateInput!, update: RetailerUpdateInput!): Retailer!
   upsertRole(where: RoleWhereUniqueInput!, create: RoleCreateInput!, update: RoleUpdateInput!): Role!
-  upsertProductPropertiesName(where: ProductPropertiesNameWhereUniqueInput!, create: ProductPropertiesNameCreateInput!, update: ProductPropertiesNameUpdateInput!): ProductPropertiesName!
+  upsertDescription(where: DescriptionWhereUniqueInput!, create: DescriptionCreateInput!, update: DescriptionUpdateInput!): Description!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManySecurityQuestions(data: SecurityQuestionUpdateManyMutationInput!, where: SecurityQuestionWhereInput): BatchPayload!
   updateManySecurityAnswers(data: SecurityAnswerUpdateManyMutationInput!, where: SecurityAnswerWhereInput): BatchPayload!
   updateManyAssignments(data: AssignmentUpdateManyMutationInput!, where: AssignmentWhereInput): BatchPayload!
   updateManyBrands(data: BrandUpdateManyMutationInput!, where: BrandWhereInput): BatchPayload!
-  updateManyProducts(data: ProductUpdateManyMutationInput!, where: ProductWhereInput): BatchPayload!
-  updateManyDescriptions(data: DescriptionUpdateManyMutationInput!, where: DescriptionWhereInput): BatchPayload!
-  updateManyProductVariantses(data: ProductVariantsUpdateManyMutationInput!, where: ProductVariantsWhereInput): BatchPayload!
+  updateManyProductTemplates(data: ProductTemplateUpdateManyMutationInput!, where: ProductTemplateWhereInput): BatchPayload!
+  updateManyProductAttributes(data: ProductAttributeUpdateManyMutationInput!, where: ProductAttributeWhereInput): BatchPayload!
+  updateManyProductAttributeValues(data: ProductAttributeValueUpdateManyMutationInput!, where: ProductAttributeValueWhereInput): BatchPayload!
   updateManyProductRetailers(data: ProductRetailerUpdateManyMutationInput!, where: ProductRetailerWhereInput): BatchPayload!
   updateManyReviews(data: ReviewUpdateManyMutationInput!, where: ReviewWhereInput): BatchPayload!
-  updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
+  updateManyProductOptions(data: ProductOptionUpdateManyMutationInput!, where: ProductOptionWhereInput): BatchPayload!
+  updateManyProducts(data: ProductUpdateManyMutationInput!, where: ProductWhereInput): BatchPayload!
   updateManyPermissions(data: PermissionUpdateManyMutationInput!, where: PermissionWhereInput): BatchPayload!
-  updateManyProductPropertiesValues(data: ProductPropertiesValueUpdateManyMutationInput!, where: ProductPropertiesValueWhereInput): BatchPayload!
+  updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
   updateManyMedias(data: MediaUpdateManyMutationInput!, where: MediaWhereInput): BatchPayload!
   updateManyAddresses(data: AddressUpdateManyMutationInput!, where: AddressWhereInput): BatchPayload!
   updateManyRetailers(data: RetailerUpdateManyMutationInput!, where: RetailerWhereInput): BatchPayload!
   updateManyRoles(data: RoleUpdateManyMutationInput!, where: RoleWhereInput): BatchPayload!
-  updateManyProductPropertiesNames(data: ProductPropertiesNameUpdateManyMutationInput!, where: ProductPropertiesNameWhereInput): BatchPayload!
+  updateManyDescriptions(data: DescriptionUpdateManyMutationInput!, where: DescriptionWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManySecurityQuestions(where: SecurityQuestionWhereInput): BatchPayload!
   deleteManySecurityAnswers(where: SecurityAnswerWhereInput): BatchPayload!
   deleteManyAssignments(where: AssignmentWhereInput): BatchPayload!
   deleteManyBrands(where: BrandWhereInput): BatchPayload!
-  deleteManyProducts(where: ProductWhereInput): BatchPayload!
-  deleteManyDescriptions(where: DescriptionWhereInput): BatchPayload!
-  deleteManyProductVariantses(where: ProductVariantsWhereInput): BatchPayload!
+  deleteManyProductTemplates(where: ProductTemplateWhereInput): BatchPayload!
+  deleteManyProductAttributes(where: ProductAttributeWhereInput): BatchPayload!
+  deleteManyProductAttributeValues(where: ProductAttributeValueWhereInput): BatchPayload!
   deleteManyProductRetailers(where: ProductRetailerWhereInput): BatchPayload!
   deleteManyReviews(where: ReviewWhereInput): BatchPayload!
-  deleteManyCategories(where: CategoryWhereInput): BatchPayload!
+  deleteManyProductOptions(where: ProductOptionWhereInput): BatchPayload!
+  deleteManyProducts(where: ProductWhereInput): BatchPayload!
   deleteManyPermissions(where: PermissionWhereInput): BatchPayload!
-  deleteManyProductPropertiesValues(where: ProductPropertiesValueWhereInput): BatchPayload!
+  deleteManyCategories(where: CategoryWhereInput): BatchPayload!
   deleteManyMedias(where: MediaWhereInput): BatchPayload!
   deleteManyAddresses(where: AddressWhereInput): BatchPayload!
   deleteManyRetailers(where: RetailerWhereInput): BatchPayload!
   deleteManyRoles(where: RoleWhereInput): BatchPayload!
-  deleteManyProductPropertiesNames(where: ProductPropertiesNameWhereInput): BatchPayload!
+  deleteManyDescriptions(where: DescriptionWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
 }
 
@@ -4520,14 +4516,1044 @@ enum PrismaDatabase {
 type Product implements Node {
   id: ID!
   _version: Int!
-  name: String
-  briefDescription: String
-  category(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category!]
-  variants(where: ProductVariantsWhereInput, orderBy: ProductVariantsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductVariants!]
-  brand: Brand
-  descriptions(where: DescriptionWhereInput, orderBy: DescriptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Description!]
+  productTemplate: ProductTemplate
+  productMedias(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Media!]
+  productRetailers(where: ProductRetailerWhereInput, orderBy: ProductRetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductRetailer!]
+  productName: String
+  sku: String
+  options(where: ProductOptionWhereInput, orderBy: ProductOptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductOption!]
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+type ProductAttribute implements Node {
+  id: ID!
+  _version: Int!
+  name: String
+  values(where: ProductAttributeValueWhereInput, orderBy: ProductAttributeValueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductAttributeValue!]
+  productOption(where: ProductOptionWhereInput, orderBy: ProductOptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductOption!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type ProductAttributeConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ProductAttributeEdge]!
+  aggregate: AggregateProductAttribute!
+}
+
+input ProductAttributeCreateInput {
+  id: ID
+  _version: Int
+  name: String
+  values: ProductAttributeValueCreateManyWithoutAttributeInput
+  productOption: ProductOptionCreateManyWithoutAttributeInput
+}
+
+input ProductAttributeCreateManyWithoutValuesInput {
+  create: [ProductAttributeCreateWithoutValuesInput!]
+  connect: [ProductAttributeWhereUniqueInput!]
+}
+
+input ProductAttributeCreateOneWithoutProductOptionInput {
+  create: ProductAttributeCreateWithoutProductOptionInput
+  connect: ProductAttributeWhereUniqueInput
+}
+
+input ProductAttributeCreateWithoutProductOptionInput {
+  id: ID
+  _version: Int
+  name: String
+  values: ProductAttributeValueCreateManyWithoutAttributeInput
+}
+
+input ProductAttributeCreateWithoutValuesInput {
+  id: ID
+  _version: Int
+  name: String
+  productOption: ProductOptionCreateManyWithoutAttributeInput
+}
+
+"""An edge in a connection."""
+type ProductAttributeEdge {
+  """The item at the end of the edge."""
+  node: ProductAttribute!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum ProductAttributeOrderByInput {
+  id_ASC
+  id_DESC
+  _version_ASC
+  _version_DESC
+  name_ASC
+  name_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type ProductAttributePreviousValues {
+  id: ID!
+  _version: Int!
+  name: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input ProductAttributeScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ProductAttributeScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ProductAttributeScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ProductAttributeScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+type ProductAttributeSubscriptionPayload {
+  mutation: MutationType!
+  node: ProductAttribute
+  updatedFields: [String!]
+  previousValues: ProductAttributePreviousValues
+}
+
+input ProductAttributeSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ProductAttributeSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ProductAttributeSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ProductAttributeSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ProductAttributeWhereInput
+}
+
+input ProductAttributeUpdateInput {
+  _version: Int
+  name: String
+  values: ProductAttributeValueUpdateManyWithoutAttributeInput
+  productOption: ProductOptionUpdateManyWithoutAttributeInput
+}
+
+input ProductAttributeUpdateManyDataInput {
+  _version: Int
+  name: String
+}
+
+input ProductAttributeUpdateManyMutationInput {
+  _version: Int
+  name: String
+}
+
+input ProductAttributeUpdateManyWithoutValuesInput {
+  create: [ProductAttributeCreateWithoutValuesInput!]
+  connect: [ProductAttributeWhereUniqueInput!]
+  set: [ProductAttributeWhereUniqueInput!]
+  disconnect: [ProductAttributeWhereUniqueInput!]
+  delete: [ProductAttributeWhereUniqueInput!]
+  update: [ProductAttributeUpdateWithWhereUniqueWithoutValuesInput!]
+  updateMany: [ProductAttributeUpdateManyWithWhereNestedInput!]
+  deleteMany: [ProductAttributeScalarWhereInput!]
+  upsert: [ProductAttributeUpsertWithWhereUniqueWithoutValuesInput!]
+}
+
+input ProductAttributeUpdateManyWithWhereNestedInput {
+  where: ProductAttributeScalarWhereInput!
+  data: ProductAttributeUpdateManyDataInput!
+}
+
+input ProductAttributeUpdateOneRequiredWithoutProductOptionInput {
+  create: ProductAttributeCreateWithoutProductOptionInput
+  connect: ProductAttributeWhereUniqueInput
+  update: ProductAttributeUpdateWithoutProductOptionDataInput
+  upsert: ProductAttributeUpsertWithoutProductOptionInput
+}
+
+input ProductAttributeUpdateWithoutProductOptionDataInput {
+  _version: Int
+  name: String
+  values: ProductAttributeValueUpdateManyWithoutAttributeInput
+}
+
+input ProductAttributeUpdateWithoutValuesDataInput {
+  _version: Int
+  name: String
+  productOption: ProductOptionUpdateManyWithoutAttributeInput
+}
+
+input ProductAttributeUpdateWithWhereUniqueWithoutValuesInput {
+  where: ProductAttributeWhereUniqueInput!
+  data: ProductAttributeUpdateWithoutValuesDataInput!
+}
+
+input ProductAttributeUpsertWithoutProductOptionInput {
+  update: ProductAttributeUpdateWithoutProductOptionDataInput!
+  create: ProductAttributeCreateWithoutProductOptionInput!
+}
+
+input ProductAttributeUpsertWithWhereUniqueWithoutValuesInput {
+  where: ProductAttributeWhereUniqueInput!
+  update: ProductAttributeUpdateWithoutValuesDataInput!
+  create: ProductAttributeCreateWithoutValuesInput!
+}
+
+type ProductAttributeValue implements Node {
+  id: ID!
+  _version: Int!
+  attribute(where: ProductAttributeWhereInput, orderBy: ProductAttributeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductAttribute!]
+  name: String
+  productOption(where: ProductOptionWhereInput, orderBy: ProductOptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductOption!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type ProductAttributeValueConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ProductAttributeValueEdge]!
+  aggregate: AggregateProductAttributeValue!
+}
+
+input ProductAttributeValueCreateInput {
+  id: ID
+  _version: Int
+  name: String
+  attribute: ProductAttributeCreateManyWithoutValuesInput
+  productOption: ProductOptionCreateManyWithoutValueInput
+}
+
+input ProductAttributeValueCreateManyWithoutAttributeInput {
+  create: [ProductAttributeValueCreateWithoutAttributeInput!]
+  connect: [ProductAttributeValueWhereUniqueInput!]
+}
+
+input ProductAttributeValueCreateOneWithoutProductOptionInput {
+  create: ProductAttributeValueCreateWithoutProductOptionInput
+  connect: ProductAttributeValueWhereUniqueInput
+}
+
+input ProductAttributeValueCreateWithoutAttributeInput {
+  id: ID
+  _version: Int
+  name: String
+  productOption: ProductOptionCreateManyWithoutValueInput
+}
+
+input ProductAttributeValueCreateWithoutProductOptionInput {
+  id: ID
+  _version: Int
+  name: String
+  attribute: ProductAttributeCreateManyWithoutValuesInput
+}
+
+"""An edge in a connection."""
+type ProductAttributeValueEdge {
+  """The item at the end of the edge."""
+  node: ProductAttributeValue!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum ProductAttributeValueOrderByInput {
+  id_ASC
+  id_DESC
+  _version_ASC
+  _version_DESC
+  name_ASC
+  name_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type ProductAttributeValuePreviousValues {
+  id: ID!
+  _version: Int!
+  name: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input ProductAttributeValueScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ProductAttributeValueScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ProductAttributeValueScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ProductAttributeValueScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+type ProductAttributeValueSubscriptionPayload {
+  mutation: MutationType!
+  node: ProductAttributeValue
+  updatedFields: [String!]
+  previousValues: ProductAttributeValuePreviousValues
+}
+
+input ProductAttributeValueSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ProductAttributeValueSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ProductAttributeValueSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ProductAttributeValueSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ProductAttributeValueWhereInput
+}
+
+input ProductAttributeValueUpdateInput {
+  _version: Int
+  name: String
+  attribute: ProductAttributeUpdateManyWithoutValuesInput
+  productOption: ProductOptionUpdateManyWithoutValueInput
+}
+
+input ProductAttributeValueUpdateManyDataInput {
+  _version: Int
+  name: String
+}
+
+input ProductAttributeValueUpdateManyMutationInput {
+  _version: Int
+  name: String
+}
+
+input ProductAttributeValueUpdateManyWithoutAttributeInput {
+  create: [ProductAttributeValueCreateWithoutAttributeInput!]
+  connect: [ProductAttributeValueWhereUniqueInput!]
+  set: [ProductAttributeValueWhereUniqueInput!]
+  disconnect: [ProductAttributeValueWhereUniqueInput!]
+  delete: [ProductAttributeValueWhereUniqueInput!]
+  update: [ProductAttributeValueUpdateWithWhereUniqueWithoutAttributeInput!]
+  updateMany: [ProductAttributeValueUpdateManyWithWhereNestedInput!]
+  deleteMany: [ProductAttributeValueScalarWhereInput!]
+  upsert: [ProductAttributeValueUpsertWithWhereUniqueWithoutAttributeInput!]
+}
+
+input ProductAttributeValueUpdateManyWithWhereNestedInput {
+  where: ProductAttributeValueScalarWhereInput!
+  data: ProductAttributeValueUpdateManyDataInput!
+}
+
+input ProductAttributeValueUpdateOneRequiredWithoutProductOptionInput {
+  create: ProductAttributeValueCreateWithoutProductOptionInput
+  connect: ProductAttributeValueWhereUniqueInput
+  update: ProductAttributeValueUpdateWithoutProductOptionDataInput
+  upsert: ProductAttributeValueUpsertWithoutProductOptionInput
+}
+
+input ProductAttributeValueUpdateWithoutAttributeDataInput {
+  _version: Int
+  name: String
+  productOption: ProductOptionUpdateManyWithoutValueInput
+}
+
+input ProductAttributeValueUpdateWithoutProductOptionDataInput {
+  _version: Int
+  name: String
+  attribute: ProductAttributeUpdateManyWithoutValuesInput
+}
+
+input ProductAttributeValueUpdateWithWhereUniqueWithoutAttributeInput {
+  where: ProductAttributeValueWhereUniqueInput!
+  data: ProductAttributeValueUpdateWithoutAttributeDataInput!
+}
+
+input ProductAttributeValueUpsertWithoutProductOptionInput {
+  update: ProductAttributeValueUpdateWithoutProductOptionDataInput!
+  create: ProductAttributeValueCreateWithoutProductOptionInput!
+}
+
+input ProductAttributeValueUpsertWithWhereUniqueWithoutAttributeInput {
+  where: ProductAttributeValueWhereUniqueInput!
+  update: ProductAttributeValueUpdateWithoutAttributeDataInput!
+  create: ProductAttributeValueCreateWithoutAttributeInput!
+}
+
+input ProductAttributeValueWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ProductAttributeValueWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ProductAttributeValueWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ProductAttributeValueWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  attribute_every: ProductAttributeWhereInput
+  attribute_some: ProductAttributeWhereInput
+  attribute_none: ProductAttributeWhereInput
+  productOption_every: ProductOptionWhereInput
+  productOption_some: ProductOptionWhereInput
+  productOption_none: ProductOptionWhereInput
+}
+
+input ProductAttributeValueWhereUniqueInput {
+  id: ID
+  name: String
+}
+
+input ProductAttributeWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ProductAttributeWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ProductAttributeWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ProductAttributeWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  values_every: ProductAttributeValueWhereInput
+  values_some: ProductAttributeValueWhereInput
+  values_none: ProductAttributeValueWhereInput
+  productOption_every: ProductOptionWhereInput
+  productOption_some: ProductOptionWhereInput
+  productOption_none: ProductOptionWhereInput
+}
+
+input ProductAttributeWhereUniqueInput {
+  id: ID
+  name: String
 }
 
 """A connection to a list of items."""
@@ -4543,72 +5569,47 @@ type ProductConnection {
 input ProductCreateInput {
   id: ID
   _version: Int
-  name: String
-  briefDescription: String
-  category: CategoryCreateManyWithoutProductsInput
-  variants: ProductVariantsCreateManyWithoutProductInput
-  brand: BrandCreateOneWithoutProductsInput
-  descriptions: DescriptionCreateManyWithoutProductInput
+  productName: String
+  sku: String
+  productTemplate: ProductTemplateCreateOneWithoutProductsInput
+  productMedias: MediaCreateManyInput
+  productRetailers: ProductRetailerCreateManyWithoutProductInput
+  options: ProductOptionCreateManyInput
 }
 
-input ProductCreateManyWithoutBrandInput {
-  create: [ProductCreateWithoutBrandInput!]
+input ProductCreateManyWithoutProductTemplateInput {
+  create: [ProductCreateWithoutProductTemplateInput!]
   connect: [ProductWhereUniqueInput!]
 }
 
-input ProductCreateManyWithoutCategoryInput {
-  create: [ProductCreateWithoutCategoryInput!]
-  connect: [ProductWhereUniqueInput!]
-}
-
-input ProductCreateOneWithoutDescriptionsInput {
-  create: ProductCreateWithoutDescriptionsInput
+input ProductCreateOneInput {
+  create: ProductCreateInput
   connect: ProductWhereUniqueInput
 }
 
-input ProductCreateOneWithoutVariantsInput {
-  create: ProductCreateWithoutVariantsInput
+input ProductCreateOneWithoutProductRetailersInput {
+  create: ProductCreateWithoutProductRetailersInput
   connect: ProductWhereUniqueInput
 }
 
-input ProductCreateWithoutBrandInput {
+input ProductCreateWithoutProductRetailersInput {
   id: ID
   _version: Int
-  name: String
-  briefDescription: String
-  category: CategoryCreateManyWithoutProductsInput
-  variants: ProductVariantsCreateManyWithoutProductInput
-  descriptions: DescriptionCreateManyWithoutProductInput
+  productName: String
+  sku: String
+  productTemplate: ProductTemplateCreateOneWithoutProductsInput
+  productMedias: MediaCreateManyInput
+  options: ProductOptionCreateManyInput
 }
 
-input ProductCreateWithoutCategoryInput {
+input ProductCreateWithoutProductTemplateInput {
   id: ID
   _version: Int
-  name: String
-  briefDescription: String
-  variants: ProductVariantsCreateManyWithoutProductInput
-  brand: BrandCreateOneWithoutProductsInput
-  descriptions: DescriptionCreateManyWithoutProductInput
-}
-
-input ProductCreateWithoutDescriptionsInput {
-  id: ID
-  _version: Int
-  name: String
-  briefDescription: String
-  category: CategoryCreateManyWithoutProductsInput
-  variants: ProductVariantsCreateManyWithoutProductInput
-  brand: BrandCreateOneWithoutProductsInput
-}
-
-input ProductCreateWithoutVariantsInput {
-  id: ID
-  _version: Int
-  name: String
-  briefDescription: String
-  category: CategoryCreateManyWithoutProductsInput
-  brand: BrandCreateOneWithoutProductsInput
-  descriptions: DescriptionCreateManyWithoutProductInput
+  productName: String
+  sku: String
+  productMedias: MediaCreateManyInput
+  productRetailers: ProductRetailerCreateManyWithoutProductInput
+  options: ProductOptionCreateManyInput
 }
 
 """An edge in a connection."""
@@ -4620,15 +5621,478 @@ type ProductEdge {
   cursor: String!
 }
 
+type ProductOption implements Node {
+  id: ID!
+  _version: Int!
+  attribute: ProductAttribute!
+  value: ProductAttributeValue!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type ProductOptionConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ProductOptionEdge]!
+  aggregate: AggregateProductOption!
+}
+
+input ProductOptionCreateInput {
+  id: ID
+  _version: Int
+  attribute: ProductAttributeCreateOneWithoutProductOptionInput!
+  value: ProductAttributeValueCreateOneWithoutProductOptionInput!
+}
+
+input ProductOptionCreateManyInput {
+  create: [ProductOptionCreateInput!]
+  connect: [ProductOptionWhereUniqueInput!]
+}
+
+input ProductOptionCreateManyWithoutAttributeInput {
+  create: [ProductOptionCreateWithoutAttributeInput!]
+  connect: [ProductOptionWhereUniqueInput!]
+}
+
+input ProductOptionCreateManyWithoutValueInput {
+  create: [ProductOptionCreateWithoutValueInput!]
+  connect: [ProductOptionWhereUniqueInput!]
+}
+
+input ProductOptionCreateWithoutAttributeInput {
+  id: ID
+  _version: Int
+  value: ProductAttributeValueCreateOneWithoutProductOptionInput!
+}
+
+input ProductOptionCreateWithoutValueInput {
+  id: ID
+  _version: Int
+  attribute: ProductAttributeCreateOneWithoutProductOptionInput!
+}
+
+"""An edge in a connection."""
+type ProductOptionEdge {
+  """The item at the end of the edge."""
+  node: ProductOption!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum ProductOptionOrderByInput {
+  id_ASC
+  id_DESC
+  _version_ASC
+  _version_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type ProductOptionPreviousValues {
+  id: ID!
+  _version: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input ProductOptionScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ProductOptionScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ProductOptionScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ProductOptionScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+type ProductOptionSubscriptionPayload {
+  mutation: MutationType!
+  node: ProductOption
+  updatedFields: [String!]
+  previousValues: ProductOptionPreviousValues
+}
+
+input ProductOptionSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ProductOptionSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ProductOptionSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ProductOptionSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ProductOptionWhereInput
+}
+
+input ProductOptionUpdateDataInput {
+  _version: Int
+  attribute: ProductAttributeUpdateOneRequiredWithoutProductOptionInput
+  value: ProductAttributeValueUpdateOneRequiredWithoutProductOptionInput
+}
+
+input ProductOptionUpdateInput {
+  _version: Int
+  attribute: ProductAttributeUpdateOneRequiredWithoutProductOptionInput
+  value: ProductAttributeValueUpdateOneRequiredWithoutProductOptionInput
+}
+
+input ProductOptionUpdateManyDataInput {
+  _version: Int
+}
+
+input ProductOptionUpdateManyInput {
+  create: [ProductOptionCreateInput!]
+  connect: [ProductOptionWhereUniqueInput!]
+  set: [ProductOptionWhereUniqueInput!]
+  disconnect: [ProductOptionWhereUniqueInput!]
+  delete: [ProductOptionWhereUniqueInput!]
+  update: [ProductOptionUpdateWithWhereUniqueNestedInput!]
+  updateMany: [ProductOptionUpdateManyWithWhereNestedInput!]
+  deleteMany: [ProductOptionScalarWhereInput!]
+  upsert: [ProductOptionUpsertWithWhereUniqueNestedInput!]
+}
+
+input ProductOptionUpdateManyMutationInput {
+  _version: Int
+}
+
+input ProductOptionUpdateManyWithoutAttributeInput {
+  create: [ProductOptionCreateWithoutAttributeInput!]
+  connect: [ProductOptionWhereUniqueInput!]
+  set: [ProductOptionWhereUniqueInput!]
+  disconnect: [ProductOptionWhereUniqueInput!]
+  delete: [ProductOptionWhereUniqueInput!]
+  update: [ProductOptionUpdateWithWhereUniqueWithoutAttributeInput!]
+  updateMany: [ProductOptionUpdateManyWithWhereNestedInput!]
+  deleteMany: [ProductOptionScalarWhereInput!]
+  upsert: [ProductOptionUpsertWithWhereUniqueWithoutAttributeInput!]
+}
+
+input ProductOptionUpdateManyWithoutValueInput {
+  create: [ProductOptionCreateWithoutValueInput!]
+  connect: [ProductOptionWhereUniqueInput!]
+  set: [ProductOptionWhereUniqueInput!]
+  disconnect: [ProductOptionWhereUniqueInput!]
+  delete: [ProductOptionWhereUniqueInput!]
+  update: [ProductOptionUpdateWithWhereUniqueWithoutValueInput!]
+  updateMany: [ProductOptionUpdateManyWithWhereNestedInput!]
+  deleteMany: [ProductOptionScalarWhereInput!]
+  upsert: [ProductOptionUpsertWithWhereUniqueWithoutValueInput!]
+}
+
+input ProductOptionUpdateManyWithWhereNestedInput {
+  where: ProductOptionScalarWhereInput!
+  data: ProductOptionUpdateManyDataInput!
+}
+
+input ProductOptionUpdateWithoutAttributeDataInput {
+  _version: Int
+  value: ProductAttributeValueUpdateOneRequiredWithoutProductOptionInput
+}
+
+input ProductOptionUpdateWithoutValueDataInput {
+  _version: Int
+  attribute: ProductAttributeUpdateOneRequiredWithoutProductOptionInput
+}
+
+input ProductOptionUpdateWithWhereUniqueNestedInput {
+  where: ProductOptionWhereUniqueInput!
+  data: ProductOptionUpdateDataInput!
+}
+
+input ProductOptionUpdateWithWhereUniqueWithoutAttributeInput {
+  where: ProductOptionWhereUniqueInput!
+  data: ProductOptionUpdateWithoutAttributeDataInput!
+}
+
+input ProductOptionUpdateWithWhereUniqueWithoutValueInput {
+  where: ProductOptionWhereUniqueInput!
+  data: ProductOptionUpdateWithoutValueDataInput!
+}
+
+input ProductOptionUpsertWithWhereUniqueNestedInput {
+  where: ProductOptionWhereUniqueInput!
+  update: ProductOptionUpdateDataInput!
+  create: ProductOptionCreateInput!
+}
+
+input ProductOptionUpsertWithWhereUniqueWithoutAttributeInput {
+  where: ProductOptionWhereUniqueInput!
+  update: ProductOptionUpdateWithoutAttributeDataInput!
+  create: ProductOptionCreateWithoutAttributeInput!
+}
+
+input ProductOptionUpsertWithWhereUniqueWithoutValueInput {
+  where: ProductOptionWhereUniqueInput!
+  update: ProductOptionUpdateWithoutValueDataInput!
+  create: ProductOptionCreateWithoutValueInput!
+}
+
+input ProductOptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ProductOptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ProductOptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ProductOptionWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  attribute: ProductAttributeWhereInput
+  value: ProductAttributeValueWhereInput
+}
+
+input ProductOptionWhereUniqueInput {
+  id: ID
+}
+
 enum ProductOrderByInput {
   id_ASC
   id_DESC
   _version_ASC
   _version_DESC
-  name_ASC
-  name_DESC
-  briefDescription_ASC
-  briefDescription_DESC
+  productName_ASC
+  productName_DESC
+  sku_ASC
+  sku_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -4638,836 +6102,10 @@ enum ProductOrderByInput {
 type ProductPreviousValues {
   id: ID!
   _version: Int!
-  name: String
-  briefDescription: String
+  productName: String
+  sku: String
   createdAt: DateTime!
   updatedAt: DateTime!
-}
-
-type ProductPropertiesName implements Node {
-  id: ID!
-  _version: Int!
-  name: String
-  values(where: ProductPropertiesValueWhereInput, orderBy: ProductPropertiesValueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductPropertiesValue!]
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-"""A connection to a list of items."""
-type ProductPropertiesNameConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [ProductPropertiesNameEdge]!
-  aggregate: AggregateProductPropertiesName!
-}
-
-input ProductPropertiesNameCreateInput {
-  id: ID
-  _version: Int
-  name: String
-  values: ProductPropertiesValueCreateManyWithoutPropertyInput
-}
-
-input ProductPropertiesNameCreateOneInput {
-  create: ProductPropertiesNameCreateInput
-  connect: ProductPropertiesNameWhereUniqueInput
-}
-
-input ProductPropertiesNameCreateOneWithoutValuesInput {
-  create: ProductPropertiesNameCreateWithoutValuesInput
-  connect: ProductPropertiesNameWhereUniqueInput
-}
-
-input ProductPropertiesNameCreateWithoutValuesInput {
-  id: ID
-  _version: Int
-  name: String
-}
-
-"""An edge in a connection."""
-type ProductPropertiesNameEdge {
-  """The item at the end of the edge."""
-  node: ProductPropertiesName!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum ProductPropertiesNameOrderByInput {
-  id_ASC
-  id_DESC
-  _version_ASC
-  _version_DESC
-  name_ASC
-  name_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type ProductPropertiesNamePreviousValues {
-  id: ID!
-  _version: Int!
-  name: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type ProductPropertiesNameSubscriptionPayload {
-  mutation: MutationType!
-  node: ProductPropertiesName
-  updatedFields: [String!]
-  previousValues: ProductPropertiesNamePreviousValues
-}
-
-input ProductPropertiesNameSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ProductPropertiesNameSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ProductPropertiesNameSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ProductPropertiesNameSubscriptionWhereInput!]
-
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: ProductPropertiesNameWhereInput
-}
-
-input ProductPropertiesNameUpdateDataInput {
-  _version: Int
-  name: String
-  values: ProductPropertiesValueUpdateManyWithoutPropertyInput
-}
-
-input ProductPropertiesNameUpdateInput {
-  _version: Int
-  name: String
-  values: ProductPropertiesValueUpdateManyWithoutPropertyInput
-}
-
-input ProductPropertiesNameUpdateManyMutationInput {
-  _version: Int
-  name: String
-}
-
-input ProductPropertiesNameUpdateOneInput {
-  create: ProductPropertiesNameCreateInput
-  connect: ProductPropertiesNameWhereUniqueInput
-  disconnect: Boolean
-  delete: Boolean
-  update: ProductPropertiesNameUpdateDataInput
-  upsert: ProductPropertiesNameUpsertNestedInput
-}
-
-input ProductPropertiesNameUpdateOneWithoutValuesInput {
-  create: ProductPropertiesNameCreateWithoutValuesInput
-  connect: ProductPropertiesNameWhereUniqueInput
-  disconnect: Boolean
-  delete: Boolean
-  update: ProductPropertiesNameUpdateWithoutValuesDataInput
-  upsert: ProductPropertiesNameUpsertWithoutValuesInput
-}
-
-input ProductPropertiesNameUpdateWithoutValuesDataInput {
-  _version: Int
-  name: String
-}
-
-input ProductPropertiesNameUpsertNestedInput {
-  update: ProductPropertiesNameUpdateDataInput!
-  create: ProductPropertiesNameCreateInput!
-}
-
-input ProductPropertiesNameUpsertWithoutValuesInput {
-  update: ProductPropertiesNameUpdateWithoutValuesDataInput!
-  create: ProductPropertiesNameCreateWithoutValuesInput!
-}
-
-input ProductPropertiesNameWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ProductPropertiesNameWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ProductPropertiesNameWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ProductPropertiesNameWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  _version: Int
-
-  """All values that are not equal to given value."""
-  _version_not: Int
-
-  """All values that are contained in given list."""
-  _version_in: [Int!]
-
-  """All values that are not contained in given list."""
-  _version_not_in: [Int!]
-
-  """All values less than the given value."""
-  _version_lt: Int
-
-  """All values less than or equal the given value."""
-  _version_lte: Int
-
-  """All values greater than the given value."""
-  _version_gt: Int
-
-  """All values greater than or equal the given value."""
-  _version_gte: Int
-  name: String
-
-  """All values that are not equal to given value."""
-  name_not: String
-
-  """All values that are contained in given list."""
-  name_in: [String!]
-
-  """All values that are not contained in given list."""
-  name_not_in: [String!]
-
-  """All values less than the given value."""
-  name_lt: String
-
-  """All values less than or equal the given value."""
-  name_lte: String
-
-  """All values greater than the given value."""
-  name_gt: String
-
-  """All values greater than or equal the given value."""
-  name_gte: String
-
-  """All values containing the given string."""
-  name_contains: String
-
-  """All values not containing the given string."""
-  name_not_contains: String
-
-  """All values starting with the given string."""
-  name_starts_with: String
-
-  """All values not starting with the given string."""
-  name_not_starts_with: String
-
-  """All values ending with the given string."""
-  name_ends_with: String
-
-  """All values not ending with the given string."""
-  name_not_ends_with: String
-  createdAt: DateTime
-
-  """All values that are not equal to given value."""
-  createdAt_not: DateTime
-
-  """All values that are contained in given list."""
-  createdAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  createdAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  createdAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  createdAt_lte: DateTime
-
-  """All values greater than the given value."""
-  createdAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-
-  """All values that are not equal to given value."""
-  updatedAt_not: DateTime
-
-  """All values that are contained in given list."""
-  updatedAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  updatedAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  updatedAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  updatedAt_lte: DateTime
-
-  """All values greater than the given value."""
-  updatedAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  updatedAt_gte: DateTime
-  values_every: ProductPropertiesValueWhereInput
-  values_some: ProductPropertiesValueWhereInput
-  values_none: ProductPropertiesValueWhereInput
-}
-
-input ProductPropertiesNameWhereUniqueInput {
-  id: ID
-  name: String
-}
-
-type ProductPropertiesValue implements Node {
-  id: ID!
-  _version: Int!
-  property: ProductPropertiesName
-  name: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-"""A connection to a list of items."""
-type ProductPropertiesValueConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [ProductPropertiesValueEdge]!
-  aggregate: AggregateProductPropertiesValue!
-}
-
-input ProductPropertiesValueCreateInput {
-  id: ID
-  _version: Int
-  name: String
-  property: ProductPropertiesNameCreateOneWithoutValuesInput
-}
-
-input ProductPropertiesValueCreateManyWithoutPropertyInput {
-  create: [ProductPropertiesValueCreateWithoutPropertyInput!]
-  connect: [ProductPropertiesValueWhereUniqueInput!]
-}
-
-input ProductPropertiesValueCreateOneInput {
-  create: ProductPropertiesValueCreateInput
-  connect: ProductPropertiesValueWhereUniqueInput
-}
-
-input ProductPropertiesValueCreateWithoutPropertyInput {
-  id: ID
-  _version: Int
-  name: String
-}
-
-"""An edge in a connection."""
-type ProductPropertiesValueEdge {
-  """The item at the end of the edge."""
-  node: ProductPropertiesValue!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum ProductPropertiesValueOrderByInput {
-  id_ASC
-  id_DESC
-  _version_ASC
-  _version_DESC
-  name_ASC
-  name_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type ProductPropertiesValuePreviousValues {
-  id: ID!
-  _version: Int!
-  name: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-input ProductPropertiesValueScalarWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ProductPropertiesValueScalarWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ProductPropertiesValueScalarWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ProductPropertiesValueScalarWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  _version: Int
-
-  """All values that are not equal to given value."""
-  _version_not: Int
-
-  """All values that are contained in given list."""
-  _version_in: [Int!]
-
-  """All values that are not contained in given list."""
-  _version_not_in: [Int!]
-
-  """All values less than the given value."""
-  _version_lt: Int
-
-  """All values less than or equal the given value."""
-  _version_lte: Int
-
-  """All values greater than the given value."""
-  _version_gt: Int
-
-  """All values greater than or equal the given value."""
-  _version_gte: Int
-  name: String
-
-  """All values that are not equal to given value."""
-  name_not: String
-
-  """All values that are contained in given list."""
-  name_in: [String!]
-
-  """All values that are not contained in given list."""
-  name_not_in: [String!]
-
-  """All values less than the given value."""
-  name_lt: String
-
-  """All values less than or equal the given value."""
-  name_lte: String
-
-  """All values greater than the given value."""
-  name_gt: String
-
-  """All values greater than or equal the given value."""
-  name_gte: String
-
-  """All values containing the given string."""
-  name_contains: String
-
-  """All values not containing the given string."""
-  name_not_contains: String
-
-  """All values starting with the given string."""
-  name_starts_with: String
-
-  """All values not starting with the given string."""
-  name_not_starts_with: String
-
-  """All values ending with the given string."""
-  name_ends_with: String
-
-  """All values not ending with the given string."""
-  name_not_ends_with: String
-  createdAt: DateTime
-
-  """All values that are not equal to given value."""
-  createdAt_not: DateTime
-
-  """All values that are contained in given list."""
-  createdAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  createdAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  createdAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  createdAt_lte: DateTime
-
-  """All values greater than the given value."""
-  createdAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-
-  """All values that are not equal to given value."""
-  updatedAt_not: DateTime
-
-  """All values that are contained in given list."""
-  updatedAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  updatedAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  updatedAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  updatedAt_lte: DateTime
-
-  """All values greater than the given value."""
-  updatedAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  updatedAt_gte: DateTime
-}
-
-type ProductPropertiesValueSubscriptionPayload {
-  mutation: MutationType!
-  node: ProductPropertiesValue
-  updatedFields: [String!]
-  previousValues: ProductPropertiesValuePreviousValues
-}
-
-input ProductPropertiesValueSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ProductPropertiesValueSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ProductPropertiesValueSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ProductPropertiesValueSubscriptionWhereInput!]
-
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: ProductPropertiesValueWhereInput
-}
-
-input ProductPropertiesValueUpdateDataInput {
-  _version: Int
-  name: String
-  property: ProductPropertiesNameUpdateOneWithoutValuesInput
-}
-
-input ProductPropertiesValueUpdateInput {
-  _version: Int
-  name: String
-  property: ProductPropertiesNameUpdateOneWithoutValuesInput
-}
-
-input ProductPropertiesValueUpdateManyDataInput {
-  _version: Int
-  name: String
-}
-
-input ProductPropertiesValueUpdateManyMutationInput {
-  _version: Int
-  name: String
-}
-
-input ProductPropertiesValueUpdateManyWithoutPropertyInput {
-  create: [ProductPropertiesValueCreateWithoutPropertyInput!]
-  connect: [ProductPropertiesValueWhereUniqueInput!]
-  set: [ProductPropertiesValueWhereUniqueInput!]
-  disconnect: [ProductPropertiesValueWhereUniqueInput!]
-  delete: [ProductPropertiesValueWhereUniqueInput!]
-  update: [ProductPropertiesValueUpdateWithWhereUniqueWithoutPropertyInput!]
-  updateMany: [ProductPropertiesValueUpdateManyWithWhereNestedInput!]
-  deleteMany: [ProductPropertiesValueScalarWhereInput!]
-  upsert: [ProductPropertiesValueUpsertWithWhereUniqueWithoutPropertyInput!]
-}
-
-input ProductPropertiesValueUpdateManyWithWhereNestedInput {
-  where: ProductPropertiesValueScalarWhereInput!
-  data: ProductPropertiesValueUpdateManyDataInput!
-}
-
-input ProductPropertiesValueUpdateOneInput {
-  create: ProductPropertiesValueCreateInput
-  connect: ProductPropertiesValueWhereUniqueInput
-  disconnect: Boolean
-  delete: Boolean
-  update: ProductPropertiesValueUpdateDataInput
-  upsert: ProductPropertiesValueUpsertNestedInput
-}
-
-input ProductPropertiesValueUpdateWithoutPropertyDataInput {
-  _version: Int
-  name: String
-}
-
-input ProductPropertiesValueUpdateWithWhereUniqueWithoutPropertyInput {
-  where: ProductPropertiesValueWhereUniqueInput!
-  data: ProductPropertiesValueUpdateWithoutPropertyDataInput!
-}
-
-input ProductPropertiesValueUpsertNestedInput {
-  update: ProductPropertiesValueUpdateDataInput!
-  create: ProductPropertiesValueCreateInput!
-}
-
-input ProductPropertiesValueUpsertWithWhereUniqueWithoutPropertyInput {
-  where: ProductPropertiesValueWhereUniqueInput!
-  update: ProductPropertiesValueUpdateWithoutPropertyDataInput!
-  create: ProductPropertiesValueCreateWithoutPropertyInput!
-}
-
-input ProductPropertiesValueWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ProductPropertiesValueWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ProductPropertiesValueWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ProductPropertiesValueWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  _version: Int
-
-  """All values that are not equal to given value."""
-  _version_not: Int
-
-  """All values that are contained in given list."""
-  _version_in: [Int!]
-
-  """All values that are not contained in given list."""
-  _version_not_in: [Int!]
-
-  """All values less than the given value."""
-  _version_lt: Int
-
-  """All values less than or equal the given value."""
-  _version_lte: Int
-
-  """All values greater than the given value."""
-  _version_gt: Int
-
-  """All values greater than or equal the given value."""
-  _version_gte: Int
-  name: String
-
-  """All values that are not equal to given value."""
-  name_not: String
-
-  """All values that are contained in given list."""
-  name_in: [String!]
-
-  """All values that are not contained in given list."""
-  name_not_in: [String!]
-
-  """All values less than the given value."""
-  name_lt: String
-
-  """All values less than or equal the given value."""
-  name_lte: String
-
-  """All values greater than the given value."""
-  name_gt: String
-
-  """All values greater than or equal the given value."""
-  name_gte: String
-
-  """All values containing the given string."""
-  name_contains: String
-
-  """All values not containing the given string."""
-  name_not_contains: String
-
-  """All values starting with the given string."""
-  name_starts_with: String
-
-  """All values not starting with the given string."""
-  name_not_starts_with: String
-
-  """All values ending with the given string."""
-  name_ends_with: String
-
-  """All values not ending with the given string."""
-  name_not_ends_with: String
-  createdAt: DateTime
-
-  """All values that are not equal to given value."""
-  createdAt_not: DateTime
-
-  """All values that are contained in given list."""
-  createdAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  createdAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  createdAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  createdAt_lte: DateTime
-
-  """All values greater than the given value."""
-  createdAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-
-  """All values that are not equal to given value."""
-  updatedAt_not: DateTime
-
-  """All values that are contained in given list."""
-  updatedAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  updatedAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  updatedAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  updatedAt_lte: DateTime
-
-  """All values greater than the given value."""
-  updatedAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  updatedAt_gte: DateTime
-  property: ProductPropertiesNameWhereInput
-}
-
-input ProductPropertiesValueWhereUniqueInput {
-  id: ID
-  name: String
 }
 
 type ProductRetailer implements Node {
@@ -5478,7 +6116,7 @@ type ProductRetailer implements Node {
   stockQuantity: Int
   inStock: Boolean
   productMedias(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Media!]
-  productVariants: ProductVariants
+  product: Product
   retailer: Retailer
   rating: Int
   approved: Boolean
@@ -5506,12 +6144,12 @@ input ProductRetailerCreateInput {
   rating: Int
   approved: Boolean
   productMedias: MediaCreateManyInput
-  productVariants: ProductVariantsCreateOneWithoutProductRetailersInput
+  product: ProductCreateOneWithoutProductRetailersInput
   retailer: RetailerCreateOneWithoutProductsInput
 }
 
-input ProductRetailerCreateManyWithoutProductVariantsInput {
-  create: [ProductRetailerCreateWithoutProductVariantsInput!]
+input ProductRetailerCreateManyWithoutProductInput {
+  create: [ProductRetailerCreateWithoutProductInput!]
   connect: [ProductRetailerWhereUniqueInput!]
 }
 
@@ -5520,7 +6158,7 @@ input ProductRetailerCreateManyWithoutRetailerInput {
   connect: [ProductRetailerWhereUniqueInput!]
 }
 
-input ProductRetailerCreateWithoutProductVariantsInput {
+input ProductRetailerCreateWithoutProductInput {
   id: ID
   _version: Int
   listPrice: Int
@@ -5543,7 +6181,7 @@ input ProductRetailerCreateWithoutRetailerInput {
   rating: Int
   approved: Boolean
   productMedias: MediaCreateManyInput
-  productVariants: ProductVariantsCreateOneWithoutProductRetailersInput
+  product: ProductCreateOneWithoutProductRetailersInput
 }
 
 """An edge in a connection."""
@@ -5852,7 +6490,7 @@ input ProductRetailerUpdateInput {
   rating: Int
   approved: Boolean
   productMedias: MediaUpdateManyInput
-  productVariants: ProductVariantsUpdateOneWithoutProductRetailersInput
+  product: ProductUpdateOneWithoutProductRetailersInput
   retailer: RetailerUpdateOneWithoutProductsInput
 }
 
@@ -5876,16 +6514,16 @@ input ProductRetailerUpdateManyMutationInput {
   approved: Boolean
 }
 
-input ProductRetailerUpdateManyWithoutProductVariantsInput {
-  create: [ProductRetailerCreateWithoutProductVariantsInput!]
+input ProductRetailerUpdateManyWithoutProductInput {
+  create: [ProductRetailerCreateWithoutProductInput!]
   connect: [ProductRetailerWhereUniqueInput!]
   set: [ProductRetailerWhereUniqueInput!]
   disconnect: [ProductRetailerWhereUniqueInput!]
   delete: [ProductRetailerWhereUniqueInput!]
-  update: [ProductRetailerUpdateWithWhereUniqueWithoutProductVariantsInput!]
+  update: [ProductRetailerUpdateWithWhereUniqueWithoutProductInput!]
   updateMany: [ProductRetailerUpdateManyWithWhereNestedInput!]
   deleteMany: [ProductRetailerScalarWhereInput!]
-  upsert: [ProductRetailerUpsertWithWhereUniqueWithoutProductVariantsInput!]
+  upsert: [ProductRetailerUpsertWithWhereUniqueWithoutProductInput!]
 }
 
 input ProductRetailerUpdateManyWithoutRetailerInput {
@@ -5905,7 +6543,7 @@ input ProductRetailerUpdateManyWithWhereNestedInput {
   data: ProductRetailerUpdateManyDataInput!
 }
 
-input ProductRetailerUpdateWithoutProductVariantsDataInput {
+input ProductRetailerUpdateWithoutProductDataInput {
   _version: Int
   listPrice: Int
   sellPrice: Int
@@ -5926,12 +6564,12 @@ input ProductRetailerUpdateWithoutRetailerDataInput {
   rating: Int
   approved: Boolean
   productMedias: MediaUpdateManyInput
-  productVariants: ProductVariantsUpdateOneWithoutProductRetailersInput
+  product: ProductUpdateOneWithoutProductRetailersInput
 }
 
-input ProductRetailerUpdateWithWhereUniqueWithoutProductVariantsInput {
+input ProductRetailerUpdateWithWhereUniqueWithoutProductInput {
   where: ProductRetailerWhereUniqueInput!
-  data: ProductRetailerUpdateWithoutProductVariantsDataInput!
+  data: ProductRetailerUpdateWithoutProductDataInput!
 }
 
 input ProductRetailerUpdateWithWhereUniqueWithoutRetailerInput {
@@ -5939,10 +6577,10 @@ input ProductRetailerUpdateWithWhereUniqueWithoutRetailerInput {
   data: ProductRetailerUpdateWithoutRetailerDataInput!
 }
 
-input ProductRetailerUpsertWithWhereUniqueWithoutProductVariantsInput {
+input ProductRetailerUpsertWithWhereUniqueWithoutProductInput {
   where: ProductRetailerWhereUniqueInput!
-  update: ProductRetailerUpdateWithoutProductVariantsDataInput!
-  create: ProductRetailerCreateWithoutProductVariantsInput!
+  update: ProductRetailerUpdateWithoutProductDataInput!
+  create: ProductRetailerCreateWithoutProductInput!
 }
 
 input ProductRetailerUpsertWithWhereUniqueWithoutRetailerInput {
@@ -6165,7 +6803,7 @@ input ProductRetailerWhereInput {
   productMedias_every: MediaWhereInput
   productMedias_some: MediaWhereInput
   productMedias_none: MediaWhereInput
-  productVariants: ProductVariantsWhereInput
+  product: ProductWhereInput
   retailer: RetailerWhereInput
 }
 
@@ -6182,6 +6820,354 @@ input ProductScalarWhereInput {
 
   """Logical NOT on all given filters combined by AND."""
   NOT: [ProductScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  productName: String
+
+  """All values that are not equal to given value."""
+  productName_not: String
+
+  """All values that are contained in given list."""
+  productName_in: [String!]
+
+  """All values that are not contained in given list."""
+  productName_not_in: [String!]
+
+  """All values less than the given value."""
+  productName_lt: String
+
+  """All values less than or equal the given value."""
+  productName_lte: String
+
+  """All values greater than the given value."""
+  productName_gt: String
+
+  """All values greater than or equal the given value."""
+  productName_gte: String
+
+  """All values containing the given string."""
+  productName_contains: String
+
+  """All values not containing the given string."""
+  productName_not_contains: String
+
+  """All values starting with the given string."""
+  productName_starts_with: String
+
+  """All values not starting with the given string."""
+  productName_not_starts_with: String
+
+  """All values ending with the given string."""
+  productName_ends_with: String
+
+  """All values not ending with the given string."""
+  productName_not_ends_with: String
+  sku: String
+
+  """All values that are not equal to given value."""
+  sku_not: String
+
+  """All values that are contained in given list."""
+  sku_in: [String!]
+
+  """All values that are not contained in given list."""
+  sku_not_in: [String!]
+
+  """All values less than the given value."""
+  sku_lt: String
+
+  """All values less than or equal the given value."""
+  sku_lte: String
+
+  """All values greater than the given value."""
+  sku_gt: String
+
+  """All values greater than or equal the given value."""
+  sku_gte: String
+
+  """All values containing the given string."""
+  sku_contains: String
+
+  """All values not containing the given string."""
+  sku_not_contains: String
+
+  """All values starting with the given string."""
+  sku_starts_with: String
+
+  """All values not starting with the given string."""
+  sku_not_starts_with: String
+
+  """All values ending with the given string."""
+  sku_ends_with: String
+
+  """All values not ending with the given string."""
+  sku_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+type ProductSubscriptionPayload {
+  mutation: MutationType!
+  node: Product
+  updatedFields: [String!]
+  previousValues: ProductPreviousValues
+}
+
+input ProductSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ProductSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ProductSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ProductSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ProductWhereInput
+}
+
+type ProductTemplate implements Node {
+  id: ID!
+  _version: Int!
+  name: String
+  briefDescription: String
+  category(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category!]
+  products(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Product!]
+  brand: Brand
+  descriptions(where: DescriptionWhereInput, orderBy: DescriptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Description!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type ProductTemplateConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ProductTemplateEdge]!
+  aggregate: AggregateProductTemplate!
+}
+
+input ProductTemplateCreateInput {
+  id: ID
+  _version: Int
+  name: String
+  briefDescription: String
+  category: CategoryCreateManyWithoutProductTemplatesInput
+  products: ProductCreateManyWithoutProductTemplateInput
+  brand: BrandCreateOneWithoutProductTemplatesInput
+  descriptions: DescriptionCreateManyInput
+}
+
+input ProductTemplateCreateManyWithoutBrandInput {
+  create: [ProductTemplateCreateWithoutBrandInput!]
+  connect: [ProductTemplateWhereUniqueInput!]
+}
+
+input ProductTemplateCreateManyWithoutCategoryInput {
+  create: [ProductTemplateCreateWithoutCategoryInput!]
+  connect: [ProductTemplateWhereUniqueInput!]
+}
+
+input ProductTemplateCreateOneWithoutProductsInput {
+  create: ProductTemplateCreateWithoutProductsInput
+  connect: ProductTemplateWhereUniqueInput
+}
+
+input ProductTemplateCreateWithoutBrandInput {
+  id: ID
+  _version: Int
+  name: String
+  briefDescription: String
+  category: CategoryCreateManyWithoutProductTemplatesInput
+  products: ProductCreateManyWithoutProductTemplateInput
+  descriptions: DescriptionCreateManyInput
+}
+
+input ProductTemplateCreateWithoutCategoryInput {
+  id: ID
+  _version: Int
+  name: String
+  briefDescription: String
+  products: ProductCreateManyWithoutProductTemplateInput
+  brand: BrandCreateOneWithoutProductTemplatesInput
+  descriptions: DescriptionCreateManyInput
+}
+
+input ProductTemplateCreateWithoutProductsInput {
+  id: ID
+  _version: Int
+  name: String
+  briefDescription: String
+  category: CategoryCreateManyWithoutProductTemplatesInput
+  brand: BrandCreateOneWithoutProductTemplatesInput
+  descriptions: DescriptionCreateManyInput
+}
+
+"""An edge in a connection."""
+type ProductTemplateEdge {
+  """The item at the end of the edge."""
+  node: ProductTemplate!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum ProductTemplateOrderByInput {
+  id_ASC
+  id_DESC
+  _version_ASC
+  _version_DESC
+  name_ASC
+  name_DESC
+  briefDescription_ASC
+  briefDescription_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type ProductTemplatePreviousValues {
+  id: ID!
+  _version: Int!
+  name: String
+  briefDescription: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input ProductTemplateScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ProductTemplateScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ProductTemplateScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ProductTemplateScalarWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -6370,22 +7356,22 @@ input ProductScalarWhereInput {
   updatedAt_gte: DateTime
 }
 
-type ProductSubscriptionPayload {
+type ProductTemplateSubscriptionPayload {
   mutation: MutationType!
-  node: Product
+  node: ProductTemplate
   updatedFields: [String!]
-  previousValues: ProductPreviousValues
+  previousValues: ProductTemplatePreviousValues
 }
 
-input ProductSubscriptionWhereInput {
+input ProductTemplateSubscriptionWhereInput {
   """Logical AND on all given filters."""
-  AND: [ProductSubscriptionWhereInput!]
+  AND: [ProductTemplateSubscriptionWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [ProductSubscriptionWhereInput!]
+  OR: [ProductTemplateSubscriptionWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [ProductSubscriptionWhereInput!]
+  NOT: [ProductTemplateSubscriptionWhereInput!]
 
   """
   The subscription event gets dispatched when it's listed in mutation_in
@@ -6406,712 +7392,132 @@ input ProductSubscriptionWhereInput {
   The subscription event gets only dispatched when some of the field names included in this list have been updated
   """
   updatedFields_contains_some: [String!]
-  node: ProductWhereInput
+  node: ProductTemplateWhereInput
 }
 
-input ProductUpdateInput {
+input ProductTemplateUpdateInput {
   _version: Int
   name: String
   briefDescription: String
-  category: CategoryUpdateManyWithoutProductsInput
-  variants: ProductVariantsUpdateManyWithoutProductInput
-  brand: BrandUpdateOneWithoutProductsInput
-  descriptions: DescriptionUpdateManyWithoutProductInput
+  category: CategoryUpdateManyWithoutProductTemplatesInput
+  products: ProductUpdateManyWithoutProductTemplateInput
+  brand: BrandUpdateOneWithoutProductTemplatesInput
+  descriptions: DescriptionUpdateManyInput
 }
 
-input ProductUpdateManyDataInput {
-  _version: Int
-  name: String
-  briefDescription: String
-}
-
-input ProductUpdateManyMutationInput {
+input ProductTemplateUpdateManyDataInput {
   _version: Int
   name: String
   briefDescription: String
 }
 
-input ProductUpdateManyWithoutBrandInput {
-  create: [ProductCreateWithoutBrandInput!]
-  connect: [ProductWhereUniqueInput!]
-  set: [ProductWhereUniqueInput!]
-  disconnect: [ProductWhereUniqueInput!]
-  delete: [ProductWhereUniqueInput!]
-  update: [ProductUpdateWithWhereUniqueWithoutBrandInput!]
-  updateMany: [ProductUpdateManyWithWhereNestedInput!]
-  deleteMany: [ProductScalarWhereInput!]
-  upsert: [ProductUpsertWithWhereUniqueWithoutBrandInput!]
+input ProductTemplateUpdateManyMutationInput {
+  _version: Int
+  name: String
+  briefDescription: String
 }
 
-input ProductUpdateManyWithoutCategoryInput {
-  create: [ProductCreateWithoutCategoryInput!]
-  connect: [ProductWhereUniqueInput!]
-  set: [ProductWhereUniqueInput!]
-  disconnect: [ProductWhereUniqueInput!]
-  delete: [ProductWhereUniqueInput!]
-  update: [ProductUpdateWithWhereUniqueWithoutCategoryInput!]
-  updateMany: [ProductUpdateManyWithWhereNestedInput!]
-  deleteMany: [ProductScalarWhereInput!]
-  upsert: [ProductUpsertWithWhereUniqueWithoutCategoryInput!]
+input ProductTemplateUpdateManyWithoutBrandInput {
+  create: [ProductTemplateCreateWithoutBrandInput!]
+  connect: [ProductTemplateWhereUniqueInput!]
+  set: [ProductTemplateWhereUniqueInput!]
+  disconnect: [ProductTemplateWhereUniqueInput!]
+  delete: [ProductTemplateWhereUniqueInput!]
+  update: [ProductTemplateUpdateWithWhereUniqueWithoutBrandInput!]
+  updateMany: [ProductTemplateUpdateManyWithWhereNestedInput!]
+  deleteMany: [ProductTemplateScalarWhereInput!]
+  upsert: [ProductTemplateUpsertWithWhereUniqueWithoutBrandInput!]
 }
 
-input ProductUpdateManyWithWhereNestedInput {
-  where: ProductScalarWhereInput!
-  data: ProductUpdateManyDataInput!
+input ProductTemplateUpdateManyWithoutCategoryInput {
+  create: [ProductTemplateCreateWithoutCategoryInput!]
+  connect: [ProductTemplateWhereUniqueInput!]
+  set: [ProductTemplateWhereUniqueInput!]
+  disconnect: [ProductTemplateWhereUniqueInput!]
+  delete: [ProductTemplateWhereUniqueInput!]
+  update: [ProductTemplateUpdateWithWhereUniqueWithoutCategoryInput!]
+  updateMany: [ProductTemplateUpdateManyWithWhereNestedInput!]
+  deleteMany: [ProductTemplateScalarWhereInput!]
+  upsert: [ProductTemplateUpsertWithWhereUniqueWithoutCategoryInput!]
 }
 
-input ProductUpdateOneWithoutDescriptionsInput {
-  create: ProductCreateWithoutDescriptionsInput
-  connect: ProductWhereUniqueInput
+input ProductTemplateUpdateManyWithWhereNestedInput {
+  where: ProductTemplateScalarWhereInput!
+  data: ProductTemplateUpdateManyDataInput!
+}
+
+input ProductTemplateUpdateOneWithoutProductsInput {
+  create: ProductTemplateCreateWithoutProductsInput
+  connect: ProductTemplateWhereUniqueInput
   disconnect: Boolean
   delete: Boolean
-  update: ProductUpdateWithoutDescriptionsDataInput
-  upsert: ProductUpsertWithoutDescriptionsInput
+  update: ProductTemplateUpdateWithoutProductsDataInput
+  upsert: ProductTemplateUpsertWithoutProductsInput
 }
 
-input ProductUpdateOneWithoutVariantsInput {
-  create: ProductCreateWithoutVariantsInput
-  connect: ProductWhereUniqueInput
-  disconnect: Boolean
-  delete: Boolean
-  update: ProductUpdateWithoutVariantsDataInput
-  upsert: ProductUpsertWithoutVariantsInput
-}
-
-input ProductUpdateWithoutBrandDataInput {
+input ProductTemplateUpdateWithoutBrandDataInput {
   _version: Int
   name: String
   briefDescription: String
-  category: CategoryUpdateManyWithoutProductsInput
-  variants: ProductVariantsUpdateManyWithoutProductInput
-  descriptions: DescriptionUpdateManyWithoutProductInput
+  category: CategoryUpdateManyWithoutProductTemplatesInput
+  products: ProductUpdateManyWithoutProductTemplateInput
+  descriptions: DescriptionUpdateManyInput
 }
 
-input ProductUpdateWithoutCategoryDataInput {
+input ProductTemplateUpdateWithoutCategoryDataInput {
   _version: Int
   name: String
   briefDescription: String
-  variants: ProductVariantsUpdateManyWithoutProductInput
-  brand: BrandUpdateOneWithoutProductsInput
-  descriptions: DescriptionUpdateManyWithoutProductInput
+  products: ProductUpdateManyWithoutProductTemplateInput
+  brand: BrandUpdateOneWithoutProductTemplatesInput
+  descriptions: DescriptionUpdateManyInput
 }
 
-input ProductUpdateWithoutDescriptionsDataInput {
+input ProductTemplateUpdateWithoutProductsDataInput {
   _version: Int
   name: String
   briefDescription: String
-  category: CategoryUpdateManyWithoutProductsInput
-  variants: ProductVariantsUpdateManyWithoutProductInput
-  brand: BrandUpdateOneWithoutProductsInput
+  category: CategoryUpdateManyWithoutProductTemplatesInput
+  brand: BrandUpdateOneWithoutProductTemplatesInput
+  descriptions: DescriptionUpdateManyInput
 }
 
-input ProductUpdateWithoutVariantsDataInput {
-  _version: Int
-  name: String
-  briefDescription: String
-  category: CategoryUpdateManyWithoutProductsInput
-  brand: BrandUpdateOneWithoutProductsInput
-  descriptions: DescriptionUpdateManyWithoutProductInput
+input ProductTemplateUpdateWithWhereUniqueWithoutBrandInput {
+  where: ProductTemplateWhereUniqueInput!
+  data: ProductTemplateUpdateWithoutBrandDataInput!
 }
 
-input ProductUpdateWithWhereUniqueWithoutBrandInput {
-  where: ProductWhereUniqueInput!
-  data: ProductUpdateWithoutBrandDataInput!
+input ProductTemplateUpdateWithWhereUniqueWithoutCategoryInput {
+  where: ProductTemplateWhereUniqueInput!
+  data: ProductTemplateUpdateWithoutCategoryDataInput!
 }
 
-input ProductUpdateWithWhereUniqueWithoutCategoryInput {
-  where: ProductWhereUniqueInput!
-  data: ProductUpdateWithoutCategoryDataInput!
+input ProductTemplateUpsertWithoutProductsInput {
+  update: ProductTemplateUpdateWithoutProductsDataInput!
+  create: ProductTemplateCreateWithoutProductsInput!
 }
 
-input ProductUpsertWithoutDescriptionsInput {
-  update: ProductUpdateWithoutDescriptionsDataInput!
-  create: ProductCreateWithoutDescriptionsInput!
+input ProductTemplateUpsertWithWhereUniqueWithoutBrandInput {
+  where: ProductTemplateWhereUniqueInput!
+  update: ProductTemplateUpdateWithoutBrandDataInput!
+  create: ProductTemplateCreateWithoutBrandInput!
 }
 
-input ProductUpsertWithoutVariantsInput {
-  update: ProductUpdateWithoutVariantsDataInput!
-  create: ProductCreateWithoutVariantsInput!
+input ProductTemplateUpsertWithWhereUniqueWithoutCategoryInput {
+  where: ProductTemplateWhereUniqueInput!
+  update: ProductTemplateUpdateWithoutCategoryDataInput!
+  create: ProductTemplateCreateWithoutCategoryInput!
 }
 
-input ProductUpsertWithWhereUniqueWithoutBrandInput {
-  where: ProductWhereUniqueInput!
-  update: ProductUpdateWithoutBrandDataInput!
-  create: ProductCreateWithoutBrandInput!
-}
-
-input ProductUpsertWithWhereUniqueWithoutCategoryInput {
-  where: ProductWhereUniqueInput!
-  update: ProductUpdateWithoutCategoryDataInput!
-  create: ProductCreateWithoutCategoryInput!
-}
-
-type ProductVariants implements Node {
-  id: ID!
-  _version: Int!
-  product: Product
-  productMedias(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Media!]
-  productRetailers(where: ProductRetailerWhereInput, orderBy: ProductRetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductRetailer!]
-  sku: String
-  option_1: ProductPropertiesName
-  option_1_value: ProductPropertiesValue
-  option_2: ProductPropertiesName
-  option_2_value: ProductPropertiesValue
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-"""A connection to a list of items."""
-type ProductVariantsConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [ProductVariantsEdge]!
-  aggregate: AggregateProductVariants!
-}
-
-input ProductVariantsCreateInput {
-  id: ID
-  _version: Int
-  sku: String
-  product: ProductCreateOneWithoutVariantsInput
-  productMedias: MediaCreateManyInput
-  productRetailers: ProductRetailerCreateManyWithoutProductVariantsInput
-  option_1: ProductPropertiesNameCreateOneInput
-  option_1_value: ProductPropertiesValueCreateOneInput
-  option_2: ProductPropertiesNameCreateOneInput
-  option_2_value: ProductPropertiesValueCreateOneInput
-}
-
-input ProductVariantsCreateManyWithoutProductInput {
-  create: [ProductVariantsCreateWithoutProductInput!]
-  connect: [ProductVariantsWhereUniqueInput!]
-}
-
-input ProductVariantsCreateOneWithoutProductRetailersInput {
-  create: ProductVariantsCreateWithoutProductRetailersInput
-  connect: ProductVariantsWhereUniqueInput
-}
-
-input ProductVariantsCreateWithoutProductInput {
-  id: ID
-  _version: Int
-  sku: String
-  productMedias: MediaCreateManyInput
-  productRetailers: ProductRetailerCreateManyWithoutProductVariantsInput
-  option_1: ProductPropertiesNameCreateOneInput
-  option_1_value: ProductPropertiesValueCreateOneInput
-  option_2: ProductPropertiesNameCreateOneInput
-  option_2_value: ProductPropertiesValueCreateOneInput
-}
-
-input ProductVariantsCreateWithoutProductRetailersInput {
-  id: ID
-  _version: Int
-  sku: String
-  product: ProductCreateOneWithoutVariantsInput
-  productMedias: MediaCreateManyInput
-  option_1: ProductPropertiesNameCreateOneInput
-  option_1_value: ProductPropertiesValueCreateOneInput
-  option_2: ProductPropertiesNameCreateOneInput
-  option_2_value: ProductPropertiesValueCreateOneInput
-}
-
-"""An edge in a connection."""
-type ProductVariantsEdge {
-  """The item at the end of the edge."""
-  node: ProductVariants!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum ProductVariantsOrderByInput {
-  id_ASC
-  id_DESC
-  _version_ASC
-  _version_DESC
-  sku_ASC
-  sku_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type ProductVariantsPreviousValues {
-  id: ID!
-  _version: Int!
-  sku: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-input ProductVariantsScalarWhereInput {
+input ProductTemplateWhereInput {
   """Logical AND on all given filters."""
-  AND: [ProductVariantsScalarWhereInput!]
+  AND: [ProductTemplateWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [ProductVariantsScalarWhereInput!]
+  OR: [ProductTemplateWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [ProductVariantsScalarWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  _version: Int
-
-  """All values that are not equal to given value."""
-  _version_not: Int
-
-  """All values that are contained in given list."""
-  _version_in: [Int!]
-
-  """All values that are not contained in given list."""
-  _version_not_in: [Int!]
-
-  """All values less than the given value."""
-  _version_lt: Int
-
-  """All values less than or equal the given value."""
-  _version_lte: Int
-
-  """All values greater than the given value."""
-  _version_gt: Int
-
-  """All values greater than or equal the given value."""
-  _version_gte: Int
-  sku: String
-
-  """All values that are not equal to given value."""
-  sku_not: String
-
-  """All values that are contained in given list."""
-  sku_in: [String!]
-
-  """All values that are not contained in given list."""
-  sku_not_in: [String!]
-
-  """All values less than the given value."""
-  sku_lt: String
-
-  """All values less than or equal the given value."""
-  sku_lte: String
-
-  """All values greater than the given value."""
-  sku_gt: String
-
-  """All values greater than or equal the given value."""
-  sku_gte: String
-
-  """All values containing the given string."""
-  sku_contains: String
-
-  """All values not containing the given string."""
-  sku_not_contains: String
-
-  """All values starting with the given string."""
-  sku_starts_with: String
-
-  """All values not starting with the given string."""
-  sku_not_starts_with: String
-
-  """All values ending with the given string."""
-  sku_ends_with: String
-
-  """All values not ending with the given string."""
-  sku_not_ends_with: String
-  createdAt: DateTime
-
-  """All values that are not equal to given value."""
-  createdAt_not: DateTime
-
-  """All values that are contained in given list."""
-  createdAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  createdAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  createdAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  createdAt_lte: DateTime
-
-  """All values greater than the given value."""
-  createdAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-
-  """All values that are not equal to given value."""
-  updatedAt_not: DateTime
-
-  """All values that are contained in given list."""
-  updatedAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  updatedAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  updatedAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  updatedAt_lte: DateTime
-
-  """All values greater than the given value."""
-  updatedAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  updatedAt_gte: DateTime
-}
-
-type ProductVariantsSubscriptionPayload {
-  mutation: MutationType!
-  node: ProductVariants
-  updatedFields: [String!]
-  previousValues: ProductVariantsPreviousValues
-}
-
-input ProductVariantsSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ProductVariantsSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ProductVariantsSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ProductVariantsSubscriptionWhereInput!]
-
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: ProductVariantsWhereInput
-}
-
-input ProductVariantsUpdateInput {
-  _version: Int
-  sku: String
-  product: ProductUpdateOneWithoutVariantsInput
-  productMedias: MediaUpdateManyInput
-  productRetailers: ProductRetailerUpdateManyWithoutProductVariantsInput
-  option_1: ProductPropertiesNameUpdateOneInput
-  option_1_value: ProductPropertiesValueUpdateOneInput
-  option_2: ProductPropertiesNameUpdateOneInput
-  option_2_value: ProductPropertiesValueUpdateOneInput
-}
-
-input ProductVariantsUpdateManyDataInput {
-  _version: Int
-  sku: String
-}
-
-input ProductVariantsUpdateManyMutationInput {
-  _version: Int
-  sku: String
-}
-
-input ProductVariantsUpdateManyWithoutProductInput {
-  create: [ProductVariantsCreateWithoutProductInput!]
-  connect: [ProductVariantsWhereUniqueInput!]
-  set: [ProductVariantsWhereUniqueInput!]
-  disconnect: [ProductVariantsWhereUniqueInput!]
-  delete: [ProductVariantsWhereUniqueInput!]
-  update: [ProductVariantsUpdateWithWhereUniqueWithoutProductInput!]
-  updateMany: [ProductVariantsUpdateManyWithWhereNestedInput!]
-  deleteMany: [ProductVariantsScalarWhereInput!]
-  upsert: [ProductVariantsUpsertWithWhereUniqueWithoutProductInput!]
-}
-
-input ProductVariantsUpdateManyWithWhereNestedInput {
-  where: ProductVariantsScalarWhereInput!
-  data: ProductVariantsUpdateManyDataInput!
-}
-
-input ProductVariantsUpdateOneWithoutProductRetailersInput {
-  create: ProductVariantsCreateWithoutProductRetailersInput
-  connect: ProductVariantsWhereUniqueInput
-  disconnect: Boolean
-  delete: Boolean
-  update: ProductVariantsUpdateWithoutProductRetailersDataInput
-  upsert: ProductVariantsUpsertWithoutProductRetailersInput
-}
-
-input ProductVariantsUpdateWithoutProductDataInput {
-  _version: Int
-  sku: String
-  productMedias: MediaUpdateManyInput
-  productRetailers: ProductRetailerUpdateManyWithoutProductVariantsInput
-  option_1: ProductPropertiesNameUpdateOneInput
-  option_1_value: ProductPropertiesValueUpdateOneInput
-  option_2: ProductPropertiesNameUpdateOneInput
-  option_2_value: ProductPropertiesValueUpdateOneInput
-}
-
-input ProductVariantsUpdateWithoutProductRetailersDataInput {
-  _version: Int
-  sku: String
-  product: ProductUpdateOneWithoutVariantsInput
-  productMedias: MediaUpdateManyInput
-  option_1: ProductPropertiesNameUpdateOneInput
-  option_1_value: ProductPropertiesValueUpdateOneInput
-  option_2: ProductPropertiesNameUpdateOneInput
-  option_2_value: ProductPropertiesValueUpdateOneInput
-}
-
-input ProductVariantsUpdateWithWhereUniqueWithoutProductInput {
-  where: ProductVariantsWhereUniqueInput!
-  data: ProductVariantsUpdateWithoutProductDataInput!
-}
-
-input ProductVariantsUpsertWithoutProductRetailersInput {
-  update: ProductVariantsUpdateWithoutProductRetailersDataInput!
-  create: ProductVariantsCreateWithoutProductRetailersInput!
-}
-
-input ProductVariantsUpsertWithWhereUniqueWithoutProductInput {
-  where: ProductVariantsWhereUniqueInput!
-  update: ProductVariantsUpdateWithoutProductDataInput!
-  create: ProductVariantsCreateWithoutProductInput!
-}
-
-input ProductVariantsWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ProductVariantsWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ProductVariantsWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ProductVariantsWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  _version: Int
-
-  """All values that are not equal to given value."""
-  _version_not: Int
-
-  """All values that are contained in given list."""
-  _version_in: [Int!]
-
-  """All values that are not contained in given list."""
-  _version_not_in: [Int!]
-
-  """All values less than the given value."""
-  _version_lt: Int
-
-  """All values less than or equal the given value."""
-  _version_lte: Int
-
-  """All values greater than the given value."""
-  _version_gt: Int
-
-  """All values greater than or equal the given value."""
-  _version_gte: Int
-  sku: String
-
-  """All values that are not equal to given value."""
-  sku_not: String
-
-  """All values that are contained in given list."""
-  sku_in: [String!]
-
-  """All values that are not contained in given list."""
-  sku_not_in: [String!]
-
-  """All values less than the given value."""
-  sku_lt: String
-
-  """All values less than or equal the given value."""
-  sku_lte: String
-
-  """All values greater than the given value."""
-  sku_gt: String
-
-  """All values greater than or equal the given value."""
-  sku_gte: String
-
-  """All values containing the given string."""
-  sku_contains: String
-
-  """All values not containing the given string."""
-  sku_not_contains: String
-
-  """All values starting with the given string."""
-  sku_starts_with: String
-
-  """All values not starting with the given string."""
-  sku_not_starts_with: String
-
-  """All values ending with the given string."""
-  sku_ends_with: String
-
-  """All values not ending with the given string."""
-  sku_not_ends_with: String
-  createdAt: DateTime
-
-  """All values that are not equal to given value."""
-  createdAt_not: DateTime
-
-  """All values that are contained in given list."""
-  createdAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  createdAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  createdAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  createdAt_lte: DateTime
-
-  """All values greater than the given value."""
-  createdAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-
-  """All values that are not equal to given value."""
-  updatedAt_not: DateTime
-
-  """All values that are contained in given list."""
-  updatedAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  updatedAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  updatedAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  updatedAt_lte: DateTime
-
-  """All values greater than the given value."""
-  updatedAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  updatedAt_gte: DateTime
-  product: ProductWhereInput
-  productMedias_every: MediaWhereInput
-  productMedias_some: MediaWhereInput
-  productMedias_none: MediaWhereInput
-  productRetailers_every: ProductRetailerWhereInput
-  productRetailers_some: ProductRetailerWhereInput
-  productRetailers_none: ProductRetailerWhereInput
-  option_1: ProductPropertiesNameWhereInput
-  option_1_value: ProductPropertiesValueWhereInput
-  option_2: ProductPropertiesNameWhereInput
-  option_2_value: ProductPropertiesValueWhereInput
-}
-
-input ProductVariantsWhereUniqueInput {
-  id: ID
-  sku: String
-}
-
-input ProductWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ProductWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ProductWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ProductWhereInput!]
+  NOT: [ProductTemplateWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -7301,17 +7707,336 @@ input ProductWhereInput {
   category_every: CategoryWhereInput
   category_some: CategoryWhereInput
   category_none: CategoryWhereInput
-  variants_every: ProductVariantsWhereInput
-  variants_some: ProductVariantsWhereInput
-  variants_none: ProductVariantsWhereInput
+  products_every: ProductWhereInput
+  products_some: ProductWhereInput
+  products_none: ProductWhereInput
   brand: BrandWhereInput
   descriptions_every: DescriptionWhereInput
   descriptions_some: DescriptionWhereInput
   descriptions_none: DescriptionWhereInput
 }
 
+input ProductTemplateWhereUniqueInput {
+  id: ID
+}
+
+input ProductUpdateDataInput {
+  _version: Int
+  productName: String
+  sku: String
+  productTemplate: ProductTemplateUpdateOneWithoutProductsInput
+  productMedias: MediaUpdateManyInput
+  productRetailers: ProductRetailerUpdateManyWithoutProductInput
+  options: ProductOptionUpdateManyInput
+}
+
+input ProductUpdateInput {
+  _version: Int
+  productName: String
+  sku: String
+  productTemplate: ProductTemplateUpdateOneWithoutProductsInput
+  productMedias: MediaUpdateManyInput
+  productRetailers: ProductRetailerUpdateManyWithoutProductInput
+  options: ProductOptionUpdateManyInput
+}
+
+input ProductUpdateManyDataInput {
+  _version: Int
+  productName: String
+  sku: String
+}
+
+input ProductUpdateManyMutationInput {
+  _version: Int
+  productName: String
+  sku: String
+}
+
+input ProductUpdateManyWithoutProductTemplateInput {
+  create: [ProductCreateWithoutProductTemplateInput!]
+  connect: [ProductWhereUniqueInput!]
+  set: [ProductWhereUniqueInput!]
+  disconnect: [ProductWhereUniqueInput!]
+  delete: [ProductWhereUniqueInput!]
+  update: [ProductUpdateWithWhereUniqueWithoutProductTemplateInput!]
+  updateMany: [ProductUpdateManyWithWhereNestedInput!]
+  deleteMany: [ProductScalarWhereInput!]
+  upsert: [ProductUpsertWithWhereUniqueWithoutProductTemplateInput!]
+}
+
+input ProductUpdateManyWithWhereNestedInput {
+  where: ProductScalarWhereInput!
+  data: ProductUpdateManyDataInput!
+}
+
+input ProductUpdateOneInput {
+  create: ProductCreateInput
+  connect: ProductWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: ProductUpdateDataInput
+  upsert: ProductUpsertNestedInput
+}
+
+input ProductUpdateOneWithoutProductRetailersInput {
+  create: ProductCreateWithoutProductRetailersInput
+  connect: ProductWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: ProductUpdateWithoutProductRetailersDataInput
+  upsert: ProductUpsertWithoutProductRetailersInput
+}
+
+input ProductUpdateWithoutProductRetailersDataInput {
+  _version: Int
+  productName: String
+  sku: String
+  productTemplate: ProductTemplateUpdateOneWithoutProductsInput
+  productMedias: MediaUpdateManyInput
+  options: ProductOptionUpdateManyInput
+}
+
+input ProductUpdateWithoutProductTemplateDataInput {
+  _version: Int
+  productName: String
+  sku: String
+  productMedias: MediaUpdateManyInput
+  productRetailers: ProductRetailerUpdateManyWithoutProductInput
+  options: ProductOptionUpdateManyInput
+}
+
+input ProductUpdateWithWhereUniqueWithoutProductTemplateInput {
+  where: ProductWhereUniqueInput!
+  data: ProductUpdateWithoutProductTemplateDataInput!
+}
+
+input ProductUpsertNestedInput {
+  update: ProductUpdateDataInput!
+  create: ProductCreateInput!
+}
+
+input ProductUpsertWithoutProductRetailersInput {
+  update: ProductUpdateWithoutProductRetailersDataInput!
+  create: ProductCreateWithoutProductRetailersInput!
+}
+
+input ProductUpsertWithWhereUniqueWithoutProductTemplateInput {
+  where: ProductWhereUniqueInput!
+  update: ProductUpdateWithoutProductTemplateDataInput!
+  create: ProductCreateWithoutProductTemplateInput!
+}
+
+input ProductWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ProductWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ProductWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ProductWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  productName: String
+
+  """All values that are not equal to given value."""
+  productName_not: String
+
+  """All values that are contained in given list."""
+  productName_in: [String!]
+
+  """All values that are not contained in given list."""
+  productName_not_in: [String!]
+
+  """All values less than the given value."""
+  productName_lt: String
+
+  """All values less than or equal the given value."""
+  productName_lte: String
+
+  """All values greater than the given value."""
+  productName_gt: String
+
+  """All values greater than or equal the given value."""
+  productName_gte: String
+
+  """All values containing the given string."""
+  productName_contains: String
+
+  """All values not containing the given string."""
+  productName_not_contains: String
+
+  """All values starting with the given string."""
+  productName_starts_with: String
+
+  """All values not starting with the given string."""
+  productName_not_starts_with: String
+
+  """All values ending with the given string."""
+  productName_ends_with: String
+
+  """All values not ending with the given string."""
+  productName_not_ends_with: String
+  sku: String
+
+  """All values that are not equal to given value."""
+  sku_not: String
+
+  """All values that are contained in given list."""
+  sku_in: [String!]
+
+  """All values that are not contained in given list."""
+  sku_not_in: [String!]
+
+  """All values less than the given value."""
+  sku_lt: String
+
+  """All values less than or equal the given value."""
+  sku_lte: String
+
+  """All values greater than the given value."""
+  sku_gt: String
+
+  """All values greater than or equal the given value."""
+  sku_gte: String
+
+  """All values containing the given string."""
+  sku_contains: String
+
+  """All values not containing the given string."""
+  sku_not_contains: String
+
+  """All values starting with the given string."""
+  sku_starts_with: String
+
+  """All values not starting with the given string."""
+  sku_not_starts_with: String
+
+  """All values ending with the given string."""
+  sku_ends_with: String
+
+  """All values not ending with the given string."""
+  sku_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  productTemplate: ProductTemplateWhereInput
+  productMedias_every: MediaWhereInput
+  productMedias_some: MediaWhereInput
+  productMedias_none: MediaWhereInput
+  productRetailers_every: ProductRetailerWhereInput
+  productRetailers_some: ProductRetailerWhereInput
+  productRetailers_none: ProductRetailerWhereInput
+  options_every: ProductOptionWhereInput
+  options_some: ProductOptionWhereInput
+  options_none: ProductOptionWhereInput
+}
+
 input ProductWhereUniqueInput {
   id: ID
+  productName: String
+  sku: String
 }
 
 type Query {
@@ -7320,55 +8045,58 @@ type Query {
   securityAnswers(where: SecurityAnswerWhereInput, orderBy: SecurityAnswerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SecurityAnswer]!
   assignments(where: AssignmentWhereInput, orderBy: AssignmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Assignment]!
   brands(where: BrandWhereInput, orderBy: BrandOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Brand]!
-  products(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Product]!
-  descriptions(where: DescriptionWhereInput, orderBy: DescriptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Description]!
-  productVariantses(where: ProductVariantsWhereInput, orderBy: ProductVariantsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductVariants]!
+  productTemplates(where: ProductTemplateWhereInput, orderBy: ProductTemplateOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductTemplate]!
+  productAttributes(where: ProductAttributeWhereInput, orderBy: ProductAttributeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductAttribute]!
+  productAttributeValues(where: ProductAttributeValueWhereInput, orderBy: ProductAttributeValueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductAttributeValue]!
   productRetailers(where: ProductRetailerWhereInput, orderBy: ProductRetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductRetailer]!
   reviews(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Review]!
-  categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
+  productOptions(where: ProductOptionWhereInput, orderBy: ProductOptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductOption]!
+  products(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Product]!
   permissions(where: PermissionWhereInput, orderBy: PermissionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Permission]!
-  productPropertiesValues(where: ProductPropertiesValueWhereInput, orderBy: ProductPropertiesValueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductPropertiesValue]!
+  categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
   medias(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Media]!
   addresses(where: AddressWhereInput, orderBy: AddressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Address]!
   retailers(where: RetailerWhereInput, orderBy: RetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Retailer]!
   roles(where: RoleWhereInput, orderBy: RoleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Role]!
-  productPropertiesNames(where: ProductPropertiesNameWhereInput, orderBy: ProductPropertiesNameOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductPropertiesName]!
+  descriptions(where: DescriptionWhereInput, orderBy: DescriptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Description]!
   user(where: UserWhereUniqueInput!): User
   securityQuestion(where: SecurityQuestionWhereUniqueInput!): SecurityQuestion
   securityAnswer(where: SecurityAnswerWhereUniqueInput!): SecurityAnswer
   assignment(where: AssignmentWhereUniqueInput!): Assignment
   brand(where: BrandWhereUniqueInput!): Brand
-  product(where: ProductWhereUniqueInput!): Product
-  description(where: DescriptionWhereUniqueInput!): Description
-  productVariants(where: ProductVariantsWhereUniqueInput!): ProductVariants
+  productTemplate(where: ProductTemplateWhereUniqueInput!): ProductTemplate
+  productAttribute(where: ProductAttributeWhereUniqueInput!): ProductAttribute
+  productAttributeValue(where: ProductAttributeValueWhereUniqueInput!): ProductAttributeValue
   productRetailer(where: ProductRetailerWhereUniqueInput!): ProductRetailer
   review(where: ReviewWhereUniqueInput!): Review
-  category(where: CategoryWhereUniqueInput!): Category
+  productOption(where: ProductOptionWhereUniqueInput!): ProductOption
+  product(where: ProductWhereUniqueInput!): Product
   permission(where: PermissionWhereUniqueInput!): Permission
-  productPropertiesValue(where: ProductPropertiesValueWhereUniqueInput!): ProductPropertiesValue
+  category(where: CategoryWhereUniqueInput!): Category
   media(where: MediaWhereUniqueInput!): Media
   address(where: AddressWhereUniqueInput!): Address
   retailer(where: RetailerWhereUniqueInput!): Retailer
   role(where: RoleWhereUniqueInput!): Role
-  productPropertiesName(where: ProductPropertiesNameWhereUniqueInput!): ProductPropertiesName
+  description(where: DescriptionWhereUniqueInput!): Description
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   securityQuestionsConnection(where: SecurityQuestionWhereInput, orderBy: SecurityQuestionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SecurityQuestionConnection!
   securityAnswersConnection(where: SecurityAnswerWhereInput, orderBy: SecurityAnswerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SecurityAnswerConnection!
   assignmentsConnection(where: AssignmentWhereInput, orderBy: AssignmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AssignmentConnection!
   brandsConnection(where: BrandWhereInput, orderBy: BrandOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BrandConnection!
-  productsConnection(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductConnection!
-  descriptionsConnection(where: DescriptionWhereInput, orderBy: DescriptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): DescriptionConnection!
-  productVariantsesConnection(where: ProductVariantsWhereInput, orderBy: ProductVariantsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductVariantsConnection!
+  productTemplatesConnection(where: ProductTemplateWhereInput, orderBy: ProductTemplateOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductTemplateConnection!
+  productAttributesConnection(where: ProductAttributeWhereInput, orderBy: ProductAttributeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductAttributeConnection!
+  productAttributeValuesConnection(where: ProductAttributeValueWhereInput, orderBy: ProductAttributeValueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductAttributeValueConnection!
   productRetailersConnection(where: ProductRetailerWhereInput, orderBy: ProductRetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductRetailerConnection!
   reviewsConnection(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ReviewConnection!
-  categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
+  productOptionsConnection(where: ProductOptionWhereInput, orderBy: ProductOptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductOptionConnection!
+  productsConnection(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductConnection!
   permissionsConnection(where: PermissionWhereInput, orderBy: PermissionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PermissionConnection!
-  productPropertiesValuesConnection(where: ProductPropertiesValueWhereInput, orderBy: ProductPropertiesValueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductPropertiesValueConnection!
+  categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
   mediasConnection(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MediaConnection!
   addressesConnection(where: AddressWhereInput, orderBy: AddressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AddressConnection!
   retailersConnection(where: RetailerWhereInput, orderBy: RetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RetailerConnection!
   rolesConnection(where: RoleWhereInput, orderBy: RoleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RoleConnection!
-  productPropertiesNamesConnection(where: ProductPropertiesNameWhereInput, orderBy: ProductPropertiesNameOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductPropertiesNameConnection!
+  descriptionsConnection(where: DescriptionWhereInput, orderBy: DescriptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): DescriptionConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -10229,19 +10957,20 @@ type Subscription {
   securityAnswer(where: SecurityAnswerSubscriptionWhereInput): SecurityAnswerSubscriptionPayload
   assignment(where: AssignmentSubscriptionWhereInput): AssignmentSubscriptionPayload
   brand(where: BrandSubscriptionWhereInput): BrandSubscriptionPayload
-  product(where: ProductSubscriptionWhereInput): ProductSubscriptionPayload
-  description(where: DescriptionSubscriptionWhereInput): DescriptionSubscriptionPayload
-  productVariants(where: ProductVariantsSubscriptionWhereInput): ProductVariantsSubscriptionPayload
+  productTemplate(where: ProductTemplateSubscriptionWhereInput): ProductTemplateSubscriptionPayload
+  productAttribute(where: ProductAttributeSubscriptionWhereInput): ProductAttributeSubscriptionPayload
+  productAttributeValue(where: ProductAttributeValueSubscriptionWhereInput): ProductAttributeValueSubscriptionPayload
   productRetailer(where: ProductRetailerSubscriptionWhereInput): ProductRetailerSubscriptionPayload
   review(where: ReviewSubscriptionWhereInput): ReviewSubscriptionPayload
-  category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
+  productOption(where: ProductOptionSubscriptionWhereInput): ProductOptionSubscriptionPayload
+  product(where: ProductSubscriptionWhereInput): ProductSubscriptionPayload
   permission(where: PermissionSubscriptionWhereInput): PermissionSubscriptionPayload
-  productPropertiesValue(where: ProductPropertiesValueSubscriptionWhereInput): ProductPropertiesValueSubscriptionPayload
+  category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
   media(where: MediaSubscriptionWhereInput): MediaSubscriptionPayload
   address(where: AddressSubscriptionWhereInput): AddressSubscriptionPayload
   retailer(where: RetailerSubscriptionWhereInput): RetailerSubscriptionPayload
   role(where: RoleSubscriptionWhereInput): RoleSubscriptionPayload
-  productPropertiesName(where: ProductPropertiesNameSubscriptionWhereInput): ProductPropertiesNameSubscriptionPayload
+  description(where: DescriptionSubscriptionWhereInput): DescriptionSubscriptionPayload
 }
 
 type User implements Node {
@@ -10258,7 +10987,7 @@ type User implements Node {
   securityAnswers(where: SecurityAnswerWhereInput, orderBy: SecurityAnswerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SecurityAnswer!]
   enabled: Boolean
   recoverable: Boolean
-  assignment: Assignment!
+  assignment: Assignment
   reviews(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Review!]
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -10288,7 +11017,7 @@ input UserCreateInput {
   badgeMedias: MediaCreateManyInput
   addresses: AddressCreateManyInput
   securityAnswers: SecurityAnswerCreateManyWithoutUserInput
-  assignment: AssignmentCreateOneWithoutUserInput!
+  assignment: AssignmentCreateOneWithoutUserInput
   reviews: ReviewCreateManyWithoutUserInput
 }
 
@@ -10338,7 +11067,7 @@ input UserCreateWithoutReviewsInput {
   badgeMedias: MediaCreateManyInput
   addresses: AddressCreateManyInput
   securityAnswers: SecurityAnswerCreateManyWithoutUserInput
-  assignment: AssignmentCreateOneWithoutUserInput!
+  assignment: AssignmentCreateOneWithoutUserInput
 }
 
 input UserCreateWithoutSecurityAnswersInput {
@@ -10354,7 +11083,7 @@ input UserCreateWithoutSecurityAnswersInput {
   profileMedia: MediaCreateOneInput
   badgeMedias: MediaCreateManyInput
   addresses: AddressCreateManyInput
-  assignment: AssignmentCreateOneWithoutUserInput!
+  assignment: AssignmentCreateOneWithoutUserInput
   reviews: ReviewCreateManyWithoutUserInput
 }
 
@@ -10458,7 +11187,7 @@ input UserUpdateInput {
   badgeMedias: MediaUpdateManyInput
   addresses: AddressUpdateManyInput
   securityAnswers: SecurityAnswerUpdateManyWithoutUserInput
-  assignment: AssignmentUpdateOneRequiredWithoutUserInput
+  assignment: AssignmentUpdateOneWithoutUserInput
   reviews: ReviewUpdateManyWithoutUserInput
 }
 
@@ -10529,7 +11258,7 @@ input UserUpdateWithoutReviewsDataInput {
   badgeMedias: MediaUpdateManyInput
   addresses: AddressUpdateManyInput
   securityAnswers: SecurityAnswerUpdateManyWithoutUserInput
-  assignment: AssignmentUpdateOneRequiredWithoutUserInput
+  assignment: AssignmentUpdateOneWithoutUserInput
 }
 
 input UserUpdateWithoutSecurityAnswersDataInput {
@@ -10544,7 +11273,7 @@ input UserUpdateWithoutSecurityAnswersDataInput {
   profileMedia: MediaUpdateOneInput
   badgeMedias: MediaUpdateManyInput
   addresses: AddressUpdateManyInput
-  assignment: AssignmentUpdateOneRequiredWithoutUserInput
+  assignment: AssignmentUpdateOneWithoutUserInput
   reviews: ReviewUpdateManyWithoutUserInput
 }
 

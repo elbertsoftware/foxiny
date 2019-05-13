@@ -62,7 +62,7 @@ function AddProductImage(props) {
     }))(data);
     // Just get one price to present for the price of product
     // Giá sẽ thay đổi tùy theo options của sản phẩm, nhưng ở đây vi muc đích preview nên chỉ đại diện 1 price
-    portionOfData.price = data.products[0].price;
+    portionOfData.sellPrice = data.products[0].sellPrice;
     const previewingData = {
       productImage,
       options: newOptions,

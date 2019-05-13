@@ -5,12 +5,9 @@ type User {
   # Generic data"1")
   name: String! # required will be handled in foxiny-gateway
   profile: String #
-  profileMedia: Media
-    @relation(link: INLINE, name: "UserProfileToMedia", onDelete: CASCADE)
-  badgeMedias: [Media]
-    @relation(link: TABLE, name: "UserBadgesToMedia", onDelete: SET_NULL) # badge images are predefined, do not remove them when deleting member
-  addresses: [Address!]
-    @relation(link: TABLE, name: "UserToAddress", onDelete: CASCADE)
+  profileMedia: Media @relation(link: INLINE, name: "UserProfileToMedia", onDelete: CASCADE)
+  badgeMedias: [Media] @relation(link: TABLE, name: "UserBadgesToMedia", onDelete: SET_NULL) # badge images are predefined, do not remove them when deleting member
+  addresses: [Address!] @relation(link: TABLE, name: "UserToAddress", onDelete: CASCADE)
   # payments: [Payment!]!
 
   # Fields needed for email or phone authentication
@@ -26,7 +23,7 @@ type User {
   #blocked: Boolean! @default(value: "false")
 
   # Permissions are combined from roles and individual permissions for managing the app
-  assignment: Assignment! @relation(onDelete: CASCADE)
+  assignment: Assignment @relation(onDelete: CASCADE)
   reviews: [Review!] @relation(link: TABLE, onDelete: CASCADE)
 
   createdAt: DateTime! @createdAt
