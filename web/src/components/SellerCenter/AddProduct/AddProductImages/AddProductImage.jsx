@@ -19,33 +19,24 @@ const styles = {
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
-export const Preview = withStyles(styles)(
-  ({ classes, open, handleClose, productImage, options, basicInfo, imageUri, dataForOneProduct }) => {
-    // Other things
-    return (
-      <Dialog fullScreen open={open} disableRestoreFocus={true} onClose={handleClose} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <Typography variant="h6" color="inherit" className={classes.flex}>
-              Xem trước sản phẩm
-            </Typography>
-            <Button color="inherit" onClick={handleClose}>
-              Đóng
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <ProductDetailPage
-          preview
-          optionList={options}
-          productImageData={productImage}
-          textData={basicInfo}
-          imageUri={imageUri}
-          dataForOneProduct={dataForOneProduct}
-        />
-      </Dialog>
-    );
-  },
-);
+export const Preview = withStyles(styles)(({ classes, open, handleClose, productImage, options, basicInfo }) => {
+  // Other things
+  return (
+    <Dialog fullScreen open={open} disableRestoreFocus={true} onClose={handleClose} TransitionComponent={Transition}>
+      <AppBar className={classes.appBar}>
+        <Toolbar>
+          <Typography variant="h6" color="inherit" className={classes.flex}>
+            Xem trước sản phẩm
+          </Typography>
+          <Button color="inherit" onClick={handleClose}>
+            Đóng
+          </Button>
+        </Toolbar>
+      </AppBar>
+      <ProductDetailPage preview optionList={options} productImageData={productImage} textData={basicInfo} />
+    </Dialog>
+  );
+});
 
 function AddProductImage(props) {
   const { setValue } = props;

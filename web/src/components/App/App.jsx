@@ -88,7 +88,7 @@ class App extends Component<Props, State> {
                   <Route path="/seller/add-product" component={AddProduct} />
                 </Switch>
                 <Switch>
-                  <Route path="/seller/list-product" component={ListProduct} />
+                  <Route path="/seller/list-product" component={withAuthenticator(ListProduct)} />
                 </Switch>
               </LayoutSellerCenter>
             )}

@@ -1,7 +1,18 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
-import { Grid, Typography, Tabs, Tab, withStyles, CircularProgress, Button } from '@material-ui/core';
+import {
+  Grid,
+  Typography,
+  Tabs,
+  Tab,
+  withStyles,
+  CircularProgress,
+  Button,
+  FormControl,
+  MenuItem,
+  InputLabel,
+} from '@material-ui/core';
 import { Form, Field } from 'react-final-form';
 import classnames from 'classnames';
 import SwipeableViews from 'react-swipeable-views';
@@ -10,6 +21,7 @@ import FormButton from '../../../utils/common/form/FormButton';
 import TabContainer from '../../../utils/common/TabContainer';
 import google from '../../../images/google.svg';
 import signStyles from './signStyles';
+import SelectList from '../../Form/Fields/SelectList';
 
 const Sign = ({ classes, theme }) => {
   const [activeTabId, setActiveTabId] = useState(0);
@@ -80,6 +92,9 @@ const Sign = ({ classes, theme }) => {
                           margin="normal"
                         />
                         <div className={classes.formButtons}>
+                          <Button color="primary" size="large" className={classes.forgetButton}>
+                            Quên mật khẩu
+                          </Button>
                           {submitting ? (
                             <CircularProgress size={26} className={classes.loginLoader} />
                           ) : (
@@ -87,10 +102,6 @@ const Sign = ({ classes, theme }) => {
                               Đăng nhập
                             </FormButton>
                           )}
-
-                          <Button color="primary" size="large" className={classes.forgetButton}>
-                            Quên mật khẩu
-                          </Button>
                         </div>
                       </TabContainer>
                     ) : (
@@ -103,7 +114,7 @@ const Sign = ({ classes, theme }) => {
                           Xin chào !
                         </Typography>
                         <Typography variant="h2" color="primary" className={classes.subGreeting}>
-                          Tạo tài khoản Seller mới
+                          Tạo tài khoản bán hàng mới
                         </Typography>
                         <div className={classes.fieldRow}>
                           <Field
@@ -155,7 +166,6 @@ const Sign = ({ classes, theme }) => {
                             margin="normal"
                           />
                         </div>
-
                         <Field
                           fullWidth
                           size="large"
@@ -179,41 +189,41 @@ const Sign = ({ classes, theme }) => {
                           margin="normal"
                         />
                         <div className={classes.fieldRow}>
-                          <Field
-                            className={classes.rightSpacing}
-                            fullWidth
-                            size="large"
-                            component={RFTextField}
-                            disabled={submitting}
-                            required
-                            name="businessCode"
-                            label="Mã số đăng ký kinh doanh"
-                            type="text"
-                            margin="normal"
-                          />
-                          <Field
-                            fullWidth
-                            size="large"
-                            component={RFTextField}
-                            disabled={submitting}
-                            required
-                            name="city"
-                            label="Tỉnh/Thành phố"
-                            type="text"
-                            margin="normal"
-                          />
+                          <FormControl className={classes.formControl} fullWidth margin="normal" required>
+                            <InputLabel htmlFor="businessType">Loại hình kinh doanh</InputLabel>
+                            <Field
+                              component={SelectList}
+                              disabled={submitting}
+                              name="businessType"
+                              required
+                              size="large"
+                            >
+                              <MenuItem key="small" value="personal">
+                                Cá nhân
+                              </MenuItem>
+                              <MenuItem key="big" value="company">
+                                Công ty / Hộ kinh doanh
+                              </MenuItem>
+                            </Field>
+                          </FormControl>
+                          <FormControl fullWidth required margin="normal">
+                            <InputLabel htmlFor="city">Tỉnh/Thành phố</InputLabel>
+                            <Field
+                              fullWidth
+                              size="large"
+                              component={SelectList}
+                              disabled={submitting}
+                              required
+                              name="city"
+                              label="Tỉnh/Thành phố"
+                            />
+                          </FormControl>
                         </div>
-                        <Field
-                          fullWidth
-                          size="large"
-                          component={RFTextField}
-                          disabled={submitting}
-                          required
-                          name="sector"
-                          label="Chọn ngành hàng"
-                          type="text"
-                          margin="normal"
-                        />
+                        <FormControl fullWidth margin="normal" required>
+                          <InputLabel htmlFor="sector">Chọn ngành hàng</InputLabel>
+                          <Field size="large" component={SelectList} disabled={submitting} required name="sector" />
+                        </FormControl>
+
                         <div className={classes.creatingButtonContainer}>
                           {submitting ? (
                             <CircularProgress size={26} />
@@ -222,7 +232,7 @@ const Sign = ({ classes, theme }) => {
                               disabled={submitting}
                               size="large"
                               variant="contained"
-                              color="primary"
+                              color="secondary"
                               fullWidth
                               className={classes.createAccountButton}
                             >

@@ -14,17 +14,19 @@ import {
   Link,
   FormControlLabel,
   Switch,
-  Menu,
   MenuList,
   Popper,
   Grow,
   ClickAwayListener,
   MenuItem,
+  Icon,
 } from '@material-ui/core';
 import { graphql, compose } from 'react-apollo';
 import { gql } from 'apollo-boost';
+import { Redirect } from 'react-router';
 import Loading from '../../App/Loading';
 import { Preview } from '../AddProduct/AddProductImages/AddProductImage';
+import EditProduct from './EditProduct';
 
 const GET_PRODUCT = gql`
   query productsWoTemplateAfterCreated($sellerId: String!) {
@@ -81,11 +83,18 @@ const styles = {
     justifyContent: 'space-around',
     padding: 16,
   },
+  icon: {
+    fontSize: 15,
+    marginRight: 4,
+  },
 };
 
 function ListProduct(props) {
-  const { classes, loading, productsData } = props;
+  const { classes, loading, productsData, userLoggedIn } = props;
   if (loading) return <Loading />;
+  if (!userLoggedIn()) {
+    return <Redirect to="/signin" />;
+  }
   const checkedArrayObject = productsData.reduce((previous, current, index) => {
     return {
       ...previous,
@@ -93,6 +102,7 @@ function ListProduct(props) {
     };
   }, {});
   const [checked, setChecked] = useState(checkedArrayObject);
+  // Bật tắt bán hàng
   const handleChange = name => event => {
     const newObject = { ...checked };
     newObject[name] = event.target.checked;
@@ -115,13 +125,13 @@ function ListProduct(props) {
     setOpen(false);
     anchorElArr[index] = null;
   };
-  const [openPreview, setOpenPreview] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const handleOpen = index => () => {
+  const handleOpenDialog = index => () => {
     setActiveIndex(index);
-    setOpenPreview(true);
+    setOpenEditDialog(true);
   };
-  const handleClosePreview = () => setOpenPreview(false);
+  const handleCloseDialog = () => setOpenEditDialog(false);
 
   return (
     <Paper>
@@ -205,7 +215,9 @@ function ListProduct(props) {
                         <Paper>
                           <ClickAwayListener onClickAway={handleClose(index)}>
                             <MenuList>
-                              <MenuItem onClick={handleOpen(index)}>Xem trước</MenuItem>
+                              <MenuItem onClick={handleOpenDialog(index)}>
+                                <Icon className={classes.icon}>edit</Icon> Sửa
+                              </MenuItem>
                             </MenuList>
                           </ClickAwayListener>
                         </Paper>
@@ -218,12 +230,7 @@ function ListProduct(props) {
           })}
         </TableBody>
       </Table>
-      <Preview
-        preview
-        open={openPreview}
-        handleClose={handleClosePreview}
-        dataForOneProduct={productsData[activeIndex]}
-      />
+      <EditProduct open={openEditDialog} handleClose={handleCloseDialog} dataEdit={productsData} />
     </Paper>
   );
 }

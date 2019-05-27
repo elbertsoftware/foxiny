@@ -157,6 +157,7 @@ const AddProduct = ({ classes, createNewProduct, uploadProductImgs }) => {
         },
       ),
     );
+    // Create new product
     try {
       await createNewProduct({
         variables: {

@@ -127,6 +127,10 @@ const signStyles = theme => ({
   loginLoader: {
     marginLeft: theme.spacing.unit * 4,
   },
+  formControl: {
+    marginRight: theme.spacing.unit * 2,
+    minWidth: 120,
+  },
 });
 
 export default signStyles;

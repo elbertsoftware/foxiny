@@ -169,14 +169,12 @@ const optionStyles = theme => ({
   inactive: {},
 });
 const OptionItems = withStyles(optionStyles)(
-  ({ classes, option, selectedOption, handleSelectOption, handleSetProductImage, preview }) => {
+  ({ classes, option, selectedOption, handleSelectOption, handleSetProductImage }) => {
     const { name, listItems } = option;
     const [selected, setSelected] = useState('');
     const handeSetSelected = item => () => {
       setSelected(item);
-      if (!preview) {
-        handleSelectOption(item);
-      }
+      handleSelectOption(item);
     };
     useEffect(() => {
       handleSetProductImage();
@@ -213,7 +211,7 @@ OptionItems.defaultProps = {
   preview: false,
 };
 
-const ProductInfo = withStyles(styles)(({ classes, textData, productName, briefDescription }) => {
+const ProductInfo = withStyles(styles)(({ classes, textData }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleOnChange = (e, exp) => {
@@ -222,7 +220,7 @@ const ProductInfo = withStyles(styles)(({ classes, textData, productName, briefD
 
   return (
     <Paper className="maintain-height well">
-      <Typography variant="h6">{textData ? textData.name : productName}</Typography>
+      <Typography variant="h6">{textData && textData.name}</Typography>
       <div className={`${classes.flexCenter} spacing-top-bottom`}>
         <IconButton classes={{ root: classes.rootIconButton }}>
           <Icon>thumb_up_alt</Icon>
@@ -233,19 +231,12 @@ const ProductInfo = withStyles(styles)(({ classes, textData, productName, briefD
         </span>
       </div>
       <Divider className="spacing-top-bottom" />
-      {textData
-        ? textData.briefDescription &&
-          textData.briefDescription.split('\n').map(description => (
-            <Typography style={{ margin: '16px 0' }}>
-              <strong>{description}</strong>
-            </Typography>
-          ))
-        : briefDescription &&
-          briefDescription.split('\n').map(description => (
-            <Typography style={{ margin: '16px 0' }}>
-              <strong>{description}</strong>
-            </Typography>
-          ))}
+      {textData.briefDescription &&
+        textData.briefDescription.split('\n').map(description => (
+          <Typography style={{ margin: '16px 0' }}>
+            <strong>{description}</strong>
+          </Typography>
+        ))}
       <ExpansionPanel className={classes.expandPanel} expanded={expanded} onChange={handleOnChange}>
         <ExpansionPanelSummary className={classes.expandSummary}>
           <a className="a-color-link">{expanded ? 'Rút gọn' : 'Xem thêm'}</a>
@@ -294,24 +285,17 @@ const QuantityButton = ({ classes, quantity, setQuantity, className }) => {
 /* --------------------------------- */
 /* BUY BOX */
 /* --------------------------------- */
-const BuyBox = ({ classes, quantity, setQuantity, optionList, textData, attributes, sellPrice, brandName }) => (
+const BuyBox = ({ classes, quantity, setQuantity, optionList, textData }) => (
   <Paper classes={{ root: classes.colorPaper }}>
     <div className="product-options well">
       <div className="flex">
         <Typography variant="h5">Mua mới</Typography>
         <Typography variant="h4" color="secondary">
-          VND {textData ? textData.sellPrice : sellPrice}
+          VND {textData && textData.sellPrice}
         </Typography>
       </div>
       <Divider className="spacing-top-bottom" />
-      {optionList ||
-        attributes.map(attribute => {
-          const option = {
-            name: attribute.name,
-            listItems: [attribute.value],
-          };
-          return <OptionItems option={option} />;
-        })}
+      {optionList}
       <Typography className="spacing-top-bottom" variant="h5">
         Số lượng
       </Typography>
@@ -320,7 +304,7 @@ const BuyBox = ({ classes, quantity, setQuantity, optionList, textData, attribut
         Còn hàng.
       </Typography>
       <Typography className="spacing-top-bottom" variant="subtitle1">
-        Được bán bởi <span className="a-color-link">{textData ? textData.brandName : brandName}</span>
+        Được bán bởi <span className="a-color-link">{textData && textData.brandName}</span>
       </Typography>
       <Button variant="contained" className="spacing-top" color="secondary" fullWidth>
         Thêm vào giỏ
@@ -412,11 +396,11 @@ const descriptionData = [
 //     listItems: ['S', 'M', 'L', 'XL'],
 //   },
 // ];
-const ProductDetailPage = ({ classes, theme, optionList, productImageData, textData, preview, dataForOneProduct }) => {
+const ProductDetailPage = ({ classes, theme, optionList, productImageData, textData, preview }) => {
   const [quantity, setQuantity] = useState(1);
   const defaultSelectOption = optionList && optionList.map(option => option.listItems[0]);
   // selectedOption is an array containing: [selectedOption in option1, selectedOption in option2, ...]
-  const [selectedOption, setSelectedOption] = useState(defaultSelectOption || []);
+  const [selectedOption, setSelectedOption] = useState(defaultSelectOption);
   const handleSelectOption = optionKey => option => {
     // optionKey is a cue to know which set of options is (Color, Size, ...)
     // option is value receiving from OptionItem component
@@ -425,9 +409,7 @@ const ProductDetailPage = ({ classes, theme, optionList, productImageData, textD
     setSelectedOption(newArr);
   };
 
-  const [productImages, setProductImages] = useState(
-    productImageData ? productImageData[selectedOption.join('')] : dataForOneProduct.productMedias.map(img => img.uri),
-  ); // pattern: option1option2, ex: XanhS
+  const [productImages, setProductImages] = useState(productImageData[selectedOption.join('')]); // pattern: option1option2, ex: XanhS
   const handleSetProductImage = () => {
     const cloneArr = [...selectedOption]; // [Xanh, S]
     const key = cloneArr.join(''); // => XanhS
@@ -475,11 +457,7 @@ const ProductDetailPage = ({ classes, theme, optionList, productImageData, textD
           <ProductImage isPreviewed={preview} productImages={productImages} />
         </Grid>
         <Grid item xs={6} sm={6} lg={6}>
-          <ProductInfo
-            textData={textData}
-            productName={dataForOneProduct && dataForOneProduct.productName}
-            briefDescription={dataForOneProduct && dataForOneProduct.briefDescription}
-          />
+          <ProductInfo textData={textData} />
         </Grid>
         <Grid item xs={4} sm={4} lg={4}>
           <Grid container className="maintain-height">
@@ -491,9 +469,6 @@ const ProductDetailPage = ({ classes, theme, optionList, productImageData, textD
                 setQuantity={setQuantity}
                 classes={classes}
                 textData={textData}
-                attributes={dataForOneProduct && dataForOneProduct.attributes}
-                brandName={dataForOneProduct && dataForOneProduct.brandName}
-                sellPrice={dataForOneProduct && dataForOneProduct.sellPrice}
               />
             </Grid>
           </Grid>
