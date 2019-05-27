@@ -1,5 +1,5 @@
 // @flow
-import { gql } from 'apollo-server-express';
+import { gql } from "apollo-server-express";
 
 export const retailerSchema = gql`
   type Retailer {
@@ -10,8 +10,10 @@ export const retailerSchema = gql`
     profileMedia: Media! # Avatar
     businessName: String! #  displayed on Retailer profile and foxiny listings
     address: Address! # one to one
-    phone: String! # maybe different to user's phone
+    businessPhone: String! # maybe different to user's phone
+    businessEmail: String! # maybe different to user's phone
     # Products
+    # products: [ProductRetailer!]
 
     # Reviews, reminder to use interface/union in yoga to resolve reviews
     #reviews: [ID!]! # list of reviews this vendor received from another members
@@ -21,37 +23,39 @@ export const retailerSchema = gql`
     # Orders
     # Tax
     # Billing
+    # Warehouse
+
+    enabled: Boolean!
 
     createdAt: String!
     updatedAt: String!
   }
 
   extend type Query {
-    retailers(query: String): [Retailer!]!
+    retailers(query: String!): [Retailer!]!
   }
 
   extend type Mutation {
-    retailerLogin(data: LoginUserInput!): AuthPayload!
-    createRetailer(data: CreateRetailerInput!): Retailer!
+    registerRetailer(data: RegisterRetailer!): Retailer!
+    activateReatiler(retailerId: String!): Retailer!
+    deactivateReatiler(retailerId: String!): Retailer!
     updateRetailer(data: UpdateRetailerInput!): Retailer!
     deleteRetailer(retailerId: String!): Boolean!
   }
 
-  input CreateRetailerInput {
-    assistants: [String!] # user Ids
+  input RegisterRetailer {
     #profileMedia
-
     businessName: String!
-    address: UpsertAddressInput!
-    phone: String!
+    businessEmail: String!
+    businessPhone: String!
+    businessAddress: CreateAddressInput!
   }
 
   input UpdateRetailerInput {
-    # assistants: [String!] # user Ids # changing assistants should be handled by a new mutation
     #profileMedia
-    oldBusinessName: String
-    newBusinessName: String
-    address: UpsertAddressInput
-    phone: String
+    businessName: String!
+    businessEmail: String!
+    businessPhone: String!
+    businessAddress: CreateAddressInput!
   }
 `;

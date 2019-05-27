@@ -94,11 +94,9 @@ const s3ProductMediasUploader = async (prisma, upload, userId) => {
     if (process.env.NODE_ENV && process.env.NODE_ENV === "testing") readStream = createReadStream;
     else readStream = createReadStream();
 
-    const randomCuid = cuid();
+    const data = await getFileInfo(filename, userId, createReadStream);
 
-    const data = await getFileInfo(filename, randomCuid, createReadStream);
-
-    const key = `product_${randomCuid}.${data.ext}`; // pattern: userId_tick.extention
+    const key = `${userId}_${new Date().getTime()}.${data.ext}`; // pattern: userId_tick.extention
     logger.debug(`🔵✅  READ FILE: done. UPLOADING ${key} TO S3...`);
     // Upload to S3
     const response = await s3

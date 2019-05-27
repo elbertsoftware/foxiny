@@ -10,13 +10,13 @@ export const Mutation = {
   uploadProductMedias: async (parent, { files }, { prisma, request, cache }, info) => {
     const userId = await getUserIDFromRequest(request, cache);
 
-    const productMedias = [];
-
-    for (let i = 0; i < files.length; i++) {
-      const upload = await files[i];
-      const media = await s3ProductMediasUploader(prisma, upload, userId);
-      productMedias.push(media);
-    }
+    const productMedias = await Promise.all(
+      files.map(async file => {
+        const uploaded = await file;
+        const media = await s3ProductMediasUploader(prisma, uploaded, userId);
+        return media;
+      }),
+    );
 
     return productMedias;
   },

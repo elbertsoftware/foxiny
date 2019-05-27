@@ -1,10 +1,12 @@
 // @floww
 
 import { validateIsEmpty } from "../validation";
+import logger from "../logger";
 
 const validateIsSmallerThanX = (price, x = 0) => {
   if (price <= x) {
     throw new Error("Invalid input");
+    logger.error("Invalid price");
   }
   return price;
 };
@@ -39,14 +41,17 @@ const validateCreateNewProductInput = data => {
   const newData = {};
 
   if (!data) {
+    logger.error("Invalid data object");
     throw new Error("Invalid input");
   }
 
   if (!data.categoryIds || data.categoryIds.length === 0) {
+    logger.error("Invalid categoryIds");
     throw new Error("Invalid input");
   }
 
   if (!data.products || data.products.length === 0) {
+    logger.error("Invalid products");
     throw new Error("Invalid input");
   }
 

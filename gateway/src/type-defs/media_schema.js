@@ -19,7 +19,7 @@ export const mediaSchema = gql`
 
   extend type Mutation {
     uploadProfileMedia(file: Upload!): Media!
-    uploadProductMedias(files: [Upload!]!): [Media!]!
+    uploadProductMedias(files: [Upload!]!): [Media!]
     # uploadReviewMedias(files: [Upload!]!): [Media!]!
   }
 `;
