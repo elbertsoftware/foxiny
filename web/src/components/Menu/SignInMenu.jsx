@@ -17,11 +17,6 @@ const LOGOUT = gql`
 `;
 
 const styles = theme => ({
-  menuItem: {
-    '&:hover': {
-      backgroundColor: theme.palette.secondary.light,
-    },
-  },
   popper: {
     zIndex: 1,
     marginTop: 5,
@@ -101,11 +96,6 @@ const styles = theme => ({
     transition: 'opacity .5s ease-in-out',
     '&:hover': {
       opacity: 1,
-    },
-  },
-  listItem: {
-    '&:hover': {
-      backgroundColor: theme.palette.secondary.light,
     },
   },
 });

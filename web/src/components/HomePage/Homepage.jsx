@@ -75,13 +75,11 @@ const tileData = [
 const styles = () => ({
   rootAppBar: {
     backgroundImage:
-      'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7), #FBAB7E), url(assets/images/banner-image-demo.jpg)',
+      'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(assets/images/banner-image-demo.jpg)',
     height: '100vh',
     backgroundPosition: 'center',
     backgroundSize: 'cover',
     backgroundAttachment: 'fixed',
-    backgroundColor: '#FBAB7E',
-    backgroundBlendMode: 'hard-light',
   },
   home: {
     marginTop: 20,

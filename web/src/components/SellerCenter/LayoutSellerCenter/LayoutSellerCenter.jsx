@@ -7,7 +7,6 @@ const drawerWidth = 256;
 
 const styles = theme => ({
   root: {
-    display: 'flex',
     minHeight: '100vh',
   },
   drawer: {
@@ -19,12 +18,10 @@ const styles = theme => ({
   appContent: {
     flex: 1,
     display: 'flex',
-    flexDirection: 'column',
   },
   mainContent: {
     flex: 1,
     padding: '48px 36px 0',
-    background: '#eaeff1',
   },
 });
 
@@ -35,21 +32,22 @@ const LayoutSellerCenter = ({ classes, children }) => {
   };
   return (
     <div className={classes.root}>
-      <nav className={classes.drawer}>
-        <Hidden smUp implementation="js">
-          <Navigator
-            PaperProps={{ style: { width: drawerWidth } }}
-            variant="temporary"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-          />
-        </Hidden>
-        <Hidden xsDown implementation="css">
-          <Navigator PaperProps={{ style: { width: drawerWidth } }} />
-        </Hidden>
-      </nav>
+      <Header onDrawerToggle={handleDrawerToggle} />
+
       <div className={classes.appContent}>
-        <Header onDrawerToggle={handleDrawerToggle} />
+        <div className={classes.drawer}>
+          <Hidden smUp implementation="js">
+            <Navigator
+              PaperProps={{ style: { width: drawerWidth } }}
+              variant="temporary"
+              open={mobileOpen}
+              onClose={handleDrawerToggle}
+            />
+          </Hidden>
+          <Hidden xsDown implementation="css">
+            <Navigator PaperProps={{ style: { width: drawerWidth } }} />
+          </Hidden>
+        </div>
         <main className={classes.mainContent}>{children}</main>
       </div>
     </div>

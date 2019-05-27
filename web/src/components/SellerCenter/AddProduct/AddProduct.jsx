@@ -14,6 +14,14 @@ import AddProductImage from './AddProductImages/AddProductImage';
 import ProductDataContext from '../../../utils/context/ProductDataContext';
 import FormButton from '../../../utils/common/form/FormButton';
 
+const UPLOAD_IMAGES = gql`
+  mutation($files: [Upload!]!) {
+    uploadProductMedias(files: $files) {
+      id
+    }
+  }
+`;
+
 const CREATE_NEW_PRODUCT = gql`
   mutation createBrandNewProductWVariants($sellerId: String!, $data: CreateProductWithTemplateInput!) {
     createBrandNewProductWVariants(sellerId: $sellerId, data: $data) {
@@ -31,7 +39,7 @@ const CREATE_NEW_PRODUCT = gql`
         fromRetailers
       }
       productMedias {
-        id
+        uri
       }
       listPrice
       sellPrice
@@ -96,7 +104,7 @@ function getStepContent(step) {
   }
 }
 
-const AddProduct = ({ classes, createNewProduct }) => {
+const AddProduct = ({ classes, createNewProduct, uploadProductImgs }) => {
   const [activeStep, setActiveStep] = useState(0);
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -106,9 +114,24 @@ const AddProduct = ({ classes, createNewProduct }) => {
   };
   const steps = getSteps();
   const onSubmit = async values => {
+    const { products, options, images } = values;
+    // Upload images for each product
+    const productImagesIDAllProduct = [];
+    for (let index = 0; index < images.length; index++) {
+      try {
+        const media = await uploadProductImgs({
+          variables: {
+            files: images[index],
+          },
+        });
+        productImagesIDAllProduct.push(media.data.uploadProductMedias.map(img => img.id)); // Just need the id of image been uploaded
+      } catch (error) {
+        toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !');
+        return;
+      }
+    }
     // Format the shape of data to pass to mutation
     // Adding attributes array for each product
-    const { products, options } = values;
     const attributeArrOfAllProduct = [];
     for (let i = 0; i < products.length; i++) {
       const attributeArrEachPro = [];
@@ -129,12 +152,13 @@ const AddProduct = ({ classes, createNewProduct }) => {
           listPrice: +product.listPrice / 1000,
           sellPrice: +product.sellPrice / 1000,
           stockQuantity: +product.stockQuantity,
+          productMediaIds: productImagesIDAllProduct[index],
           attributes: attributeArrOfAllProduct[index],
         },
       ),
     );
     try {
-      const returnData = await createNewProduct({
+      await createNewProduct({
         variables: {
           sellerId: 'cjurxpx4o00az07063f7imdn3',
           data: {
@@ -147,10 +171,9 @@ const AddProduct = ({ classes, createNewProduct }) => {
           },
         },
       });
-      console.log(returnData);
       toast.success('Tạo sản phẩm thành công !');
     } catch (error) {
-      toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi khi đăng nhập !');
+      toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !');
     }
   };
   return (
@@ -192,7 +215,6 @@ const AddProduct = ({ classes, createNewProduct }) => {
                       {activeStep === 3 ? <AddProductImage setValue={setValue} /> : getStepContent(activeStep)}
                     </React.Fragment>
                   )}
-                  {/*<ProductProperties setValue={setValue} push={push} pop={pop} remove={remove} />*/}
                 </ProductDataContext.Provider>
                 <div className={classes.actionsContainer}>
                   <div className={classes.grow} />
@@ -223,5 +245,6 @@ const AddProduct = ({ classes, createNewProduct }) => {
 
 export default compose(
   graphql(CREATE_NEW_PRODUCT, { name: 'createNewProduct' }),
+  graphql(UPLOAD_IMAGES, { name: 'uploadProductImgs' }),
   withStyles(styles),
 )(AddProduct);

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-param-reassign */
 import React, { useState, useContext, useEffect } from 'react';
 import { Button, Slide, Dialog, AppBar, Toolbar, Typography, withStyles } from '@material-ui/core';
@@ -6,6 +7,45 @@ import ApplyImgMultiSecModal from './ApplyImgMultiSecModal';
 import OpenContext from '../../../../utils/context/OpenContextAddProduct';
 import ProductDataContext from '../../../../utils/context/ProductDataContext';
 import ProductDetailPage from '../../../Product/ProductDetail/ProductDetailPage';
+
+const styles = {
+  appBar: {
+    position: 'relative',
+  },
+  flex: {
+    flex: 1,
+  },
+};
+function Transition(props) {
+  return <Slide direction="up" {...props} />;
+}
+export const Preview = withStyles(styles)(
+  ({ classes, open, handleClose, productImage, options, basicInfo, imageUri, dataForOneProduct }) => {
+    // Other things
+    return (
+      <Dialog fullScreen open={open} disableRestoreFocus={true} onClose={handleClose} TransitionComponent={Transition}>
+        <AppBar className={classes.appBar}>
+          <Toolbar>
+            <Typography variant="h6" color="inherit" className={classes.flex}>
+              Xem trước sản phẩm
+            </Typography>
+            <Button color="inherit" onClick={handleClose}>
+              Đóng
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <ProductDetailPage
+          preview
+          optionList={options}
+          productImageData={productImage}
+          textData={basicInfo}
+          imageUri={imageUri}
+          dataForOneProduct={dataForOneProduct}
+        />
+      </Dialog>
+    );
+  },
+);
 
 function AddProductImage(props) {
   const { setValue } = props;
@@ -82,35 +122,6 @@ function AddProductImage(props) {
       setImages(productData.data.images);
     }
   }, []);
-  const styles = {
-    appBar: {
-      position: 'relative',
-    },
-    flex: {
-      flex: 1,
-    },
-  };
-  const Preview = withStyles(styles)(({ classes, open, handleClose, productImage, options, basicInfo }) => {
-    // Other things
-    function Transition(props) {
-      return <Slide direction="up" {...props} />;
-    }
-    return (
-      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <Typography variant="h6" color="inherit" className={classes.flex}>
-              Xem trước sản phẩm
-            </Typography>
-            <Button color="inherit" onClick={handleClose}>
-              Đóng
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <ProductDetailPage preview optionList={options} productImageData={productImage} textData={basicInfo} />
-      </Dialog>
-    );
-  });
 
   return (
     <OpenContext.Provider value={{ setOpen: handleOpen }}>

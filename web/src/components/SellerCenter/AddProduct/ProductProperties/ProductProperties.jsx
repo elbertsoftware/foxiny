@@ -216,7 +216,9 @@ const ProductProperties = ({ classes, setValue, push, pop, remove }) => {
               </TableCell>
               {options && options.map(option => <TableCell key={option.name}>{option.name}</TableCell>)}
               {attributeArr.map(attr => (
-                <TableCell key={attr.productId}>{attr.caption}</TableCell>
+                <TableCell style={{ paddingRight: 40 }} key={attr.productId}>
+                  {attr.caption}
+                </TableCell>
               ))}
             </TableRow>
             <TableRow>
@@ -272,7 +274,7 @@ const ProductProperties = ({ classes, setValue, push, pop, remove }) => {
                           component={TextField}
                           required
                           margin="normal"
-                          name={`${name}.productName`}
+                          name={`${name}.name`}
                           type="text"
                           variant="outlined"
                         />

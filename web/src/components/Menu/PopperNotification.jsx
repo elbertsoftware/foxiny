@@ -27,8 +27,11 @@ const PopperNotification = ({ openNoti, anchorElNoti, arrowRefNoti, classes, han
           <Paper className={classes.paperNoti}>
             <ClickAwayListener onClickAway={handleCloseNoti}>
               <List>
-                <ListItem className={classes.listItem} button component={Link} to="/security-question" >
-                  <ListItemText  primary="Bảo mật" secondary="Trả lời câu hỏi bảo mật sẽ giúp bạn dễ dàng lấy lại mật khẩu khi cần." />
+                <ListItem button component={Link} to="/security-question">
+                  <ListItemText
+                    primary="Bảo mật"
+                    secondary="Trả lời câu hỏi bảo mật sẽ giúp bạn dễ dàng lấy lại mật khẩu khi cần."
+                  />
                 </ListItem>
               </List>
             </ClickAwayListener>

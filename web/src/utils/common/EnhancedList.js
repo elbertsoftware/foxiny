@@ -8,13 +8,7 @@ import SubList from './SubList';
 const styles = theme => ({
   listItem: {
     minWidth: '10rem',
-    '&:hover': {
-      backgroundColor: theme.palette.secondary.light,
-    },
     borderRadius: 5,
-  },
-  selected: {
-    backgroundColor: `${theme.palette.secondary.main} !important`,
   },
 });
 

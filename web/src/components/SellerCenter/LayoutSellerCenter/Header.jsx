@@ -14,9 +14,6 @@ import { Icon } from '@material-ui/core';
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
 const styles = theme => ({
-  secondaryBar: {
-    zIndex: 0,
-  },
   menuButton: {
     marginLeft: -theme.spacing.unit,
   },
@@ -52,7 +49,9 @@ const Header = ({ classes, onDrawerToggle }) => {
               </IconButton>
             </Grid>
           </Hidden>
-          <Grid item xs />
+          <Grid item xs>
+            <Typography color="inherit">Seller Center</Typography>
+          </Grid>
           <Grid item>
             <Typography className={classes.link} component="a" href="#">
               Hỗ trợ

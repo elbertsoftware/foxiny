@@ -41,7 +41,6 @@ const PopperAccount = ({
                   Trang cá nhân
                 </MenuItem>
                 <MenuItem
-                  className={classes.menuItem}
                   onClick={event => {
                     handleClose(event);
                     logout().then(({ data }) => {
@@ -54,7 +53,6 @@ const PopperAccount = ({
                   Đăng xuất
                 </MenuItem>
                 <MenuItem
-                  className={classes.menuItem}
                   onClick={event => {
                     handleClose(event);
                     logout({

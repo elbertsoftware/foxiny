@@ -53,6 +53,7 @@ const AddProductImgSection = ({ classes, files, productName, setImages, setIndex
     if (files && files.length > 0) {
       const listAddedPreview = acceptedFiles.map(file => Object.assign(file, { preview: URL.createObjectURL(file) }));
       listFiles = listFiles.concat(files, listAddedPreview);
+      console.log(listFiles);
       // setFiles(listFiles);
       setImages(listFiles);
       return;

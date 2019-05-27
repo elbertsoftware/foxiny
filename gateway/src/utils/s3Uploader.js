@@ -1,9 +1,9 @@
 // @flow
 
-import AWS from "aws-sdk";
-import cuid from "cuid";
-import { getFileInfo } from "./fsHelper";
-import logger from "./logger";
+import AWS from 'aws-sdk';
+import cuid from 'cuid';
+import { getFileInfo } from './fsHelper';
+import logger from './logger';
 
 AWS.config.update({
   accessKeyId: process.env.S3_ACCESS_KEY,
@@ -12,7 +12,7 @@ AWS.config.update({
 });
 
 const s3 = new AWS.S3({
-  apiVersion: "2006-03-01",
+  apiVersion: '2006-03-01',
   params: {
     Bucket: process.env.S3_IMAGES_BUCKET,
   },
@@ -26,14 +26,14 @@ const s3 = new AWS.S3({
  */
 const s3ProfileMediaUploader = async (prisma, upload, userId) => {
   if (!upload) {
-    throw new Error("🛑❌  S3PROFILEMEDIAUPLOADER: NO FILE");
+    throw new Error('🛑❌  S3PROFILEMEDIAUPLOADER: NO FILE');
   }
   try {
     const { createReadStream, filename, mimetype, encoding } = upload;
 
     let readStream;
 
-    if (process.env.NODE_ENV && process.env.NODE_ENV === "testing") readStream = createReadStream;
+    if (process.env.NODE_ENV && process.env.NODE_ENV === 'testing') readStream = createReadStream;
     else readStream = createReadStream();
 
     const data = await getFileInfo(filename, userId, createReadStream);
@@ -84,21 +84,21 @@ const s3ProfileMediaUploader = async (prisma, upload, userId) => {
 
 const s3ProductMediasUploader = async (prisma, upload, userId) => {
   if (!upload) {
-    throw new Error("🛑❌  S3PRODUCTMEDIASUPLOADER: NO FILE");
+    throw new Error('🛑❌  S3PRODUCTMEDIASUPLOADER: NO FILE');
   }
   try {
     const { createReadStream, filename, mimetype, encoding } = upload;
 
+    logger.debug('hello');
+
     let readStream;
 
-    if (process.env.NODE_ENV && process.env.NODE_ENV === "testing") readStream = createReadStream;
+    if (process.env.NODE_ENV && process.env.NODE_ENV === 'testing') readStream = createReadStream;
     else readStream = createReadStream();
 
-    const randomCuid = cuid();
+    const data = await getFileInfo(filename, userId, createReadStream);
 
-    const data = await getFileInfo(filename, randomCuid, createReadStream);
-
-    const key = `product_${randomCuid}.${data.ext}`; // pattern: userId_tick.extention
+    const key = `${userId}_${new Date().getTime()}.${data.ext}`; // pattern: userId_tick.extention
     logger.debug(`🔵✅  READ FILE: done. UPLOADING ${key} TO S3...`);
     // Upload to S3
     const response = await s3

@@ -14,57 +14,48 @@ import {
   ExpansionPanelDetails,
   ExpansionPanelSummary,
   Typography,
+  Link,
 } from '@material-ui/core';
+import { Link as RouteLink } from 'react-router-dom';
 
 const categories = [
   {
     id: 'Sản phẩm',
-    children: [{ id: 'Tạo mới sản phẩm', active: true }],
+    children: [
+      { id: 'Tạo mới sản phẩm', active: true, icon: <Icon>add</Icon>, link: '/seller/add-product' },
+      { id: 'Danh sách sản phẩm', icon: <Icon>list</Icon>, link: '/seller/list-product' },
+    ],
   },
 ];
 
 const styles = theme => ({
   paperDrawer: {
-    backgroundColor: theme.palette.primary.main,
+    zIndex: 0,
   },
   expandPanel: {
     boxShadow: '0 0 0 0',
-    backgroundColor: theme.palette.primary.main,
     width: '100%',
   },
   categoryHeader: {
     paddingTop: 16,
     paddingBottom: 16,
   },
-  categoryHeaderPrimary: {
-    color: theme.palette.common.white,
-  },
   item: {
     paddingTop: 4,
     paddingBottom: 4,
-    color: 'rgba(255, 255, 255, 0.7)',
   },
   itemCategory: {
-    backgroundColor: '#232f3e',
-    boxShadow: '0 -1px 0 #404854 inset',
     paddingTop: 16,
     paddingBottom: 16,
   },
   firebase: {
     fontSize: 24,
     fontFamily: theme.typography.fontFamily,
-    color: theme.palette.common.white,
-  },
-  itemActionable: {
-    '&:hover': {
-      backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    },
   },
   itemActiveItem: {
     color: theme.palette.secondary.main,
   },
   itemPrimary: {
-    color: 'inherit',
     fontSize: theme.typography.fontSize,
     '&$textDense': {
       fontSize: theme.typography.fontSize,
@@ -73,6 +64,9 @@ const styles = theme => ({
   textDense: {},
   divider: {
     marginTop: theme.spacing.unit * 2,
+  },
+  details: {
+    display: 'block',
   },
 });
 
@@ -98,26 +92,26 @@ const Navigator = ({ classes, ...others }) => {
             <ListItem disableGutters className={classes.categoryHeader}>
               <ExpansionPanel classes={{ root: classes.expandPanel }}>
                 <ExpansionPanelSummary expandIcon={<Icon color="secondary">expand_more</Icon>}>
-                  <Typography className={classes.categoryHeaderPrimary}>{id}</Typography>
+                  <Typography>{id}</Typography>
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  {children.map(({ id: childId, active }) => (
+                <ExpansionPanelDetails className={classes.details}>
+                  {children.map(({ id: childId, active, icon, link }) => (
                     <ListItem
                       button
                       dense
                       key={childId}
-                      className={classNames(classes.item, classes.itemActionable, active && classes.itemActiveItem)}
+                      className={classNames(classes.item, active && classes.itemActiveItem)}
                     >
-                      <ListItemIcon>
-                        <Icon color="secondary">add</Icon>
-                      </ListItemIcon>
+                      {icon}
                       <ListItemText
                         classes={{
                           primary: classes.itemPrimary,
                           textDense: classes.textDense,
                         }}
                       >
-                        {childId}
+                        <Link component={RouteLink} to={link}>
+                          {childId}
+                        </Link>
                       </ListItemText>
                     </ListItem>
                   ))}

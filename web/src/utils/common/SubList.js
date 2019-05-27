@@ -12,9 +12,6 @@ const styles = theme => ({
   },
   listItem: {
     width: 300,
-    '&:hover': {
-      backgroundColor: theme.palette.secondary.light,
-    },
     borderRadius: 5,
   },
 });

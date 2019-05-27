@@ -169,12 +169,14 @@ const optionStyles = theme => ({
   inactive: {},
 });
 const OptionItems = withStyles(optionStyles)(
-  ({ classes, option, selectedOption, handleSelectOption, handleSetProductImage }) => {
+  ({ classes, option, selectedOption, handleSelectOption, handleSetProductImage, preview }) => {
     const { name, listItems } = option;
     const [selected, setSelected] = useState('');
     const handeSetSelected = item => () => {
       setSelected(item);
-      handleSelectOption(item);
+      if (!preview) {
+        handleSelectOption(item);
+      }
     };
     useEffect(() => {
       handleSetProductImage();
@@ -203,8 +205,15 @@ const OptionItems = withStyles(optionStyles)(
     );
   },
 );
+OptionItems.propTypes = {
+  classes: PropTypes.object.isRequired,
+  preview: PropTypes.bool,
+};
+OptionItems.defaultProps = {
+  preview: false,
+};
 
-const ProductInfo = withStyles(styles)(({ classes, textData }) => {
+const ProductInfo = withStyles(styles)(({ classes, textData, productName, briefDescription }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleOnChange = (e, exp) => {
@@ -213,7 +222,7 @@ const ProductInfo = withStyles(styles)(({ classes, textData }) => {
 
   return (
     <Paper className="maintain-height well">
-      <Typography variant="h6">{textData.productName}</Typography>
+      <Typography variant="h6">{textData ? textData.name : productName}</Typography>
       <div className={`${classes.flexCenter} spacing-top-bottom`}>
         <IconButton classes={{ root: classes.rootIconButton }}>
           <Icon>thumb_up_alt</Icon>
@@ -224,12 +233,19 @@ const ProductInfo = withStyles(styles)(({ classes, textData }) => {
         </span>
       </div>
       <Divider className="spacing-top-bottom" />
-      {textData.briefDescription &&
-        textData.briefDescription.split('\n').map(description => (
-          <Typography style={{ margin: '16px 0' }}>
-            <strong>{description}</strong>
-          </Typography>
-        ))}
+      {textData
+        ? textData.briefDescription &&
+          textData.briefDescription.split('\n').map(description => (
+            <Typography style={{ margin: '16px 0' }}>
+              <strong>{description}</strong>
+            </Typography>
+          ))
+        : briefDescription &&
+          briefDescription.split('\n').map(description => (
+            <Typography style={{ margin: '16px 0' }}>
+              <strong>{description}</strong>
+            </Typography>
+          ))}
       <ExpansionPanel className={classes.expandPanel} expanded={expanded} onChange={handleOnChange}>
         <ExpansionPanelSummary className={classes.expandSummary}>
           <a className="a-color-link">{expanded ? 'Rút gọn' : 'Xem thêm'}</a>
@@ -252,98 +268,6 @@ const ProductInfo = withStyles(styles)(({ classes, textData }) => {
     </Paper>
   );
 });
-
-/* const ColorItems = ({ setActiveImg }) => {
-  const handleOnClick = event => {
-    const imgUrl = event.target.dataset.colorImg;
-    const { color } = event.target.dataset;
-    if (imgUrl && color) {
-      setActiveImg(imgUrl);
-      // event.target.style.boxShadow = `0 0 0 2px #eee, 0 0 0 4px ${color}`;
-    }
-  };
-  return (
-    <React.Fragment>
-      <Typography className="spacing-top-bottom" variant="h5">
-        Màu sản phẩm
-      </Typography>
-      <div id="colors">
-        <ul>
-          <li
-            onClick={handleOnClick}
-            style={{ backgroundColor: 'darkblue' }}
-            data-color="darkblue"
-            data-color-img="http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_cobalththr_model_front_072014.jpg"
-          >
-            <span className="glyphicon" />
-          </li>
-          <li
-            onClick={handleOnClick}
-            style={{ backgroundColor: 'orangered' }}
-            data-color="orangered"
-            data-color-img="http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_deeporangehthr_model_front_072014.jpg"
-          >
-            <span className="glyphicon" />
-          </li>
-          <li
-            onClick={handleOnClick}
-            style={{ backgroundColor: 'darkgreen' }}
-            data-color="darkgreen"
-            data-color-img="http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_forestgreenhthr_model_front_072014.jpg"
-          >
-            <span className="glyphicon" />
-          </li>
-          <li
-            onClick={handleOnClick}
-            style={{ backgroundColor: 'grey' }}
-            data-color="grey"
-            data-color-img="http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_graphitehthr_model_front_072014.jpg"
-          >
-            <span className="glyphicon" />
-          </li>
-          <li
-            onClick={handleOnClick}
-            style={{ backgroundColor: 'hotpink' }}
-            data-color="hotpink"
-            data-color-img="http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_pinkraspberryhthr_model_front_072014.jpg"
-          >
-            <span className="glyphicon" />
-          </li>
-          <li
-            style={{ backgroundColor: 'red' }}
-            data-color="red"
-            data-color-img="http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_scarleththr_model_front_072014.jpg"
-          >
-            <span className="glyphicon" />
-          </li>
-          <li
-            style={{ backgroundColor: 'limegreen' }}
-            data-color="limegreen"
-            data-color-img="http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_turfgreenhthr_model_front_072014.jpg"
-          >
-            <span className="glyphicon" />
-          </li>
-          <li
-            style={{ backgroundColor: 'purple' }}
-            data-color="purple"
-            data-color-img="http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_varsitypurplehthr_model_front_072014.jpg"
-          >
-            <span className="glyphicon" />
-          </li>
-          <li
-            style={{ backgroundColor: 'darkgrey' }}
-            data-color="darkgrey"
-            data-color-img="http://cdn.sanmar.com/catalog/images/imglib/mresjpg/2014/f9/LST660_vintagehthr_model_front_072014.jpg"
-          >
-            <span className="glyphicon" />
-          </li>
-        </ul>
-      </div>
-      <Divider className="spacing-top-bottom" />
-    </React.Fragment>
-  );
-};
-*/
 /* --------------------------------- */
 /* QUANTITY */
 /* --------------------------------- */
@@ -370,17 +294,24 @@ const QuantityButton = ({ classes, quantity, setQuantity, className }) => {
 /* --------------------------------- */
 /* BUY BOX */
 /* --------------------------------- */
-const BuyBox = ({ classes, quantity, setQuantity, optionList, textData: { sellPrice, brandName } }) => (
+const BuyBox = ({ classes, quantity, setQuantity, optionList, textData, attributes, sellPrice, brandName }) => (
   <Paper classes={{ root: classes.colorPaper }}>
     <div className="product-options well">
       <div className="flex">
         <Typography variant="h5">Mua mới</Typography>
         <Typography variant="h4" color="secondary">
-          VND {sellPrice}
+          VND {textData ? textData.sellPrice : sellPrice}
         </Typography>
       </div>
       <Divider className="spacing-top-bottom" />
-      {optionList}
+      {optionList ||
+        attributes.map(attribute => {
+          const option = {
+            name: attribute.name,
+            listItems: [attribute.value],
+          };
+          return <OptionItems option={option} />;
+        })}
       <Typography className="spacing-top-bottom" variant="h5">
         Số lượng
       </Typography>
@@ -389,7 +320,7 @@ const BuyBox = ({ classes, quantity, setQuantity, optionList, textData: { sellPr
         Còn hàng.
       </Typography>
       <Typography className="spacing-top-bottom" variant="subtitle1">
-        Được bán bởi <span className="a-color-link">{brandName}</span>
+        Được bán bởi <span className="a-color-link">{textData ? textData.brandName : brandName}</span>
       </Typography>
       <Button variant="contained" className="spacing-top" color="secondary" fullWidth>
         Thêm vào giỏ
@@ -481,12 +412,11 @@ const descriptionData = [
 //     listItems: ['S', 'M', 'L', 'XL'],
 //   },
 // ];
-const ProductDetailPage = ({ classes, theme, optionList, productImageData, textData, preview }) => {
+const ProductDetailPage = ({ classes, theme, optionList, productImageData, textData, preview, dataForOneProduct }) => {
   const [quantity, setQuantity] = useState(1);
-
-  const defaultSelectOption = optionList.map(option => option.listItems[0]);
+  const defaultSelectOption = optionList && optionList.map(option => option.listItems[0]);
   // selectedOption is an array containing: [selectedOption in option1, selectedOption in option2, ...]
-  const [selectedOption, setSelectedOption] = useState(defaultSelectOption);
+  const [selectedOption, setSelectedOption] = useState(defaultSelectOption || []);
   const handleSelectOption = optionKey => option => {
     // optionKey is a cue to know which set of options is (Color, Size, ...)
     // option is value receiving from OptionItem component
@@ -495,13 +425,14 @@ const ProductDetailPage = ({ classes, theme, optionList, productImageData, textD
     setSelectedOption(newArr);
   };
 
-  const [productImages, setProductImages] = useState(productImageData[selectedOption.join('')]); // pattern: option1option2, ex: XanhS
+  const [productImages, setProductImages] = useState(
+    productImageData ? productImageData[selectedOption.join('')] : dataForOneProduct.productMedias.map(img => img.uri),
+  ); // pattern: option1option2, ex: XanhS
   const handleSetProductImage = () => {
     const cloneArr = [...selectedOption]; // [Xanh, S]
     const key = cloneArr.join(''); // => XanhS
     setProductImages(productImageData[key]);
   };
-
   const [tabValue, setTabChange] = useState(0);
   const descriptionArr = [
     <ProductDescription
@@ -524,15 +455,16 @@ const ProductDetailPage = ({ classes, theme, optionList, productImageData, textD
   // Using component composition technique to avoid passing props through many level
   const optionItem = (
     <React.Fragment>
-      {optionList.map((option, index) => (
-        <OptionItems
-          selectedOption={selectedOption}
-          key={option.name}
-          option={option}
-          handleSelectOption={handleSelectOption(index)}
-          handleSetProductImage={handleSetProductImage}
-        />
-      ))}
+      {optionList &&
+        optionList.map((option, index) => (
+          <OptionItems
+            selectedOption={selectedOption}
+            key={option.name}
+            option={option}
+            handleSelectOption={handleSelectOption(index)}
+            handleSetProductImage={handleSetProductImage}
+          />
+        ))}
     </React.Fragment>
   );
 
@@ -543,7 +475,11 @@ const ProductDetailPage = ({ classes, theme, optionList, productImageData, textD
           <ProductImage isPreviewed={preview} productImages={productImages} />
         </Grid>
         <Grid item xs={6} sm={6} lg={6}>
-          <ProductInfo textData={textData} />
+          <ProductInfo
+            textData={textData}
+            productName={dataForOneProduct && dataForOneProduct.productName}
+            briefDescription={dataForOneProduct && dataForOneProduct.briefDescription}
+          />
         </Grid>
         <Grid item xs={4} sm={4} lg={4}>
           <Grid container className="maintain-height">
@@ -555,6 +491,9 @@ const ProductDetailPage = ({ classes, theme, optionList, productImageData, textD
                 setQuantity={setQuantity}
                 classes={classes}
                 textData={textData}
+                attributes={dataForOneProduct && dataForOneProduct.attributes}
+                brandName={dataForOneProduct && dataForOneProduct.brandName}
+                sellPrice={dataForOneProduct && dataForOneProduct.sellPrice}
               />
             </Grid>
           </Grid>

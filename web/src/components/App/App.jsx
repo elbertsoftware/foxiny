@@ -23,6 +23,8 @@ import ProductReviews from '../Product/CustomerReviews/ProductReviews';
 import LayoutSellerCenter from '../SellerCenter/LayoutSellerCenter/LayoutSellerCenter';
 import RequestProduct from '../SellerCenter/AddProduct/RequestProduct';
 import AddProduct from '../SellerCenter/AddProduct/AddProduct';
+import ListProduct from '../SellerCenter/ListProducts/ListProduct';
+import SignView from '../SellerCenter/Sign/SignView';
 
 class App extends Component<Props, State> {
   state = {
@@ -73,6 +75,7 @@ class App extends Component<Props, State> {
         </Switch>
         <Switch>
           {/* Place two Route in Switch component, the /seller/(.*) will be matched before /(.+) path */}
+          <Route exact path="/seller/sign" component={SignView} />
           <Route
             exact
             path="/seller/(.*)"
@@ -83,6 +86,9 @@ class App extends Component<Props, State> {
                 </Switch>
                 <Switch>
                   <Route path="/seller/add-product" component={AddProduct} />
+                </Switch>
+                <Switch>
+                  <Route path="/seller/list-product" component={ListProduct} />
                 </Switch>
               </LayoutSellerCenter>
             )}
