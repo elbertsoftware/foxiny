@@ -196,16 +196,18 @@ export const Mutation = {
           },
           '{ productMedias { id } }',
         );
-        await prisma.mutation.updateProductRetailer({
-          where: {
-            id: product.productId,
-          },
-          data: {
-            productMedias: {
-              disconnect: currentMedias.productMedias.map(id => id),
+        if (currentMedias) {
+          await prisma.mutation.updateProductRetailer({
+            where: {
+              id: product.productId,
             },
-          },
-        });
+            data: {
+              productMedias: {
+                disconnect: currentMedias.productMedias.map(id => id),
+              },
+            },
+          });
+        }
 
         // TODO: check if there is any entity in reference to this product -> cannot update but create the new one
 

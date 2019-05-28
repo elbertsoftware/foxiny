@@ -133,7 +133,7 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
   const [initData, setInitData] = useState({});
   useEffect(() => {
     const newData = {};
-    if (dataEdit) {
+    if (dataEdit.length > 0) {
       // For options list
       const groupedOption = dataEdit.map(x =>
         x.attributes.reduce((acc, curr) => {
@@ -151,6 +151,7 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
           regroupedOption[i].listItems = regroupedOption[i].listItems.concat(a[k]);
         });
       });
+
       regroupedOption.forEach(a => {
         a.listItems = a.listItems
           .filter(function(item, pos) {
@@ -171,8 +172,8 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
           productTemplateId: oldData.productTemplateId,
           productId: oldData.productId,
           productName: oldData.productName,
-          listPrice: oldData.listPrice,
-          sellPrice: oldData.sellPrice,
+          listPrice: oldData.listPrice * 1000,
+          sellPrice: oldData.sellPrice * 1000,
           stockQuantity: oldData.stockQuantity,
         });
       });
@@ -191,68 +192,76 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
   const onSubmit = async values => {
     const { products, options, images } = values;
     // Upload images for each product
-    let productImagesIDAllProduct = [];
+    const productImagesIDAllProduct = [];
     for (let index = 0; index < images.length; index++) {
       try {
-        if (!images[index][0].id) {
+        const imageIdEachProduct = [];
+        const imageUpdate = [];
+        let finalId = [];
+        images[index].forEach(img => {
+          if (img.id) {
+            imageIdEachProduct.push(img.id);
+          } else {
+            imageUpdate.push(img);
+          }
+        });
+        if (imageUpdate.length > 0) {
           const media = await uploadProductImgs({
             variables: {
-              files: images[index],
+              files: imageUpdate,
             },
           });
-          productImagesIDAllProduct.push(media.data.uploadProductMedias.map(img => img.id));
-          // Just need the id of image been uploaded
+          const idAfterUpload = media.data.uploadProductMedias.map(img => img.id);
+          finalId = imageIdEachProduct.concat(idAfterUpload);
         } else {
-          productImagesIDAllProduct = images.map(imageArr => {
-            return imageArr.map(imageObject => imageObject.id);
-          });
+          finalId = imageIdEachProduct;
         }
+        productImagesIDAllProduct.push(finalId);
+        // Just need the id of image been uploaded
       } catch (error) {
         toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !');
-        return;
       }
-      console.log(productImagesIDAllProduct);
-      // Adding attributes array for each product
-      const attributeArrOfAllProduct = [];
-      for (let i = 0; i < products.length; i++) {
-        const attributeArrEachPro = [];
-        for (let y = 0; y < options.length; y++) {
-          const attributeObject = {
-            attributeName: options[y].attributeName,
-            value: products[i][`option${y}`],
-          };
-          attributeArrEachPro.push(attributeObject);
-        }
-        attributeArrOfAllProduct.push(attributeArrEachPro);
+    }
+    // console.log(productImagesIDAllProduct);
+    // Adding attributes array for each product
+    const attributeArrOfAllProduct = [];
+    for (let i = 0; i < products.length; i++) {
+      const attributeArrEachPro = [];
+      for (let y = 0; y < options.length; y++) {
+        const attributeObject = {
+          attributeName: options[y].attributeName,
+          value: products[i][`option${y}`],
+        };
+        attributeArrEachPro.push(attributeObject);
       }
-      const newProducts = products.map((product, index) =>
-        Object.assign(
-          {},
-          {
-            productTemplateId: product.productTemplateId,
-            productId: product.productId,
-            productName: product.productName,
-            listPrice: +product.listPrice / 1000,
-            sellPrice: +product.sellPrice / 1000,
-            stockQuantity: +product.stockQuantity,
-            productMediaIds: productImagesIDAllProduct[index] || [],
-            attributes: attributeArrOfAllProduct[index],
-          },
-        ),
-      );
-      console.log(newProducts);
-      return;
-      try {
-        await editProducts({
-          variables: {
-            sellerId: 'cjurxpx4o00az07063f7imdn3',
-            data: newProducts,
-          },
-        });
-      } catch (error) {
-        toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !');
-        return;
-      }
+      attributeArrOfAllProduct.push(attributeArrEachPro);
+    }
+    const newProducts = products.map((product, index) =>
+      Object.assign(
+        {},
+        {
+          productTemplateId: product.productTemplateId,
+          productId: product.productId,
+          productName: product.productName,
+          listPrice: +product.listPrice / 1000,
+          sellPrice: +product.sellPrice / 1000,
+          stockQuantity: +product.stockQuantity,
+          productMediaIds: productImagesIDAllProduct[index],
+          attributes: attributeArrOfAllProduct[index],
+        },
+      ),
+    );
+    console.log(newProducts);
+    try {
+      await editProducts({
+        variables: {
+          sellerId: 'cjurxpx4o00az07063f7imdn3',
+          data: newProducts,
+        },
+      });
+      toast.success('Cập nhật thành công thông tin các sản phẩm.');
+    } catch (error) {
+      toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !');
     }
   };
   return (
