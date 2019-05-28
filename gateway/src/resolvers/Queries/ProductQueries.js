@@ -76,6 +76,7 @@ export const Query = {
 
     const products = await prisma.query.productRetailers(opArgs, newInfo);
     const friendlyProducts = restructureProduct2FriendlyProduct(products);
+    
     return friendlyProducts;
   },
 };
