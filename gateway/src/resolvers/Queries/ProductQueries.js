@@ -15,37 +15,37 @@ export const Query = {
       listPrice
       sellPrice
       stockQuantity
-      product{
-        productTemplate{
+      product {
+        productTemplate {
           id
           name
           briefDescription
-          category{
+          category {
             id
             name
           }
-          brand{
+          brand {
             id
             brandName
           }
-          descriptions{
-            retailer{
+          descriptions {
+            retailer {
               id
             }
             description
           }
         }
-        options{
-          attribute{
+        options {
+          attribute {
             name
           }
-          value{
+          value {
             name
           }
         }
       }
       inStock
-      productMedias{
+      productMedias {
         id
         uri
       }
@@ -76,7 +76,6 @@ export const Query = {
 
     const products = await prisma.query.productRetailers(opArgs, newInfo);
     const friendlyProducts = restructureProduct2FriendlyProduct(products);
-    console.log(JSON.stringify(friendlyProducts, undefined, 2));
     return friendlyProducts;
   },
 };

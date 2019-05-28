@@ -107,6 +107,7 @@ const restructureProductRetailer2FriendlyProduct = products => {
     createdAt: product.createdAt,
     updatedAt: product.updatedAt,
   }));
+
   return friendlyProducts;
 };
 
@@ -114,10 +115,20 @@ const restructureProduct2FriendlyProduct = products => {
   const friendlyProducts = products.map(product => ({
     productTemplateId: product.product.productTemplate.id,
     productId: product.id,
-    name: product.product.productTemplate.name,
 
+    name: product.product.productTemplate.name,
     productName: product.productName,
     productMedias: product.productMedias,
+    briefDescription: product.product.productTemplate.briefDescription,
+    brand: product.product.productTemplate.brand.brandName,
+    category: product.product.productTemplate.category,
+
+    descriptions: {
+      // fromManufacture
+      fromRetailers: product.product.productTemplate.descriptions
+        .filter(desc => desc.retailer)
+        .map(desc => desc.description),
+    },
     sku: product.sku,
     listPrice: product.listPrice,
     sellPrice: product.sellPrice,
@@ -133,6 +144,7 @@ const restructureProduct2FriendlyProduct = products => {
     createdAt: product.createdAt,
     updatedAt: product.updatedAt,
   }));
+
   return friendlyProducts;
 };
 

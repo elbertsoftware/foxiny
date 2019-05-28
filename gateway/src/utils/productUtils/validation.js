@@ -64,4 +64,40 @@ const validateCreateNewProductInput = data => {
   return newData;
 };
 
-export { validateCreateNewProductInput };
+const validateUpdateOneProductInput = product => {
+  const newData = {};
+
+  if (!product) {
+    logger.error("Invalid data object");
+    throw new Error("Invalid input");
+  }
+
+  if (!product.productTemplateId) {
+    logger.error("Invalid productTemplateId");
+    throw new Error("Invalid input");
+  }
+
+  if (!product.productId) {
+    logger.error("Invalid productId");
+    throw new Error("Invalid input");
+  }
+
+  newData.productTemplateId = product.productTemplateId;
+  newData.productId = product.productId;
+  newData.productName = validateIsEmpty(product.productName).toLowerCase();
+  newData.listPrice = validateIsSmallerThanX(product.listPrice);
+  newData.sellPrice = validateIsSmallerThanX(product.sellPrice);
+  newData.stockQuantity = validateIsSmallerThanX(product.stockQuantity);
+  newData.productMediaIds = product.productMediaIds;
+  newData.attributes = product.attributes.map(attribute => validateProductAttribute(attribute));
+
+  return newData;
+};
+
+const validateUpdateProductInput = data => {
+  const newData = data.map(product => validateUpdateOneProductInput(product));
+
+  return newData;
+};
+
+export { validateCreateNewProductInput, validateUpdateProductInput };
