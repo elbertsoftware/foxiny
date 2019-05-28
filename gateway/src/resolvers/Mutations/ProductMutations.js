@@ -7,7 +7,7 @@ import {
   restrutureProductTemplate2FriendlyProduct,
   restructureProductRetailer2FriendlyProduct,
 } from "../../utils/productUtils/dataHelper";
-import { validateCreateNewProductInput } from "../../utils/productUtils/validation";
+import { validateCreateNewProductInput, validateUpdateProductInput } from "../../utils/productUtils/validation";
 import { checkPermission } from "../../utils/productUtils/permissionChecker";
 import { s3ProductMediasUploader } from "../../utils/s3Uploader";
 
@@ -62,7 +62,7 @@ export const Mutation = {
       // NOTE: 2 - create product and it's template
       // NOTE: fragment ensure all needed-info always be returned
       // NOTE: lacking of manufacturer!!!
-      const newInfo = `{ id name briefDescription category { id name } descriptions { retailer { id } description } brand { id brandName } products { id productMedias { uri } productRetailers { id productName listPrice sellPrice stockQuantity inStock productMedias { uri } retailer { id businessName } rating approved createdAt updatedAt } options { id attribute { id name } value { id name} } sku } createdAt updatedAt }`;
+      const newInfo = `{ id name briefDescription category { id name } descriptions { retailer { id } description } brand { id brandName } products { id productMedias { id uri } productRetailers { id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } retailer { id businessName } rating approved createdAt updatedAt } options { id attribute { id name } value { id name} } sku } createdAt updatedAt }`;
 
       const productTemplateData = {
         name: data.name,
@@ -104,14 +104,6 @@ export const Mutation = {
                 },
               },
             },
-            // productMedias:
-            //   product.productMediaIds && product.productMediaIds.length > 0
-            //     ? {
-            //         connect: product.productMediaIds.map(mediaId => ({
-            //           id: mediaId,
-            //         })),
-            //       }
-            //     : undefined,
             options: {
               create: product.attributes.map(att => ({
                 attribute: {
@@ -152,9 +144,10 @@ export const Mutation = {
     await checkPermission(prisma, cache, request, sellerId);
 
     // TODO: validate input
+    const newData = validateUpdateProductInput(data);
 
     // NOTE: 1 - create product attributes & it's values
-    const atts = restructureProductAttributes(data);
+    const atts = restructureProductAttributes(newData);
 
     for (let i = 0; i < atts.length; i++) {
       for (let j = 0; j < atts[i].data.length; j++) {
@@ -189,26 +182,37 @@ export const Mutation = {
       });
     }
 
+    const newInfo =
+      "{ id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } product { productTemplate { id name briefDescription brand { id brandName } category { id name } descriptions { retailer { id } description } } options { attribute { name } value { name } } } rating approved createdAt updatedAt }";
+
     // NOTE: 2 - update
     const updatedProducts = await Promise.all(
-      data.map(async product => {
+      newData.map(async product => {
+        const currentMedias = await prisma.query.productRetailer(
+          {
+            where: {
+              id: product.productId,
+            },
+          },
+          "{ productMedias { id } }",
+        );
         await prisma.mutation.updateProductRetailer({
           where: {
-            id: product.id,
+            id: product.productId,
           },
           data: {
             productMedias: {
-              deleteMany: {
-                id_not: "",
-              },
+              disconnect: currentMedias.productMedias.map(id => id),
             },
           },
         });
 
         // TODO: check if there is any entity in reference to this product -> cannot update but create the new one
+
+        // NOTE: attributes & value of given product are unchanged: update the given product
         const existedProduct = await prisma.query.productRetailers({
           where: {
-            id: product.id,
+            id: product.productId,
             product: {
               AND: product.attributes.map(pair => ({
                 options_some: {
@@ -227,11 +231,12 @@ export const Mutation = {
             },
           },
         });
+
         if (existedProduct && existedProduct.length > 0) {
           return await prisma.mutation.updateProductRetailer(
             {
               where: {
-                id: product.id,
+                id: product.productId,
               },
               data: {
                 productName: product.productName,
@@ -248,16 +253,15 @@ export const Mutation = {
                     : undefined,
               },
             },
-            "{id productName listPrice sellPrice stockQuantity inStock productMedias { uri } product { productTemplate { id name briefDescription brand { id brandName } category { id name } descriptions { retailer { id } description } } options { attribute { name } value { name } } } rating approved createdAt updatedAt }",
+            newInfo,
           );
         } else {
-          // NOTE: delete old product retailer
+          // NOTE: attributes of given product are changed -> delete given product and create the new one
           await prisma.mutation.deleteProductRetailer({
             where: {
-              id: product.id,
+              id: product.productId,
             },
           });
-
           return await prisma.mutation.createProductRetailer(
             {
               data: {
@@ -265,6 +269,14 @@ export const Mutation = {
                 listPrice: product.listPrice,
                 sellPrice: product.sellPrice,
                 stockQuantity: product.stockQuantity,
+                productMedias:
+                  product.productMediaIds && product.productMediaIds.length > 0
+                    ? {
+                        connect: product.productMediaIds.map(mediaId => ({
+                          id: mediaId,
+                        })),
+                      }
+                    : undefined,
                 retailer: {
                   connect: {
                     id: sellerId,
@@ -295,13 +307,12 @@ export const Mutation = {
                 },
               },
             },
-            "{id productName listPrice sellPrice stockQuantity inStock productMedias { uri } product { productTemplate { id name briefDescription brand { id brandName } category { id name } descriptions { retailer { id } description } } options { attribute { name } value { name } } } rating approved createdAt updatedAt }",
+            newInfo,
           );
         }
       }),
     );
 
-    console.log(JSON.stringify(restructureProductRetailer2FriendlyProduct(updatedProducts), undefined, 2));
     return restructureProductRetailer2FriendlyProduct(updatedProducts);
   },
 };
