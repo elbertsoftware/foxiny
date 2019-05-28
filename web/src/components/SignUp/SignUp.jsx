@@ -12,7 +12,7 @@ const styles = theme => ({
     textTransform: 'none',
   },
   form: {
-    marginTop: theme.spacing.unit * 4,
+    marginTop: 0,
   },
   button: {
     marginTop: theme.spacing.unit * 3,
@@ -39,7 +39,7 @@ class SignUp extends React.Component {
   };
 
   render() {
-    const { classes, theme } = this.props;
+    const { classes, theme, sellerCenter, setUserId, history, setActiveTabId } = this.props;
     const { tabValue } = this.state;
 
     return (
@@ -61,12 +61,17 @@ class SignUp extends React.Component {
             theme={theme}
             tabValue={tabValue}
             classes={classes}
-            history={this.props.history}
+            history={history}
+            sellerCenter={sellerCenter}
+            setUserId={setUserId}
+            setActiveTabId={setActiveTabId}
           />
-          <Typography variant="body2" align="center">
-            {'Đã có tài khoản? '}
-            <Link to="/signin">Đăng nhập</Link>
-          </Typography>
+          {!sellerCenter && (
+            <Typography variant="body2" align="center">
+              {'Đã có tài khoản? '}
+              <Link to="/signin">Đăng nhập</Link>
+            </Typography>
+          )}
         </AppForm>
       </React.Fragment>
     );

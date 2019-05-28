@@ -73,7 +73,7 @@ class ConfirmPage extends React.Component {
                 .confirmUser({
                   variables: {
                     data: {
-                      userId: this.props.match.params.id,
+                      userId: this.props.match ? this.props.match.params.id : this.props.userId,
                       code: values.confirmCode,
                     },
                   },
@@ -88,7 +88,11 @@ class ConfirmPage extends React.Component {
                       },
                       () => {
                         this.timerReturn = setTimeout(() => {
-                          window.location.href = '/';
+                          if (this.props.userId) {
+                            this.props.history.push('/seller/register-seller');
+                          } else {
+                            window.location.href = '/';
+                          }
                         }, 50);
                       },
                     );

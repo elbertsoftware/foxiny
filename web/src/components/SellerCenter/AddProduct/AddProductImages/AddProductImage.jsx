@@ -7,6 +7,7 @@ import ApplyImgMultiSecModal from './ApplyImgMultiSecModal';
 import OpenContext from '../../../../utils/context/OpenContextAddProduct';
 import ProductDataContext from '../../../../utils/context/ProductDataContext';
 import ProductDetailPage from '../../../Product/ProductDetail/ProductDetailPage';
+import ProductEditDataContext from '../../../../utils/context/ProductEditDataContext';
 
 const styles = {
   appBar: {
@@ -39,9 +40,9 @@ export const Preview = withStyles(styles)(({ classes, open, handleClose, product
 });
 
 function AddProductImage(props) {
-  const { setValue } = props;
+  const { setValue, edit } = props;
   // Get product data from final form STATE using context
-  const productData = useContext(ProductDataContext);
+  const productData = useContext(edit ? ProductEditDataContext : ProductDataContext);
   const { products } = productData.data;
 
   // Logic
@@ -85,7 +86,7 @@ function AddProductImage(props) {
     const { data } = productData;
     // Get properties we want by using immediately invoked anonymous (arrow) function
     // Ignore products and options that are reconstructed above
-    const portionOfData = (({ productName, brandName, fromWhere, briefDescription }) => ({
+    const basicInfo = (({ productName, brandName, fromWhere, briefDescription }) => ({
       productName,
       brandName,
       fromWhere,
@@ -93,11 +94,11 @@ function AddProductImage(props) {
     }))(data);
     // Just get one price to present for the price of product
     // Giá sẽ thay đổi tùy theo options của sản phẩm, nhưng ở đây vi muc đích preview nên chỉ đại diện 1 price
-    portionOfData.sellPrice = data.products[0].sellPrice;
+    basicInfo.sellPrice = data.products[0].sellPrice;
     const previewingData = {
       productImage,
       options: newOptions,
-      basicInfo: portionOfData,
+      basicInfo,
     };
     setData(previewingData);
     setOpenPreview(true);
@@ -129,8 +130,8 @@ function AddProductImage(props) {
           files={images[index]}
           setImages={handleUpdateImages(index)}
           setIndexProduct={handleSetIndex(index)}
-          key={product.productId}
-          productName={product.name}
+          key={`product${index}`}
+          productName={product.productName}
         />
       ))}
       <Button onClick={handleOpenPreview} variant="contained">

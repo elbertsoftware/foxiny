@@ -1,7 +1,7 @@
 // @flow
 
-import logger from "../../utils/logger";
-import { getUserIDFromRequest } from "../../utils/authentication";
+import logger from '../../utils/logger';
+import { getUserIDFromRequest } from '../../utils/authentication';
 
 export const Mutation = {
   registerRetailer: async (parent, { data }, { prisma, request, cache }, info) => {
@@ -14,7 +14,7 @@ export const Mutation = {
     });
 
     if (!user) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     // TODO: validate input

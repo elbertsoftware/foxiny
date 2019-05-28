@@ -131,7 +131,7 @@ const AddSelectionModal = ({ classes, openModal, handleCloseModal, save, push, p
                           required
                           margin="normal"
                           placeholder="Tên thuộc tính (VD: Màu sắc, Kích thước, ...)"
-                          name={`${name}.name`}
+                          name={`${name}.attributeName`}
                           type="text"
                           variant="outlined"
                         />

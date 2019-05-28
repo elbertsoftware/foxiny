@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   withStyles,
   Paper,
@@ -45,6 +45,7 @@ const GET_PRODUCT = gql`
         fromRetailers
       }
       productMedias {
+        id
         uri
       }
       listPrice
@@ -53,7 +54,7 @@ const GET_PRODUCT = gql`
       inStock
       approved
       attributes {
-        name
+        attributeName
         value
       }
     }
@@ -95,12 +96,14 @@ function ListProduct(props) {
   if (!userLoggedIn()) {
     return <Redirect to="/signin" />;
   }
-  const checkedArrayObject = productsData.reduce((previous, current, index) => {
-    return {
-      ...previous,
-      [`checked${index}`]: false,
-    };
-  }, {});
+  const checkedArrayObject =
+    productsData &&
+    productsData.reduce((previous, current, index) => {
+      return {
+        ...previous,
+        [`checked${index}`]: false,
+      };
+    }, {});
   const [checked, setChecked] = useState(checkedArrayObject);
   // Bật tắt bán hàng
   const handleChange = name => event => {
@@ -108,8 +111,8 @@ function ListProduct(props) {
     newObject[name] = event.target.checked;
     setChecked(newObject);
   };
-  const [open, setOpen] = useState(Array(productsData.length).fill(false));
-  const anchorElArr = Array(productsData.length).fill(null);
+  const [open, setOpen] = useState(Array(productsData && productsData.length).fill(false));
+  const anchorElArr = Array(productsData && productsData.length).fill(null);
   const handleClick = index => () => {
     if (anchorElArr[index] !== null) {
       const newOpenArr = Array.from(open);
@@ -133,6 +136,11 @@ function ListProduct(props) {
   };
   const handleCloseDialog = () => setOpenEditDialog(false);
 
+  const editComponent = useMemo(
+    () => <EditProduct open={openEditDialog} handleClose={handleCloseDialog} dataEdit={productsData && productsData} />,
+    [openEditDialog],
+  );
+
   return (
     <Paper>
       <AppBar className={classes.bar} position="static" color="default" elevation={0}>
@@ -152,85 +160,86 @@ function ListProduct(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {productsData.map((product, index) => {
-            return (
-              <TableRow key={product.productId}>
-                <TableCell>
-                  <Paper className={classes.productCard} elevation={0} square>
-                    <img
-                      className={classes.img}
-                      alt="product"
-                      src={product.productMedias[0] && product.productMedias[0].uri}
-                    />
-                    <Paper elevation={0} square>
-                      <Typography component={Link}>{product.productName}</Typography>
-                      <Typography variant="subtitle2">ID: {product.productId}</Typography>
-                    </Paper>
-                  </Paper>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body1">{product.sellPrice * 1000}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body1">Foxiny: 0</Typography>
-                  <Typography variant="body1">Nhà bán hàng: 0</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body1">14/05/2019 12:08:43</Typography>
-                </TableCell>
-                <TableCell>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={checked[`checked${index}`]}
-                        onChange={handleChange(`checked${index}`)}
-                        value="checkedA"
+          {productsData &&
+            productsData.map((product, index) => {
+              return (
+                <TableRow key={product.productId}>
+                  <TableCell>
+                    <Paper className={classes.productCard} elevation={0} square>
+                      <img
+                        className={classes.img}
+                        alt="product"
+                        src={product.productMedias[0] && product.productMedias[0].uri}
                       />
-                    }
-                    label={checked[`checked${index}`] ? 'Bật' : 'Tắt'}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Button
-                    buttonRef={node => {
-                      anchorElArr[index] = node;
-                    }}
-                    aria-owns={open ? `manipulation${index}` : undefined}
-                    aria-haspopup="true"
-                    onClick={handleClick(index)}
-                    className={classes.button}
-                    size="small"
-                    variant="contained"
-                    color="secondary"
-                  >
-                    Thao tác
-                  </Button>
-                  <Popper open={open[index]} anchorEl={anchorElArr[index]} transition disablePortal>
-                    {({ TransitionProps, placement }) => (
-                      <Grow
-                        {...TransitionProps}
-                        id={`manipulation${index}`}
-                        style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                      >
-                        <Paper>
-                          <ClickAwayListener onClickAway={handleClose(index)}>
-                            <MenuList>
-                              <MenuItem onClick={handleOpenDialog(index)}>
-                                <Icon className={classes.icon}>edit</Icon> Sửa
-                              </MenuItem>
-                            </MenuList>
-                          </ClickAwayListener>
-                        </Paper>
-                      </Grow>
-                    )}
-                  </Popper>
-                </TableCell>
-              </TableRow>
-            );
-          })}
+                      <Paper elevation={0} square>
+                        <Typography component={Link}>{product.productName}</Typography>
+                        <Typography variant="subtitle2">ID: {product.productId}</Typography>
+                      </Paper>
+                    </Paper>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="body1">{product.sellPrice * 1000}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="body1">Foxiny: 0</Typography>
+                    <Typography variant="body1">Nhà bán hàng: {product.stockQuantity}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="body1">14/05/2019 12:08:43</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={checked[`checked${index}`]}
+                          onChange={handleChange(`checked${index}`)}
+                          value="checkedA"
+                        />
+                      }
+                      label={checked[`checked${index}`] ? 'Bật' : 'Tắt'}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      buttonRef={node => {
+                        anchorElArr[index] = node;
+                      }}
+                      aria-owns={open ? `manipulation${index}` : undefined}
+                      aria-haspopup="true"
+                      onClick={handleClick(index)}
+                      className={classes.button}
+                      size="small"
+                      variant="contained"
+                      color="secondary"
+                    >
+                      Thao tác
+                    </Button>
+                    <Popper open={open[index]} anchorEl={anchorElArr[index]} transition disablePortal>
+                      {({ TransitionProps, placement }) => (
+                        <Grow
+                          {...TransitionProps}
+                          id={`manipulation${index}`}
+                          style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                        >
+                          <Paper>
+                            <ClickAwayListener onClickAway={handleClose(index)}>
+                              <MenuList>
+                                <MenuItem onClick={handleOpenDialog(index)}>
+                                  <Icon className={classes.icon}>edit</Icon> Sửa
+                                </MenuItem>
+                              </MenuList>
+                            </ClickAwayListener>
+                          </Paper>
+                        </Grow>
+                      )}
+                    </Popper>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
-      <EditProduct open={openEditDialog} handleClose={handleCloseDialog} dataEdit={productsData} />
+      {editComponent}
     </Paper>
   );
 }

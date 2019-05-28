@@ -1,5 +1,5 @@
 # source: http://localhost:4466/foxiny/dev
-# timestamp: Mon May 13 2019 22:18:46 GMT+0700 (Indochina Time)
+# timestamp: Tue May 28 2019 10:50:19 GMT+0700 (Indochina Time)
 
 type Address implements Node {
   id: ID!
@@ -3915,8 +3915,8 @@ type Mutation {
   createProduct(data: ProductCreateInput!): Product!
   createPermission(data: PermissionCreateInput!): Permission!
   createCategory(data: CategoryCreateInput!): Category!
-  createMedia(data: MediaCreateInput!): Media!
   createAddress(data: AddressCreateInput!): Address!
+  createMedia(data: MediaCreateInput!): Media!
   createRetailer(data: RetailerCreateInput!): Retailer!
   createRole(data: RoleCreateInput!): Role!
   createDescription(data: DescriptionCreateInput!): Description!
@@ -3934,8 +3934,8 @@ type Mutation {
   updateProduct(data: ProductUpdateInput!, where: ProductWhereUniqueInput!): Product
   updatePermission(data: PermissionUpdateInput!, where: PermissionWhereUniqueInput!): Permission
   updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
-  updateMedia(data: MediaUpdateInput!, where: MediaWhereUniqueInput!): Media
   updateAddress(data: AddressUpdateInput!, where: AddressWhereUniqueInput!): Address
+  updateMedia(data: MediaUpdateInput!, where: MediaWhereUniqueInput!): Media
   updateRetailer(data: RetailerUpdateInput!, where: RetailerWhereUniqueInput!): Retailer
   updateRole(data: RoleUpdateInput!, where: RoleWhereUniqueInput!): Role
   updateDescription(data: DescriptionUpdateInput!, where: DescriptionWhereUniqueInput!): Description
@@ -3953,8 +3953,8 @@ type Mutation {
   deleteProduct(where: ProductWhereUniqueInput!): Product
   deletePermission(where: PermissionWhereUniqueInput!): Permission
   deleteCategory(where: CategoryWhereUniqueInput!): Category
-  deleteMedia(where: MediaWhereUniqueInput!): Media
   deleteAddress(where: AddressWhereUniqueInput!): Address
+  deleteMedia(where: MediaWhereUniqueInput!): Media
   deleteRetailer(where: RetailerWhereUniqueInput!): Retailer
   deleteRole(where: RoleWhereUniqueInput!): Role
   deleteDescription(where: DescriptionWhereUniqueInput!): Description
@@ -3972,8 +3972,8 @@ type Mutation {
   upsertProduct(where: ProductWhereUniqueInput!, create: ProductCreateInput!, update: ProductUpdateInput!): Product!
   upsertPermission(where: PermissionWhereUniqueInput!, create: PermissionCreateInput!, update: PermissionUpdateInput!): Permission!
   upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
-  upsertMedia(where: MediaWhereUniqueInput!, create: MediaCreateInput!, update: MediaUpdateInput!): Media!
   upsertAddress(where: AddressWhereUniqueInput!, create: AddressCreateInput!, update: AddressUpdateInput!): Address!
+  upsertMedia(where: MediaWhereUniqueInput!, create: MediaCreateInput!, update: MediaUpdateInput!): Media!
   upsertRetailer(where: RetailerWhereUniqueInput!, create: RetailerCreateInput!, update: RetailerUpdateInput!): Retailer!
   upsertRole(where: RoleWhereUniqueInput!, create: RoleCreateInput!, update: RoleUpdateInput!): Role!
   upsertDescription(where: DescriptionWhereUniqueInput!, create: DescriptionCreateInput!, update: DescriptionUpdateInput!): Description!
@@ -3991,8 +3991,8 @@ type Mutation {
   updateManyProducts(data: ProductUpdateManyMutationInput!, where: ProductWhereInput): BatchPayload!
   updateManyPermissions(data: PermissionUpdateManyMutationInput!, where: PermissionWhereInput): BatchPayload!
   updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
-  updateManyMedias(data: MediaUpdateManyMutationInput!, where: MediaWhereInput): BatchPayload!
   updateManyAddresses(data: AddressUpdateManyMutationInput!, where: AddressWhereInput): BatchPayload!
+  updateManyMedias(data: MediaUpdateManyMutationInput!, where: MediaWhereInput): BatchPayload!
   updateManyRetailers(data: RetailerUpdateManyMutationInput!, where: RetailerWhereInput): BatchPayload!
   updateManyRoles(data: RoleUpdateManyMutationInput!, where: RoleWhereInput): BatchPayload!
   updateManyDescriptions(data: DescriptionUpdateManyMutationInput!, where: DescriptionWhereInput): BatchPayload!
@@ -4010,8 +4010,8 @@ type Mutation {
   deleteManyProducts(where: ProductWhereInput): BatchPayload!
   deleteManyPermissions(where: PermissionWhereInput): BatchPayload!
   deleteManyCategories(where: CategoryWhereInput): BatchPayload!
-  deleteManyMedias(where: MediaWhereInput): BatchPayload!
   deleteManyAddresses(where: AddressWhereInput): BatchPayload!
+  deleteManyMedias(where: MediaWhereInput): BatchPayload!
   deleteManyRetailers(where: RetailerWhereInput): BatchPayload!
   deleteManyRoles(where: RoleWhereInput): BatchPayload!
   deleteManyDescriptions(where: DescriptionWhereInput): BatchPayload!
@@ -4519,7 +4519,6 @@ type Product implements Node {
   productTemplate: ProductTemplate
   productMedias(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Media!]
   productRetailers(where: ProductRetailerWhereInput, orderBy: ProductRetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductRetailer!]
-  productName: String
   sku: String
   options(where: ProductOptionWhereInput, orderBy: ProductOptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductOption!]
   createdAt: DateTime!
@@ -5569,7 +5568,6 @@ type ProductConnection {
 input ProductCreateInput {
   id: ID
   _version: Int
-  productName: String
   sku: String
   productTemplate: ProductTemplateCreateOneWithoutProductsInput
   productMedias: MediaCreateManyInput
@@ -5595,7 +5593,6 @@ input ProductCreateOneWithoutProductRetailersInput {
 input ProductCreateWithoutProductRetailersInput {
   id: ID
   _version: Int
-  productName: String
   sku: String
   productTemplate: ProductTemplateCreateOneWithoutProductsInput
   productMedias: MediaCreateManyInput
@@ -5605,7 +5602,6 @@ input ProductCreateWithoutProductRetailersInput {
 input ProductCreateWithoutProductTemplateInput {
   id: ID
   _version: Int
-  productName: String
   sku: String
   productMedias: MediaCreateManyInput
   productRetailers: ProductRetailerCreateManyWithoutProductInput
@@ -6089,8 +6085,6 @@ enum ProductOrderByInput {
   id_DESC
   _version_ASC
   _version_DESC
-  productName_ASC
-  productName_DESC
   sku_ASC
   sku_DESC
   createdAt_ASC
@@ -6102,7 +6096,6 @@ enum ProductOrderByInput {
 type ProductPreviousValues {
   id: ID!
   _version: Int!
-  productName: String
   sku: String
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -6111,6 +6104,7 @@ type ProductPreviousValues {
 type ProductRetailer implements Node {
   id: ID!
   _version: Int!
+  productName: String
   listPrice: Int
   sellPrice: Int
   stockQuantity: Int
@@ -6119,6 +6113,7 @@ type ProductRetailer implements Node {
   product: Product
   retailer: Retailer
   rating: Int
+  enabled: Boolean
   approved: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -6137,11 +6132,13 @@ type ProductRetailerConnection {
 input ProductRetailerCreateInput {
   id: ID
   _version: Int
+  productName: String
   listPrice: Int
   sellPrice: Int
   stockQuantity: Int
   inStock: Boolean
   rating: Int
+  enabled: Boolean
   approved: Boolean
   productMedias: MediaCreateManyInput
   product: ProductCreateOneWithoutProductRetailersInput
@@ -6161,11 +6158,13 @@ input ProductRetailerCreateManyWithoutRetailerInput {
 input ProductRetailerCreateWithoutProductInput {
   id: ID
   _version: Int
+  productName: String
   listPrice: Int
   sellPrice: Int
   stockQuantity: Int
   inStock: Boolean
   rating: Int
+  enabled: Boolean
   approved: Boolean
   productMedias: MediaCreateManyInput
   retailer: RetailerCreateOneWithoutProductsInput
@@ -6174,11 +6173,13 @@ input ProductRetailerCreateWithoutProductInput {
 input ProductRetailerCreateWithoutRetailerInput {
   id: ID
   _version: Int
+  productName: String
   listPrice: Int
   sellPrice: Int
   stockQuantity: Int
   inStock: Boolean
   rating: Int
+  enabled: Boolean
   approved: Boolean
   productMedias: MediaCreateManyInput
   product: ProductCreateOneWithoutProductRetailersInput
@@ -6198,6 +6199,8 @@ enum ProductRetailerOrderByInput {
   id_DESC
   _version_ASC
   _version_DESC
+  productName_ASC
+  productName_DESC
   listPrice_ASC
   listPrice_DESC
   sellPrice_ASC
@@ -6208,6 +6211,8 @@ enum ProductRetailerOrderByInput {
   inStock_DESC
   rating_ASC
   rating_DESC
+  enabled_ASC
+  enabled_DESC
   approved_ASC
   approved_DESC
   createdAt_ASC
@@ -6219,11 +6224,13 @@ enum ProductRetailerOrderByInput {
 type ProductRetailerPreviousValues {
   id: ID!
   _version: Int!
+  productName: String
   listPrice: Int
   sellPrice: Int
   stockQuantity: Int
   inStock: Boolean
   rating: Int
+  enabled: Boolean
   approved: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -6238,588 +6245,6 @@ input ProductRetailerScalarWhereInput {
 
   """Logical NOT on all given filters combined by AND."""
   NOT: [ProductRetailerScalarWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  _version: Int
-
-  """All values that are not equal to given value."""
-  _version_not: Int
-
-  """All values that are contained in given list."""
-  _version_in: [Int!]
-
-  """All values that are not contained in given list."""
-  _version_not_in: [Int!]
-
-  """All values less than the given value."""
-  _version_lt: Int
-
-  """All values less than or equal the given value."""
-  _version_lte: Int
-
-  """All values greater than the given value."""
-  _version_gt: Int
-
-  """All values greater than or equal the given value."""
-  _version_gte: Int
-  listPrice: Int
-
-  """All values that are not equal to given value."""
-  listPrice_not: Int
-
-  """All values that are contained in given list."""
-  listPrice_in: [Int!]
-
-  """All values that are not contained in given list."""
-  listPrice_not_in: [Int!]
-
-  """All values less than the given value."""
-  listPrice_lt: Int
-
-  """All values less than or equal the given value."""
-  listPrice_lte: Int
-
-  """All values greater than the given value."""
-  listPrice_gt: Int
-
-  """All values greater than or equal the given value."""
-  listPrice_gte: Int
-  sellPrice: Int
-
-  """All values that are not equal to given value."""
-  sellPrice_not: Int
-
-  """All values that are contained in given list."""
-  sellPrice_in: [Int!]
-
-  """All values that are not contained in given list."""
-  sellPrice_not_in: [Int!]
-
-  """All values less than the given value."""
-  sellPrice_lt: Int
-
-  """All values less than or equal the given value."""
-  sellPrice_lte: Int
-
-  """All values greater than the given value."""
-  sellPrice_gt: Int
-
-  """All values greater than or equal the given value."""
-  sellPrice_gte: Int
-  stockQuantity: Int
-
-  """All values that are not equal to given value."""
-  stockQuantity_not: Int
-
-  """All values that are contained in given list."""
-  stockQuantity_in: [Int!]
-
-  """All values that are not contained in given list."""
-  stockQuantity_not_in: [Int!]
-
-  """All values less than the given value."""
-  stockQuantity_lt: Int
-
-  """All values less than or equal the given value."""
-  stockQuantity_lte: Int
-
-  """All values greater than the given value."""
-  stockQuantity_gt: Int
-
-  """All values greater than or equal the given value."""
-  stockQuantity_gte: Int
-  inStock: Boolean
-
-  """All values that are not equal to given value."""
-  inStock_not: Boolean
-  rating: Int
-
-  """All values that are not equal to given value."""
-  rating_not: Int
-
-  """All values that are contained in given list."""
-  rating_in: [Int!]
-
-  """All values that are not contained in given list."""
-  rating_not_in: [Int!]
-
-  """All values less than the given value."""
-  rating_lt: Int
-
-  """All values less than or equal the given value."""
-  rating_lte: Int
-
-  """All values greater than the given value."""
-  rating_gt: Int
-
-  """All values greater than or equal the given value."""
-  rating_gte: Int
-  approved: Boolean
-
-  """All values that are not equal to given value."""
-  approved_not: Boolean
-  createdAt: DateTime
-
-  """All values that are not equal to given value."""
-  createdAt_not: DateTime
-
-  """All values that are contained in given list."""
-  createdAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  createdAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  createdAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  createdAt_lte: DateTime
-
-  """All values greater than the given value."""
-  createdAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-
-  """All values that are not equal to given value."""
-  updatedAt_not: DateTime
-
-  """All values that are contained in given list."""
-  updatedAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  updatedAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  updatedAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  updatedAt_lte: DateTime
-
-  """All values greater than the given value."""
-  updatedAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  updatedAt_gte: DateTime
-}
-
-type ProductRetailerSubscriptionPayload {
-  mutation: MutationType!
-  node: ProductRetailer
-  updatedFields: [String!]
-  previousValues: ProductRetailerPreviousValues
-}
-
-input ProductRetailerSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ProductRetailerSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ProductRetailerSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ProductRetailerSubscriptionWhereInput!]
-
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: ProductRetailerWhereInput
-}
-
-input ProductRetailerUpdateInput {
-  _version: Int
-  listPrice: Int
-  sellPrice: Int
-  stockQuantity: Int
-  inStock: Boolean
-  rating: Int
-  approved: Boolean
-  productMedias: MediaUpdateManyInput
-  product: ProductUpdateOneWithoutProductRetailersInput
-  retailer: RetailerUpdateOneWithoutProductsInput
-}
-
-input ProductRetailerUpdateManyDataInput {
-  _version: Int
-  listPrice: Int
-  sellPrice: Int
-  stockQuantity: Int
-  inStock: Boolean
-  rating: Int
-  approved: Boolean
-}
-
-input ProductRetailerUpdateManyMutationInput {
-  _version: Int
-  listPrice: Int
-  sellPrice: Int
-  stockQuantity: Int
-  inStock: Boolean
-  rating: Int
-  approved: Boolean
-}
-
-input ProductRetailerUpdateManyWithoutProductInput {
-  create: [ProductRetailerCreateWithoutProductInput!]
-  connect: [ProductRetailerWhereUniqueInput!]
-  set: [ProductRetailerWhereUniqueInput!]
-  disconnect: [ProductRetailerWhereUniqueInput!]
-  delete: [ProductRetailerWhereUniqueInput!]
-  update: [ProductRetailerUpdateWithWhereUniqueWithoutProductInput!]
-  updateMany: [ProductRetailerUpdateManyWithWhereNestedInput!]
-  deleteMany: [ProductRetailerScalarWhereInput!]
-  upsert: [ProductRetailerUpsertWithWhereUniqueWithoutProductInput!]
-}
-
-input ProductRetailerUpdateManyWithoutRetailerInput {
-  create: [ProductRetailerCreateWithoutRetailerInput!]
-  connect: [ProductRetailerWhereUniqueInput!]
-  set: [ProductRetailerWhereUniqueInput!]
-  disconnect: [ProductRetailerWhereUniqueInput!]
-  delete: [ProductRetailerWhereUniqueInput!]
-  update: [ProductRetailerUpdateWithWhereUniqueWithoutRetailerInput!]
-  updateMany: [ProductRetailerUpdateManyWithWhereNestedInput!]
-  deleteMany: [ProductRetailerScalarWhereInput!]
-  upsert: [ProductRetailerUpsertWithWhereUniqueWithoutRetailerInput!]
-}
-
-input ProductRetailerUpdateManyWithWhereNestedInput {
-  where: ProductRetailerScalarWhereInput!
-  data: ProductRetailerUpdateManyDataInput!
-}
-
-input ProductRetailerUpdateWithoutProductDataInput {
-  _version: Int
-  listPrice: Int
-  sellPrice: Int
-  stockQuantity: Int
-  inStock: Boolean
-  rating: Int
-  approved: Boolean
-  productMedias: MediaUpdateManyInput
-  retailer: RetailerUpdateOneWithoutProductsInput
-}
-
-input ProductRetailerUpdateWithoutRetailerDataInput {
-  _version: Int
-  listPrice: Int
-  sellPrice: Int
-  stockQuantity: Int
-  inStock: Boolean
-  rating: Int
-  approved: Boolean
-  productMedias: MediaUpdateManyInput
-  product: ProductUpdateOneWithoutProductRetailersInput
-}
-
-input ProductRetailerUpdateWithWhereUniqueWithoutProductInput {
-  where: ProductRetailerWhereUniqueInput!
-  data: ProductRetailerUpdateWithoutProductDataInput!
-}
-
-input ProductRetailerUpdateWithWhereUniqueWithoutRetailerInput {
-  where: ProductRetailerWhereUniqueInput!
-  data: ProductRetailerUpdateWithoutRetailerDataInput!
-}
-
-input ProductRetailerUpsertWithWhereUniqueWithoutProductInput {
-  where: ProductRetailerWhereUniqueInput!
-  update: ProductRetailerUpdateWithoutProductDataInput!
-  create: ProductRetailerCreateWithoutProductInput!
-}
-
-input ProductRetailerUpsertWithWhereUniqueWithoutRetailerInput {
-  where: ProductRetailerWhereUniqueInput!
-  update: ProductRetailerUpdateWithoutRetailerDataInput!
-  create: ProductRetailerCreateWithoutRetailerInput!
-}
-
-input ProductRetailerWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ProductRetailerWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ProductRetailerWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ProductRetailerWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  _version: Int
-
-  """All values that are not equal to given value."""
-  _version_not: Int
-
-  """All values that are contained in given list."""
-  _version_in: [Int!]
-
-  """All values that are not contained in given list."""
-  _version_not_in: [Int!]
-
-  """All values less than the given value."""
-  _version_lt: Int
-
-  """All values less than or equal the given value."""
-  _version_lte: Int
-
-  """All values greater than the given value."""
-  _version_gt: Int
-
-  """All values greater than or equal the given value."""
-  _version_gte: Int
-  listPrice: Int
-
-  """All values that are not equal to given value."""
-  listPrice_not: Int
-
-  """All values that are contained in given list."""
-  listPrice_in: [Int!]
-
-  """All values that are not contained in given list."""
-  listPrice_not_in: [Int!]
-
-  """All values less than the given value."""
-  listPrice_lt: Int
-
-  """All values less than or equal the given value."""
-  listPrice_lte: Int
-
-  """All values greater than the given value."""
-  listPrice_gt: Int
-
-  """All values greater than or equal the given value."""
-  listPrice_gte: Int
-  sellPrice: Int
-
-  """All values that are not equal to given value."""
-  sellPrice_not: Int
-
-  """All values that are contained in given list."""
-  sellPrice_in: [Int!]
-
-  """All values that are not contained in given list."""
-  sellPrice_not_in: [Int!]
-
-  """All values less than the given value."""
-  sellPrice_lt: Int
-
-  """All values less than or equal the given value."""
-  sellPrice_lte: Int
-
-  """All values greater than the given value."""
-  sellPrice_gt: Int
-
-  """All values greater than or equal the given value."""
-  sellPrice_gte: Int
-  stockQuantity: Int
-
-  """All values that are not equal to given value."""
-  stockQuantity_not: Int
-
-  """All values that are contained in given list."""
-  stockQuantity_in: [Int!]
-
-  """All values that are not contained in given list."""
-  stockQuantity_not_in: [Int!]
-
-  """All values less than the given value."""
-  stockQuantity_lt: Int
-
-  """All values less than or equal the given value."""
-  stockQuantity_lte: Int
-
-  """All values greater than the given value."""
-  stockQuantity_gt: Int
-
-  """All values greater than or equal the given value."""
-  stockQuantity_gte: Int
-  inStock: Boolean
-
-  """All values that are not equal to given value."""
-  inStock_not: Boolean
-  rating: Int
-
-  """All values that are not equal to given value."""
-  rating_not: Int
-
-  """All values that are contained in given list."""
-  rating_in: [Int!]
-
-  """All values that are not contained in given list."""
-  rating_not_in: [Int!]
-
-  """All values less than the given value."""
-  rating_lt: Int
-
-  """All values less than or equal the given value."""
-  rating_lte: Int
-
-  """All values greater than the given value."""
-  rating_gt: Int
-
-  """All values greater than or equal the given value."""
-  rating_gte: Int
-  approved: Boolean
-
-  """All values that are not equal to given value."""
-  approved_not: Boolean
-  createdAt: DateTime
-
-  """All values that are not equal to given value."""
-  createdAt_not: DateTime
-
-  """All values that are contained in given list."""
-  createdAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  createdAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  createdAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  createdAt_lte: DateTime
-
-  """All values greater than the given value."""
-  createdAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-
-  """All values that are not equal to given value."""
-  updatedAt_not: DateTime
-
-  """All values that are contained in given list."""
-  updatedAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  updatedAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  updatedAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  updatedAt_lte: DateTime
-
-  """All values greater than the given value."""
-  updatedAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  updatedAt_gte: DateTime
-  productMedias_every: MediaWhereInput
-  productMedias_some: MediaWhereInput
-  productMedias_none: MediaWhereInput
-  product: ProductWhereInput
-  retailer: RetailerWhereInput
-}
-
-input ProductRetailerWhereUniqueInput {
-  id: ID
-}
-
-input ProductScalarWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ProductScalarWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ProductScalarWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ProductScalarWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -6922,6 +6347,647 @@ input ProductScalarWhereInput {
 
   """All values not ending with the given string."""
   productName_not_ends_with: String
+  listPrice: Int
+
+  """All values that are not equal to given value."""
+  listPrice_not: Int
+
+  """All values that are contained in given list."""
+  listPrice_in: [Int!]
+
+  """All values that are not contained in given list."""
+  listPrice_not_in: [Int!]
+
+  """All values less than the given value."""
+  listPrice_lt: Int
+
+  """All values less than or equal the given value."""
+  listPrice_lte: Int
+
+  """All values greater than the given value."""
+  listPrice_gt: Int
+
+  """All values greater than or equal the given value."""
+  listPrice_gte: Int
+  sellPrice: Int
+
+  """All values that are not equal to given value."""
+  sellPrice_not: Int
+
+  """All values that are contained in given list."""
+  sellPrice_in: [Int!]
+
+  """All values that are not contained in given list."""
+  sellPrice_not_in: [Int!]
+
+  """All values less than the given value."""
+  sellPrice_lt: Int
+
+  """All values less than or equal the given value."""
+  sellPrice_lte: Int
+
+  """All values greater than the given value."""
+  sellPrice_gt: Int
+
+  """All values greater than or equal the given value."""
+  sellPrice_gte: Int
+  stockQuantity: Int
+
+  """All values that are not equal to given value."""
+  stockQuantity_not: Int
+
+  """All values that are contained in given list."""
+  stockQuantity_in: [Int!]
+
+  """All values that are not contained in given list."""
+  stockQuantity_not_in: [Int!]
+
+  """All values less than the given value."""
+  stockQuantity_lt: Int
+
+  """All values less than or equal the given value."""
+  stockQuantity_lte: Int
+
+  """All values greater than the given value."""
+  stockQuantity_gt: Int
+
+  """All values greater than or equal the given value."""
+  stockQuantity_gte: Int
+  inStock: Boolean
+
+  """All values that are not equal to given value."""
+  inStock_not: Boolean
+  rating: Int
+
+  """All values that are not equal to given value."""
+  rating_not: Int
+
+  """All values that are contained in given list."""
+  rating_in: [Int!]
+
+  """All values that are not contained in given list."""
+  rating_not_in: [Int!]
+
+  """All values less than the given value."""
+  rating_lt: Int
+
+  """All values less than or equal the given value."""
+  rating_lte: Int
+
+  """All values greater than the given value."""
+  rating_gt: Int
+
+  """All values greater than or equal the given value."""
+  rating_gte: Int
+  enabled: Boolean
+
+  """All values that are not equal to given value."""
+  enabled_not: Boolean
+  approved: Boolean
+
+  """All values that are not equal to given value."""
+  approved_not: Boolean
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+type ProductRetailerSubscriptionPayload {
+  mutation: MutationType!
+  node: ProductRetailer
+  updatedFields: [String!]
+  previousValues: ProductRetailerPreviousValues
+}
+
+input ProductRetailerSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ProductRetailerSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ProductRetailerSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ProductRetailerSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ProductRetailerWhereInput
+}
+
+input ProductRetailerUpdateInput {
+  _version: Int
+  productName: String
+  listPrice: Int
+  sellPrice: Int
+  stockQuantity: Int
+  inStock: Boolean
+  rating: Int
+  enabled: Boolean
+  approved: Boolean
+  productMedias: MediaUpdateManyInput
+  product: ProductUpdateOneWithoutProductRetailersInput
+  retailer: RetailerUpdateOneWithoutProductsInput
+}
+
+input ProductRetailerUpdateManyDataInput {
+  _version: Int
+  productName: String
+  listPrice: Int
+  sellPrice: Int
+  stockQuantity: Int
+  inStock: Boolean
+  rating: Int
+  enabled: Boolean
+  approved: Boolean
+}
+
+input ProductRetailerUpdateManyMutationInput {
+  _version: Int
+  productName: String
+  listPrice: Int
+  sellPrice: Int
+  stockQuantity: Int
+  inStock: Boolean
+  rating: Int
+  enabled: Boolean
+  approved: Boolean
+}
+
+input ProductRetailerUpdateManyWithoutProductInput {
+  create: [ProductRetailerCreateWithoutProductInput!]
+  connect: [ProductRetailerWhereUniqueInput!]
+  set: [ProductRetailerWhereUniqueInput!]
+  disconnect: [ProductRetailerWhereUniqueInput!]
+  delete: [ProductRetailerWhereUniqueInput!]
+  update: [ProductRetailerUpdateWithWhereUniqueWithoutProductInput!]
+  updateMany: [ProductRetailerUpdateManyWithWhereNestedInput!]
+  deleteMany: [ProductRetailerScalarWhereInput!]
+  upsert: [ProductRetailerUpsertWithWhereUniqueWithoutProductInput!]
+}
+
+input ProductRetailerUpdateManyWithoutRetailerInput {
+  create: [ProductRetailerCreateWithoutRetailerInput!]
+  connect: [ProductRetailerWhereUniqueInput!]
+  set: [ProductRetailerWhereUniqueInput!]
+  disconnect: [ProductRetailerWhereUniqueInput!]
+  delete: [ProductRetailerWhereUniqueInput!]
+  update: [ProductRetailerUpdateWithWhereUniqueWithoutRetailerInput!]
+  updateMany: [ProductRetailerUpdateManyWithWhereNestedInput!]
+  deleteMany: [ProductRetailerScalarWhereInput!]
+  upsert: [ProductRetailerUpsertWithWhereUniqueWithoutRetailerInput!]
+}
+
+input ProductRetailerUpdateManyWithWhereNestedInput {
+  where: ProductRetailerScalarWhereInput!
+  data: ProductRetailerUpdateManyDataInput!
+}
+
+input ProductRetailerUpdateWithoutProductDataInput {
+  _version: Int
+  productName: String
+  listPrice: Int
+  sellPrice: Int
+  stockQuantity: Int
+  inStock: Boolean
+  rating: Int
+  enabled: Boolean
+  approved: Boolean
+  productMedias: MediaUpdateManyInput
+  retailer: RetailerUpdateOneWithoutProductsInput
+}
+
+input ProductRetailerUpdateWithoutRetailerDataInput {
+  _version: Int
+  productName: String
+  listPrice: Int
+  sellPrice: Int
+  stockQuantity: Int
+  inStock: Boolean
+  rating: Int
+  enabled: Boolean
+  approved: Boolean
+  productMedias: MediaUpdateManyInput
+  product: ProductUpdateOneWithoutProductRetailersInput
+}
+
+input ProductRetailerUpdateWithWhereUniqueWithoutProductInput {
+  where: ProductRetailerWhereUniqueInput!
+  data: ProductRetailerUpdateWithoutProductDataInput!
+}
+
+input ProductRetailerUpdateWithWhereUniqueWithoutRetailerInput {
+  where: ProductRetailerWhereUniqueInput!
+  data: ProductRetailerUpdateWithoutRetailerDataInput!
+}
+
+input ProductRetailerUpsertWithWhereUniqueWithoutProductInput {
+  where: ProductRetailerWhereUniqueInput!
+  update: ProductRetailerUpdateWithoutProductDataInput!
+  create: ProductRetailerCreateWithoutProductInput!
+}
+
+input ProductRetailerUpsertWithWhereUniqueWithoutRetailerInput {
+  where: ProductRetailerWhereUniqueInput!
+  update: ProductRetailerUpdateWithoutRetailerDataInput!
+  create: ProductRetailerCreateWithoutRetailerInput!
+}
+
+input ProductRetailerWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ProductRetailerWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ProductRetailerWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ProductRetailerWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  productName: String
+
+  """All values that are not equal to given value."""
+  productName_not: String
+
+  """All values that are contained in given list."""
+  productName_in: [String!]
+
+  """All values that are not contained in given list."""
+  productName_not_in: [String!]
+
+  """All values less than the given value."""
+  productName_lt: String
+
+  """All values less than or equal the given value."""
+  productName_lte: String
+
+  """All values greater than the given value."""
+  productName_gt: String
+
+  """All values greater than or equal the given value."""
+  productName_gte: String
+
+  """All values containing the given string."""
+  productName_contains: String
+
+  """All values not containing the given string."""
+  productName_not_contains: String
+
+  """All values starting with the given string."""
+  productName_starts_with: String
+
+  """All values not starting with the given string."""
+  productName_not_starts_with: String
+
+  """All values ending with the given string."""
+  productName_ends_with: String
+
+  """All values not ending with the given string."""
+  productName_not_ends_with: String
+  listPrice: Int
+
+  """All values that are not equal to given value."""
+  listPrice_not: Int
+
+  """All values that are contained in given list."""
+  listPrice_in: [Int!]
+
+  """All values that are not contained in given list."""
+  listPrice_not_in: [Int!]
+
+  """All values less than the given value."""
+  listPrice_lt: Int
+
+  """All values less than or equal the given value."""
+  listPrice_lte: Int
+
+  """All values greater than the given value."""
+  listPrice_gt: Int
+
+  """All values greater than or equal the given value."""
+  listPrice_gte: Int
+  sellPrice: Int
+
+  """All values that are not equal to given value."""
+  sellPrice_not: Int
+
+  """All values that are contained in given list."""
+  sellPrice_in: [Int!]
+
+  """All values that are not contained in given list."""
+  sellPrice_not_in: [Int!]
+
+  """All values less than the given value."""
+  sellPrice_lt: Int
+
+  """All values less than or equal the given value."""
+  sellPrice_lte: Int
+
+  """All values greater than the given value."""
+  sellPrice_gt: Int
+
+  """All values greater than or equal the given value."""
+  sellPrice_gte: Int
+  stockQuantity: Int
+
+  """All values that are not equal to given value."""
+  stockQuantity_not: Int
+
+  """All values that are contained in given list."""
+  stockQuantity_in: [Int!]
+
+  """All values that are not contained in given list."""
+  stockQuantity_not_in: [Int!]
+
+  """All values less than the given value."""
+  stockQuantity_lt: Int
+
+  """All values less than or equal the given value."""
+  stockQuantity_lte: Int
+
+  """All values greater than the given value."""
+  stockQuantity_gt: Int
+
+  """All values greater than or equal the given value."""
+  stockQuantity_gte: Int
+  inStock: Boolean
+
+  """All values that are not equal to given value."""
+  inStock_not: Boolean
+  rating: Int
+
+  """All values that are not equal to given value."""
+  rating_not: Int
+
+  """All values that are contained in given list."""
+  rating_in: [Int!]
+
+  """All values that are not contained in given list."""
+  rating_not_in: [Int!]
+
+  """All values less than the given value."""
+  rating_lt: Int
+
+  """All values less than or equal the given value."""
+  rating_lte: Int
+
+  """All values greater than the given value."""
+  rating_gt: Int
+
+  """All values greater than or equal the given value."""
+  rating_gte: Int
+  enabled: Boolean
+
+  """All values that are not equal to given value."""
+  enabled_not: Boolean
+  approved: Boolean
+
+  """All values that are not equal to given value."""
+  approved_not: Boolean
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  productMedias_every: MediaWhereInput
+  productMedias_some: MediaWhereInput
+  productMedias_none: MediaWhereInput
+  product: ProductWhereInput
+  retailer: RetailerWhereInput
+}
+
+input ProductRetailerWhereUniqueInput {
+  id: ID
+  productName: String
+}
+
+input ProductScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ProductScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ProductScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ProductScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
   sku: String
 
   """All values that are not equal to given value."""
@@ -7722,7 +7788,6 @@ input ProductTemplateWhereUniqueInput {
 
 input ProductUpdateDataInput {
   _version: Int
-  productName: String
   sku: String
   productTemplate: ProductTemplateUpdateOneWithoutProductsInput
   productMedias: MediaUpdateManyInput
@@ -7732,7 +7797,6 @@ input ProductUpdateDataInput {
 
 input ProductUpdateInput {
   _version: Int
-  productName: String
   sku: String
   productTemplate: ProductTemplateUpdateOneWithoutProductsInput
   productMedias: MediaUpdateManyInput
@@ -7742,13 +7806,11 @@ input ProductUpdateInput {
 
 input ProductUpdateManyDataInput {
   _version: Int
-  productName: String
   sku: String
 }
 
 input ProductUpdateManyMutationInput {
   _version: Int
-  productName: String
   sku: String
 }
 
@@ -7789,7 +7851,6 @@ input ProductUpdateOneWithoutProductRetailersInput {
 
 input ProductUpdateWithoutProductRetailersDataInput {
   _version: Int
-  productName: String
   sku: String
   productTemplate: ProductTemplateUpdateOneWithoutProductsInput
   productMedias: MediaUpdateManyInput
@@ -7798,7 +7859,6 @@ input ProductUpdateWithoutProductRetailersDataInput {
 
 input ProductUpdateWithoutProductTemplateDataInput {
   _version: Int
-  productName: String
   sku: String
   productMedias: MediaUpdateManyInput
   productRetailers: ProductRetailerUpdateManyWithoutProductInput
@@ -7897,46 +7957,6 @@ input ProductWhereInput {
 
   """All values greater than or equal the given value."""
   _version_gte: Int
-  productName: String
-
-  """All values that are not equal to given value."""
-  productName_not: String
-
-  """All values that are contained in given list."""
-  productName_in: [String!]
-
-  """All values that are not contained in given list."""
-  productName_not_in: [String!]
-
-  """All values less than the given value."""
-  productName_lt: String
-
-  """All values less than or equal the given value."""
-  productName_lte: String
-
-  """All values greater than the given value."""
-  productName_gt: String
-
-  """All values greater than or equal the given value."""
-  productName_gte: String
-
-  """All values containing the given string."""
-  productName_contains: String
-
-  """All values not containing the given string."""
-  productName_not_contains: String
-
-  """All values starting with the given string."""
-  productName_starts_with: String
-
-  """All values not starting with the given string."""
-  productName_not_starts_with: String
-
-  """All values ending with the given string."""
-  productName_ends_with: String
-
-  """All values not ending with the given string."""
-  productName_not_ends_with: String
   sku: String
 
   """All values that are not equal to given value."""
@@ -8035,7 +8055,6 @@ input ProductWhereInput {
 
 input ProductWhereUniqueInput {
   id: ID
-  productName: String
   sku: String
 }
 
@@ -8054,8 +8073,8 @@ type Query {
   products(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Product]!
   permissions(where: PermissionWhereInput, orderBy: PermissionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Permission]!
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
-  medias(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Media]!
   addresses(where: AddressWhereInput, orderBy: AddressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Address]!
+  medias(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Media]!
   retailers(where: RetailerWhereInput, orderBy: RetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Retailer]!
   roles(where: RoleWhereInput, orderBy: RoleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Role]!
   descriptions(where: DescriptionWhereInput, orderBy: DescriptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Description]!
@@ -8073,8 +8092,8 @@ type Query {
   product(where: ProductWhereUniqueInput!): Product
   permission(where: PermissionWhereUniqueInput!): Permission
   category(where: CategoryWhereUniqueInput!): Category
-  media(where: MediaWhereUniqueInput!): Media
   address(where: AddressWhereUniqueInput!): Address
+  media(where: MediaWhereUniqueInput!): Media
   retailer(where: RetailerWhereUniqueInput!): Retailer
   role(where: RoleWhereUniqueInput!): Role
   description(where: DescriptionWhereUniqueInput!): Description
@@ -8092,8 +8111,8 @@ type Query {
   productsConnection(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductConnection!
   permissionsConnection(where: PermissionWhereInput, orderBy: PermissionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PermissionConnection!
   categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
-  mediasConnection(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MediaConnection!
   addressesConnection(where: AddressWhereInput, orderBy: AddressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AddressConnection!
+  mediasConnection(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MediaConnection!
   retailersConnection(where: RetailerWhereInput, orderBy: RetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RetailerConnection!
   rolesConnection(where: RoleWhereInput, orderBy: RoleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RoleConnection!
   descriptionsConnection(where: DescriptionWhereInput, orderBy: DescriptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): DescriptionConnection!
@@ -8116,11 +8135,14 @@ type Retailer implements Node {
   id: ID!
   _version: Int!
   owner: Assignment
-  profileMedia: Media
+  businessMedia: Media
   businessName: String
-  address: Address
-  phone: String
+  businessAddress: Address
+  businessPhone: String
+  businessEmail: String
   products(where: ProductRetailerWhereInput, orderBy: ProductRetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductRetailer!]
+  businessLicense: String
+  enabled: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -8139,10 +8161,13 @@ input RetailerCreateInput {
   id: ID
   _version: Int
   businessName: String
-  phone: String
+  businessPhone: String
+  businessEmail: String
+  businessLicense: String
+  enabled: Boolean
   owner: AssignmentCreateOneWithoutRetailersInput
-  profileMedia: MediaCreateOneInput
-  address: AddressCreateOneInput
+  businessMedia: MediaCreateOneInput
+  businessAddress: AddressCreateOneInput
   products: ProductRetailerCreateManyWithoutRetailerInput
 }
 
@@ -8165,9 +8190,12 @@ input RetailerCreateWithoutOwnerInput {
   id: ID
   _version: Int
   businessName: String
-  phone: String
-  profileMedia: MediaCreateOneInput
-  address: AddressCreateOneInput
+  businessPhone: String
+  businessEmail: String
+  businessLicense: String
+  enabled: Boolean
+  businessMedia: MediaCreateOneInput
+  businessAddress: AddressCreateOneInput
   products: ProductRetailerCreateManyWithoutRetailerInput
 }
 
@@ -8175,10 +8203,13 @@ input RetailerCreateWithoutProductsInput {
   id: ID
   _version: Int
   businessName: String
-  phone: String
+  businessPhone: String
+  businessEmail: String
+  businessLicense: String
+  enabled: Boolean
   owner: AssignmentCreateOneWithoutRetailersInput
-  profileMedia: MediaCreateOneInput
-  address: AddressCreateOneInput
+  businessMedia: MediaCreateOneInput
+  businessAddress: AddressCreateOneInput
 }
 
 """An edge in a connection."""
@@ -8197,8 +8228,14 @@ enum RetailerOrderByInput {
   _version_DESC
   businessName_ASC
   businessName_DESC
-  phone_ASC
-  phone_DESC
+  businessPhone_ASC
+  businessPhone_DESC
+  businessEmail_ASC
+  businessEmail_DESC
+  businessLicense_ASC
+  businessLicense_DESC
+  enabled_ASC
+  enabled_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -8209,7 +8246,10 @@ type RetailerPreviousValues {
   id: ID!
   _version: Int!
   businessName: String
-  phone: String
+  businessPhone: String
+  businessEmail: String
+  businessLicense: String
+  enabled: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -8325,46 +8365,130 @@ input RetailerScalarWhereInput {
 
   """All values not ending with the given string."""
   businessName_not_ends_with: String
-  phone: String
+  businessPhone: String
 
   """All values that are not equal to given value."""
-  phone_not: String
+  businessPhone_not: String
 
   """All values that are contained in given list."""
-  phone_in: [String!]
+  businessPhone_in: [String!]
 
   """All values that are not contained in given list."""
-  phone_not_in: [String!]
+  businessPhone_not_in: [String!]
 
   """All values less than the given value."""
-  phone_lt: String
+  businessPhone_lt: String
 
   """All values less than or equal the given value."""
-  phone_lte: String
+  businessPhone_lte: String
 
   """All values greater than the given value."""
-  phone_gt: String
+  businessPhone_gt: String
 
   """All values greater than or equal the given value."""
-  phone_gte: String
+  businessPhone_gte: String
 
   """All values containing the given string."""
-  phone_contains: String
+  businessPhone_contains: String
 
   """All values not containing the given string."""
-  phone_not_contains: String
+  businessPhone_not_contains: String
 
   """All values starting with the given string."""
-  phone_starts_with: String
+  businessPhone_starts_with: String
 
   """All values not starting with the given string."""
-  phone_not_starts_with: String
+  businessPhone_not_starts_with: String
 
   """All values ending with the given string."""
-  phone_ends_with: String
+  businessPhone_ends_with: String
 
   """All values not ending with the given string."""
-  phone_not_ends_with: String
+  businessPhone_not_ends_with: String
+  businessEmail: String
+
+  """All values that are not equal to given value."""
+  businessEmail_not: String
+
+  """All values that are contained in given list."""
+  businessEmail_in: [String!]
+
+  """All values that are not contained in given list."""
+  businessEmail_not_in: [String!]
+
+  """All values less than the given value."""
+  businessEmail_lt: String
+
+  """All values less than or equal the given value."""
+  businessEmail_lte: String
+
+  """All values greater than the given value."""
+  businessEmail_gt: String
+
+  """All values greater than or equal the given value."""
+  businessEmail_gte: String
+
+  """All values containing the given string."""
+  businessEmail_contains: String
+
+  """All values not containing the given string."""
+  businessEmail_not_contains: String
+
+  """All values starting with the given string."""
+  businessEmail_starts_with: String
+
+  """All values not starting with the given string."""
+  businessEmail_not_starts_with: String
+
+  """All values ending with the given string."""
+  businessEmail_ends_with: String
+
+  """All values not ending with the given string."""
+  businessEmail_not_ends_with: String
+  businessLicense: String
+
+  """All values that are not equal to given value."""
+  businessLicense_not: String
+
+  """All values that are contained in given list."""
+  businessLicense_in: [String!]
+
+  """All values that are not contained in given list."""
+  businessLicense_not_in: [String!]
+
+  """All values less than the given value."""
+  businessLicense_lt: String
+
+  """All values less than or equal the given value."""
+  businessLicense_lte: String
+
+  """All values greater than the given value."""
+  businessLicense_gt: String
+
+  """All values greater than or equal the given value."""
+  businessLicense_gte: String
+
+  """All values containing the given string."""
+  businessLicense_contains: String
+
+  """All values not containing the given string."""
+  businessLicense_not_contains: String
+
+  """All values starting with the given string."""
+  businessLicense_starts_with: String
+
+  """All values not starting with the given string."""
+  businessLicense_not_starts_with: String
+
+  """All values ending with the given string."""
+  businessLicense_ends_with: String
+
+  """All values not ending with the given string."""
+  businessLicense_not_ends_with: String
+  enabled: Boolean
+
+  """All values that are not equal to given value."""
+  enabled_not: Boolean
   createdAt: DateTime
 
   """All values that are not equal to given value."""
@@ -8453,33 +8577,45 @@ input RetailerSubscriptionWhereInput {
 input RetailerUpdateDataInput {
   _version: Int
   businessName: String
-  phone: String
+  businessPhone: String
+  businessEmail: String
+  businessLicense: String
+  enabled: Boolean
   owner: AssignmentUpdateOneWithoutRetailersInput
-  profileMedia: MediaUpdateOneInput
-  address: AddressUpdateOneInput
+  businessMedia: MediaUpdateOneInput
+  businessAddress: AddressUpdateOneInput
   products: ProductRetailerUpdateManyWithoutRetailerInput
 }
 
 input RetailerUpdateInput {
   _version: Int
   businessName: String
-  phone: String
+  businessPhone: String
+  businessEmail: String
+  businessLicense: String
+  enabled: Boolean
   owner: AssignmentUpdateOneWithoutRetailersInput
-  profileMedia: MediaUpdateOneInput
-  address: AddressUpdateOneInput
+  businessMedia: MediaUpdateOneInput
+  businessAddress: AddressUpdateOneInput
   products: ProductRetailerUpdateManyWithoutRetailerInput
 }
 
 input RetailerUpdateManyDataInput {
   _version: Int
   businessName: String
-  phone: String
+  businessPhone: String
+  businessEmail: String
+  businessLicense: String
+  enabled: Boolean
 }
 
 input RetailerUpdateManyMutationInput {
   _version: Int
   businessName: String
-  phone: String
+  businessPhone: String
+  businessEmail: String
+  businessLicense: String
+  enabled: Boolean
 }
 
 input RetailerUpdateManyWithoutOwnerInput {
@@ -8520,19 +8656,25 @@ input RetailerUpdateOneWithoutProductsInput {
 input RetailerUpdateWithoutOwnerDataInput {
   _version: Int
   businessName: String
-  phone: String
-  profileMedia: MediaUpdateOneInput
-  address: AddressUpdateOneInput
+  businessPhone: String
+  businessEmail: String
+  businessLicense: String
+  enabled: Boolean
+  businessMedia: MediaUpdateOneInput
+  businessAddress: AddressUpdateOneInput
   products: ProductRetailerUpdateManyWithoutRetailerInput
 }
 
 input RetailerUpdateWithoutProductsDataInput {
   _version: Int
   businessName: String
-  phone: String
+  businessPhone: String
+  businessEmail: String
+  businessLicense: String
+  enabled: Boolean
   owner: AssignmentUpdateOneWithoutRetailersInput
-  profileMedia: MediaUpdateOneInput
-  address: AddressUpdateOneInput
+  businessMedia: MediaUpdateOneInput
+  businessAddress: AddressUpdateOneInput
 }
 
 input RetailerUpdateWithWhereUniqueWithoutOwnerInput {
@@ -8667,46 +8809,130 @@ input RetailerWhereInput {
 
   """All values not ending with the given string."""
   businessName_not_ends_with: String
-  phone: String
+  businessPhone: String
 
   """All values that are not equal to given value."""
-  phone_not: String
+  businessPhone_not: String
 
   """All values that are contained in given list."""
-  phone_in: [String!]
+  businessPhone_in: [String!]
 
   """All values that are not contained in given list."""
-  phone_not_in: [String!]
+  businessPhone_not_in: [String!]
 
   """All values less than the given value."""
-  phone_lt: String
+  businessPhone_lt: String
 
   """All values less than or equal the given value."""
-  phone_lte: String
+  businessPhone_lte: String
 
   """All values greater than the given value."""
-  phone_gt: String
+  businessPhone_gt: String
 
   """All values greater than or equal the given value."""
-  phone_gte: String
+  businessPhone_gte: String
 
   """All values containing the given string."""
-  phone_contains: String
+  businessPhone_contains: String
 
   """All values not containing the given string."""
-  phone_not_contains: String
+  businessPhone_not_contains: String
 
   """All values starting with the given string."""
-  phone_starts_with: String
+  businessPhone_starts_with: String
 
   """All values not starting with the given string."""
-  phone_not_starts_with: String
+  businessPhone_not_starts_with: String
 
   """All values ending with the given string."""
-  phone_ends_with: String
+  businessPhone_ends_with: String
 
   """All values not ending with the given string."""
-  phone_not_ends_with: String
+  businessPhone_not_ends_with: String
+  businessEmail: String
+
+  """All values that are not equal to given value."""
+  businessEmail_not: String
+
+  """All values that are contained in given list."""
+  businessEmail_in: [String!]
+
+  """All values that are not contained in given list."""
+  businessEmail_not_in: [String!]
+
+  """All values less than the given value."""
+  businessEmail_lt: String
+
+  """All values less than or equal the given value."""
+  businessEmail_lte: String
+
+  """All values greater than the given value."""
+  businessEmail_gt: String
+
+  """All values greater than or equal the given value."""
+  businessEmail_gte: String
+
+  """All values containing the given string."""
+  businessEmail_contains: String
+
+  """All values not containing the given string."""
+  businessEmail_not_contains: String
+
+  """All values starting with the given string."""
+  businessEmail_starts_with: String
+
+  """All values not starting with the given string."""
+  businessEmail_not_starts_with: String
+
+  """All values ending with the given string."""
+  businessEmail_ends_with: String
+
+  """All values not ending with the given string."""
+  businessEmail_not_ends_with: String
+  businessLicense: String
+
+  """All values that are not equal to given value."""
+  businessLicense_not: String
+
+  """All values that are contained in given list."""
+  businessLicense_in: [String!]
+
+  """All values that are not contained in given list."""
+  businessLicense_not_in: [String!]
+
+  """All values less than the given value."""
+  businessLicense_lt: String
+
+  """All values less than or equal the given value."""
+  businessLicense_lte: String
+
+  """All values greater than the given value."""
+  businessLicense_gt: String
+
+  """All values greater than or equal the given value."""
+  businessLicense_gte: String
+
+  """All values containing the given string."""
+  businessLicense_contains: String
+
+  """All values not containing the given string."""
+  businessLicense_not_contains: String
+
+  """All values starting with the given string."""
+  businessLicense_starts_with: String
+
+  """All values not starting with the given string."""
+  businessLicense_not_starts_with: String
+
+  """All values ending with the given string."""
+  businessLicense_ends_with: String
+
+  """All values not ending with the given string."""
+  businessLicense_not_ends_with: String
+  enabled: Boolean
+
+  """All values that are not equal to given value."""
+  enabled_not: Boolean
   createdAt: DateTime
 
   """All values that are not equal to given value."""
@@ -8752,8 +8978,8 @@ input RetailerWhereInput {
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
   owner: AssignmentWhereInput
-  profileMedia: MediaWhereInput
-  address: AddressWhereInput
+  businessMedia: MediaWhereInput
+  businessAddress: AddressWhereInput
   products_every: ProductRetailerWhereInput
   products_some: ProductRetailerWhereInput
   products_none: ProductRetailerWhereInput
@@ -8762,7 +8988,8 @@ input RetailerWhereInput {
 input RetailerWhereUniqueInput {
   id: ID
   businessName: String
-  phone: String
+  businessPhone: String
+  businessEmail: String
 }
 
 type Review implements Node {
@@ -10966,8 +11193,8 @@ type Subscription {
   product(where: ProductSubscriptionWhereInput): ProductSubscriptionPayload
   permission(where: PermissionSubscriptionWhereInput): PermissionSubscriptionPayload
   category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
-  media(where: MediaSubscriptionWhereInput): MediaSubscriptionPayload
   address(where: AddressSubscriptionWhereInput): AddressSubscriptionPayload
+  media(where: MediaSubscriptionWhereInput): MediaSubscriptionPayload
   retailer(where: RetailerSubscriptionWhereInput): RetailerSubscriptionPayload
   role(where: RoleSubscriptionWhereInput): RoleSubscriptionPayload
   description(where: DescriptionSubscriptionWhereInput): DescriptionSubscriptionPayload

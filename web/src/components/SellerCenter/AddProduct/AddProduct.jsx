@@ -47,7 +47,7 @@ const CREATE_NEW_PRODUCT = gql`
       inStock
       approved
       attributes {
-        name
+        attributeName
         value
       }
     }
@@ -137,7 +137,7 @@ const AddProduct = ({ classes, createNewProduct, uploadProductImgs }) => {
       const attributeArrEachPro = [];
       for (let y = 0; y < options.length; y++) {
         const attributeObject = {
-          attributeName: options[y].name,
+          attributeName: options[y].attributeName,
           value: products[i][`option${y}`],
         };
         attributeArrEachPro.push(attributeObject);
@@ -157,6 +157,10 @@ const AddProduct = ({ classes, createNewProduct, uploadProductImgs }) => {
         },
       ),
     );
+    // Kiểm tra xem Sửa hay Thêm product, vì Sửa product tái sử dụng lại các component của Add product
+    // Nếu Sửa, thì mỗi product trong list product sẽ có field productTemplateId, và productId được load lên và gán vào ở ListProducts component
+    // Edit products
+
     // Create new product
     try {
       await createNewProduct({

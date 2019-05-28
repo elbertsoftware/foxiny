@@ -9,7 +9,7 @@ const signStyles = theme => ({
   },
   logoContainer: {
     backgroundColor: theme.palette.primary.main,
-    width: '50%',
+    width: '60%',
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
@@ -37,29 +37,31 @@ const signStyles = theme => ({
   formContainer: {
     overflow: 'hidden',
     padding: 25,
-    width: '50%',
+    width: '40%',
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center',
     [theme.breakpoints.down('md')]: {
       width: '50%',
     },
   },
   form: {
-    width: 400,
+    width: 320,
   },
-  formRegister: {
-    width: 550,
+  formSellerInfo: {
+    width: 420,
   },
   tab: {
     fontWeight: 400,
     fontSize: 18,
   },
-  businessType: {
-    margin: theme.spacing.unit * 4,
-    marginLeft: 0,
+  businessTypeImg: {
+    width: '100%',
+    height: 250,
+    objectFit: 'contain',
+    marginTop: 24,
   },
   greeting: {
     fontWeight: 500,
@@ -120,6 +122,7 @@ const signStyles = theme => ({
     marginRight: theme.spacing.unit * 2,
   },
   formButtons: {
+    padding: 16,
     width: '100%',
     marginTop: theme.spacing.unit * 4,
     display: 'flex',
@@ -130,7 +133,7 @@ const signStyles = theme => ({
     textTransform: 'none',
     fontWeight: 400,
   },
-  loginLoader: {
+  loader: {
     marginLeft: theme.spacing.unit * 4,
   },
   formControl: {

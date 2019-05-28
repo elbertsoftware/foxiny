@@ -110,22 +110,28 @@ const restructureProductRetailer2FriendlyProduct = products => {
   return friendlyProducts;
 };
 
-const restructureProductWoTemplate2FriendlyProduct = products => {
+const restructureProduct2FriendlyProduct = products => {
   const friendlyProducts = products.map(product => ({
+    productTemplateId: product.product.productTemplate.id,
     productId: product.id,
+    name: product.product.productTemplate.name,
+
     productName: product.productName,
     productMedias: product.productMedias,
     sku: product.sku,
-    listPrice: product.productRetailers[0].listPrice,
-    sellPrice: product.productRetailers[0].sellPrice,
-    stockQuantity: product.productRetailers[0].stockQuantity,
-    inStock: product.productRetailers[0].inStock,
-    approved: product.productRetailers[0].approved,
+    listPrice: product.listPrice,
+    sellPrice: product.sellPrice,
+    stockQuantity: product.stockQuantity,
+    inStock: product.inStock,
+    enabled: product.enabled,
+    approved: product.approved,
 
-    attributes: product.options.map(option => ({
+    attributes: product.product.options.map(option => ({
       attributeName: option.attribute.name,
       value: option.value.name,
     })),
+    createdAt: product.createdAt,
+    updatedAt: product.updatedAt,
   }));
   return friendlyProducts;
 };
@@ -134,5 +140,5 @@ export {
   restructureProductAttributes,
   restrutureProductTemplate2FriendlyProduct,
   restructureProductRetailer2FriendlyProduct,
-  restructureProductWoTemplate2FriendlyProduct,
+  restructureProduct2FriendlyProduct,
 };

@@ -101,7 +101,7 @@ export const productSchema = gql`
 
   input UpdateProductInput {
     productTemplateId: String!
-    id: String!
+    productId: String!
 
     productName: String!
 

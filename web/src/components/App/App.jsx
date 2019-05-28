@@ -25,6 +25,7 @@ import RequestProduct from '../SellerCenter/AddProduct/RequestProduct';
 import AddProduct from '../SellerCenter/AddProduct/AddProduct';
 import ListProduct from '../SellerCenter/ListProducts/ListProduct';
 import SignView from '../SellerCenter/Sign/SignView';
+import RegisterSeller from '../SellerCenter/RegiserSeller/RegisterSeller';
 
 class App extends Component<Props, State> {
   state = {
@@ -76,6 +77,7 @@ class App extends Component<Props, State> {
         <Switch>
           {/* Place two Route in Switch component, the /seller/(.*) will be matched before /(.+) path */}
           <Route exact path="/seller/sign" component={SignView} />
+          <Route exact path="/seller/register-seller" component={RegisterSeller} />
           <Route
             exact
             path="/seller/(.*)"

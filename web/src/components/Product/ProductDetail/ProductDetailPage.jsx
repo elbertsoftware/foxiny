@@ -170,7 +170,7 @@ const optionStyles = theme => ({
 });
 const OptionItems = withStyles(optionStyles)(
   ({ classes, option, selectedOption, handleSelectOption, handleSetProductImage }) => {
-    const { name, listItems } = option;
+    const { attributeName, listItems } = option;
     const [selected, setSelected] = useState('');
     const handeSetSelected = item => () => {
       setSelected(item);
@@ -182,7 +182,7 @@ const OptionItems = withStyles(optionStyles)(
     return (
       <React.Fragment>
         <Typography className="spacing-top-bottom" variant="h5">
-          {name}
+          {attributeName}
         </Typography>
         <div id="items">
           <ul>
@@ -441,7 +441,7 @@ const ProductDetailPage = ({ classes, theme, optionList, productImageData, textD
         optionList.map((option, index) => (
           <OptionItems
             selectedOption={selectedOption}
-            key={option.name}
+            key={option.attributeName}
             option={option}
             handleSelectOption={handleSelectOption(index)}
             handleSetProductImage={handleSetProductImage}

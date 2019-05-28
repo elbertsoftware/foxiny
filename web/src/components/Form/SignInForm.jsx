@@ -80,7 +80,11 @@ class SignInForm extends React.Component {
       const { userId, token } = data.data.login;
       if (token) {
         setAuthorizationToken(token);
-        this.props.history.push('/');
+        if (this.props.sellerCenter) {
+          this.props.history.push('/seller/');
+        } else {
+          this.props.history.push('/');
+        }
       }
     } catch (error) {
       toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi khi đăng nhập !');

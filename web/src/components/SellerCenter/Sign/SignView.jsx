@@ -22,9 +22,13 @@ import TabContainer from '../../../utils/common/TabContainer';
 import google from '../../../images/google.svg';
 import signStyles from './signStyles';
 import SelectList from '../../Form/Fields/SelectList';
+import SignIn from '../../SignIn/SignIn';
+import SignUp from '../../SignUp/SignUp';
+import ConfirmPage from '../../Form/ConfirmPage';
 
-const Sign = ({ classes, theme }) => {
+const Sign = ({ classes, theme, history }) => {
   const [activeTabId, setActiveTabId] = useState(0);
+  const [userId, setUserId] = useState('');
   const handleTabChange = (e, id) => {
     setActiveTabId(id);
   };
@@ -32,7 +36,6 @@ const Sign = ({ classes, theme }) => {
     setActiveTabId(index);
   };
 
-  const onSubmit = async values => {};
   return (
     <Grid container className={classes.container}>
       <div className={classes.logoContainer}>
@@ -40,224 +43,41 @@ const Sign = ({ classes, theme }) => {
         <Typography className={classes.logotypeText}>Foxiny Seller Center</Typography>
       </div>
       <div className={classes.formContainer}>
-        <div className={activeTabId === 0 ? classes.form : classes.formRegister}>
+        <div>
           <Tabs value={activeTabId} onChange={handleTabChange} indicatorColor="primary" textColor="primary" centered>
             <Tab label="Đăng nhập" classes={{ root: classes.tab }} />
             <Tab label="Đăng ký" classes={{ root: classes.tab }} />
+            <Tab label={activeTabId === 2 ? "Xác thực" : "" } disabled classes={{ root: classes.tab }} />
           </Tabs>
-          <Form onSubmit={onSubmit}>
-            {({ handleSubmit, submitting, form: { reset } }) => {
-              return (
-                <form onSubmit={handleSubmit} noValidate>
-                  <SwipeableViews
-                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                    index={activeTabId}
-                    onChangeIndex={handleChangeIndex}
-                  >
-                    {activeTabId === 0 ? (
-                      <TabContainer dir={theme.direction}>
-                        <Typography variant="h1" className={classes.greeting}>
-                          Xin chào bạn
-                        </Typography>
-                        <Button size="large" className={classes.googleButton}>
-                          <img src={google} alt="google" className={classes.googleIcon} />
-                          &nbsp;Sign in with Google
-                        </Button>
-                        <div className={classes.formDividerContainer}>
-                          <div className={classes.formDivider} />
-                          <Typography className={classes.formDividerWord}>or</Typography>
-                          <div className={classes.formDivider} />
-                        </div>
 
-                        <Field
-                          fullWidth
-                          size="large"
-                          component={RFTextField}
-                          disabled={submitting}
-                          required
-                          name="username"
-                          label="Địa chỉ Email"
-                          type="text"
-                          margin="normal"
-                        />
-                        <Field
-                          fullWidth
-                          size="large"
-                          component={RFTextField}
-                          disabled={submitting}
-                          required
-                          name="password"
-                          label="Mật khẩu"
-                          type="text"
-                          margin="normal"
-                        />
-                        <div className={classes.formButtons}>
-                          <Button color="primary" size="large" className={classes.forgetButton}>
-                            Quên mật khẩu
-                          </Button>
-                          {submitting ? (
-                            <CircularProgress size={26} className={classes.loginLoader} />
-                          ) : (
-                            <FormButton size="large" color="secondary" disabled={submitting}>
-                              Đăng nhập
-                            </FormButton>
-                          )}
-                        </div>
-                      </TabContainer>
-                    ) : (
-                      /* Avoiding raise invalid child: null error from react-swipe-view */
-                      <Typography />
-                    )}
-                    {activeTabId === 1 ? (
-                      <TabContainer dir={theme.direction}>
-                        <Typography variant="h1" color="primary" className={classes.greeting}>
-                          Xin chào !
-                        </Typography>
-                        <Typography variant="h2" color="primary" className={classes.subGreeting}>
-                          Tạo tài khoản bán hàng mới
-                        </Typography>
-                        <div className={classes.fieldRow}>
-                          <Field
-                            className={classes.rightSpacing}
-                            fullWidth
-                            size="large"
-                            component={RFTextField}
-                            disabled={submitting}
-                            required
-                            name="name"
-                            label="Họ tên chủ cửa hàng"
-                            type="text"
-                            margin="normal"
-                          />
-                          <Field
-                            fullWidth
-                            size="large"
-                            component={RFTextField}
-                            disabled={submitting}
-                            required
-                            name="phone"
-                            label="Số điện thoại cửa hàng"
-                            type="text"
-                            margin="normal"
-                          />
-                        </div>
-                        <div className={classes.fieldRow}>
-                          <Field
-                            className={classes.rightSpacing}
-                            fullWidth
-                            size="large"
-                            component={RFTextField}
-                            disabled={submitting}
-                            required
-                            name="address"
-                            label="Địa chỉ Email cửa hàng"
-                            type="email"
-                            margin="normal"
-                          />
-                          <Field
-                            fullWidth
-                            size="large"
-                            component={RFTextField}
-                            disabled={submitting}
-                            required
-                            name="password"
-                            label="Mật khẩu"
-                            type="text"
-                            margin="normal"
-                          />
-                        </div>
-                        <Field
-                          fullWidth
-                          size="large"
-                          component={RFTextField}
-                          disabled={submitting}
-                          required
-                          name="storename"
-                          label="Tên cửa hàng"
-                          type="text"
-                          margin="normal"
-                        />
-                        <Field
-                          fullWidth
-                          size="large"
-                          component={RFTextField}
-                          disabled={submitting}
-                          required
-                          name="storeUrl"
-                          placeholder="foxiny.vn/cua-hang"
-                          type="text"
-                          margin="normal"
-                        />
-                        <div className={classes.fieldRow}>
-                          <FormControl className={classes.formControl} fullWidth margin="normal" required>
-                            <InputLabel htmlFor="businessType">Loại hình kinh doanh</InputLabel>
-                            <Field
-                              component={SelectList}
-                              disabled={submitting}
-                              name="businessType"
-                              required
-                              size="large"
-                            >
-                              <MenuItem key="small" value="personal">
-                                Cá nhân
-                              </MenuItem>
-                              <MenuItem key="big" value="company">
-                                Công ty / Hộ kinh doanh
-                              </MenuItem>
-                            </Field>
-                          </FormControl>
-                          <FormControl fullWidth required margin="normal">
-                            <InputLabel htmlFor="city">Tỉnh/Thành phố</InputLabel>
-                            <Field
-                              fullWidth
-                              size="large"
-                              component={SelectList}
-                              disabled={submitting}
-                              required
-                              name="city"
-                              label="Tỉnh/Thành phố"
-                            />
-                          </FormControl>
-                        </div>
-                        <FormControl fullWidth margin="normal" required>
-                          <InputLabel htmlFor="sector">Chọn ngành hàng</InputLabel>
-                          <Field size="large" component={SelectList} disabled={submitting} required name="sector" />
-                        </FormControl>
-
-                        <div className={classes.creatingButtonContainer}>
-                          {submitting ? (
-                            <CircularProgress size={26} />
-                          ) : (
-                            <Button
-                              disabled={submitting}
-                              size="large"
-                              variant="contained"
-                              color="secondary"
-                              fullWidth
-                              className={classes.createAccountButton}
-                            >
-                              Đăng ký
-                            </Button>
-                          )}
-                        </div>
-                        <div className={classes.formDividerContainer}>
-                          <div className={classes.formDivider} />
-                          <Typography className={classes.formDividerWord}>or</Typography>
-                          <div className={classes.formDivider} />
-                        </div>
-                        <Button size="large" className={classnames(classes.googleButton, classes.googleButtonCreating)}>
-                          <img src={google} alt="google" className={classes.googleIcon} />
-                          &nbsp;Đăng nhập với Google
-                        </Button>
-                      </TabContainer>
-                    ) : (
-                      <Typography />
-                    )}
-                  </SwipeableViews>
-                </form>
-              );
-            }}
-          </Form>
+          <SwipeableViews
+            axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+            index={activeTabId}
+            onChangeIndex={handleChangeIndex}
+          >
+            {activeTabId === 0 ? (
+              <TabContainer dir={theme.direction}>
+                <SignIn sellerCenter={Boolean(true)} controlRoute={history} />
+              </TabContainer>
+            ) : (
+              /* Avoiding raise invalid child: null error from react-swipe-view */
+              <Typography />
+            )}
+            {activeTabId === 1 ? (
+              <TabContainer dir={theme.direction}>
+                <SignUp sellerCenter={Boolean(true)} setUserId={setUserId} setActiveTabId={setActiveTabId} />
+              </TabContainer>
+            ) : (
+              <Typography />
+            )}
+            {activeTabId === 2 ? (
+              <TabContainer dir={theme.direction}>
+                <ConfirmPage userId={userId} history={history} />
+              </TabContainer>
+            ) : (
+              <Typography />
+            )}
+          </SwipeableViews>
         </div>
       </div>
     </Grid>

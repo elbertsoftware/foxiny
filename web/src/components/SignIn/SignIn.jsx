@@ -50,7 +50,7 @@ class SignIn extends React.Component {
   };
 
   render() {
-    const { classes, theme } = this.props;
+    const { classes, theme, sellerCenter } = this.props;
     const { tabValue } = this.state;
 
     return (
@@ -72,7 +72,8 @@ class SignIn extends React.Component {
             theme={theme}
             tabValue={tabValue}
             classes={classes}
-            history={this.props.history}
+            history={this.props.history || this.props.controlRoute} // Hoặc là props history có sẵn khi ở route=signin hoặc là được truyền từ sellerCenter
+            sellerCenter={sellerCenter}
           />
           <Typography
             className={classes.rightBottom}
@@ -81,9 +82,11 @@ class SignIn extends React.Component {
           >
             Quên mật khẩu?
           </Typography>
-          <Typography className={classes.leftBottom} variant="body2" align="center" component={Link} to="/signup">
-            Đăng ký
-          </Typography>
+          {!sellerCenter && (
+            <Typography className={classes.leftBottom} variant="body2" align="center" component={Link} to="/signup">
+              Đăng ký
+            </Typography>
+          )}
         </AppForm>
       </React.Fragment>
     );

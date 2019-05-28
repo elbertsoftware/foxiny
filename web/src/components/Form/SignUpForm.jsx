@@ -71,6 +71,8 @@ class SignUpForm extends React.Component {
   }
 
   onSubmit = ({ createUser }) => async values => {
+    // sellerCenter: bool, setUserId va setActiveTabId là phương thức để setState trong trang đăng ký của SellerCenter, được truyền từ component SignView
+    const { sellerCenter, history, setUserId, setActiveTabId } = this.props;
     // Checked Captcha or not
     const capRes = this.state.captchaResponse;
     if (capRes.length !== 0) {
@@ -112,7 +114,16 @@ class SignUpForm extends React.Component {
           },
         });
       }
-      this.props.history.push(`/confirm/${data.data.createUser.id}`);
+      const userId = data.data.createUser.id;
+      if (sellerCenter) {
+        // Nếu đăng ký ở seller center thì lưu lại user id và chuyển sang bước tiếp theo để đăng ký gian hàng
+        setUserId(userId);
+        // Tab hiển thị confirm user ở seller center mặc định mang giá trị là 2
+        setActiveTabId(2);
+      } else {
+        // Ngước lại normal user thi điều hướng đến trang route confirm
+        history.push(`/confirm/${userId}`);
+      }
     } catch (error) {
       toast.error(error.message.replace('GraphQL error:', '') || 'Đăng ký không thành công !');
     }

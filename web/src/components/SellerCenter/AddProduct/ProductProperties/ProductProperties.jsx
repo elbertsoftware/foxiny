@@ -24,6 +24,7 @@ import AddSelectionModal from './AddSelectionModal';
 import EnhancedTableToolbar from '../../../../utils/common/EnhancedTableToolbar';
 import ProductDataContext from '../../../../utils/context/ProductDataContext';
 import SelectOutlinedInput from '../../../../utils/common/form/SelectOutlinedInput';
+import ProductEditDataContext from '../../../../utils/context/ProductEditDataContext';
 // import RunningModel from './RunningModel';
 
 const styles = theme => ({
@@ -64,8 +65,8 @@ const attributeArr = [
   { productId: 'sellPrice', caption: 'Giá bán' },
   { productId: 'stockQuantity', caption: 'Số lượng tồn kho' },
 ];
-const ProductProperties = ({ classes, setValue, push, pop, remove }) => {
-  const productData = useContext(ProductDataContext);
+const ProductProperties = ({ classes, setValue, push, pop, remove, edit }) => {
+  const productData = useContext(edit ? ProductEditDataContext : ProductDataContext);
   const { products } = productData.data;
   const rowCount = products && products.length;
   const [openModal, setOpenModal] = useState(false);
@@ -160,7 +161,7 @@ const ProductProperties = ({ classes, setValue, push, pop, remove }) => {
                     </Typography>
                     {options.map(option => (
                       <Typography gutterBottom variant="subtitle1">
-                        {option.name}
+                        {option.attributeName}
                       </Typography>
                     ))}
                   </Grid>
@@ -214,7 +215,8 @@ const ProductProperties = ({ classes, setValue, push, pop, remove }) => {
                   onChange={onSelectAllClick}
                 />
               </TableCell>
-              {options && options.map(option => <TableCell key={option.name}>{option.name}</TableCell>)}
+              {options &&
+                options.map(option => <TableCell key={option.attributeName}>{option.attributeName}</TableCell>)}
               {attributeArr.map(attr => (
                 <TableCell style={{ paddingRight: 40 }} key={attr.productId}>
                   {attr.caption}
@@ -222,7 +224,7 @@ const ProductProperties = ({ classes, setValue, push, pop, remove }) => {
               ))}
             </TableRow>
             <TableRow>
-              {options && options.map(option => <TableCell key={option.name} />)}
+              {options && options.map(option => <TableCell key={option.attributeName} />)}
               <TableCell key="spacing3" />
               <TableCell key="spacing4" />
               <TableCell key="spacing5" />
@@ -274,7 +276,7 @@ const ProductProperties = ({ classes, setValue, push, pop, remove }) => {
                           component={TextField}
                           required
                           margin="normal"
-                          name={`${name}.name`}
+                          name={`${name}.productName`}
                           type="text"
                           variant="outlined"
                         />
