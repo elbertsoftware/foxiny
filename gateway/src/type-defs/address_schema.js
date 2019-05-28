@@ -29,9 +29,7 @@ export const addressSchema = gql`
     zip: String
   }
 
-  input UpsertAddressInput {
-    id: String!
-
+  input CreateAddressInput {
     description: String
     region: Region
     name: String

@@ -47,7 +47,7 @@ export const productSchema = gql`
   }
 
   type ProductAttributeValue {
-    name: String!
+    attributeName: String!
     value: String!
   }
 
@@ -63,8 +63,10 @@ export const productSchema = gql`
   }
 
   extend type Mutation {
-    # one product but many options, ex: Product A -> A size S, A size M
+    # createBrandnewProduct will create a productTempalte links to many products (as variant)
     createBrandNewProductWVariants(sellerId: String!, data: CreateProductWithTemplateInput!): [FriendlyProduct!]
+
+    updateProducts(sellerId: String!, data: [UpdateProductInput!]!): [FriendlyProduct!]
   }
 
   input CreateProductWithTemplateInput {
@@ -95,5 +97,20 @@ export const productSchema = gql`
   input CreateProductAttributeValue {
     attributeName: String!
     value: String!
+  }
+
+  input UpdateProductInput {
+    productTemplateId: String!
+    id: String!
+
+    productName: String!
+
+    listPrice: Int!
+    sellPrice: Int!
+    stockQuantity: Int!
+
+    # sku: String
+    productMediaIds: [String!]
+    attributes: [CreateProductAttributeValue!]
   }
 `;

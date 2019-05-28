@@ -34,6 +34,8 @@ export const categorySchema = gql`
     createCategory(data: [CreateCategoryInput!]!): [Category!]!
     updateCategory(data: UpdateCategoryInput): Category!
     deleteCategory(categoryIds: [String!]!): Boolean!
+
+    createBrand(data: [CreateBrandInput]): Brand!
   }
 
   input CreateCategoryInput {

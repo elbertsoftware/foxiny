@@ -18,8 +18,6 @@ export const Mutation = {
       }),
     );
 
-    console.log(productMedias);
-
     return productMedias;
   },
 };

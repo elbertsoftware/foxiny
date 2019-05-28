@@ -43,7 +43,6 @@ type Product {
   productMedias: [Media!] @relation(link: TABLE, onDelete: CASCADE)
   productRetailers: [ProductRetailer!] @relation(link: TABLE, onDelete: SET_NULL)
 
-  productName: String @unique
   sku: String @unique
 
   options: [ProductOption!] @relation(link: TABLE, ondelete: CASCADE)
@@ -113,6 +112,7 @@ type ProductRetailer {
   id: ID! @id
   _version: Int! @default(value: 1)
 
+  productName: String @unique
   listPrice: Int # base thousand
   sellPrice: Int # base thousand
   stockQuantity: Int
@@ -126,6 +126,7 @@ type ProductRetailer {
 
   #warehouse
 
+  enabled: Boolean @default(value: false)
   approved: Boolean
 
   createdAt: DateTime! @createdAt

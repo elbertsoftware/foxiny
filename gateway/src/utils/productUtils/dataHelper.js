@@ -1,11 +1,11 @@
 //@flow
 
 /**
- * Get all attributes and attribute values from
- * @param {Object} product as a variant, contains or not contains attributes
+ * Get all attributes and its values from all variants
+ * @param {Object} contains or not contains attributes
  */
-const restructureProductAttributes = product => {
-  const grouped = product.map(x =>
+const restructureProductAttributes = products => {
+  const grouped = products.map(x =>
     x.attributes.reduce((acc, curr) => {
       acc[curr.attributeName] = acc[curr.attributeName] || [];
       acc[curr.attributeName].push(curr.value);
@@ -24,6 +24,13 @@ const restructureProductAttributes = product => {
     });
   });
 
+  // remove all duplicated values
+  regrouped.forEach(a => {
+    a.data = a.data.filter(function(item, pos) {
+      return a.data.indexOf(item) === pos;
+    });
+  });
+
   return regrouped;
 };
 
@@ -36,11 +43,11 @@ const restrutureProductTemplate2FriendlyProduct = productTemplate => {
 
   const friendlyProducts = productTemplate.products.map(product => ({
     productTemplateId: productTemplate.id,
-    productId: product.id,
+    productId: product.productRetailers[0].id,
 
     name: productTemplate.name,
-    productName: product.productName,
-    productMedias: product.productMedias,
+    productName: product.productRetailers[0].productName,
+    productMedias: product.productRetailers[0].productMedias,
     briefDescription: productTemplate.briefDescription,
     brand: productTemplate.brand.brandName,
     category: productTemplate.category,
@@ -57,11 +64,49 @@ const restrutureProductTemplate2FriendlyProduct = productTemplate => {
     approved: product.productRetailers[0].approved,
 
     attributes: product.options.map(option => ({
-      name: option.attribute.name,
+      attributeName: option.attribute.name,
       value: option.value.name,
     })),
+    createdAt: product.productRetailers[0].createdAt,
+    updatedAt: product.productRetailers[0].updatedAt,
   }));
 
+  return friendlyProducts;
+};
+
+const restructureProductRetailer2FriendlyProduct = products => {
+  const friendlyProducts = products.map(product => ({
+    productTemplateId: product.product.productTemplate.id,
+    productId: product.id,
+
+    name: product.product.productTemplate.name,
+    productName: product.productName,
+    productMedias: product.productMedias,
+    briefDescription: product.product.productTemplate.briefDescription,
+    brand: product.product.productTemplate.brand.brandName,
+    category: product.product.productTemplate.category,
+
+    descriptions: {
+      // fromManufacture
+      fromRetailers: product.product.productTemplate.descriptions
+        .filter(desc => desc.retailer)
+        .map(desc => desc.description),
+    },
+    sku: product.product.sku,
+    listPrice: product.listPrice,
+    sellPrice: product.sellPrice,
+    stockQuantity: product.stockQuantity,
+    inStock: product.inStock,
+    approved: product.approved,
+
+    attributes: product.product.options.map(option => ({
+      attributeName: option.attribute.name,
+      value: option.value.name,
+    })),
+
+    createdAt: product.createdAt,
+    updatedAt: product.updatedAt,
+  }));
   return friendlyProducts;
 };
 
@@ -78,7 +123,7 @@ const restructureProductWoTemplate2FriendlyProduct = products => {
     approved: product.productRetailers[0].approved,
 
     attributes: product.options.map(option => ({
-      name: option.attribute.name,
+      attributeName: option.attribute.name,
       value: option.value.name,
     })),
   }));
@@ -88,5 +133,6 @@ const restructureProductWoTemplate2FriendlyProduct = products => {
 export {
   restructureProductAttributes,
   restrutureProductTemplate2FriendlyProduct,
+  restructureProductRetailer2FriendlyProduct,
   restructureProductWoTemplate2FriendlyProduct,
 };
