@@ -1,6 +1,6 @@
 // @flow
 
-import { s3ProfileMediaUploader } from '../../utils/s3Uploader';
+import { s3ProfileMediaUploader } from "../../utils/s3Uploader";
 import {
   hashPassword,
   verifyPassword,
@@ -12,7 +12,7 @@ import {
   getTokenFromRequest,
   getUserIDFromRequest,
   cleanToken,
-} from '../../utils/authentication';
+} from "../../utils/authentication";
 import {
   validateCreateInput,
   validateConfirmInput,
@@ -22,11 +22,11 @@ import {
   validateResetPwdInput,
   validateImageUploadInput,
   classifyEmailPhone,
-} from '../../utils/validation';
-import logger from '../../utils/logger';
-import { sendConfirmationEmail } from '../../utils/email';
-import { sendConfirmationText } from '../../utils/sms';
-import { sendConfirmationEsms } from '../../utils/smsVN';
+} from "../../utils/validation";
+import logger from "../../utils/logger";
+import { sendConfirmationEmail } from "../../utils/email";
+import { sendConfirmationText } from "../../utils/sms";
+import { sendConfirmationEsms } from "../../utils/smsVN";
 
 // TODO: un-comment sendConfirmation
 // TODO: handling errors in a frendly way: https://www.youtube.com/watch?v=fUq1iHiDniY
@@ -62,12 +62,12 @@ export const Mutation = {
     const code = generateConfirmation(cache, user.id, newData.email || newData.phone);
 
     // email the code if user is signing up via email
-    if (typeof newData.email === 'string') {
+    if (typeof newData.email === "string") {
       sendConfirmationEmail(newData.name, newData.email, code);
     }
 
     // text the code if user is signing up via phone
-    if (typeof newData.phone === 'string') {
+    if (typeof newData.phone === "string") {
       // TODO: try to find out where does the number come from, US or VN or other, and choose the best way to send the code
       sendConfirmationText(newData.name, newData.phone, code);
       // sendConfirmationEsms(newData.name, newData.phone, code);
@@ -97,14 +97,14 @@ export const Mutation = {
           newData.userId ? newData.userId : newData.email ? newData.email : newData.phone
         } not found`,
       );
-      throw new Error('Unable to confirm user'); // try NOT to provide enough information so hackers can guess
+      throw new Error("Unable to confirm user"); // try NOT to provide enough information so hackers can guess
     }
 
     // NOTE: matched contains email or phone
     const matched = await verifyConfirmation(cache, newData.code, user.id);
     logger.debug(`confirmation matched: ${matched}`);
     if (!matched) {
-      throw new Error('Unable to confirm user');
+      throw new Error("Unable to confirm user");
     }
 
     // change enabled to true when matched is true
@@ -140,7 +140,7 @@ export const Mutation = {
 
     if (!user) {
       logger.debug(`🛑❌  CREATE_SECURITY_INFO: User ${userId} not found`);
-      throw new Error('Unable to confirm user'); // try NOT to provide enough information so hackers can guess
+      throw new Error("Unable to confirm user"); // try NOT to provide enough information so hackers can guess
     }
 
     // NOTE: insert new question (if user enters) and create to-be-updated data
@@ -223,7 +223,7 @@ export const Mutation = {
     });
 
     if (!user) {
-      throw new Error('Unable to resend confirmation'); // try NOT to provide enough information so hackers can guess
+      throw new Error("Unable to resend confirmation"); // try NOT to provide enough information so hackers can guess
     }
 
     logger.debug(
@@ -231,7 +231,7 @@ export const Mutation = {
     );
 
     if (user.enabled && (newData.email === user.email || newData.phone === user.phone)) {
-      throw new Error('User profile has been confirmed');
+      throw new Error("User profile has been confirmed");
     }
 
     const code = generateConfirmation(cache, user.id, newData.email || newData.phone || user.email || user.phone);
@@ -239,31 +239,31 @@ export const Mutation = {
     // case: user updates info and confirm new info
     // case: user wants to confirm account after signed up but not confirmed yet (disconnect or ST else)
     if (user.enabled) {
-      if (typeof newData.email === 'string') {
+      if (typeof newData.email === "string") {
         sendConfirmationEmail(user.name, newData.email, code);
-        logger.debug('Email resent');
+        logger.debug("Email resent");
       }
 
       // text the code if user is signing up via phone
-      if (typeof newData.phone === 'string') {
+      if (typeof newData.phone === "string") {
         sendConfirmationText(user.name, newData.phone, code);
         // sendConfirmationEsms(user.name, newData.phone, code);
-        logger.debug('Phone resent');
+        logger.debug("Phone resent");
       }
       return true;
     }
 
     // email the code if user is signing up via email
-    if (typeof user.email === 'string') {
+    if (typeof user.email === "string") {
       sendConfirmationEmail(user.name, user.email, code);
-      logger.debug('Email resent');
+      logger.debug("Email resent");
     }
 
     // text the code if user is signing up via phone
-    if (typeof user.phone === 'string') {
+    if (typeof user.phone === "string") {
       sendConfirmationText(user.name, user.phone, code);
       // sendConfirmationEsms(user.name, user.phone, code);
-      logger.debug('Phone resent');
+      logger.debug("Phone resent");
     }
 
     return true;
@@ -287,7 +287,7 @@ export const Mutation = {
 
     if (!user) {
       logger.debug(`🛑❌  UPLOAD_PROFILE_MEDIA: User ${userId} not found`);
-      throw new Error('Unable to upload avatar'); // try NOT to provide enough information so hackers can guess
+      throw new Error("Unable to upload avatar"); // try NOT to provide enough information so hackers can guess
     }
 
     return s3ProfileMediaUploader(prisma, uploadedFile, user.id);
@@ -296,25 +296,28 @@ export const Mutation = {
   /**
    * login
    */
-  login: async (parent, { data }, { prisma, request, cache }) => {
-    const user = await prisma.query.user({
-      where: {
-        email: data.email,
-        phone: data.phone,
+  login: async (parent, { data }, { prisma, request, cache, info }) => {
+    const user = await prisma.query.user(
+      {
+        where: {
+          email: data.email,
+          phone: data.phone,
+        },
       },
-    });
+      "{ id name profile profileMedia { id uri } badgeMedias {id uri } addresses { id description region name phone street unit district city state zip } email phone password enabled recoverable assignment { id retailers { id businessName businessEmail businessPhone businessAddress { id description region name phone street unit district city state zip } businessMedia { id uri } businessLicense enabled createdAt updatedAt } } createdAt updatedAt }",
+    );
 
     if (!user) {
-      throw new Error('Unable to login'); // try NOT to provide enough information so hackers can guess
+      throw new Error("Unable to login"); // try NOT to provide enough information so hackers can guess
     }
 
     if (!user.enabled) {
-      throw new Error('User profile has not been confirmed or was disabled');
+      throw new Error("User profile has not been confirmed or was disabled");
     }
 
     const matched = verifyPassword(data.password, user.password);
     if (!matched) {
-      throw new Error('Unable to login'); // try NOT to provide enough information so hackers can guess
+      throw new Error("Unable to login"); // try NOT to provide enough information so hackers can guess
     }
 
     // remove expired tokens
@@ -323,6 +326,26 @@ export const Mutation = {
 
     return {
       userId: user.id,
+      userProfile: {
+        id: user.id,
+        name: user.name,
+        profile: user.profile,
+        profileMedia: user.profileMedia,
+        badgeMedias: user.badgeMedias,
+        addresses: user.addresses,
+        email: user.email,
+        phone: user.phone,
+        password: user.password,
+        enabled: user.enabled,
+        recoverable: user.recoverable,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        assignment: {
+          id: user.assignment ? user.assignment.id : undefined,
+          user: user,
+          retailers: user.assignment ? user.assignment.retailers : undefined,
+        },
+      },
       token: generateToken(user.id, request, cache),
     };
   },
@@ -376,42 +399,42 @@ export const Mutation = {
             id: userId,
           },
         },
-        '{ id name email phone password }',
+        "{ id name email phone password }",
       );
 
       if (currentPassword) {
         canUpdate = verifyPassword(currentPassword, user.password);
 
         if (!canUpdate) {
-          throw new Error('Unable to update user profile'); // try NOT to provide enough information so hackers can guess
+          throw new Error("Unable to update user profile"); // try NOT to provide enough information so hackers can guess
         }
       }
 
       // email is about to be changed
-      if (typeof email === 'string' && canUpdate) {
+      if (typeof email === "string" && canUpdate) {
         const code = generateConfirmation(cache, userId, email);
 
         sendConfirmationEmail(user.name, email, code);
-        logger.debug('🔵✅  UPDATE USER: Change Email Confirmation Sent');
+        logger.debug("🔵✅  UPDATE USER: Change Email Confirmation Sent");
 
         // the update email flow is end when user confirms by enter the code
         // TODO: Archive current email somewhere else
       }
 
       // phone is about to be changed
-      if (typeof phone === 'string' && canUpdate) {
+      if (typeof phone === "string" && canUpdate) {
         const code = generateConfirmation(cache, userId, phone);
 
         sendConfirmationText(user.name, phone, code);
         // sendConfirmationEsms(user.name, phone, code);
-        logger.debug('🔵✅  UPDATE USER: Change Phone Confirmation Sent');
+        logger.debug("🔵✅  UPDATE USER: Change Phone Confirmation Sent");
 
         // the update email flow is end when user confirms by enter the code
         // TODO: Archive current phone somewhere else
       }
 
       // both password and currentPassword present which means password is about to be changed
-      if (typeof password === 'string' && typeof currentPassword === 'string' && canUpdate) {
+      if (typeof password === "string" && typeof currentPassword === "string" && canUpdate) {
         updateData.password = hashPassword(password);
 
         // TODO: Archive current password somewhere else
@@ -439,7 +462,7 @@ export const Mutation = {
       return updatedUser;
     } catch (error) {
       logger.debug(`🛑❌  UPDATE_USER ${error}`);
-      throw new Error('Unable to update user profile'); // try NOT to provide enough information so hackers can guess
+      throw new Error("Unable to update user profile"); // try NOT to provide enough information so hackers can guess
     }
   },
 
@@ -485,15 +508,15 @@ export const Mutation = {
     )).pop();
 
     if (!user) {
-      throw new Error('Account does not exist'); // try NOT to provide enough information so hackers can guess
+      throw new Error("Account does not exist"); // try NOT to provide enough information so hackers can guess
     }
 
     if (!user.enabled) {
-      throw new Error('Account has not been confirmed or was disabled');
+      throw new Error("Account has not been confirmed or was disabled");
     }
 
     if (!user.recoverable) {
-      throw new Error('Cannot recover this account!');
+      throw new Error("Cannot recover this account!");
     }
 
     // NOTE: log out of all devices
@@ -518,7 +541,7 @@ export const Mutation = {
 
     const userId = await getUserIDFromRequest(request, cache, false);
 
-    if (!userId) throw new Error('Unable to reset password');
+    if (!userId) throw new Error("Unable to reset password");
 
     const user = await prisma.query.user(
       {
@@ -530,11 +553,11 @@ export const Mutation = {
     );
 
     if (!user) {
-      throw new Error('Unable to reset password'); // try NOT to provide enough information so hackers can guess
+      throw new Error("Unable to reset password"); // try NOT to provide enough information so hackers can guess
     }
 
     if (!user.enabled) {
-      throw new Error('User profile has not been confirmed or was disabled');
+      throw new Error("User profile has not been confirmed or was disabled");
     }
 
     const { securityAnswers } = user;
@@ -569,7 +592,7 @@ export const Mutation = {
           },
           data: updateUser,
         },
-        '{ password }',
+        "{ password }",
       );
 
       // for transact-log
@@ -578,6 +601,6 @@ export const Mutation = {
       return true;
     }
 
-    throw new Error('Unable to perform reset password request');
+    throw new Error("Unable to perform reset password request");
   },
 };

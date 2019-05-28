@@ -5,7 +5,6 @@ export const userSchema = gql`
   extend type Query {
     users(query: String): [User!]!
     me: User!
-    meAssignments: MeAssignment!
     securityQuestions: [SecurityQuestion]! # get all security questions
   }
 
@@ -31,7 +30,7 @@ export const userSchema = gql`
     name: String!
     profile: String
     profileMedia: Media!
-    badgesMedia: [Media]
+    badgeMedias: [Media]
     addresses: [Address!]
     #payments:[Payment]
 
@@ -42,6 +41,8 @@ export const userSchema = gql`
 
     enabled: Boolean!
     recoverable: Boolean!
+
+    assignment: Assignment
 
     createdAt: String!
     updatedAt: String!
@@ -99,6 +100,7 @@ export const userSchema = gql`
 
   type AuthPayload {
     userId: ID!
+    userProfile: User!
     token: String!
   }
 
@@ -119,10 +121,5 @@ export const userSchema = gql`
   input ResetPasswordInput {
     securityInfo: [QueAnsPairInput]!
     password: String!
-  }
-
-  type MeAssignment {
-    retailerIds: [String!]!
-    manufacturerIds: [String!]!
   }
 `;

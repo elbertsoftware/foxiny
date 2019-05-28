@@ -7,9 +7,9 @@ export const retailerSchema = gql`
 
     owner: Assignment
 
-    profileMedia: Media! # Avatar
+    profileMedia: Media # Avatar
     businessName: String! #  displayed on Retailer profile and foxiny listings
-    address: Address! # one to one
+    businessAddress: Address! # one to one
     businessPhone: String! # maybe different to user's phone
     businessEmail: String! # maybe different to user's phone
     # Products
@@ -36,7 +36,7 @@ export const retailerSchema = gql`
   }
 
   extend type Mutation {
-    registerRetailer(data: RegisterRetailer!): Retailer!
+    registerRetailer(data: RegisterRetailer!): RegisterdRetailer!
     activateReatiler(retailerId: String!): Retailer!
     deactivateReatiler(retailerId: String!): Retailer!
     updateRetailer(data: UpdateRetailerInput!): Retailer!
@@ -57,5 +57,10 @@ export const retailerSchema = gql`
     businessEmail: String!
     businessPhone: String!
     businessAddress: CreateAddressInput!
+  }
+
+  type RegisterdRetailer {
+    userId: ID!
+    userProfile: User!
   }
 `;

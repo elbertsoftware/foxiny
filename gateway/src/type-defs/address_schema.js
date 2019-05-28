@@ -1,5 +1,5 @@
 // @flow
-import { gql } from 'apollo-server-express';
+import { gql } from "apollo-server-express";
 
 export const addressSchema = gql`
   enum Region {
@@ -19,13 +19,13 @@ export const addressSchema = gql`
     region: Region
 
     # For US address now, more research on other country address
-    name: String!
-    phone: String!
-    street: String!
+    name: String
+    phone: String
+    street: String
     unit: String
     district: String
-    city: String!
-    state: String!
+    city: String
+    state: String
     zip: String
   }
 

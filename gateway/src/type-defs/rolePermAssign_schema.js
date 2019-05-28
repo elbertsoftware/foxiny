@@ -1,5 +1,5 @@
 // @flow
-import { gql } from 'apollo-server-express';
+import { gql } from "apollo-server-express";
 
 export const rolePermAssignSchema = gql`
   type Permission {
@@ -30,11 +30,11 @@ export const rolePermAssignSchema = gql`
     id: ID!
 
     user: User!
-    retailer: Retailer
+    retailers: [Retailer!]
     # manufacturer: Manufacturer
 
-    roles: [Role!]!
-    permissions: [Permission!]!
+    # roles: [Role!]
+    # permissions: [Permission!]
 
     createdAt: String!
     updatedAt: String!
@@ -43,7 +43,7 @@ export const rolePermAssignSchema = gql`
   extend type Query {
     permissions(query: String): [Permission!]!
     roles(query: String!): [Role!]!
-    assigments(query: String!): [Assignment!]!
+    assignments(query: String!): [Assignment!]!
   }
 
   extend type Mutation {
@@ -54,7 +54,6 @@ export const rolePermAssignSchema = gql`
     updateRole(data: UpdateRoleInput!): Role!
     deleteRole(roleIds: [String!]!): Boolean!
 
-    
     # assign or un assign user, retailer, manufacturer, roles & permisions by these two following mutations
     createAssignment(data: CreateAssignmentInput!): Assignment!
     updateAssignment(data: UpdateAssingmentInput!): Assignment!

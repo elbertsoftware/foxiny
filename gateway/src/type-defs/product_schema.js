@@ -37,6 +37,7 @@ export const productSchema = gql`
 
     inStock: Boolean!
 
+    enabled: Boolean!
     approved: Boolean
 
     # other properties
@@ -67,6 +68,10 @@ export const productSchema = gql`
     createBrandNewProductWVariants(sellerId: String!, data: CreateProductWithTemplateInput!): [FriendlyProduct!]
 
     updateProducts(sellerId: String!, data: [UpdateProductInput!]!): [FriendlyProduct!]
+
+    toggleProductStatus(sellerId: String!, productId: String!): FriendlyProduct!
+
+    approveProduct(data: [ApproveProductInput!]!): [FriendlyProduct!]!
   }
 
   input CreateProductWithTemplateInput {
@@ -112,5 +117,10 @@ export const productSchema = gql`
     # sku: String
     productMediaIds: [String!]
     attributes: [CreateProductAttributeValue!]
+  }
+
+  input ApproveProductInput {
+    productId: String!
+    approved: Boolean!
   }
 `;
