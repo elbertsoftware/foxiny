@@ -47,7 +47,7 @@
     "react-avatar-editor": "^11.0.6",
     "react-dom": "^16.8.4",
     "react-dropzone": "^10.1.3",
-    "react-final-form": "^4.0.2",
+    "react-final-form": "^6.0.1",
     "react-final-form-arrays": "^2.0.3",
     "react-flip-page": "^1.5.3",
     "react-image-magnify": "^2.7.4",

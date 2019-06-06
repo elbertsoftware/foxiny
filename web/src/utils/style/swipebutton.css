@@ -43,6 +43,7 @@
 }
 
 #slider.unlocked {
+  display: flex;
   transition: all 0.3s;
   width: inherit;
   left: 0 !important;

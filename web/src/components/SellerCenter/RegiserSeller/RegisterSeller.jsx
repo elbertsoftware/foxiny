@@ -1,6 +1,6 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import {
   Grid,
   Typography,
@@ -21,6 +21,7 @@ import { graphql, compose } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import SwipeableViews from 'react-swipeable-views';
 import { toast } from 'react-toastify';
+import createDecorator from 'final-form-focus';
 import { required, email, phone, formatInternationalPhone } from '../../../utils/common/form/validation';
 import { countries } from '../../../utils/callingcodes';
 import RFTextField from '../../../utils/common/form/RFTextField';
@@ -29,6 +30,7 @@ import TabContainer from '../../../utils/common/TabContainer';
 import registerSellerStyles from './registerSellerStyles';
 import SelectList from '../../Form/Fields/SelectList';
 import SwipeButton from '../../../utils/SwipeButton';
+import { CONFIRM_USER } from '../../../graphql/confirmUser';
 
 const REGISTER_RETAILER = gql`
   mutation registerRetailer($data: RegisterRetailer!) {
@@ -44,9 +46,11 @@ const REGISTER_RETAILER = gql`
   }
 `;
 
+const focusOnError = createDecorator();
+
 const RegisterSeller = ({ classes, theme, userLoggedIn, ...props }) => {
   // Props from graphql
-  const { registerRetailer } = props;
+  const { registerRetailer, confirmUserCode } = props;
   const [activeTabId, setActiveTabId] = useState(0);
   const [fieldVisible, setFieldVisible] = useState(false);
   const [isEmailConfirmed, setIsEmailConfirmed] = useState(false);
@@ -58,15 +62,20 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, ...props }) => {
     setActiveTabId(index);
   };
   const checkEmailPhone = (usermail, userphone, countryCode) => {
-    const user = userLoggedIn();
+    // Kiểm tra business email và phone này có trùng vs email || phone mà đã đăng ký normal user trước đó không ?
+    // Quy trình: Đăng ký normal user > Đăng ký seller.
+    const user = userLoggedIn(); // Get from authentication props
     console.log(user);
-    const phoneNumber = formatInternationalPhone(userphone, countryCode);
-    if (user.email !== usermail) {
+    let phoneNumber;
+    if (userphone && countryCode) {
+      phoneNumber = formatInternationalPhone(userphone, countryCode);
+    }
+    if (usermail && user.email !== usermail) {
       setIsEmailConfirmed(true);
     } else {
       setIsEmailConfirmed(false);
     }
-    if (user.phone !== phoneNumber) {
+    if (phoneNumber && user.phone !== phoneNumber) {
       setIsPhoneConfirmed(true);
     } else {
       setIsPhoneConfirmed(false);
@@ -111,9 +120,11 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, ...props }) => {
             className={classes.finalForm}
             onSubmit={onSubmit}
             subscription={{ submitting: true, values: true }}
+            initialValues={{ countryCode: 84 }}
+            decorators={[focusOnError]}
             validate={values => {
               const errors = required(
-                ['businessType', 'businessName', 'businessEmail', 'businessPhone', 'businessAddress'],
+                ['businessType', 'businessName', 'businessEmail', 'businessPhone', 'businessAddress', 'countryCode'],
                 values,
               );
               if (!errors.businessEmail) {
@@ -131,7 +142,7 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, ...props }) => {
               return errors;
             }}
           >
-            {({ handleSubmit, submitting, values }) => (
+            {({ handleSubmit, submitting, values, pristine, invalid }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <SwipeableViews
                   axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
@@ -181,7 +192,13 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, ...props }) => {
                         <Button color="primary" size="large" className={classes.forgetButton}>
                           <Icon>help_outline</Icon> Hỗ trợ
                         </Button>
-                        <Button onClick={() => setActiveTabId(1)} variant="contained" size="large" color="secondary">
+                        <Button
+                          disabled={values.businessType === undefined}
+                          onClick={() => setActiveTabId(1)}
+                          variant="contained"
+                          size="large"
+                          color="secondary"
+                        >
                           Tiếp tục
                         </Button>
                       </div>
@@ -247,7 +264,6 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, ...props }) => {
                             margin="normal"
                           />
                         </div>
-
                         <Field
                           fullWidth
                           size="large"
@@ -273,15 +289,17 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, ...props }) => {
                         {(isEmailConfirmed || isPhoneConfirmed) && (
                           <SwipeButton
                             setFieldVisible={setFieldVisible}
-                            email={values.businessEmail}
-                            phone={values.businessphone}
+                            email={isEmailConfirmed && values.businessEmail}
+                            phone={
+                              isPhoneConfirmed && formatInternationalPhone(values.businessPhone, values.countryCode)
+                            }
                           />
                         )}
                         {fieldVisible && (
                           <React.Fragment>
                             {isEmailConfirmed && (
                               <Field
-                                fullWidth
+                                fullWidth2
                                 size="large"
                                 component={RFTextField}
                                 disabled={submitting}
@@ -319,7 +337,12 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, ...props }) => {
                           {submitting ? (
                             <CircularProgress size={26} className={classes.loader} />
                           ) : (
-                            <FormButton variant="contained" size="large" color="secondary">
+                            <FormButton
+                              disabled={pristine || invalid}
+                              variant="contained"
+                              size="large"
+                              color="secondary"
+                            >
                               Đăng ký
                             </FormButton>
                           )}
@@ -349,6 +372,7 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, ...props }) => {
 };
 
 export default compose(
+  graphql(CONFIRM_USER, { name: 'confirmUserCode' }),
   graphql(REGISTER_RETAILER, { name: 'registerRetailer' }),
   withStyles(registerSellerStyles, { withTheme: true }),
 )(RegisterSeller);
