@@ -1,5 +1,6 @@
 // @flow
 
+import { t } from '@lingui/macro';
 import logger from '../../utils/logger';
 import { getUserIDFromRequest, checkRights } from '../../utils/authentication';
 import {
@@ -8,7 +9,7 @@ import {
   restructureProductRetailer2FriendlyProduct,
 } from '../../utils/productUtils/dataHelper';
 import { validateCreateNewProductInput, validateUpdateProductInput } from '../../utils/productUtils/validation';
-import { checkPermission } from '../../utils/productUtils/permissionChecker';
+import { checkSellerPermissions } from '../../utils/productUtils/permissionChecker';
 import { s3ProductMediasUploader } from '../../utils/s3Uploader';
 
 // TODO:
@@ -16,10 +17,10 @@ import { s3ProductMediasUploader } from '../../utils/s3Uploader';
 // generate sku
 
 export const Mutation = {
-  createBrandNewProductWVariants: async (parent, { sellerId, data }, { prisma, request, cache }, info) => {
+  createBrandNewProductWVariants: async (parent, { sellerId, data }, { prisma, request, cache, i18n }, info) => {
     try {
       // NOTE: check permission
-      await checkPermission(prisma, cache, request, sellerId);
+      await checkSellerPermissions(prisma, cache, request, sellerId);
 
       // NOTE: validate input
       const newData = validateCreateNewProductInput(data);
@@ -62,7 +63,7 @@ export const Mutation = {
       // NOTE: 2 - create product and it's template
       // NOTE: fragment ensure all needed-info always be returned
       // NOTE: lacking of manufacturer!!!
-      const newInfo = `{ id name briefDescription category { id name } descriptions { retailer { id } description } brand { id brandName } products { id productMedias { id uri } productRetailers { id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } retailer { id businessName } rating approved createdAt updatedAt } options { id attribute { id name } value { id name} } sku } createdAt updatedAt }`;
+      const newInfo = `{ id name briefDescription category { id name } descriptions { retailer { id } description } brand { id brandName } products { id productMedias { id uri } productRetailers { id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } retailer { id businessName } rating enabled approved createdAt updatedAt } options { id attribute { id name } value { id name} } sku } createdAt updatedAt }`;
 
       const productTemplateData = {
         name: data.name,
@@ -133,15 +134,16 @@ export const Mutation = {
       const friendlyProduct = restrutureProductTemplate2FriendlyProduct(productTemplate);
 
       return friendlyProduct;
-    } catch (error) {
-      logger.error(`ERROR_CREATE_BRANDNEW_PRODUCT_WITH_VARIANTS ${error}`);
-      throw new Error(`Cannot create product. ${error.message}`);
+    } catch (err) {
+      logger.error(`ERROR_CREATE_BRANDNEW_PRODUCT_WITH_VARIANTS ${err}`);
+      const error = i18n._(t`Cannot create product`);
+      throw new Error(error);
     }
   },
 
-  updateProducts: async (parent, { sellerId, data }, { prisma, request, cache }, info) => {
+  updateProducts: async (parent, { sellerId, data }, { prisma, request, cache, i18n }, info) => {
     // NOTE: check permission
-    await checkPermission(prisma, cache, request, sellerId);
+    await checkSellerPermissions(prisma, cache, request, sellerId);
 
     // TODO: validate input
     const newData = validateUpdateProductInput(data);
@@ -183,7 +185,7 @@ export const Mutation = {
     }
 
     const newInfo =
-      '{ id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } product { productTemplate { id name briefDescription brand { id brandName } category { id name } descriptions { retailer { id } description } } options { attribute { name } value { name } } } rating approved createdAt updatedAt }';
+      '{ id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } product { productTemplate { id name briefDescription brand { id brandName } category { id name } descriptions { retailer { id } description } } options { attribute { name } value { name } } } rating enabled approved createdAt updatedAt }';
 
     // NOTE: 2 - update
     const updatedProducts = await Promise.all(
@@ -317,4 +319,40 @@ export const Mutation = {
 
     return restructureProductRetailer2FriendlyProduct(updatedProducts);
   },
+
+  toggleProductStatus: async (parent, { sellerId, productId }, { prisma, request, cache, i18n }, info) => {
+    // NOTE: check permission
+    await checkSellerPermissions(prisma, cache, request, sellerId);
+
+    const product = await prisma.query.productRetailer({
+      where: {
+        id: productId,
+      },
+    });
+
+    if (!product) {
+      const error = i18n._(t`Product not found`);
+      throw new Error(error);
+    }
+
+    const newInfo = `{ id productName listPrice sellPrice stockQuantity product { productTemplate { id name briefDescription category { id name } brand { id brandName } descriptions { retailer { id } description } } options { attribute { name } value { name } } } inStock productMedias { id uri } rating enabled approved createdAt updatedAt }`;
+
+    const updatedProduct = await prisma.mutation.updateProductRetailer(
+      {
+        where: {
+          id: productId,
+        },
+        data: {
+          enabled: !product.enabled,
+        },
+      },
+      newInfo,
+    );
+
+    const friendlyProduct = restructureProductRetailer2FriendlyProduct([updatedProduct]).pop();
+
+    return friendlyProduct;
+  },
+
+  approveProduct: async (parent, { data }, { prisma, request, cache }, info) => {},
 };

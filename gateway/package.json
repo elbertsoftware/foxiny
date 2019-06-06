@@ -13,7 +13,10 @@
     "test": "env-cmd ../config/test.env jest --watchAll --runInBand",
     "prod": "env-cmd ../config/prod.env node ./dist/index.js",
     "postbuild": "babel src --out-dir dist --copy-files",
-    "start": "node ./dist/index.js"
+    "start": "node ./dist/index.js",
+    "add-locale": "lingui add-locale",
+    "extract": "lingui extract",
+    "compile": "lingui compile"
   },
   "jest": {
     "globalSetup": "./tests/jest/start-test-server.js",
@@ -29,8 +32,23 @@
       "svg"
     ]
   },
+  "lingui": {
+    "fallbackLocale": "",
+    "sourceLocale": "",
+    "localeDir": "<rootDir>/locale",
+    "srcPathDirs": [
+      "<rootDir>"
+    ],
+    "srcPathIgnorePatterns": [
+      "/node_modules/",
+      "/tests/",
+      "/src/resolvers/type-defs/"
+    ],
+    "format": "lingui"
+  },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
+    "@lingui/core": "^2.8.3",
     "@sendgrid/mail": "^6.3.1",
     "apollo-server-express": "^2.3.1",
     "babel-cli": "^6.26.0",
@@ -52,10 +70,14 @@
     "winston-daily-rotate-file": "^3.5.1"
   },
   "devDependencies": {
+    "@lingui/cli": "^2.8.3",
+    "@lingui/macro": "^2.8.3",
     "apollo-boost": "^0.1.23",
     "aws-sdk": "^2.413.0",
     "axios": "^0.18.0",
+    "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.1",
+    "babel-plugin-macros": "^2.6.0",
     "babel-register": "^6.26.0",
     "cross-fetch": "^2.2.3",
     "cuid": "^2.1.6",
@@ -67,9 +89,11 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
+    "express-request-language": "^1.1.15",
     "flow-bin": "^0.86.0",
     "graphql-cli": "^3.0.11",
     "jest": "^23.6.0",
+    "lingui-cli": "^1.4.5",
     "lodash": "^4.17.11",
     "nodemon": "^1.18.6"
   }

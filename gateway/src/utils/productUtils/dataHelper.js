@@ -1,4 +1,5 @@
 //@flow
+import _ from 'lodash';
 
 /**
  * Get all attributes and its values from all variants
@@ -61,6 +62,7 @@ const restrutureProductTemplate2FriendlyProduct = productTemplate => {
     sellPrice: product.productRetailers[0].sellPrice,
     stockQuantity: product.productRetailers[0].stockQuantity,
     inStock: product.productRetailers[0].inStock,
+    enabled: product.productRetailers[0].enabled,
     approved: product.productRetailers[0].approved,
 
     attributes: product.options.map(option => ({
@@ -97,6 +99,7 @@ const restructureProductRetailer2FriendlyProduct = products => {
     sellPrice: product.sellPrice,
     stockQuantity: product.stockQuantity,
     inStock: product.inStock,
+    enabled: product.enabled,
     approved: product.approved,
 
     attributes: product.product.options.map(option => ({
@@ -144,7 +147,7 @@ const restructureProduct2FriendlyProduct = products => {
     createdAt: product.createdAt,
     updatedAt: product.updatedAt,
   }));
-
+  
   return friendlyProducts;
 };
 

@@ -4,11 +4,20 @@ type Retailer {
 
   owner: Assignment @relation(onDelete: CASCADE)
 
-  businessMedia: Media @relation(link: INLINE, onDelete: CASCADE) # Avatar
+  businessCover: Media @relation(link: INLINE, name: "RetailerCoverToMedia", onDelete: CASCADE) # Avatar
+  businessAvatar: Media @relation(link: INLINE, name: "RetailerAvatarToMedia", onDelete: CASCADE) # Avatar
   businessName: String @unique #  displayed on Retailer profile and foxiny listings
   businessAddress: Address @relation(link: INLINE, onDelete: CASCADE) # one to one
   businessPhone: String @unique # maybe different to user's phone
   businessEmail: String @unique # maybe different to user's phone
+  socialNumber: String
+  socialNumberImages: [Media!] @relation(link: TABLE, name: "RetailerSocialNumberImgToMedia", onDelete: CASCADE)
+  businessLicense: String # contains a link to file: image, pdf of license
+  businessLicenseImages: [Media!] @relation(link: TABLE, name: "RetailerBusinessLicenseImgToMedia", onDelete: CASCADE)
+  # Tax
+  # Billing
+  # Warehouse
+
   # Products
   products: [ProductRetailer!] @relation(link: TABLE, onDelete: CASCADE)
 
@@ -18,13 +27,9 @@ type Retailer {
   # Rewards
 
   # Orders
-  businessLicense: String # contains a link to file: image, pdf of license
-  # Tax
-  # Billing
-  # Warehouse
 
   enabled: Boolean @default(value: false)
-  
+
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }

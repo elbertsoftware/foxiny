@@ -1,9 +1,10 @@
 // @flow
 
-import logger from '../../utils/logger';
+import { t } from "@lingui/macro";
+import logger from "../../utils/logger";
 
 export const Mutation = {
-  createCategory: async (parent, { data }, { prisma, cache, request }, info) => {
+  createCategory: async (parent, { data }, { prisma, cache, request, i18n }, info) => {
     // TODO: Check permission
 
     const category = prisma.query.category({
@@ -12,7 +13,8 @@ export const Mutation = {
       },
     });
     if (category) {
-      throw new Error(`Category is existed`);
+      const error = i18n._(t`Category is existed`);
+      throw new Error(error);
     }
 
     return prisma.mutation.createCategory(
@@ -23,14 +25,15 @@ export const Mutation = {
     );
   },
 
-  updateCategory: async (parent, { data }, { prisma, cache, request }, info) => {
+  updateCategory: async (parent, { data }, { prisma, cache, request, i18n }, info) => {
     const category = prisma.query.category({
       where: {
         OR: [{ id: data.id }, { name: data.oldName }],
       },
     });
     if (!category) {
-      throw new Error(`Category is not found`);
+      const error = i18n._(t`Category is not found`);
+      throw new Error(error);
     }
 
     return prisma.mutation.updateCategory({
@@ -40,13 +43,14 @@ export const Mutation = {
     });
   },
 
-  deleteCategory: async (parent, { data }, { prisma, cache, request }, info) => {
+  deleteCategory: async (parent, { data }, { prisma, cache, request, i18n }, info) => {
     const category = prisma.query.category({
       where: {
         OR: [{ id: data.id }, { name: data.oldName }],
       },
     });
     if (!category) {
+      const error = i18n._(t`Category is not found`);
       throw new Error(`Category is not found`);
     }
   },

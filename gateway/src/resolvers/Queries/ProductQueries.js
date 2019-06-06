@@ -1,13 +1,13 @@
 // @flow
 
 import logger from '../../utils/logger';
-import { checkPermission } from '../../utils/productUtils/permissionChecker';
+import { checkSellerPermissions } from '../../utils/productUtils/permissionChecker';
 import { restructureProduct2FriendlyProduct } from '../../utils/productUtils/dataHelper';
 
 export const Query = {
   productsWoTemplateAfterCreated: async (parent, { sellerId, approved }, { prisma, cache, request }, info) => {
     // NOTE: check permission
-    await checkPermission(prisma, cache, request, sellerId);
+    await checkSellerPermissions(prisma, cache, request, sellerId);
 
     const newInfo = `{
       id
@@ -76,6 +76,7 @@ export const Query = {
 
     const products = await prisma.query.productRetailers(opArgs, newInfo);
     const friendlyProducts = restructureProduct2FriendlyProduct(products);
+
     return friendlyProducts;
   },
 };

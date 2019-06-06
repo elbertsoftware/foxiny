@@ -1,5 +1,4 @@
 // @flow
-
 import { getUserIDFromRequest } from "../../utils/authentication";
 import logger from "../../utils/logger";
 
@@ -25,9 +24,9 @@ export const Query = {
     return prisma.query.users(opArgs, info);
   },
 
-  me: async (parent, args, { prisma, request, cache }, info) => {
-    const userId = await getUserIDFromRequest(request, cache);
-
+  me: async (parent, args, { prisma, request, cache, i18n }, info) => {
+    const userId = await getUserIDFromRequest(request, cache, i18n);
+    
     const user = await prisma.query.user(
       {
         where: {
@@ -43,23 +42,5 @@ export const Query = {
   // get all security questions
   securityQuestions: async (parent, args, { prisma, request, cache }, info) => {
     return prisma.query.securityQuestions(null, info);
-  },
-
-  meAssignments: async (parent, args, { prisma, request, cache }, info) => {
-    const userId = await getUserIDFromRequest(request, cache);
-
-    const userAssignment = await prisma.query.user(
-      {
-        where: {
-          id: userId,
-        },
-      },
-      // `{ assignment { id retailers { id } manufacturers { id }} }`
-      `{ assignment { id retailers { id } } }`,
-    );
-    return (meAssigns = {
-      retailerIds: userAssignment.retailers ? userAssignment.retailers.map(retailer => retailer.id) : [],
-      manufacturerIds: userAssignment.manufacturers ? userAssignment.manufacturers.map(manu => manu.id) : [],
-    });
   },
 };

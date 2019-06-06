@@ -1,11 +1,11 @@
 // @flow
 
-import { getUserIDFromRequest } from '../../utils/authentication';
-import logger from '../../utils/logger';
+import { getUserIDFromRequest } from "../../utils/authentication";
+import logger from "../../utils/logger";
 
 // How to lock down sensitive fields on non-authenticated users
-const resolveField = async (parent, request, cache, value) => {
-  const userId = await getUserIDFromRequest(request, cache, false); // no need to check for authentication
+const resolveField = async (parent, request, cache, i18n, value) => {
+  const userId = await getUserIDFromRequest(request, cache, i18n, false); // no need to check for authentication
   logger.debug(`🔷  userId ${userId}, parent.id ${parent.id}`);
   if (userId && userId === parent.id) {
     // login user is the same as selecting user (parent)
@@ -18,17 +18,17 @@ const resolveField = async (parent, request, cache, value) => {
 // fragment is needed to be sure User.id included no matter what the clients ask for it in the selection
 export const User = {
   email: {
-    fragment: 'fragment userIdForEmail on User { id }',
+    fragment: "fragment userIdForEmail on User { id }",
 
-    resolve: (parent, args, { request, cache }) => {
-      return resolveField(parent, request, cache, parent.email);
+    resolve: (parent, args, { request, cache, i18n }) => {
+      return resolveField(parent, request, cache, i18n, parent.email);
     },
   },
 
   phone: {
-    fragment: 'fragment userIdForPhone on User { id }',
-    resolve: (parent, args, { request, cache }) => {
-      return resolveField(parent, request, cache, parent.phone);
+    fragment: "fragment userIdForPhone on User { id }",
+    resolve: (parent, args, { request, cache, i18n }) => {
+      return resolveField(parent, request, cache, i18n, parent.phone);
     },
   },
 
@@ -40,18 +40,18 @@ export const User = {
   profileMedia: {
     resolve: (parent, args, { request, cache }) => {
       return {
-        id: parent.profileMedia ? parent.profileMedia.id : 'default',
-        _version: parent.profileMedia ? parent.profileMedia._version : 'default',
+        id: parent.profileMedia ? parent.profileMedia.id : "default",
+        _version: parent.profileMedia ? parent.profileMedia._version : "default",
 
         name: parent.profileMedia ? parent.profileMedia.name : process.env.DEFAULT_USER_PROFILE_MEDIA_NAME,
         ext: parent.profileMedia ? parent.profileMedia.ext : process.env.DEFAULT_USER_PROFILE_MEDIA_EXT,
         mime: parent.profileMedia ? parent.profileMedia.mime : process.env.DEFAULT_USER_PROFILE_MEDIA_MIME,
         size: parent.profileMedia ? parent.profileMedia.size : Number(process.env.DEFAULT_USER_PROFILE_MEDIA_SIZE), // in bytes
-        hash: parent.profileMedia ? parent.profileMedia.hash : 'default',
-        sha256: parent.profileMedia ? parent.profileMedia.sha256 : 'default',
+        hash: parent.profileMedia ? parent.profileMedia.hash : "default",
+        sha256: parent.profileMedia ? parent.profileMedia.sha256 : "default",
         uri: parent.profileMedia ? parent.profileMedia.uri : process.env.DEFAULT_USER_PROFILE_MEDIA_URI,
-        createdAt: parent.profileMedia ? parent.profileMedia.createdAt : 'default',
-        updatedAt: parent.profileMedia ? parent.profileMedia.updatedAt : 'default',
+        createdAt: parent.profileMedia ? parent.profileMedia.createdAt : "default",
+        updatedAt: parent.profileMedia ? parent.profileMedia.updatedAt : "default",
       };
     },
   },

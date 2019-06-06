@@ -1,0 +1,10 @@
+{
+  "Access is denied": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/RoleMutations.js",
+        14
+      ]
+    ]
+  }
+}

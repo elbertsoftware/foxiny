@@ -1,0 +1,245 @@
+{
+  "Access is denied": {
+    "translation": "Không được phép",
+    "origin": [
+      [
+        "src/resolvers/Mutations/ManufacturerMutations.js",
+        14
+      ],
+      [
+        "src/resolvers/Mutations/RoleMutations.js",
+        14
+      ]
+    ]
+  },
+  "Authentication required": {
+    "translation": "Yêu cầu xác thực",
+    "origin": [
+      [
+        "src/utils/authentication.js",
+        141
+      ],
+      [
+        "src/utils/authentication.js",
+        150
+      ],
+      [
+        "src/utils/authentication.js",
+        157
+      ]
+    ]
+  },
+  "Cannot create product": {
+    "translation": "Không thể tạo mặt hàng",
+    "origin": [
+      [
+        "src/resolvers/Mutations/ProductMutations.js",
+        139
+      ]
+    ]
+  },
+  "Cannot recover user": {
+    "translation": "Không thể khôi phục tài khoản",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        550
+      ]
+    ]
+  },
+  "Category is existed": {
+    "translation": "Danh mục đã tồn tại",
+    "origin": [
+      [
+        "src/resolvers/Mutations/CategoryMutations.js",
+        16
+      ]
+    ]
+  },
+  "Category is not found": {
+    "translation": "Không tìm thấy danh mục",
+    "origin": [
+      [
+        "src/resolvers/Mutations/CategoryMutations.js",
+        35
+      ],
+      [
+        "src/resolvers/Mutations/CategoryMutations.js",
+        53
+      ]
+    ]
+  },
+  "Invalid confirmation code": {
+    "translation": "Mã xác thực không hợp lệ",
+    "origin": [
+      [
+        "src/utils/authentication.js",
+        45
+      ]
+    ]
+  },
+  "Invalid input": {
+    "translation": "Sai dữ liệu nhập vào",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        47
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        96
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        151
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        241
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        312
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        405
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        577
+      ]
+    ]
+  },
+  "Product not found": {
+    "translation": "Không tìm thấy mặt hàng",
+    "origin": [
+      [
+        "src/resolvers/Mutations/ProductMutations.js",
+        334
+      ]
+    ]
+  },
+  "Unable to confirm user": {
+    "translation": "Không thể xác thực người dùng",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        113
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        121
+      ]
+    ]
+  },
+  "Unable to login": {
+    "translation": "Không thể đăng nhập",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        347
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        358
+      ]
+    ]
+  },
+  "Unable to resend confirmation": {
+    "translation": "Không thể gửi mã xác thực",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        254
+      ]
+    ]
+  },
+  "Unable to reset password": {
+    "translation": "Không thể đặt lại mật khẩu",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        583
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        597
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        646
+      ]
+    ]
+  },
+  "Unable to update user": {
+    "translation": "Không thể cập nhật tài khoản",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        164
+      ]
+    ]
+  },
+  "Unable to update user profile": {
+    "translation": "Không thể cập nhật tài khoản",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        436
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        493
+      ]
+    ]
+  },
+  "Unable to upload avatar": {
+    "translation": "Không thể tải lên ảnh đại diện",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        325
+      ]
+    ]
+  },
+  "User has been confirmed": {
+    "translation": "Tài khoản chưa được xác thực",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        263
+      ]
+    ]
+  },
+  "User has not been confirmed or was disabled": {
+    "translation": "Tài khoản chưa được xác thực hoặc đã bị khóa",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        352
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        545
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        602
+      ]
+    ]
+  },
+  "User not found": {
+    "translation": "Không tìm thấy người dùng",
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        18
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        540
+      ]
+    ]
+  }
+}

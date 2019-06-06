@@ -1,12 +1,12 @@
 // @floww
 
-import { validateIsEmpty } from "../validation";
+import { stringTrim, validateIsEmpty } from "../validation";
 import logger from "../logger";
 
 const validateIsSmallerThanX = (price, x = 0) => {
   if (price <= x) {
-    throw new Error("Invalid input");
     logger.error("Invalid price");
+    throw new Error("Invalid input");
   }
   return price;
 };
@@ -101,3 +101,24 @@ const validateUpdateProductInput = data => {
 };
 
 export { validateCreateNewProductInput, validateUpdateProductInput };
+
+const classifyEmailPhone = emailOrPhone => {
+  // email pattern: mailbox @ domain
+  // email address is no longer than 63 character
+  const emailRegex = /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+-+)|([A-Za-z0-9]+\.+))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/;
+
+  if (emailRegex.test(emailOrPhone)) {
+    // make sure domain contains only lowercase characters
+    const [name, domain] = stringTrim(emailOrPhone).split("@");
+    const refined = `${name}@${domain.toLowerCase()}`;
+    return { email: refined };
+  }
+
+  const phoneRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
+
+  if (phoneRegex.test(emailOrPhone)) return { phone: emailOrPhone };
+
+  return null;
+};
+
+export { classifyEmailPhone };

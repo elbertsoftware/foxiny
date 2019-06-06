@@ -7,13 +7,23 @@ export const retailerSchema = gql`
 
     owner: Assignment
 
-    profileMedia: Media! # Avatar
+    businessCover: Media # Avatar
+    businessAvatar: Media # Avatar
     businessName: String! #  displayed on Retailer profile and foxiny listings
-    address: Address! # one to one
+    businessAddress: Address! # one to one
     businessPhone: String! # maybe different to user's phone
-    businessEmail: String! # maybe different to user's phone
+    businessEmail: String!
+
+    socialNumber: String!
+    socialNumberImages: [Media!]!
+    businessLicense: String
+    businessLicenseImages: [Media!]
+    # Tax
+    # Billing
+    # Warehouse
+
     # Products
-    # products: [ProductRetailer!]
+    # products: [FriendlyProduct!]
 
     # Reviews, reminder to use interface/union in yoga to resolve reviews
     #reviews: [ID!]! # list of reviews this vendor received from another members
@@ -21,9 +31,6 @@ export const retailerSchema = gql`
     # Rewards
 
     # Orders
-    # Tax
-    # Billing
-    # Warehouse
 
     enabled: Boolean!
 
@@ -32,30 +39,47 @@ export const retailerSchema = gql`
   }
 
   extend type Query {
-    retailers(query: String!): [Retailer!]!
+    retailers(query: String): [Retailer!]!
+    myRetailers(query: String): [Retailer!]!
   }
 
   extend type Mutation {
-    registerRetailer(data: RegisterRetailer!): Retailer!
-    activateReatiler(retailerId: String!): Retailer!
-    deactivateReatiler(retailerId: String!): Retailer!
-    updateRetailer(data: UpdateRetailerInput!): Retailer!
+    registerRetailer(data: RegisterRetailer!): RegisterdRetailer!
+    updateRetailer(retailerId: String!, data: UpdateRetailerInput!): Retailer!
+    resendRetailerConfirmationCode(emailOrPhone: String!): Boolean!
+    approveReatiler(retailerId: String!): Retailer!
+    rejectReatiler(retailerId: String!): Retailer!
     deleteRetailer(retailerId: String!): Boolean!
   }
 
   input RegisterRetailer {
-    #profileMedia
     businessName: String!
     businessEmail: String!
+    emailConfirmCode: String!
     businessPhone: String!
+    phoneConfirmCode: String!
     businessAddress: CreateAddressInput!
   }
 
   input UpdateRetailerInput {
-    #profileMedia
-    businessName: String!
-    businessEmail: String!
-    businessPhone: String!
-    businessAddress: CreateAddressInput!
+    businessCoverId: String
+    businessAvatarId: String
+
+    businessName: String
+    businessEmail: String
+    emailConfirmCode: String
+    businessPhone: String
+    phoneConfirmCode: String
+    businessAddress: CreateAddressInput
+
+    socialNumber: String
+    socialNumberImageIds: [String!]
+    businessLicense: String
+    businessLicenseImageIds: [String!]
+  }
+
+  type RegisterdRetailer {
+    userId: ID!
+    retailerId: ID!
   }
 `;
