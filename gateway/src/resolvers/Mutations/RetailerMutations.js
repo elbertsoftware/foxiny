@@ -1,24 +1,71 @@
 // @flow
 
+import { t } from "@lingui/macro";
 import logger from "../../utils/logger";
-import { getUserIDFromRequest } from "../../utils/authentication";
+import { sendConfirmationText } from "../../utils/sms";
+import { sendConfirmationEmail } from "../../utils/email";
+import { sendConfirmationEsms } from "../../utils/smsVN";
+import { getUserIDFromRequest, generateConfirmation, verifyConfirmation } from "../../utils/authentication";
+import { checkSellerPermissions } from "../../utils/productUtils/permissionChecker";
+import { classifyEmailPhone } from "../../utils/productUtils/validation";
+
+// TODO: log transactions
 
 export const Mutation = {
-  registerRetailer: async (parent, { data }, { prisma, request, cache }, info) => {
-    const userId = await getUserIDFromRequest(request, cache);
+  registerRetailer: async (parent, { data }, { prisma, request, cache, i18n }, info) => {
+    // try {
+    const userId = await getUserIDFromRequest(request, cache, i18n);
 
-    const user = await prisma.query.user({
-      where: {
-        id: userId,
+    const user = await prisma.query.user(
+      {
+        where: {
+          id: userId,
+        },
       },
-    });
+      "{ id email phone }",
+    );
 
     if (!user) {
-      throw new Error("User not found");
+      const error = i18n._(t`User not found`);
+      throw new Error(error);
     }
 
     // TODO: validate input
     // TODO: validate address
+
+    // NOTE: verify email and phone
+    if (data.businessEmail !== user.email) {
+      // email:
+      const matchedEmail = await verifyConfirmation(cache, data.emailConfirmCode, userId, i18n);
+      if (matchedEmail) {
+        const { email, phone } = classifyEmailPhone(matchedEmail);
+        if ((email || phone) !== data.businessEmail) {
+          logger.debug(`email confirmation matched: ${matchedEmail} but wrong email`);
+          logger.debug(`code ${data.emailConfirmCode} enteredEmail ${data.businessEmail} codedEmail ${email}`);
+          const error = i18n._(t`Unable to confirm user`);
+          throw new Error(error);
+        }
+      } else {
+        const error = i18n._(t`Unable to confirm user`);
+        throw new Error(error);
+      }
+    }
+    // phone:
+    if (data.businessPhone !== user.phone) {
+      const matchedPhone = await verifyConfirmation(cache, data.phoneConfirmCode, userId, i18n);
+      if (matchedPhone) {
+        const { email, phone } = classifyEmailPhone(matchedPhone);
+        if ((email || phone) !== data.phone) {
+          logger.debug(`phone confirmation matched: ${matchedPhone} but wrong phone`);
+          logger.debug(`code ${data.emailConfirmCode} enteredPhone ${data.businessPhone} codedPhone ${phone}`);
+          const error = i18n._(t`Unable to confirm user`);
+          throw new Error(error);
+        }
+      } else {
+        const error = i18n._(t`Unable to confirm user`);
+        throw new Error(error);
+      }
+    }
 
     const retailerData = {
       businessName: data.businessName,
@@ -27,7 +74,7 @@ export const Mutation = {
       businessAddress: {
         create: data.businessAddress,
       },
-      enabled: true,
+      enabled: false,
       owner: {
         create: {
           user: {
@@ -39,41 +86,216 @@ export const Mutation = {
       },
     };
 
-    await prisma.mutation.createRetailer({
+    const retailer = await prisma.mutation.createRetailer({
       data: retailerData,
     });
 
-    const updatedUser = await prisma.query.user(
+    // TODO: log transaction
+    return {
+      userId: userId,
+      retailerId: retailer.id,
+    };
+    // } catch (err) {
+    //   logger.error(`🛑❌  REGISTER_RETAILER: ${err}`);
+    //   const error = i18n._(t`Cannot register retailer`);
+    //   throw new Error(error);
+    // }
+  },
+
+  updateRetailer: async (parent, { retailerId, data }, { prisma, request, cache, i18n }, info) => {
+    // try {
+    // NOTE: check permission
+    const userId = await getUserIDFromRequest(request, cache, i18n);
+    await checkSellerPermissions(prisma, cache, request, retailerId);
+    console.log(JSON.stringify(data, undefined, 2));
+    console.log(`userId ${userId}`);
+    console.log(`sellerId ${retailerId}`);
+
+    const retailer = await prisma.query.retailer(
+      {
+        where: {
+          id: retailerId,
+        },
+      },
+      "{ id businessEmail businessPhone owner { user { id email phone }} }",
+    );
+    if (!retailer) {
+      const error = i18n._(t`Retailer not found`);
+    }
+
+    // TODO: validate input
+
+    // NOTE: verify email and phone
+    if (data.businessEmail && data.businessEmail !== retailer.businessEmail) {
+      if (data.businessEmail !== retailer.owner.user.email) {
+        // email:
+        const matchedEmail = await verifyConfirmation(cache, data.emailConfirmCode, userId, i18n);
+        if (matchedEmail) {
+          const { email, phone } = classifyEmailPhone(matchedEmail);
+          if ((email || phone) !== data.businessEmail) {
+            logger.debug(`email confirmation matched: ${matchedEmail} but wrong email`);
+            logger.debug(`code ${data.emailConfirmCode} enteredEmail ${data.businessEmail} codedEmail ${email}`);
+            const error = i18n._(t`Unable to confirm user`);
+            throw new Error(error);
+          }
+        } else {
+          const error = i18n._(t`Unable to confirm user`);
+          throw new Error(error);
+        }
+      }
+    }
+    if (data.businessPhone && data.businessPhone !== retailer.businessPhone) {
+      // phone:
+      if (data.businessPhone !== retailer.owner.user.phone) {
+        const matchedPhone = await verifyConfirmation(cache, data.phoneConfirmCode, userId, i18n);
+        if (matchedPhone) {
+          const { email, phone } = classifyEmailPhone(matchedPhone);
+          if ((email || phone) !== data.businessPhone) {
+            logger.debug(`email confirmation matched: ${matchedPhone} but wrong email`);
+            logger.debug(`code ${data.emailConfirmCode} enteredEmail ${data.businessPhone} codedEmail ${email}`);
+            const error = i18n._(t`Unable to confirm user`);
+            throw new Error(error);
+          }
+        } else {
+          const error = i18n._(t`Unable to confirm user`);
+          throw new Error(error);
+        }
+      }
+    }
+
+    const updateData = {
+      businessName: data.businessName,
+      businessEmail: data.businessEmail,
+      businessPhone: data.businessPhone,
+      businessAddress: data.businessAddress,
+
+      businessCover: data.businessCoverId
+        ? {
+            connect: {
+              id: data.businessCoverId,
+            },
+          }
+        : undefined,
+      businessAvatar: data.businessAvatarId
+        ? {
+            connect: {
+              id: data.businessAvatarId,
+            },
+          }
+        : undefined,
+
+      socialNumber: data.socialNumber,
+      socialNumberImages: data.socialNumberImageIds
+        ? {
+            set: data.socialNumberImageIds.map(id => ({
+              id: id,
+            })),
+          }
+        : undefined,
+      businessLicense: data.businessLicense,
+      businessLicenseImages: data.businessLicenseImageIds
+        ? {
+            set: data.businessLicenseImageIds.map(id => ({ id: id })),
+          }
+        : undefined,
+    };
+
+    const updatedRetailer = await prisma.mutation.updateRetailer({
+      where: {
+        id: retailerId,
+      },
+      data: updateData,
+    });
+
+    return updatedRetailer;
+    // } catch (err) {
+    //   logger.error(`🛑❌  REGISTER_RETAILER: ${err}`);
+    //   const error = i18n._(t`Cannot update retailer`);
+    //   throw new Error(error);
+    // }
+  },
+
+  resendRetailerConfirmationCode: async (parent, { emailOrPhone }, { prisma, request, cache, i18n }, info) => {
+    const userId = await getUserIDFromRequest(request, cache, i18n);
+    const user = await prisma.query.user(
       {
         where: {
           id: userId,
         },
       },
-      "{ id name profile profileMedia { id uri } badgeMedias {id uri } addresses { id description region name phone street unit district city state zip } email phone password enabled recoverable assignment { id retailers { id businessName businessEmail businessPhone businessAddress { id description region name phone street unit district city state zip } businessMedia { id uri } businessLicense enabled createdAt updatedAt } } createdAt updatedAt }",
+      "{ id email phone }",
     );
+    if (!user) {
+      const error = i18n._(t`Cannot register retailer`);
+      throw new Error(error);
+    }
 
-    return {
-      userId: updatedUser.id,
-      userProfile: {
-        id: updatedUser.id,
-        name: updatedUser.name,
-        profile: updatedUser.profile,
-        profileMedia: updatedUser.profileMedia,
-        badgeMedias: updatedUser.badgeMedias,
-        addresses: updatedUser.addresses,
-        email: updatedUser.email,
-        phone: updatedUser.phone,
-        password: updatedUser.password,
-        enabled: updatedUser.enabled,
-        recoverable: updatedUser.recoverable,
-        createdAt: updatedUser.createdAt,
-        updatedAt: updatedUser.updatedAt,
-        assignment: {
-          id: updatedUser.assignment ? updatedUser.assignment.id : undefined,
-          user: updatedUser,
-          retailers: updatedUser.assignment ? updatedUser.assignment.retailers : undefined,
+    if (!emailOrPhone) {
+      const error = i18n._(t`Invalid input`);
+      throw new Error(error);
+    }
+
+    const { email, phone } = classifyEmailPhone(emailOrPhone);
+
+    if (email) {
+      if (user && user.email === email) {
+        const error = i18n._(t`Confirmed`);
+        throw new Error(error);
+      }
+
+      // check email is already registered or not
+      const existedUser = await prisma.query.user({
+        where: {
+          email: email,
         },
-      },
-    };
+      });
+      const existedRetailer = await prisma.query.retailer({
+        where: {
+          businessEmail: email,
+        },
+      });
+
+      if (existedUser || existedRetailer) {
+        const error = i18n._(t`Cannot register retailer`);
+        throw new Error(error);
+      }
+
+      const code = generateConfirmation(cache, userId, email);
+      sendConfirmationEmail("Seller", email, code);
+
+      return true;
+    }
+
+    if (phone) {
+      if (user && user.phone === phone) {
+        const error = i18n._(t`Confirmed`);
+        throw new Error(error);
+      }
+
+      // check phone is already registered or not
+      const existedUser = await prisma.query.user({
+        where: {
+          phone: phone,
+        },
+      });
+      const existedRetailer = await prisma.query.retailer({
+        where: {
+          businessPhone: phone,
+        },
+      });
+
+      if (existedUser || existedRetailer) {
+        const error = i18n._(t`Cannot register retailer`);
+        throw new Error(error);
+      }
+
+      const code = generateConfirmation(cache, userId, phone);
+      // sendConfirmationText("Seller", phone, code);
+      sendConfirmationEsms("Seller", phone, code);
+
+      return true;
+    }
+
+    return false;
   },
 };

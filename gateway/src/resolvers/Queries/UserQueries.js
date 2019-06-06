@@ -1,5 +1,4 @@
 // @flow
-
 import { getUserIDFromRequest } from "../../utils/authentication";
 import logger from "../../utils/logger";
 
@@ -21,13 +20,13 @@ export const Query = {
         ],
       };
     }
-    
+
     return prisma.query.users(opArgs, info);
   },
 
-  me: async (parent, args, { prisma, request, cache }, info) => {
-    const userId = await getUserIDFromRequest(request, cache);
-
+  me: async (parent, args, { prisma, request, cache, i18n }, info) => {
+    const userId = await getUserIDFromRequest(request, cache, i18n);
+    
     const user = await prisma.query.user(
       {
         where: {

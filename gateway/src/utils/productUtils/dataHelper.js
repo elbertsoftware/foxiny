@@ -1,4 +1,5 @@
 //@flow
+import _ from 'lodash';
 
 /**
  * Get all attributes and its values from all variants
@@ -147,7 +148,7 @@ const restructureProduct2FriendlyProduct = products => {
     createdAt: product.createdAt,
     updatedAt: product.updatedAt,
   }));
-
+  
   return friendlyProducts;
 };
 

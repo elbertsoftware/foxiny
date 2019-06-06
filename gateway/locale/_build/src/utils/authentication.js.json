@@ -1,0 +1,26 @@
+{
+  "Invalid confirmation code": {
+    "origin": [
+      [
+        "src/utils/authentication.js",
+        45
+      ]
+    ]
+  },
+  "Authentication required": {
+    "origin": [
+      [
+        "src/utils/authentication.js",
+        141
+      ],
+      [
+        "src/utils/authentication.js",
+        150
+      ],
+      [
+        "src/utils/authentication.js",
+        157
+      ]
+    ]
+  }
+}

@@ -100,7 +100,8 @@ export const userSchema = gql`
 
   type AuthPayload {
     userId: ID!
-    userProfile: User!
+    hasRetailers: Boolean!
+    # hasManufacturers:Boolean!
     token: String!
   }
 

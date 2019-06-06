@@ -19,7 +19,7 @@ const classifyEmailPhone = emailOrPhone => {
 
   if (emailRegex.test(emailOrPhone)) {
     // make sure domain contains only lowercase characters
-    const [name, domain] = stringTrim(emailOrPhone).split('@');
+    const [name, domain] = stringTrim(emailOrPhone).split("@");
     const refined = `${name}@${domain.toLowerCase()}`;
     return { email: refined };
   }
@@ -31,7 +31,7 @@ const classifyEmailPhone = emailOrPhone => {
   return null;
 };
 
-export { stringTrim, classifyEmailPhone, validateIsEmpty };
+export { stringTrim, validateIsEmpty, classifyEmailPhone };
 
 const validateEmail = email => {
   // email pattern: mailbox @ domain

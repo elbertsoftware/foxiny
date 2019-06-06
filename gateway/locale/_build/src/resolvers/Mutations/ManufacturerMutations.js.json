@@ -1,0 +1,10 @@
+{
+  "Access is denied": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/ManufacturerMutations.js",
+        14
+      ]
+    ]
+  }
+}

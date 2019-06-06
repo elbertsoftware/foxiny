@@ -1,10 +1,11 @@
 //@flow
 
+import _ from "lodash";
 import { getUserIDFromRequest } from "../authentication";
 import logger from "../logger";
 import { validateIsEmpty } from "../validation";
 
-const checkPermission = async (prisma, cache, request, sellerId) => {
+const checkSellerPermissions = async (prisma, cache, request, sellerId) => {
   const userId = await getUserIDFromRequest(request, cache);
 
   const user = await prisma.query.user({
@@ -14,8 +15,8 @@ const checkPermission = async (prisma, cache, request, sellerId) => {
   });
 
   if (!user) {
-    logger.debug(`🛑❌  CREATE_BRANDNEW_PRODUCT_WITH_TEMPLATE: User ${userId} not found`);
-    throw new Error("Access is denied");
+    logger.debug(`🛑❌  CHECK_SELLER_PERMISSION: User ${userId} not found`);
+    throw new Error(`Access is denied`);
   }
 
   const newSellerId = validateIsEmpty(sellerId);
@@ -29,19 +30,58 @@ const checkPermission = async (prisma, cache, request, sellerId) => {
   );
 
   if (!seller) {
-    logger.debug(`🛑❌  CREATE_BRANDNEW_PRODUCT_WITH_TEMPLATE: Seller ${newSellerId} not found`);
-    throw new Error("Access is denied");
+    logger.debug(`🛑❌  CHECK_SELLER_PERMISSION: Seller ${newSellerId} not found`);
+    throw new Error(`Access is denied`);
   }
 
   if (seller.owner.user.id !== user.id) {
-    logger.debug(`🛑❌  CREATE_BRANDNEW_PRODUCT_WITH_TEMPLATE: Access is denied`);
-    throw new Error("Access is denied");
+    logger.debug(`🛑❌  CHECK_SELLER_PERMISSION: Access  is denied`);
+    throw new Error(`Access is denied`);
   }
 
   logger.debug(
-    `🔵✅  CREATE_BRANDNEW_PRODUCT_WITH_TEMPLATE: Access is allowed. USER ${userId} | SELLER ${newSellerId}`,
+    `🔵✅  CHECK_SELLER_PERMISSION: Access is allowed. USER ${userId} | SELLER ${newSellerId}`,
   );
   return true;
 };
 
-export { checkPermission };
+const checkStaffPermission = async (prisma, cache, request, i18n, requiredPermission = null, exception = null) => {
+  const userId = await getUserIDFromRequest(request, cache, i18n);
+
+  const user = await prisma.query.user(
+    {
+      where: {
+        id: userId,
+      },
+    },
+    "{ id assignment { id roles { id type permissions { id type } } permissions { id type } } }",
+  );
+  const allRoles = user.assignment.roles.map(role => role.type);
+  const allRights = user.assignment.roles.permissions.map(right => right.type);
+  const flattenedRights = [].concat(...allRights);
+
+  if (!user) {
+    throw new Error(`Access is denied`);
+  }
+
+  // exceptions
+  if (
+    user.id === exception.userId ||
+    _.intersection(allRoles, exception.roles).length > 0 ||
+    _.intersection(flattenedRights, exception.permissions).length > 0
+  ) {
+    return true;
+  }
+
+  if (_.union(flattenedRights, requiredPermission)) {
+    return true;
+  }
+
+  if (_.union(user.assignment.permissions.map(right => right.type), requiredPermission)) {
+    return true;
+  }
+
+  return false;
+};
+
+export { checkSellerPermissions, checkStaffPermission };

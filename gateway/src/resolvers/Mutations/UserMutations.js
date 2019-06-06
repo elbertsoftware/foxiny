@@ -1,6 +1,6 @@
 // @flow
 
-import { s3ProfileMediaUploader } from "../../utils/s3Uploader";
+import { t } from "@lingui/macro";
 import {
   hashPassword,
   verifyPassword,
@@ -20,7 +20,6 @@ import {
   validateResendConfirmationInput,
   validateUpdateInput,
   validateResetPwdInput,
-  validateImageUploadInput,
   classifyEmailPhone,
 } from "../../utils/validation";
 import logger from "../../utils/logger";
@@ -37,8 +36,15 @@ export const Mutation = {
    * Create user
    * user must enter: name, email or phone and pwd
    */
-  createUser: async (parent, { data }, { prisma, cache, request }, info) => {
-    const newData = validateCreateInput(data);
+  createUser: async (parent, { data }, { prisma, cache, request, i18n }, info) => {
+    let newData;
+    try {
+      newData = validateCreateInput(data, i18n);
+    } catch (err) {
+      logger.error(`🛑❌  Cannot create user ${err.message}`);
+      const error = i18n._(t`Invalid input`);
+      throw new Error(error);
+    }
 
     const password = hashPassword(newData.password);
     const user = await prisma.mutation.createUser(
@@ -69,8 +75,8 @@ export const Mutation = {
     // text the code if user is signing up via phone
     if (typeof newData.phone === "string") {
       // TODO: try to find out where does the number come from, US or VN or other, and choose the best way to send the code
-      sendConfirmationText(newData.name, newData.phone, code);
-      // sendConfirmationEsms(newData.name, newData.phone, code);
+      // sendConfirmationText(newData.name, newData.phone, code);
+      sendConfirmationEsms(newData.name, newData.phone, code);
     }
 
     return user;
@@ -80,8 +86,15 @@ export const Mutation = {
    * Confirm user
    * Confirm email or phone
    */
-  confirmUser: async (parent, { data }, { prisma, cache }, info) => {
-    const newData = validateConfirmInput(data);
+  confirmUser: async (parent, { data }, { prisma, cache, i18n }, info) => {
+    let newData;
+    try {
+      newData = validateConfirmInput(data);
+    } catch (err) {
+      logger.error(`🛑❌  Cannot create user ${err.message}`);
+      const error = i18n._(t`Invalid input`);
+      throw new Error(error);
+    }
 
     const user = await prisma.query.user({
       where: {
@@ -97,14 +110,16 @@ export const Mutation = {
           newData.userId ? newData.userId : newData.email ? newData.email : newData.phone
         } not found`,
       );
-      throw new Error("Unable to confirm user"); // try NOT to provide enough information so hackers can guess
+      const error = i18n._(t`Unable to confirm user`);
+      throw new Error(error); // try NOT to provide enough information so hackers can guess
     }
 
     // NOTE: matched contains email or phone
-    const matched = await verifyConfirmation(cache, newData.code, user.id);
+    const matched = await verifyConfirmation(cache, newData.code, user.id, i18n);
     logger.debug(`confirmation matched: ${matched}`);
     if (!matched) {
-      throw new Error("Unable to confirm user");
+      const error = i18n._(t`Unable to confirm user`);
+      throw new Error(error);
     }
 
     // change enabled to true when matched is true
@@ -127,10 +142,17 @@ export const Mutation = {
   /**
    * Insert or update user's security info
    */
-  upsertSecurityInfo: async (parent, { securityInfo }, { prisma, cache, request }, info) => {
-    const newData = validateSecurityInfo(securityInfo);
+  upsertSecurityInfo: async (parent, { securityInfo }, { prisma, cache, request, i18n }, info) => {
+    let newData;
+    try {
+      newData = validateSecurityInfo(securityInfo);
+    } catch (err) {
+      logger.error(`🛑❌  Cannot create user ${err.message}`);
+      const error = i18n._(t`Invalid input`);
+      throw new Error(error);
+    }
 
-    const userId = await getUserIDFromRequest(request, cache);
+    const userId = await getUserIDFromRequest(request, cache, i18n);
 
     const user = await prisma.query.user({
       where: {
@@ -140,7 +162,8 @@ export const Mutation = {
 
     if (!user) {
       logger.debug(`🛑❌  CREATE_SECURITY_INFO: User ${userId} not found`);
-      throw new Error("Unable to confirm user"); // try NOT to provide enough information so hackers can guess
+      const error = i18n._(t`Unable to update user`);
+      throw new Error(error); // try NOT to provide enough information so hackers can guess
     }
 
     // NOTE: insert new question (if user enters) and create to-be-updated data
@@ -209,11 +232,18 @@ export const Mutation = {
    * Resend confirmation
    * using this to send a confirmation code to phone or email
    */
-  resendConfirmation: async (parent, { data }, { prisma, cache, request }, info) => {
+  resendConfirmation: async (parent, { data }, { prisma, cache, request, i18n }, info) => {
     // NOTE: (for client) one of three: userId, email and phone is accepted only
-    const newData = validateResendConfirmationInput(data);
+    let newData;
+    try {
+      newData = validateResendConfirmationInput(data);
+    } catch (err) {
+      logger.error(`🛑❌  Cannot create user ${err.message}`);
+      const error = i18n._(t`Invalid input`);
+      throw new Error(error);
+    }
 
-    const userId = await getUserIDFromRequest(request, cache, false);
+    const userId = await getUserIDFromRequest(request, cache, i18n, false);
     const user = await prisma.query.user({
       where: {
         id: newData.userId || userId,
@@ -223,7 +253,8 @@ export const Mutation = {
     });
 
     if (!user) {
-      throw new Error("Unable to resend confirmation"); // try NOT to provide enough information so hackers can guess
+      const error = i18n._(t`Unable to resend confirmation`);
+      throw new Error(error); // try NOT to provide enough information so hackers can guess
     }
 
     logger.debug(
@@ -231,7 +262,8 @@ export const Mutation = {
     );
 
     if (user.enabled && (newData.email === user.email || newData.phone === user.phone)) {
-      throw new Error("User profile has been confirmed");
+      const error = i18n._(t`User has been confirmed`);
+      throw new Error(error);
     }
 
     const code = generateConfirmation(cache, user.id, newData.email || newData.phone || user.email || user.phone);
@@ -246,8 +278,8 @@ export const Mutation = {
 
       // text the code if user is signing up via phone
       if (typeof newData.phone === "string") {
-        sendConfirmationText(user.name, newData.phone, code);
-        // sendConfirmationEsms(user.name, newData.phone, code);
+        // sendConfirmationText(user.name, newData.phone, code);
+        sendConfirmationEsms(user.name, newData.phone, code);
         logger.debug("Phone resent");
       }
       return true;
@@ -261,8 +293,8 @@ export const Mutation = {
 
     // text the code if user is signing up via phone
     if (typeof user.phone === "string") {
-      sendConfirmationText(user.name, user.phone, code);
-      // sendConfirmationEsms(user.name, user.phone, code);
+      // sendConfirmationText(user.name, user.phone, code);
+      sendConfirmationEsms(user.name, user.phone, code);
       logger.debug("Phone resent");
     }
 
@@ -270,33 +302,9 @@ export const Mutation = {
   },
 
   /**
-   * Upload avatar
-   * one file one time
-   */
-  uploadProfileMedia: async (parent, { file }, { prisma, request, cache }, info) => {
-    const uploadedFile = await file;
-    validateImageUploadInput(uploadedFile);
-
-    const userId = await getUserIDFromRequest(request, cache);
-
-    const user = await prisma.query.user({
-      where: {
-        id: userId,
-      },
-    });
-
-    if (!user) {
-      logger.debug(`🛑❌  UPLOAD_PROFILE_MEDIA: User ${userId} not found`);
-      throw new Error("Unable to upload avatar"); // try NOT to provide enough information so hackers can guess
-    }
-
-    return s3ProfileMediaUploader(prisma, uploadedFile, user.id);
-  },
-
-  /**
    * login
    */
-  login: async (parent, { data }, { prisma, request, cache, info }) => {
+  login: async (parent, { data }, { prisma, request, cache, i18n }, info) => {
     const user = await prisma.query.user(
       {
         where: {
@@ -304,20 +312,23 @@ export const Mutation = {
           phone: data.phone,
         },
       },
-      "{ id name profile profileMedia { id uri } badgeMedias {id uri } addresses { id description region name phone street unit district city state zip } email phone password enabled recoverable assignment { id retailers { id businessName businessEmail businessPhone businessAddress { id description region name phone street unit district city state zip } businessMedia { id uri } businessLicense enabled createdAt updatedAt } } createdAt updatedAt }",
+      "{ id password enabled assignment { id retailers { id } }}",
     );
 
     if (!user) {
-      throw new Error("Unable to login"); // try NOT to provide enough information so hackers can guess
+      const error = i18n._(t`Unable to login`);
+      throw new Error(error); // try NOT to provide enough information so hackers can guess
     }
 
     if (!user.enabled) {
-      throw new Error("User profile has not been confirmed or was disabled");
+      const error = i18n._(t`User has not been confirmed or was disabled`);
+      throw new Error(error);
     }
 
     const matched = verifyPassword(data.password, user.password);
     if (!matched) {
-      throw new Error("Unable to login"); // try NOT to provide enough information so hackers can guess
+      const error = i18n._(t`Unable to login`);
+      throw new Error(error); // try NOT to provide enough information so hackers can guess
     }
 
     // remove expired tokens
@@ -326,26 +337,8 @@ export const Mutation = {
 
     return {
       userId: user.id,
-      userProfile: {
-        id: user.id,
-        name: user.name,
-        profile: user.profile,
-        profileMedia: user.profileMedia,
-        badgeMedias: user.badgeMedias,
-        addresses: user.addresses,
-        email: user.email,
-        phone: user.phone,
-        password: user.password,
-        enabled: user.enabled,
-        recoverable: user.recoverable,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        assignment: {
-          id: user.assignment ? user.assignment.id : undefined,
-          user: user,
-          retailers: user.assignment ? user.assignment.retailers : undefined,
-        },
-      },
+      hasRetailers: user.assignment && user.assignment.retailers && user.assignment.retailers.length > 0 ? true : false,
+      // hasManufacturer: user.assignment.manufacturers && user.assignment.manufacturers.length > 0 ? true : false,
       token: generateToken(user.id, request, cache),
     };
   },
@@ -353,9 +346,9 @@ export const Mutation = {
   /**
    * log out
    */
-  logout: async (parent, { all }, { request, cache }) => {
+  logout: async (parent, { all }, { request, cache, i18n }) => {
     const token = getTokenFromRequest(request);
-    const userId = await getUserIDFromRequest(request, cache);
+    const userId = await getUserIDFromRequest(request, cache, i18n);
 
     if (all) {
       deleteAllTokensInCache(cache, userId);
@@ -373,10 +366,17 @@ export const Mutation = {
    * update user
    * user must verify before updateing email/phone/pwd
    */
-  updateUser: async (parent, { data }, { prisma, request, cache }, info) => {
-    const userId = await getUserIDFromRequest(request, cache);
+  updateUser: async (parent, { data }, { prisma, request, cache, i18n }, info) => {
+    const userId = await getUserIDFromRequest(request, cache, i18n);
 
-    const newData = validateUpdateInput(data);
+    let newData;
+    try {
+      newData = validateUpdateInput(data);
+    } catch (err) {
+      logger.error(`🛑❌  Cannot create user ${err.message}`);
+      const error = i18n._(t`Invalid input`);
+      throw new Error(error);
+    }
 
     const { email, phone, password, currentPassword } = newData;
     delete newData.password;
@@ -406,7 +406,8 @@ export const Mutation = {
         canUpdate = verifyPassword(currentPassword, user.password);
 
         if (!canUpdate) {
-          throw new Error("Unable to update user profile"); // try NOT to provide enough information so hackers can guess
+          const error = i18n._(t`Unable to update user profile`);
+          throw new Error(error);
         }
       }
 
@@ -460,17 +461,18 @@ export const Mutation = {
       );
 
       return updatedUser;
-    } catch (error) {
-      logger.debug(`🛑❌  UPDATE_USER ${error}`);
-      throw new Error("Unable to update user profile"); // try NOT to provide enough information so hackers can guess
+    } catch (err) {
+      logger.debug(`🛑❌  UPDATE_USER ${err}`);
+      const error = i18n._(t`Unable to update user profile`);
+      throw new Error(error); // try NOT to provide enough information so hackers can guess
     }
   },
 
   /**
    * delete user
    */
-  deleteUser: async (parent, args, { prisma, request, cache }, info) => {
-    const userId = await getUserIDFromRequest(request, cache);
+  deleteUser: async (parent, args, { prisma, request, cache, i18n }, info) => {
+    const userId = await getUserIDFromRequest(request, cache, i18n);
 
     deleteAllTokensInCache(cache, userId);
 
@@ -490,7 +492,7 @@ export const Mutation = {
    * request reset password
    * this will log user out of all devices
    */
-  requestResetPwd: async (parent, { mailOrPhone }, { prisma, request, cache }, info) => {
+  requestResetPwd: async (parent, { mailOrPhone }, { prisma, request, cache, i18n }, info) => {
     const user = (await prisma.query.users(
       {
         where: {
@@ -508,15 +510,18 @@ export const Mutation = {
     )).pop();
 
     if (!user) {
-      throw new Error("Account does not exist"); // try NOT to provide enough information so hackers can guess
+      const error = i18n._(t`User not found`);
+      throw new Error(error); // try NOT to provide enough information so hackers can guess
     }
 
     if (!user.enabled) {
-      throw new Error("Account has not been confirmed or was disabled");
+      const error = i18n._(t`User has not been confirmed or was disabled`);
+      throw new Error(error);
     }
 
     if (!user.recoverable) {
-      throw new Error("Cannot recover this account!");
+      const error = i18n._(t`Cannot recover user`);
+      throw new Error(error);
     }
 
     // NOTE: log out of all devices
@@ -536,12 +541,22 @@ export const Mutation = {
   /**
    * reset password
    */
-  resetPassword: async (parent, { data }, { prisma, request, cache }, info) => {
-    const newData = validateResetPwdInput(data);
+  resetPassword: async (parent, { data }, { prisma, request, cache, i18n }, info) => {
+    let newData;
+    try {
+      newData = validateResetPwdInput(data);
+    } catch (err) {
+      logger.error(`🛑❌  Cannot create user ${err.message}`);
+      const error = i18n._(t`Invalid input`);
+      throw new Error(error);
+    }
 
-    const userId = await getUserIDFromRequest(request, cache, false);
+    const userId = await getUserIDFromRequest(request, cache, i18n, false);
 
-    if (!userId) throw new Error("Unable to reset password");
+    if (!userId) {
+      const error = i18n._(t`Unable to reset password`);
+      throw new Error(error);
+    }
 
     const user = await prisma.query.user(
       {
@@ -553,11 +568,13 @@ export const Mutation = {
     );
 
     if (!user) {
-      throw new Error("Unable to reset password"); // try NOT to provide enough information so hackers can guess
+      const error = i18n._(t`Unable to reset password`);
+      throw new Error(error); // try NOT to provide enough information so hackers can guess
     }
 
     if (!user.enabled) {
-      throw new Error("User profile has not been confirmed or was disabled");
+      const error = i18n._(t`User has not been confirmed or was disabled`);
+      throw new Error(error);
     }
 
     const { securityAnswers } = user;
@@ -600,7 +617,7 @@ export const Mutation = {
 
       return true;
     }
-
-    throw new Error("Unable to perform reset password request");
+    const error = i18n._(t`Unable to reset password`);
+    throw new Error(error);
   },
 };

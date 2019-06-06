@@ -1,0 +1,10 @@
+{
+  "User not found": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        18
+      ]
+    ]
+  }
+}

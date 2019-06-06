@@ -1,18 +1,22 @@
 // @flow
 
-import fs from 'fs';
+import fs from "fs";
 
-import express from 'express';
-import helmet from 'helmet';
-import bodyParser from 'body-parser';
+import express from "express";
+import requestLanguage from "express-request-language";
+import helmet from "helmet";
+import bodyParser from "body-parser";
 
-import { ApolloServer, gql } from 'apollo-server-express';
+import { ApolloServer, gql } from "apollo-server-express";
 
-import { resolvers, fragmentReplacements } from './resolvers';
-import { schema as typeDefs } from './type-defs';
-import prisma from './utils/prisma';
-import cache from './utils/cache';
-import logger from './utils/logger';
+// import { i18n, unpackCatalog } from "lingui-i18n"; // import i18n as something else
+import { setupI18n } from "@lingui/core";
+
+import { resolvers, fragmentReplacements } from "./resolvers";
+import { schema as typeDefs } from "./type-defs";
+import prisma from "./utils/prisma";
+import cache from "./utils/cache";
+import logger from "./utils/logger";
 
 // Express server
 const server = express();
@@ -23,6 +27,19 @@ server.use(helmet());
 
 // body parser middleware to parse application/json based body: authorization token
 server.use(bodyParser.json());
+
+const i18n = setupI18n({
+  catalogs: {
+    en: require("../locale/en/messages"),
+    vi: require("../locale/vi/messages"),
+  },
+});
+
+server.use(
+  requestLanguage({
+    languages: i18n.availableLanguages.sort(), // First locale becomes the default
+  }),
+);
 
 // other middlewares goes here, like passport, etc.
 // server.use(passport.initialize());
@@ -41,10 +58,15 @@ const graphQLServer = new ApolloServer({
   resolvers, // and our implemented resolvers
   context: ({ req: request /* , res: response */ }) => {
     // reference req -> request, res -> response
+
+    i18n.activate(request.language);
+    logger.debug(`🉑  ACTIVATED LANGUAGE: ${request.language}`);
+
     return {
       prisma,
       request,
       cache,
+      i18n,
     };
   },
   uploads: {

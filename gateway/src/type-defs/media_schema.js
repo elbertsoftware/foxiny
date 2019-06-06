@@ -20,6 +20,8 @@ export const mediaSchema = gql`
   extend type Mutation {
     uploadProfileMedia(file: Upload!): Media!
     uploadProductMedias(files: [Upload!]!): [Media!]
+    uploadBusinessAvatar(file: Upload!, sellerId: String!): Media!
+    uploadBusinessCover(file: Upload!, sellerId: String!): Media!
     # uploadReviewMedias(files: [Upload!]!): [Media!]!
   }
 `;

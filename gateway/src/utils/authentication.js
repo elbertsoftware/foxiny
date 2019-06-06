@@ -1,5 +1,5 @@
 // @flow
-
+import { t } from "@lingui/macro";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import ms from "ms";
@@ -38,10 +38,14 @@ const generateConfirmation = (cache, userId, emailOrPhone) => {
   return code;
 };
 
-const verifyConfirmation = async (cache, code, userId) => {
+const verifyConfirmation = async (cache, code, userId, i18n) => {
+  console.log(`${code} ${userId}`);
   const data = JSON.parse(await cache.get(code));
-
-  if (!data) throw new Error("Invalid confirmation code");
+  console.log(data);
+  if (!data) {
+    const error = i18n._(t`Invalid confirmation code`);
+    throw new Error(error);
+  }
 
   logger.debug(`verifying confirmation code ${code} for userId ${userId} upon the cached userId ${data.userId}`);
 
@@ -106,7 +110,7 @@ const getTokenFromRequest = request => {
   return token;
 };
 
-const getUserIDFromRequest = async (request, cache, requireAuthentication = true, options = null) => {
+const getUserIDFromRequest = async (request, cache, i18n, requireAuthentication = true, options = null) => {
   const token = getTokenFromRequest(request);
   if (token) {
     // the verify() will throw Error if the token has been expired
@@ -135,7 +139,8 @@ const getUserIDFromRequest = async (request, cache, requireAuthentication = true
 
         // suppress error if authentication is not required
         if (requireAuthentication) {
-          throw new Error("Authentication required"); // invalid token
+          const error = i18n._(t`Authentication required`);
+          throw new Error(error); // invalid token
         }
       }
 
@@ -143,14 +148,15 @@ const getUserIDFromRequest = async (request, cache, requireAuthentication = true
     } catch (error) {
       // suppress error if authentication is not required
       if (requireAuthentication) {
-        logger.debug(JSON.stringify(error, undefined, 2));
-        throw new Error("Authentication required"); // invalid token or token expired
+        const error = i18n._(t`Authentication required`);
+        throw new Error(error); // invalid token or token expired
       }
     }
   }
 
   if (requireAuthentication) {
-    throw new Error("Authentication required"); // custom return error message
+    const error = i18n._(t`Authentication required`);
+    throw new Error(error); // custom return error message
   }
 
   return null;
@@ -177,34 +183,6 @@ const cleanToken = async (userId, cache) => {
   }
 };
 
-const checkRights = async (prisma, cache, ownerId, request) => {
-  // NOTE: this does not check manufacturer-assignment in user
-  // TODO: add manufacturer
-  // TODO: optimize this by using cache (save assignment to cache)
-  const userId = await getUserIDFromRequest(request, cache);
-
-  const user = await prisma.query.user(
-    {
-      where: {
-        id: userId,
-      },
-    },
-    // `{ id assignment { id retailers { id } manufacturer { id }} }`,
-    `{ id assignment { id retailers { id }`,
-  );
-
-  if (!user) {
-    throw new Error("Access is denied");
-  }
-
-  // const canGoNext =  user.assignment.retailers.includes(ownerId) || user.assignment.manufacturer.includes(ownerId);
-  const canGoNext = user.assignment.retailers.includes(ownerId);
-
-  if (!canGoNext) {
-    throw new Error("Access is denied");
-  }
-};
-
 export {
   hashPassword,
   verifyPassword,
@@ -216,5 +194,4 @@ export {
   getTokenFromRequest,
   getUserIDFromRequest,
   cleanToken,
-  checkRights,
 };
