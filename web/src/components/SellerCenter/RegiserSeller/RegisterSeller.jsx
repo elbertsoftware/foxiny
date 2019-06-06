@@ -1,6 +1,6 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Grid,
   Typography,
@@ -13,17 +13,22 @@ import {
   MenuItem,
   InputLabel,
   Icon,
+  Zoom,
 } from '@material-ui/core';
-import { Form, Field } from 'react-final-form';
+import { Form, Field, FormSpy } from 'react-final-form';
+import { Redirect } from 'react-router';
 import { graphql, compose } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import SwipeableViews from 'react-swipeable-views';
 import { toast } from 'react-toastify';
+import { required, email, phone, formatInternationalPhone } from '../../../utils/common/form/validation';
+import { countries } from '../../../utils/callingcodes';
 import RFTextField from '../../../utils/common/form/RFTextField';
 import FormButton from '../../../utils/common/form/FormButton';
 import TabContainer from '../../../utils/common/TabContainer';
 import registerSellerStyles from './registerSellerStyles';
 import SelectList from '../../Form/Fields/SelectList';
+import SwipeButton from '../../../utils/SwipeButton';
 
 const REGISTER_RETAILER = gql`
   mutation registerRetailer($data: RegisterRetailer!) {
@@ -39,15 +44,33 @@ const REGISTER_RETAILER = gql`
   }
 `;
 
-const RegisterSeller = ({ classes, theme, ...props }) => {
+const RegisterSeller = ({ classes, theme, userLoggedIn, ...props }) => {
   // Props from graphql
   const { registerRetailer } = props;
   const [activeTabId, setActiveTabId] = useState(0);
+  const [fieldVisible, setFieldVisible] = useState(false);
+  const [isEmailConfirmed, setIsEmailConfirmed] = useState(false);
+  const [isPhoneConfirmed, setIsPhoneConfirmed] = useState(false);
   const handleTabChange = (e, id) => {
     setActiveTabId(id);
   };
   const handleChangeIndex = index => {
     setActiveTabId(index);
+  };
+  const checkEmailPhone = (usermail, userphone, countryCode) => {
+    const user = userLoggedIn();
+    console.log(user);
+    const phoneNumber = formatInternationalPhone(userphone, countryCode);
+    if (user.email !== usermail) {
+      setIsEmailConfirmed(true);
+    } else {
+      setIsEmailConfirmed(false);
+    }
+    if (user.phone !== phoneNumber) {
+      setIsPhoneConfirmed(true);
+    } else {
+      setIsPhoneConfirmed(false);
+    }
   };
 
   const onSubmit = async values => {
@@ -69,6 +92,9 @@ const RegisterSeller = ({ classes, theme, ...props }) => {
       toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra!');
     }
   };
+  if (!userLoggedIn()) {
+    return <Redirect to="/seller/sign" />;
+  }
   return (
     <Grid container className={classes.container}>
       <div className={classes.logoContainer}>
@@ -78,11 +104,34 @@ const RegisterSeller = ({ classes, theme, ...props }) => {
       <div className={classes.formContainer}>
         <div className={activeTabId === 0 ? classes.form : classes.formSellerInfo}>
           <Tabs value={activeTabId} onChange={handleTabChange} indicatorColor="primary" textColor="primary" centered>
+            <Tab label="Chọn loại hình" classes={{ root: classes.tab }} />
             <Tab label="Thông tin nhà bán" classes={{ root: classes.tab }} />
-            <Tab label="Xác thực nhà bán" classes={{ root: classes.tab }} />
           </Tabs>
-          <Form onSubmit={onSubmit} subscription={{ submitting: true }}>
-            {({ handleSubmit, submitting }) => (
+          <Form
+            className={classes.finalForm}
+            onSubmit={onSubmit}
+            subscription={{ submitting: true, values: true }}
+            validate={values => {
+              const errors = required(
+                ['businessType', 'businessName', 'businessEmail', 'businessPhone', 'businessAddress'],
+                values,
+              );
+              if (!errors.businessEmail) {
+                const emailError = email(values.businessEmail);
+                if (emailError) {
+                  errors.businessEmail = emailError;
+                }
+              }
+              if (!errors.businessPhone) {
+                const phoneError = phone(values.countryCode, values.businessPhone);
+                if (phoneError) {
+                  errors.businessPhone = phoneError;
+                }
+              }
+              return errors;
+            }}
+          >
+            {({ handleSubmit, submitting, values }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <SwipeableViews
                   axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
@@ -102,15 +151,32 @@ const RegisterSeller = ({ classes, theme, ...props }) => {
                       <FormControl fullWidth margin="normal" required>
                         <InputLabel htmlFor="businessType">Loại hình kinh doanh</InputLabel>
                         <Field component={SelectList} disabled={submitting} name="businessType" required size="large">
-                          <MenuItem key="small" value="personal">
+                          <MenuItem key="personal" value="personal">
                             Cá nhân
                           </MenuItem>
-                          <MenuItem key="big" value="company">
-                            Công ty / Hộ kinh doanh
+                          <MenuItem key="family" value="family">
+                            Hộ gia đình
+                          </MenuItem>
+                          <MenuItem key="company" value="company">
+                            Công ty
                           </MenuItem>
                         </Field>
                       </FormControl>
-
+                      {values.businessType && (
+                        <Zoom in={values.businessType !== undefined}>
+                          <div className={classes.messagesContainer}>
+                            <Typography variant="subtitle2">
+                              {values.businessType === 'personal'
+                                ? 'Cá nhân từ 18 tuổi trở lên, có CMND còn thời hạn.'
+                                : 'Cần có giấy phép đăng ký kinh doanh còn thời hạn.'}
+                            </Typography>
+                            <Typography variant="subtitle2">
+                              📝 <strong>Lưu ý:</strong> Bạn cần phải cung cấp hình ảnh cần thiết cho Foxiny sau khi
+                              hoàn tất các bước đăng ký (CMND hai mặt/Giấy phép kinh doanh)
+                            </Typography>
+                          </div>
+                        </Zoom>
+                      )}
                       <div className={classes.formButtons}>
                         <Button color="primary" size="large" className={classes.forgetButton}>
                           <Icon>help_outline</Icon> Hỗ trợ
@@ -126,13 +192,13 @@ const RegisterSeller = ({ classes, theme, ...props }) => {
                   )}
                   {activeTabId === 1 ? (
                     <TabContainer dir={theme.direction}>
-                      <Typography variant="h1" color="primary" className={classes.greeting}>
-                        Xin chào !
-                      </Typography>
-                      <Typography variant="h3" color="primary" className={classes.subGreeting}>
-                        Đăng ký thông tin gian hàng
-                      </Typography>
-                      <div className={classes.fieldRow}>
+                      <div className={classes.tabContent}>
+                        <Typography variant="h1" color="primary" className={classes.greeting}>
+                          Xin chào !
+                        </Typography>
+                        <Typography variant="h3" color="primary" className={classes.subGreeting}>
+                          Đăng ký thông tin gian hàng
+                        </Typography>
                         <Field
                           className={classes.rightSpacing}
                           fullWidth
@@ -149,69 +215,130 @@ const RegisterSeller = ({ classes, theme, ...props }) => {
                           fullWidth
                           size="large"
                           component={RFTextField}
-                          disabled={submitting}
+                          disabled
                           required
-                          name="businessPhone"
-                          label="Số điện thoại cửa hàng"
+                          name="storeUrl"
+                          placeholder="foxiny.vn/cua-hang"
                           type="text"
                           margin="normal"
                         />
-                      </div>
-                      <Field
-                        fullWidth
-                        size="large"
-                        component={RFTextField}
-                        disabled={submitting}
-                        required
-                        name="storeUrl"
-                        placeholder="foxiny.vn/cua-hang"
-                        type="text"
-                        margin="normal"
-                      />
-                      <Field
-                        fullWidth
-                        size="large"
-                        component={RFTextField}
-                        disabled={submitting}
-                        required
-                        name="businessEmail"
-                        label="Địa chỉ Email cửa hàng"
-                        type="email"
-                        margin="normal"
-                      />
-                      <Field
-                        fullWidth
-                        size="large"
-                        component={RFTextField}
-                        disabled={submitting}
-                        required
-                        name="businessAddress"
-                        label="Địa chỉ"
-                        type="text"
-                        margin="normal"
-                      />
-                      <div className={classes.formButtons}>
-                        <Button
-                          onClick={() => setActiveTabId(0)}
-                          color="primary"
+                        <div className={classes.fieldRow}>
+                          <FormControl className={classes.rightSpacing} fullWidth margin="normal" required>
+                            <InputLabel htmlFor="countryCode">Mã quốc gia</InputLabel>
+                            <Field
+                              component={SelectList}
+                              disabled={submitting}
+                              name="countryCode"
+                              required
+                              size="large"
+                            >
+                              {countries}
+                            </Field>
+                          </FormControl>
+                          <Field
+                            fullWidth
+                            size="large"
+                            component={RFTextField}
+                            disabled={submitting}
+                            required
+                            name="businessPhone"
+                            label="Số điện thoại cửa hàng"
+                            type="text"
+                            margin="normal"
+                          />
+                        </div>
+
+                        <Field
+                          fullWidth
                           size="large"
-                          className={classes.forgetButton}
-                        >
-                          Quay lại
-                        </Button>
-                        {submitting ? (
-                          <CircularProgress size={26} className={classes.loader} />
-                        ) : (
-                          <FormButton variant="contained" size="large" color="secondary">
-                            Đăng ký
-                          </FormButton>
+                          component={RFTextField}
+                          disabled={submitting}
+                          required
+                          name="businessEmail"
+                          label="Địa chỉ Email cửa hàng"
+                          type="email"
+                          margin="normal"
+                        />
+                        <Field
+                          fullWidth
+                          size="large"
+                          component={RFTextField}
+                          disabled={submitting}
+                          required
+                          name="businessAddress"
+                          label="Địa chỉ"
+                          type="text"
+                          margin="normal"
+                        />
+                        {(isEmailConfirmed || isPhoneConfirmed) && (
+                          <SwipeButton
+                            setFieldVisible={setFieldVisible}
+                            email={values.businessEmail}
+                            phone={values.businessphone}
+                          />
                         )}
+                        {fieldVisible && (
+                          <React.Fragment>
+                            {isEmailConfirmed && (
+                              <Field
+                                fullWidth
+                                size="large"
+                                component={RFTextField}
+                                disabled={submitting}
+                                required
+                                name="emailCode"
+                                label="Nhập mã xác thực email"
+                                type="email"
+                                margin="normal"
+                              />
+                            )}
+                            {isPhoneConfirmed && (
+                              <Field
+                                fullWidth
+                                size="large"
+                                component={RFTextField}
+                                disabled={submitting}
+                                required
+                                name="phoneCode"
+                                label="Nhập mã xác thực số điện thoại"
+                                type="text"
+                                margin="normal"
+                              />
+                            )}
+                          </React.Fragment>
+                        )}
+                        <div className={classes.formButtons}>
+                          <Button
+                            onClick={() => setActiveTabId(0)}
+                            color="primary"
+                            size="large"
+                            className={classes.forgetButton}
+                          >
+                            Quay lại
+                          </Button>
+                          {submitting ? (
+                            <CircularProgress size={26} className={classes.loader} />
+                          ) : (
+                            <FormButton variant="contained" size="large" color="secondary">
+                              Đăng ký
+                            </FormButton>
+                          )}
+                        </div>
                       </div>
                     </TabContainer>
                   ) : (
                     <Typography />
                   )}
                 </SwipeableViews>
+                <FormSpy
+                  subscription={{ values: true, touched: true }}
+                  onChange={state => {
+                    const { values, touched } = state;
+                    if (touched['businessEmail'] || touched['businessPhone']) {
+                      checkEmailPhone(values.businessEmail, values.businessPhone, values.countryCode);
+                    }
+                  }}
+                />
               </form>
             )}
           </Form>

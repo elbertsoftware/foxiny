@@ -16,9 +16,6 @@ const signStyles = theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     [theme.breakpoints.down('md')]: {
-      width: '50%',
-    },
-    [theme.breakpoints.down('md')]: {
       display: 'none',
     },
   },
@@ -44,7 +41,7 @@ const signStyles = theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     [theme.breakpoints.down('md')]: {
-      width: '50%',
+      width: '70%',
     },
   },
   form: {
@@ -52,6 +49,9 @@ const signStyles = theme => ({
   },
   formSellerInfo: {
     width: 420,
+  },
+  finalForm: {
+    padding: 10,
   },
   tab: {
     fontWeight: 400,
@@ -62,6 +62,9 @@ const signStyles = theme => ({
     height: 250,
     objectFit: 'contain',
     marginTop: 24,
+  },
+  tabContent: {
+    overflowX: 'hidden',
   },
   greeting: {
     fontWeight: 500,
@@ -118,11 +121,18 @@ const signStyles = theme => ({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+
   rightSpacing: {
     marginRight: theme.spacing.unit * 2,
   },
-  formButtons: {
+  messagesContainer: {
+    border: '1px solid grey',
+    borderRadius: 20,
     padding: 16,
+    margin: '16px 0',
+  },
+  formButtons: {
+    padding: '16px 0',
     width: '100%',
     marginTop: theme.spacing.unit * 4,
     display: 'flex',

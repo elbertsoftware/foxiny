@@ -195,9 +195,12 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
     const productImagesIDAllProduct = [];
     for (let index = 0; index < images.length; index++) {
       try {
-        const imageIdEachProduct = [];
-        const imageUpdate = [];
-        let finalId = [];
+        // Nếu hình nào còn giữ nguyên, gửi id của hình đó về lại server
+        // Nếu hình đã được thay đổi, thực hiện uploadProductImgs, sau đó server trả về id cho hinh mới vừa up
+        // Kết hợp id của hình cũ, và hinh mới vừa upload => gửi về cho server để thực hiện update.
+        const imageIdEachProduct = []; // Danh sách lưu id hình cũ của 1 sản phẩm trong danh sách sản phẩm
+        const imageUpdate = []; // Danh sách File ảnh mới cần được upload
+        let finalId = []; // Danh sách id ảnh cuôi cung (Gồm id ảnh cũ và id ảnh mới)
         images[index].forEach(img => {
           if (img.id) {
             imageIdEachProduct.push(img.id);
@@ -206,6 +209,7 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
           }
         });
         if (imageUpdate.length > 0) {
+          // Nếu có ảnh cần upload, hàm upload trả về data, lấy id ảnh của data, sau đó merge với imageIdEachProduct (list id ảnh cũ) => finalId.
           const media = await uploadProductImgs({
             variables: {
               files: imageUpdate,
@@ -214,8 +218,10 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
           const idAfterUpload = media.data.uploadProductMedias.map(img => img.id);
           finalId = imageIdEachProduct.concat(idAfterUpload);
         } else {
+          // Ngược lại không có ảnh nào mới cần upload, finalId = list id ảnh cũ
           finalId = imageIdEachProduct;
         }
+        // Thêm danh sách id ảnh của current product vào Danh sách cuôi cùng. Danh sách này bao gồm nhiều danh sách id ảnh của nhiều product khác nhau. Bởi vì mỗi product có nhiều images.
         productImagesIDAllProduct.push(finalId);
         // Just need the id of image been uploaded
       } catch (error) {
@@ -243,7 +249,7 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
           productTemplateId: product.productTemplateId,
           productId: product.productId,
           productName: product.productName,
-          listPrice: +product.listPrice / 1000,
+          listPrice: +product.listPrice / 1000, // + dùng để ép kiểu nhanh về integer
           sellPrice: +product.sellPrice / 1000,
           stockQuantity: +product.stockQuantity,
           productMediaIds: productImagesIDAllProduct[index],

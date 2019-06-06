@@ -5,7 +5,7 @@ import { loadReCaptcha } from 'react-recaptcha-google';
 import { Route, Switch, withRouter } from 'react-router';
 import { AppBar } from '@material-ui/core';
 import { I18nProvider } from '@lingui/react';
-import compose from 'recompose/compose';
+import { compose } from 'react-apollo';
 import 'react-toastify/dist/ReactToastify.css';
 import withTheme from '../../utils/withTheme';
 import NavBar from '../NavBar/NavBar';
@@ -26,6 +26,7 @@ import AddProduct from '../SellerCenter/AddProduct/AddProduct';
 import ListProduct from '../SellerCenter/ListProducts/ListProduct';
 import SignView from '../SellerCenter/Sign/SignView';
 import RegisterSeller from '../SellerCenter/RegiserSeller/RegisterSeller';
+import SellerDeclaration from '../SellerCenter/SellerDeclaration/SellerDeclaration';
 
 class App extends Component<Props, State> {
   state = {
@@ -77,7 +78,8 @@ class App extends Component<Props, State> {
         <Switch>
           {/* Place two Route in Switch component, the /seller/(.*) will be matched before /(.+) path */}
           <Route exact path="/seller/sign" component={SignView} />
-          <Route exact path="/seller/register-seller" component={RegisterSeller} />
+          <Route exact path="/seller/register-seller" component={withAuthenticator(RegisterSeller)} />
+          <Route exact path="/seller/seller-declaration" component={SellerDeclaration} />
           <Route
             exact
             path="/seller/(.*)"

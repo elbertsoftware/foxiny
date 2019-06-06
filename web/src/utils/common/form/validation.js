@@ -58,6 +58,11 @@ const messages = {
   answer1: 'câu trả lời',
   answer2: 'câu trả lời',
   emailOrPhone: 'email hoặc số điện thoại',
+  businessName: 'tên cửa hàng',
+  businessPhone: 'số điện thoại cửa hàng',
+  businessEmail: 'email cửa hàng',
+  businessAddress: 'địa chỉ cửa hàng',
+  businessType: 'chọn loại hình kinh doanh',
 };
 
 const isDirty = value => value || value === 0;
