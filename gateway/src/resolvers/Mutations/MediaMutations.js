@@ -3,7 +3,7 @@
 import { t } from '@lingui/macro';
 import logger from '../../utils/logger';
 import { getUserIDFromRequest } from '../../utils/authentication';
-import { s3ProfileMediaUploader, s3ProductMediasUploader } from '../../utils/s3Uploader';
+import { s3ProfileMediaUploader, s3ProductMediasUploader, s3DocumentsUploader } from '../../utils/s3Uploader';
 import { validateImageUploadInput } from '../../utils/validation';
 
 // TODO: optimize me by using promiseAll
@@ -46,7 +46,7 @@ export const Mutation = {
     const productMedias = await Promise.all(
       files.map(async file => {
         const uploaded = await file;
-        const media = await s3ProductMediasUploader(prisma, uploaded, userId);
+        const media = await s3ProductMediasUploader(prisma, uploaded, { userId: user.id });
         return media;
       }),
     );
@@ -70,6 +70,7 @@ export const Mutation = {
       throw error;
     }
 
+    // TODO: check permission, optimized these following lines
     const userId = await getUserIDFromRequest(request, cache, i18n);
 
     const user = await prisma.query.user(
@@ -110,6 +111,7 @@ export const Mutation = {
       throw new Error(error);
     }
 
+    // TODO: check permission, optimized these following lines
     const userId = await getUserIDFromRequest(request, cache, i18n);
 
     const user = await prisma.query.user(
@@ -134,5 +136,116 @@ export const Mutation = {
     }
 
     return s3ProfileMediaUploader(prisma, uploadedFile, { sellerId: sellerId, isAvatar: true });
+  },
+
+  uploadSocialIDMediaRetailer: async (parent, { files, sellerId }, { prisma, request, cache, i18n }, info) => {
+    const userId = await getUserIDFromRequest(request, cache, i18n);
+
+    // TODO: validate input
+    // TODO: check permission
+
+    const medias = await Promise.all(
+      files.map(async file => {
+        const uploaded = await file;
+        const media = await s3DocumentsUploader(prisma, uploaded, {
+          sellerId: sellerId,
+          isDocument: true,
+          isSocialID: true,
+        });
+        return await media;
+      }),
+    );
+
+    const updatedRetailer = await prisma.mutation.updateRetailer({
+      where: {
+        id: sellerId,
+      },
+      data: {
+        socialNumberImages: {
+          connect: medias.map(media => ({
+            id: media.id,
+          })),
+        },
+      },
+    });
+
+    return medias;
+  },
+
+  deleteSocialIDMediaRetailer: async (parent, { fileIds, sellerId }, { prisma, request, cache, i18n }, info) => {
+    const userId = await getUserIDFromRequest(request, cache, i18n);
+
+    // TODO: validate input
+    // TODO: check permission
+
+    await prisma.mutation.updateRetailer({
+      where: {
+        id: sellerId,
+      },
+      data: {
+        socialNumberImages: {
+          disconnect: medias.map(media => ({
+            id: media.id,
+          })),
+        },
+      },
+    });
+
+    return fileIds;
+  },
+
+  uploadBusinessLicenseMediaRetailer: async (parent, { files, sellerId }, { prisma, request, cache, i18n }, info) => {
+    const userId = await getUserIDFromRequest(request, cache, i18n);
+
+    // TODO: validate input
+    // TODO: check permission
+
+    const medias = await Promise.all(
+      files.map(async file => {
+        const uploaded = await file;
+        const media = await s3DocumentsUploader(prisma, uploaded, {
+          sellerId: sellerId,
+          isDocument: true,
+          isBusinessLicense: true,
+        });
+        return media;
+      }),
+    );
+
+    const updatedRetailer = await prisma.mutation.updateRetailer({
+      where: {
+        id: sellerId,
+      },
+      data: {
+        businessLicenseImages: {
+          connect: medias.map(media => ({
+            id: media.id,
+          })),
+        },
+      },
+    });
+    return medias;
+  },
+
+  deleteBusinessLicenseMediaRetailer: async (parent, { fileIds, sellerId }, { prisma, request, cache, i18n }, info) => {
+    const userId = await getUserIDFromRequest(request, cache, i18n);
+
+    // TODO: validate input
+    // TODO: check permission
+
+    await prisma.mutation.updateRetailer({
+      where: {
+        id: sellerId,
+      },
+      data: {
+        businessLicenseImages: {
+          disconnect: medias.map(media => ({
+            id: media.id,
+          })),
+        },
+      },
+    });
+
+    return fileIds;
   },
 };

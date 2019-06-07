@@ -23,5 +23,9 @@ export const mediaSchema = gql`
     uploadBusinessAvatar(file: Upload!, sellerId: String!): Media!
     uploadBusinessCover(file: Upload!, sellerId: String!): Media!
     # uploadReviewMedias(files: [Upload!]!): [Media!]!
+    uploadSocialIDMediaRetailer(files: [Upload!]!, sellerId: String!): [Media!]
+    deleteSocialIDMediaRetailer(fileIds: [String!], sellerId: String!): [String!]
+    uploadBusinessLicenseMediaRetailer(files: [Upload!]!, sellerId: String!): [Media!]
+    deleteBusinessLicenseMediaRetailer(fileIds: [String!], sellerId: String!): [String!]
   }
 `;

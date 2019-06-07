@@ -3,6 +3,8 @@
 import { getUserIDFromRequest } from "../../utils/authentication";
 import logger from "../../utils/logger";
 
+// TODO: optimize queries for pagination and searching
+
 export const Query = {
   retailers: (parent, { query }, { prisma, request, i18n }, info) => {
     const opArgs = {};

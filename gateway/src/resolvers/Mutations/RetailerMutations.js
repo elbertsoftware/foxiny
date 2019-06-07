@@ -196,7 +196,9 @@ export const Mutation = {
       businessLicense: data.businessLicense,
       businessLicenseImages: data.businessLicenseImageIds
         ? {
-            set: data.businessLicenseImageIds.map(id => ({ id: id })),
+            set: data.businessLicenseImageIds.map(id => ({
+              id: id,
+            })),
           }
         : undefined,
     };
@@ -259,7 +261,7 @@ export const Mutation = {
       });
 
       if (existedUser || existedRetailer) {
-        const error = i18n._(t`Cannot register retailer`);
+        const error = i18n._(t`Email is already existed`);
         throw new Error(error);
       }
 
@@ -288,7 +290,7 @@ export const Mutation = {
       });
 
       if (existedUser || existedRetailer) {
-        const error = i18n._(t`Cannot register retailer`);
+        const error = i18n._(t`Phone is already existed`);
         throw new Error(error);
       }
 
