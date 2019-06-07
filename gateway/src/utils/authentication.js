@@ -39,9 +39,8 @@ const generateConfirmation = (cache, userId, emailOrPhone) => {
 };
 
 const verifyConfirmation = async (cache, code, userId, i18n) => {
-  console.log(`${code} ${userId}`);
   const data = JSON.parse(await cache.get(code));
-  console.log(data);
+  
   if (!data) {
     const error = i18n._(t`Invalid confirmation code`);
     throw new Error(error);
