@@ -2,12 +2,17 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { Grid, Typography, Tabs, Tab, withStyles, Button, Icon, Paper, IconButton } from '@material-ui/core';
+import { compose, graphql } from 'react-apollo';
+import { Redirect } from 'react-router';
 import SwipeableViews from 'react-swipeable-views';
 import TabContainer from '../../../utils/common/TabContainer';
 import peopleImage from '../../../images/people-fill-out-form.jpg';
 import UploadImgZone from '../../User/UserAvatar/UploadImgZone';
 import sellerDeclarationStyles from './styles/sellerDeclarationStyles';
 import SellerProfile from './SellerProfile';
+import { RETAILERS } from '../../../graphql/retailer';
+
+import Loading from '../../App/Loading';
 
 const imgCardStyles = theme => ({
   container: {
@@ -59,7 +64,11 @@ const ImageCardReview = withStyles(imgCardStyles)(({ src, classes, removeItem, .
   );
 });
 
-const SellerDeclaration = ({ classes, theme }) => {
+const SellerDeclaration = ({ classes, theme, ...props }) => {
+  // Data query from Graphql
+  const { loading, myRetailers } = props;
+  // Auth
+  const { userLoggedIn } = props;
   const [activeTabId, setActiveTabId] = useState(0);
   const [images, setImages] = useState([]);
 
@@ -74,15 +83,15 @@ const SellerDeclaration = ({ classes, theme }) => {
     const newImages = images.filter((image, i) => i !== index);
     setImages(newImages);
   };
-
+  if (!userLoggedIn()) {
+    return <Redirect to="/seller/sign" />;
+  }
+  if (loading) return <Loading />;
   return (
     <Grid container className={classes.container}>
       <SellerProfile
-        cover="https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1351&q=80"
-        image="https://images.unsplash.com/photo-1453396450673-3fe83d2db2c4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80"
-        name="Grace Shop"
-        email="minhkha791140@gmail.com"
-        phone="0938499460"
+        cover="https://cdn.pixabay.com/photo/2019/04/26/07/14/store-4156934_960_720.png"
+        retailerInfo={myRetailers[0]}
       />
       <Paper className={classes.wrapper}>
         <Typography className={classes.title}>Thông tin tài khoản bán hàng</Typography>
@@ -147,4 +156,12 @@ const SellerDeclaration = ({ classes, theme }) => {
   );
 };
 
-export default withStyles(sellerDeclarationStyles, { withTheme: true })(SellerDeclaration);
+export default compose(
+  graphql(RETAILERS, {
+    props: ({ data: { loading, myRetailers } }) => ({
+      loading,
+      myRetailers,
+    }),
+  }),
+  withStyles(sellerDeclarationStyles, { withTheme: true }),
+)(SellerDeclaration);

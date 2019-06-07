@@ -79,7 +79,7 @@ class App extends Component<Props, State> {
           {/* Place two Route in Switch component, the /seller/(.*) will be matched before /(.+) path */}
           <Route exact path="/seller/sign" component={SignView} />
           <Route exact path="/seller/register-seller" component={withAuthenticator(RegisterSeller)} />
-          <Route exact path="/seller/seller-declaration" component={SellerDeclaration} />
+          <Route exact path="/seller/seller-declaration" component={withAuthenticator(SellerDeclaration)} />
           <Route
             exact
             path="/seller/(.*)"
@@ -143,6 +143,8 @@ class App extends Component<Props, State> {
             }}
           />
         </Switch>
+        {/* Catch all route 
+            <Route path="*" component={NotFound} status={404} /> */}
       </I18nProvider>
     );
   }

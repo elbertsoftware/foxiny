@@ -89,7 +89,8 @@ class ConfirmPage extends React.Component {
                       () => {
                         this.timerReturn = setTimeout(() => {
                           if (this.props.userId) {
-                            this.props.history.push('/seller/register-seller');
+                            this.props.history.push('/seller/sign');
+                            window.location.reload();
                           } else {
                             window.location.href = '/';
                           }

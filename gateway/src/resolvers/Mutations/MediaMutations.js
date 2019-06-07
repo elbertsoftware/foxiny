@@ -1,5 +1,6 @@
 // @flow
 
+import { t } from '@lingui/macro';
 import logger from '../../utils/logger';
 import { getUserIDFromRequest } from '../../utils/authentication';
 import { s3ProfileMediaUploader, s3ProductMediasUploader } from '../../utils/s3Uploader';
@@ -59,7 +60,7 @@ export const Mutation = {
    * Upload business cover
    * one file one time
    */
-  uploadBusinessCover: async (parent, { file, retailerId }, { prisma, request, cache, i18n }, info) => {
+  uploadBusinessCover: async (parent, { file, sellerId }, { prisma, request, cache, i18n }, info) => {
     const uploadedFile = await file;
     try {
       validateImageUploadInput(uploadedFile);
@@ -77,7 +78,7 @@ export const Mutation = {
           id: userId,
         },
       },
-      'id assignment { id retailers { id } }',
+      '{ id assignment { id retailers { id } } }',
     );
 
     if (
@@ -85,21 +86,21 @@ export const Mutation = {
       !user.assignment ||
       !user.assignment.retailers ||
       !user.assignment.retailers.length > 0 ||
-      !user.assignment.retailers.includes(retailerId)
+      !user.assignment.retailers.map(retailer => retailer.id).includes(sellerId)
     ) {
-      logger.debug(`🛑❌  UPLOAD_PROFILE_MEDIA: User ${userId} not found or Retailer ${retailerId} not found`);
+      logger.error(`🛑❌  UPLOAD_PROFILE_MEDIA: User ${userId} not found or Retailer ${sellerId} not found`);
       const error = i18n._(t`Unable to upload avatar`);
       throw new Error(error); // try NOT to provide enough information so hackers can guess
     }
 
-    return s3ProfileMediaUploader(prisma, uploadedFile, { retailerId: retailerId, isCover: true });
+    return s3ProfileMediaUploader(prisma, uploadedFile, { sellerId: sellerId, isCover: true });
   },
 
   /**
    * Upload business cover
    * one file one time
    */
-  uploadBusinessCover: async (parent, { file, retailerId }, { prisma, request, cache, i18n }, info) => {
+  uploadBusinessAvatar: async (parent, { file, sellerId }, { prisma, request, cache, i18n }, info) => {
     const uploadedFile = await file;
     try {
       validateImageUploadInput(uploadedFile);
@@ -117,7 +118,7 @@ export const Mutation = {
           id: userId,
         },
       },
-      'id assignment { id retailers { id } }',
+      '{ id assignment { id retailers { id } } }',
     );
 
     if (
@@ -125,44 +126,13 @@ export const Mutation = {
       !user.assignment ||
       !user.assignment.retailers ||
       !user.assignment.retailers.length > 0 ||
-      !user.assignment.retailers.includes(retailerId)
+      !user.assignment.retailers.map(retailer => retailer.id).includes(sellerId)
     ) {
-      logger.error(`🛑❌  UPLOAD_PROFILE_MEDIA: User ${userId} not found or Retailer ${retailerId} not found`);
+      logger.error(`🛑❌  UPLOAD_PROFILE_MEDIA: User ${userId} not found or Retailer ${sellerId} not found`);
       const error = i18n._(t`Unable to upload avatar`);
       throw new Error(error); // try NOT to provide enough information so hackers can guess
     }
 
-    return s3ProfileMediaUploader(prisma, uploadedFile, { retailerId: retailerId, isAvatar: true });
-  },
-
-  /**
-   * Upload avatar
-   * one file one time
-   */
-  uploadBusinessAvatar: async (parent, { file }, { prisma, request, cache, i18n }, info) => {
-    const uploadedFile = await file;
-    try {
-      validateImageUploadInput(uploadedFile);
-    } catch (err) {
-      logger.error(`🛑❌  Cannot upload avatar ${err.message}`);
-      const error = i18n._(t`Invalid input`);
-      throw new Error(error);
-    }
-
-    const userId = await getUserIDFromRequest(request, cache, i18n);
-
-    const user = await prisma.query.user({
-      where: {
-        id: userId,
-      },
-    });
-
-    if (!user) {
-      logger.error(`🛑❌  UPLOAD_PROFILE_MEDIA: User ${userId} not found`);
-      const error = i18n._(t`Unable to upload avatar`);
-      throw new Error(error); // try NOT to provide enough information so hackers can guess
-    }
-
-    return s3ProfileMediaUploader(prisma, uploadedFile, user.id);
+    return s3ProfileMediaUploader(prisma, uploadedFile, { sellerId: sellerId, isAvatar: true });
   },
 };

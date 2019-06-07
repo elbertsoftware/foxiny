@@ -77,6 +77,29 @@ const styles = theme => ({
     boxShadow: 'none',
     minWidth: 100,
   },
+  finalForm: {
+    padding: 32,
+  },
+  field: {
+    width: '90%',
+    marginBottom: 16,
+  },
+  width60: {
+    width: '60%',
+  },
+  formControl: {
+    margin: 0,
+  },
+  width30: {
+    width: '30%',
+  },
+  marginBottom: {
+    marginBottom: 18,
+  },
+  icon: {},
+  buttonSend: {
+    transform: 'translate(16%, -30%)',
+  },
 });
 
 export default styles;

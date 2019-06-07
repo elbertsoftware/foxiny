@@ -18,7 +18,6 @@ import {
 import { Form, Field, FormSpy } from 'react-final-form';
 import { Redirect } from 'react-router';
 import { graphql, compose } from 'react-apollo';
-import { gql } from 'apollo-boost';
 import SwipeableViews from 'react-swipeable-views';
 import { toast } from 'react-toastify';
 import createDecorator from 'final-form-focus';
@@ -30,27 +29,13 @@ import TabContainer from '../../../utils/common/TabContainer';
 import registerSellerStyles from './registerSellerStyles';
 import SelectList from '../../Form/Fields/SelectList';
 import SwipeButton from '../../../utils/SwipeButton';
-import { CONFIRM_USER } from '../../../graphql/confirmUser';
-
-const REGISTER_RETAILER = gql`
-  mutation registerRetailer($data: RegisterRetailer!) {
-    registerRetailer(data: $data) {
-      id
-      businessName
-      businessPhone
-      businessEmail
-      enabled
-      createdAt
-      updatedAt
-    }
-  }
-`;
+import { REGISTER_RETAILER } from '../../../graphql/retailer';
 
 const focusOnError = createDecorator();
 
-const RegisterSeller = ({ classes, theme, userLoggedIn, ...props }) => {
+const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => {
   // Props from graphql
-  const { registerRetailer, confirmUserCode } = props;
+  const { registerRetailer } = props;
   const [activeTabId, setActiveTabId] = useState(0);
   const [fieldVisible, setFieldVisible] = useState(false);
   const [isEmailConfirmed, setIsEmailConfirmed] = useState(false);
@@ -65,7 +50,6 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, ...props }) => {
     // Kiểm tra business email và phone này có trùng vs email || phone mà đã đăng ký normal user trước đó không ?
     // Quy trình: Đăng ký normal user > Đăng ký seller.
     const user = userLoggedIn(); // Get from authentication props
-    console.log(user);
     let phoneNumber;
     if (userphone && countryCode) {
       phoneNumber = formatInternationalPhone(userphone, countryCode);
@@ -83,20 +67,28 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, ...props }) => {
   };
 
   const onSubmit = async values => {
+    console.log(values);
+
     try {
-      await registerRetailer({
+      const phoneNumber = formatInternationalPhone(values.businessPhone, values.countryCode);
+      const data = await registerRetailer({
         variables: {
           data: {
             businessName: values.businessName,
             businessEmail: values.businessEmail,
-            businessPhone: values.businessPhone,
+            emailConfirmCode: values.emailCode || '',
+            businessPhone: phoneNumber,
+            phoneConfirmCode: values.phoneCode || '',
             businessAddress: {
               city: values.businessAddress,
             },
           },
         },
       });
+      console.log(data);
       toast.success('Đăng ký thành công !');
+      window.location.reload();
+      history.push('/seller/seller-declaration');
     } catch (error) {
       toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra!');
     }
@@ -299,7 +291,7 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, ...props }) => {
                           <React.Fragment>
                             {isEmailConfirmed && (
                               <Field
-                                fullWidth2
+                                fullWidth
                                 size="large"
                                 component={RFTextField}
                                 disabled={submitting}
@@ -372,7 +364,6 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, ...props }) => {
 };
 
 export default compose(
-  graphql(CONFIRM_USER, { name: 'confirmUserCode' }),
   graphql(REGISTER_RETAILER, { name: 'registerRetailer' }),
   withStyles(registerSellerStyles, { withTheme: true }),
 )(RegisterSeller);

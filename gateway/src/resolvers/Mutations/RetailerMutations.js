@@ -55,9 +55,9 @@ export const Mutation = {
       const matchedPhone = await verifyConfirmation(cache, data.phoneConfirmCode, userId, i18n);
       if (matchedPhone) {
         const { email, phone } = classifyEmailPhone(matchedPhone);
-        if ((email || phone) !== data.phone) {
+        if ((email || phone) !== data.businessPhone) {
           logger.debug(`phone confirmation matched: ${matchedPhone} but wrong phone`);
-          logger.debug(`code ${data.emailConfirmCode} enteredPhone ${data.businessPhone} codedPhone ${phone}`);
+          logger.debug(`code ${data.phoneConfirmCode} enteredPhone ${data.businessPhone} codedPhone ${phone}`);
           const error = i18n._(t`Unable to confirm user`);
           throw new Error(error);
         }
@@ -107,9 +107,6 @@ export const Mutation = {
     // NOTE: check permission
     const userId = await getUserIDFromRequest(request, cache, i18n);
     await checkSellerPermissions(prisma, cache, request, retailerId);
-    console.log(JSON.stringify(data, undefined, 2));
-    console.log(`userId ${userId}`);
-    console.log(`sellerId ${retailerId}`);
 
     const retailer = await prisma.query.retailer(
       {
@@ -167,7 +164,11 @@ export const Mutation = {
       businessName: data.businessName,
       businessEmail: data.businessEmail,
       businessPhone: data.businessPhone,
-      businessAddress: data.businessAddress,
+      businessAddress: data.businessAddress
+        ? {
+            create: data.businessAddress,
+          }
+        : undefined,
 
       businessCover: data.businessCoverId
         ? {
@@ -200,12 +201,15 @@ export const Mutation = {
         : undefined,
     };
 
-    const updatedRetailer = await prisma.mutation.updateRetailer({
-      where: {
-        id: retailerId,
+    const updatedRetailer = await prisma.mutation.updateRetailer(
+      {
+        where: {
+          id: retailerId,
+        },
+        data: updateData,
       },
-      data: updateData,
-    });
+      info,
+    );
 
     return updatedRetailer;
     // } catch (err) {
@@ -214,7 +218,6 @@ export const Mutation = {
     //   throw new Error(error);
     // }
   },
-
   resendRetailerConfirmationCode: async (parent, { emailOrPhone }, { prisma, request, cache, i18n }, info) => {
     const userId = await getUserIDFromRequest(request, cache, i18n);
     const user = await prisma.query.user(

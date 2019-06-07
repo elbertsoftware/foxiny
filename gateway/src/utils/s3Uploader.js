@@ -48,7 +48,7 @@ const saveToRetailer = async (prisma, retailerId, data, args) => {
     const updatedRetailer = await prisma.mutation.updateRetailer(
       {
         where: {
-          id: userId,
+          id: retailerId,
         },
         data: {
           businessAvatar: {
@@ -71,7 +71,7 @@ const saveToRetailer = async (prisma, retailerId, data, args) => {
     const updatedRetailer = await prisma.mutation.updateRetailer(
       {
         where: {
-          id: userId,
+          id: retailerId,
         },
         data: {
           businessCover: {
@@ -94,10 +94,10 @@ const saveToRetailer = async (prisma, retailerId, data, args) => {
 // TODO: save-to-Manufacturer is the same as save-to-Retailer
 
 /**
- * Upload profile media to aws s3
+ * Upload business profile media to aws s3
  * @param {Object} prisma prisma server
  * @param {Object} upload upload stream
- * @param {String} userId Id of user
+ * @param {Object} args includes sellerId or manufacturerId
  */
 const s3ProfileMediaUploader = async (prisma, upload, args) => {
   if (!upload || args === undefined || (args.userId && args.retailerId && args.manufacturerId === false)) {
@@ -111,16 +111,14 @@ const s3ProfileMediaUploader = async (prisma, upload, args) => {
     if (process.env.NODE_ENV && process.env.NODE_ENV === 'testing') readStream = createReadStream;
     else readStream = createReadStream();
 
-    const data = await getFileInfo(filename, args.userId || args.retailerId || args.manufacturerId, createReadStream);
+    const data = await getFileInfo(filename, args.userId || args.sellerId, createReadStream);
 
-    const key = `${args.userId || args.retailerId || args.manufacturerId}_${new Date().getTime()}.${data.ext}`; // pattern: userID_tick.extention
+    const key = `${args.userId || args.sellerId}_${new Date().getTime()}.${data.ext}`; // pattern: userID_tick.extention
     logger.debug(`🔵✅  READ FILE: done. UPLOADING ${key} TO S3...`);
     // Upload to S3
     const response = await s3
       .upload({
-        Key: `${
-          args.userId ? 'users' : args.retailerId ? 'retailers' : args.manufacturerId ? 'manufacturers' : 'products'
-        }/${args.userId || args.retailerId || args.manufacturerId}/${key}`,
+        Key: `${args.userId ? 'users' : args.sellerId ? 'seller' : 'unknown'}/${args.userId || args.sellerId}/${key}`,
         ACL: `public-read`,
         Body: readStream,
       })
@@ -133,10 +131,15 @@ const s3ProfileMediaUploader = async (prisma, upload, args) => {
     if (args.userId) {
       return saveToUser(prisma, args.userId, data);
     }
-    if (args.retailerId) {
-      return saveToRetailer(prisma, args.retailerId, data, args);
+    const belongToRetailer = await prisma.query.retailer({
+      where: {
+        id: args.sellerId,
+      },
+    });
+    if (belongToRetailer) {
+      return saveToRetailer(prisma, args.sellerId, data, args);
     }
-    // if (args.manufacturerId) {
+    // else {
     //   return saveToManufacturer(args.manufacturerId, data, args);
     // }
   } catch (error) {
@@ -152,8 +155,6 @@ const s3ProductMediasUploader = async (prisma, upload, userId) => {
   }
   try {
     const { createReadStream, filename, mimetype, encoding } = upload;
-
-    logger.debug('hello');
 
     let readStream;
 

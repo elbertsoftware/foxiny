@@ -2,10 +2,10 @@
 import React from 'react';
 import { Select } from '@material-ui/core';
 
-const SelectList = ({ input, inputProps, render, meta, children, ...restProps }) => {
+const SelectList = ({ inputVariant, input, inputProps, render, meta, children, ...restProps }) => {
   return (
     <React.Fragment>
-      <Select {...input} {...inputProps} {...restProps}>
+      <Select input={inputVariant} {...input} {...inputProps} {...restProps}>
         {(render && render()) || children}
       </Select>
     </React.Fragment>

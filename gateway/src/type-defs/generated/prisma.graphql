@@ -1,5 +1,5 @@
 # source: http://localhost:4466/foxiny/dev
-# timestamp: Tue May 28 2019 10:50:19 GMT+0700 (Indochina Time)
+# timestamp: Thu Jun 06 2019 16:55:40 GMT+0700 (Indochina Time)
 
 type Address implements Node {
   id: ID!
@@ -8135,13 +8135,17 @@ type Retailer implements Node {
   id: ID!
   _version: Int!
   owner: Assignment
-  businessMedia: Media
+  businessCover: Media
+  businessAvatar: Media
   businessName: String
   businessAddress: Address
   businessPhone: String
   businessEmail: String
-  products(where: ProductRetailerWhereInput, orderBy: ProductRetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductRetailer!]
+  socialNumber: String
+  socialNumberImages(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Media!]
   businessLicense: String
+  businessLicenseImages(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Media!]
+  products(where: ProductRetailerWhereInput, orderBy: ProductRetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductRetailer!]
   enabled: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -8163,11 +8167,15 @@ input RetailerCreateInput {
   businessName: String
   businessPhone: String
   businessEmail: String
+  socialNumber: String
   businessLicense: String
   enabled: Boolean
   owner: AssignmentCreateOneWithoutRetailersInput
-  businessMedia: MediaCreateOneInput
+  businessCover: MediaCreateOneInput
+  businessAvatar: MediaCreateOneInput
   businessAddress: AddressCreateOneInput
+  socialNumberImages: MediaCreateManyInput
+  businessLicenseImages: MediaCreateManyInput
   products: ProductRetailerCreateManyWithoutRetailerInput
 }
 
@@ -8192,10 +8200,14 @@ input RetailerCreateWithoutOwnerInput {
   businessName: String
   businessPhone: String
   businessEmail: String
+  socialNumber: String
   businessLicense: String
   enabled: Boolean
-  businessMedia: MediaCreateOneInput
+  businessCover: MediaCreateOneInput
+  businessAvatar: MediaCreateOneInput
   businessAddress: AddressCreateOneInput
+  socialNumberImages: MediaCreateManyInput
+  businessLicenseImages: MediaCreateManyInput
   products: ProductRetailerCreateManyWithoutRetailerInput
 }
 
@@ -8205,11 +8217,15 @@ input RetailerCreateWithoutProductsInput {
   businessName: String
   businessPhone: String
   businessEmail: String
+  socialNumber: String
   businessLicense: String
   enabled: Boolean
   owner: AssignmentCreateOneWithoutRetailersInput
-  businessMedia: MediaCreateOneInput
+  businessCover: MediaCreateOneInput
+  businessAvatar: MediaCreateOneInput
   businessAddress: AddressCreateOneInput
+  socialNumberImages: MediaCreateManyInput
+  businessLicenseImages: MediaCreateManyInput
 }
 
 """An edge in a connection."""
@@ -8232,6 +8248,8 @@ enum RetailerOrderByInput {
   businessPhone_DESC
   businessEmail_ASC
   businessEmail_DESC
+  socialNumber_ASC
+  socialNumber_DESC
   businessLicense_ASC
   businessLicense_DESC
   enabled_ASC
@@ -8248,6 +8266,7 @@ type RetailerPreviousValues {
   businessName: String
   businessPhone: String
   businessEmail: String
+  socialNumber: String
   businessLicense: String
   enabled: Boolean
   createdAt: DateTime!
@@ -8445,6 +8464,46 @@ input RetailerScalarWhereInput {
 
   """All values not ending with the given string."""
   businessEmail_not_ends_with: String
+  socialNumber: String
+
+  """All values that are not equal to given value."""
+  socialNumber_not: String
+
+  """All values that are contained in given list."""
+  socialNumber_in: [String!]
+
+  """All values that are not contained in given list."""
+  socialNumber_not_in: [String!]
+
+  """All values less than the given value."""
+  socialNumber_lt: String
+
+  """All values less than or equal the given value."""
+  socialNumber_lte: String
+
+  """All values greater than the given value."""
+  socialNumber_gt: String
+
+  """All values greater than or equal the given value."""
+  socialNumber_gte: String
+
+  """All values containing the given string."""
+  socialNumber_contains: String
+
+  """All values not containing the given string."""
+  socialNumber_not_contains: String
+
+  """All values starting with the given string."""
+  socialNumber_starts_with: String
+
+  """All values not starting with the given string."""
+  socialNumber_not_starts_with: String
+
+  """All values ending with the given string."""
+  socialNumber_ends_with: String
+
+  """All values not ending with the given string."""
+  socialNumber_not_ends_with: String
   businessLicense: String
 
   """All values that are not equal to given value."""
@@ -8579,11 +8638,15 @@ input RetailerUpdateDataInput {
   businessName: String
   businessPhone: String
   businessEmail: String
+  socialNumber: String
   businessLicense: String
   enabled: Boolean
   owner: AssignmentUpdateOneWithoutRetailersInput
-  businessMedia: MediaUpdateOneInput
+  businessCover: MediaUpdateOneInput
+  businessAvatar: MediaUpdateOneInput
   businessAddress: AddressUpdateOneInput
+  socialNumberImages: MediaUpdateManyInput
+  businessLicenseImages: MediaUpdateManyInput
   products: ProductRetailerUpdateManyWithoutRetailerInput
 }
 
@@ -8592,11 +8655,15 @@ input RetailerUpdateInput {
   businessName: String
   businessPhone: String
   businessEmail: String
+  socialNumber: String
   businessLicense: String
   enabled: Boolean
   owner: AssignmentUpdateOneWithoutRetailersInput
-  businessMedia: MediaUpdateOneInput
+  businessCover: MediaUpdateOneInput
+  businessAvatar: MediaUpdateOneInput
   businessAddress: AddressUpdateOneInput
+  socialNumberImages: MediaUpdateManyInput
+  businessLicenseImages: MediaUpdateManyInput
   products: ProductRetailerUpdateManyWithoutRetailerInput
 }
 
@@ -8605,6 +8672,7 @@ input RetailerUpdateManyDataInput {
   businessName: String
   businessPhone: String
   businessEmail: String
+  socialNumber: String
   businessLicense: String
   enabled: Boolean
 }
@@ -8614,6 +8682,7 @@ input RetailerUpdateManyMutationInput {
   businessName: String
   businessPhone: String
   businessEmail: String
+  socialNumber: String
   businessLicense: String
   enabled: Boolean
 }
@@ -8658,10 +8727,14 @@ input RetailerUpdateWithoutOwnerDataInput {
   businessName: String
   businessPhone: String
   businessEmail: String
+  socialNumber: String
   businessLicense: String
   enabled: Boolean
-  businessMedia: MediaUpdateOneInput
+  businessCover: MediaUpdateOneInput
+  businessAvatar: MediaUpdateOneInput
   businessAddress: AddressUpdateOneInput
+  socialNumberImages: MediaUpdateManyInput
+  businessLicenseImages: MediaUpdateManyInput
   products: ProductRetailerUpdateManyWithoutRetailerInput
 }
 
@@ -8670,11 +8743,15 @@ input RetailerUpdateWithoutProductsDataInput {
   businessName: String
   businessPhone: String
   businessEmail: String
+  socialNumber: String
   businessLicense: String
   enabled: Boolean
   owner: AssignmentUpdateOneWithoutRetailersInput
-  businessMedia: MediaUpdateOneInput
+  businessCover: MediaUpdateOneInput
+  businessAvatar: MediaUpdateOneInput
   businessAddress: AddressUpdateOneInput
+  socialNumberImages: MediaUpdateManyInput
+  businessLicenseImages: MediaUpdateManyInput
 }
 
 input RetailerUpdateWithWhereUniqueWithoutOwnerInput {
@@ -8889,6 +8966,46 @@ input RetailerWhereInput {
 
   """All values not ending with the given string."""
   businessEmail_not_ends_with: String
+  socialNumber: String
+
+  """All values that are not equal to given value."""
+  socialNumber_not: String
+
+  """All values that are contained in given list."""
+  socialNumber_in: [String!]
+
+  """All values that are not contained in given list."""
+  socialNumber_not_in: [String!]
+
+  """All values less than the given value."""
+  socialNumber_lt: String
+
+  """All values less than or equal the given value."""
+  socialNumber_lte: String
+
+  """All values greater than the given value."""
+  socialNumber_gt: String
+
+  """All values greater than or equal the given value."""
+  socialNumber_gte: String
+
+  """All values containing the given string."""
+  socialNumber_contains: String
+
+  """All values not containing the given string."""
+  socialNumber_not_contains: String
+
+  """All values starting with the given string."""
+  socialNumber_starts_with: String
+
+  """All values not starting with the given string."""
+  socialNumber_not_starts_with: String
+
+  """All values ending with the given string."""
+  socialNumber_ends_with: String
+
+  """All values not ending with the given string."""
+  socialNumber_not_ends_with: String
   businessLicense: String
 
   """All values that are not equal to given value."""
@@ -8978,8 +9095,15 @@ input RetailerWhereInput {
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
   owner: AssignmentWhereInput
-  businessMedia: MediaWhereInput
+  businessCover: MediaWhereInput
+  businessAvatar: MediaWhereInput
   businessAddress: AddressWhereInput
+  socialNumberImages_every: MediaWhereInput
+  socialNumberImages_some: MediaWhereInput
+  socialNumberImages_none: MediaWhereInput
+  businessLicenseImages_every: MediaWhereInput
+  businessLicenseImages_some: MediaWhereInput
+  businessLicenseImages_none: MediaWhereInput
   products_every: ProductRetailerWhereInput
   products_some: ProductRetailerWhereInput
   products_none: ProductRetailerWhereInput

@@ -10,14 +10,14 @@ class UserAvatarModal extends React.Component {
   };
 
   render() {
-    const { handleClose, open } = this.props;
+    const { handleClose, open, sellerId } = this.props;
     return (
       <Dialog maxWidth="lg" onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
           Đổi ảnh đại diện
         </DialogTitle>
         <DialogContent>
-          <UserUploadAvatar onRef={ref => (this.child = ref)} />
+          <UserUploadAvatar onRef={ref => (this.child = ref)} sellerId={sellerId} />
         </DialogContent>
         <DialogActions>
           <Button onClick={this.onClick} color="secondary">

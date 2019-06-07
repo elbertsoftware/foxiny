@@ -3,27 +3,8 @@ import React, { useRef, useState, useEffect } from 'react';
 import './style/swipebutton.css';
 import { Icon, Typography } from '@material-ui/core';
 import { graphql } from 'react-apollo';
-import { RESEND_CONFIRMATION } from '../graphql/confirmUser';
-
-function useInterval(callback, delay) {
-  const savedCallback = useRef();
-
-  // Remember the latest function.
-  useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
-
-  // Set up the interval.
-  useEffect(() => {
-    function tick() {
-      savedCallback.current();
-    }
-    if (delay !== null) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
-}
+import { RESEND_RETAILER_CONFIMATION } from '../graphql/retailer';
+import useInterval from './hooks/useInterval';
 
 const SwipeButton = props => {
   const { setFieldVisible, email, phone, resendConfirmation } = props;
@@ -81,33 +62,19 @@ const SwipeButton = props => {
       // If exists both email and phone, call function twice because resend mutation only accept one argument
       flag = await resendConfirmation({
         variables: {
-          data: {
-            email,
-          },
+          emailOrPhone: email,
         },
       });
       flag = false;
       flag = await resendConfirmation({
         variables: {
-          data: {
-            phone,
-          },
-        },
-      });
-    } else if (phone) {
-      flag = await resendConfirmation({
-        variables: {
-          data: {
-            phone,
-          },
+          emailOrPhone: phone,
         },
       });
     } else {
       flag = await resendConfirmation({
         variables: {
-          data: {
-            email,
-          },
+          emailOrPhone: email || phone,
         },
       });
     }
@@ -126,6 +93,7 @@ const SwipeButton = props => {
     if (relativeMouse >= slideMovementTotal + 10) {
       if (!isRunning) {
         resendConfirmCode();
+        setMouseIsDown(false);
         console.log('End');
       }
       setLeft(slideMovementTotal);
@@ -162,4 +130,4 @@ const SwipeButton = props => {
   );
 };
 
-export default graphql(RESEND_CONFIRMATION, { name: 'resendConfirmation' })(SwipeButton);
+export default graphql(RESEND_RETAILER_CONFIMATION, { name: 'resendConfirmation' })(SwipeButton);

@@ -8,6 +8,7 @@ import { Typography, withStyles } from '@material-ui/core';
 import AvatarEditor from 'react-avatar-editor';
 import { toast } from 'react-toastify';
 import Loading from '../../App/Loading';
+import { UPLOAD_AVATAR_RETAILER, UPDATE_RETAILER } from '../../../graphql/retailer';
 
 const UPLOAD_AVATAR = gql`
   mutation($file: Upload!) {
@@ -75,16 +76,47 @@ class UserUploadAvatar extends React.Component {
           const file = await blob;
           file.name = this.state.image.name;
           try {
-            const {
-              data: {
-                uploadProfileMedia: { uri },
-              },
-            } = await this.props.uploadProfileMedia({
-              variables: {
-                file,
-              },
-            });
-            if (uri) {
+            let uriImage;
+            const { sellerId, uploadProfileMedia, uploadBusinessAvatar, updateRetailer } = this.props;
+            if (sellerId) {
+              const {
+                data: {
+                  uploadBusinessAvatar: { id },
+                },
+              } = await uploadBusinessAvatar({
+                variables: {
+                  sellerId,
+                  file,
+                },
+              });
+              const {
+                data: {
+                  updateRetailer: {
+                    businessAvatar: { uri },
+                  },
+                },
+              } = await updateRetailer({
+                variables: {
+                  retailerId: sellerId,
+                  data: {
+                    businessAvatarId: id,
+                  },
+                },
+              });
+              uriImage = uri;
+            } else {
+              const {
+                data: {
+                  uploadProfileMedia: { uri },
+                },
+              } = await uploadProfileMedia({
+                variables: {
+                  file,
+                },
+              });
+              uriImage = uri;
+            }
+            if (uriImage) {
               this.setState({ loading: true });
               window.location.reload();
             }
@@ -159,6 +191,8 @@ UserUploadAvatar.propTypes = {
 };
 
 export default compose(
+  graphql(UPLOAD_AVATAR_RETAILER, { name: 'uploadBusinessAvatar' }),
+  graphql(UPDATE_RETAILER, { name: 'updateRetailer' }),
   graphql(UPLOAD_AVATAR, { name: 'uploadProfileMedia' }),
   withStyles(styles),
 )(UserUploadAvatar);
