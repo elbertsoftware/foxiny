@@ -1,16 +1,17 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Tabs, Tab, withStyles, Button, Icon, Paper, IconButton } from '@material-ui/core';
 import { compose, graphql } from 'react-apollo';
 import { Redirect } from 'react-router';
+import { toast } from 'react-toastify';
 import SwipeableViews from 'react-swipeable-views';
 import TabContainer from '../../../utils/common/TabContainer';
 import peopleImage from '../../../images/people-fill-out-form.jpg';
 import UploadImgZone from '../../User/UserAvatar/UploadImgZone';
 import sellerDeclarationStyles from './styles/sellerDeclarationStyles';
 import SellerProfile from './SellerProfile';
-import { RETAILERS } from '../../../graphql/retailer';
+import { RETAILERS, UPLOAD_SOCIAL_ID_MEDIA, DELETE_SOCIAL_ID_MEDIA } from '../../../graphql/retailer';
 
 import Loading from '../../App/Loading';
 
@@ -35,7 +36,7 @@ const imgCardStyles = theme => ({
   fitImage: {
     width: 200,
     height: 200,
-    objectFit: 'cover',
+    objectFit: 'contain',
   },
   buttonContainer: {
     display: 'flex',
@@ -66,12 +67,18 @@ const ImageCardReview = withStyles(imgCardStyles)(({ src, classes, removeItem, .
 
 const SellerDeclaration = ({ classes, theme, ...props }) => {
   // Data query from Graphql
-  const { loading, myRetailers } = props;
+  const { loading, myRetailers, uploadSocialIDMediaRetailer, deleteSocialIDMediaRetailer } = props;
   // Auth
   const { userLoggedIn } = props;
   const [activeTabId, setActiveTabId] = useState(0);
   const [images, setImages] = useState([]);
-
+  const [socialIDMedias, setSocialIDMedias] = useState([]);
+  const [deleteIds, setDeleteIds] = useState([]);
+  useEffect(() => {
+    if (myRetailers) {
+      setSocialIDMedias(myRetailers[0].socialNumberImages);
+    }
+  }, [myRetailers]);
   const handleTabChange = (e, id) => {
     setActiveTabId(id);
   };
@@ -79,19 +86,63 @@ const SellerDeclaration = ({ classes, theme, ...props }) => {
     setActiveTabId(index);
   };
 
-  const removeItem = index => () => {
-    const newImages = images.filter((image, i) => i !== index);
-    setImages(newImages);
+  const removeItem = (index, forSocialMedias) => () => {
+    if (!forSocialMedias) {
+      const newImages = images.filter((image, i) => i !== index);
+      setImages(newImages);
+    } else {
+      const newImages = socialIDMedias.filter((image, i) => i !== index);
+      setSocialIDMedias(newImages);
+    }
   };
+
+  const addDeletedId = id => {
+    setDeleteIds(deleteIds.concat(id));
+  };
+
   if (!userLoggedIn()) {
     return <Redirect to="/seller/sign" />;
   }
   if (loading) return <Loading />;
+  if (!myRetailers) return <Redirect to="/seller/register-seller" />;
+
+  const uploadSocialIDOrBusinessLicense = async () => {
+    try {
+      if (socialIDMedias.length > 0) {
+        await deleteSocialIDMediaRetailer({
+          variables: {
+            sellerId: myRetailers[0].id,
+            fileIds: deleteIds,
+          },
+        });
+      }
+      if (images.length === 2) {
+        const {
+          data: {
+            uploadSocialIDMediaRetailer: [ids],
+          },
+        } = await uploadSocialIDMediaRetailer({
+          variables: {
+            sellerId: myRetailers[0].id,
+            files: images,
+          },
+        });
+        if (ids) {
+          toast.success('Lưu thành công.');
+        }
+      } else if (images.length !== 0) {
+        toast.warn('Vui lòng tải lên hai mặt CMND của bạn.');
+      }
+      window.location.reload();
+    } catch (error) {
+      toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra!');
+    }
+  };
   return (
     <Grid container className={classes.container}>
       <SellerProfile
         cover="https://cdn.pixabay.com/photo/2019/04/26/07/14/store-4156934_960_720.png"
-        retailerInfo={myRetailers[0]}
+        retailerInfo={myRetailers && myRetailers[0]}
       />
       <Paper className={classes.wrapper}>
         <Typography className={classes.title}>Thông tin tài khoản bán hàng</Typography>
@@ -127,16 +178,32 @@ const SellerDeclaration = ({ classes, theme, ...props }) => {
                   </Typography>
                   <Typography gutterBottom>Tải ảnh CMND của bạn bao gồm mặt trước và mặt sau.</Typography>
                   <UploadImgZone style={classes.uploadZone} images={images} setImages={setImages} />
-                  <Grid className={classes.gridContainer} wrap="nowrap" container spacing={8}>
+                  <Grid className={classes.gridContainer} wrap="nowrap" container spacing={2}>
                     {images.map((image, index) => (
-                      <Grid item>
-                        <ImageCardReview key={image.path} src={image.preview} removeItem={removeItem(index)} />
+                      <Grid key={image.path} item>
+                        <ImageCardReview src={image.preview} removeItem={removeItem(index)} />
+                      </Grid>
+                    ))}
+                    {socialIDMedias.map((image, index) => (
+                      <Grid key={image.id} item>
+                        <ImageCardReview
+                          src={image.uri}
+                          removeItem={() => {
+                            removeItem(index, true)();
+                            addDeletedId(image.id);
+                          }}
+                        />
                       </Grid>
                     ))}
                   </Grid>
 
                   <div className={classes.buttonContainer}>
-                    <Button variant="contained" color="secondary" className={classes.buttonAction}>
+                    <Button
+                      onClick={uploadSocialIDOrBusinessLicense}
+                      variant="contained"
+                      color="secondary"
+                      className={classes.buttonAction}
+                    >
                       Lưu
                     </Button>
                   </div>
@@ -163,5 +230,7 @@ export default compose(
       myRetailers,
     }),
   }),
+  graphql(UPLOAD_SOCIAL_ID_MEDIA, { name: 'uploadSocialIDMediaRetailer' }),
+  graphql(DELETE_SOCIAL_ID_MEDIA, { name: 'deleteSocialIDMediaRetailer' }),
   withStyles(sellerDeclarationStyles, { withTheme: true }),
 )(SellerDeclaration);

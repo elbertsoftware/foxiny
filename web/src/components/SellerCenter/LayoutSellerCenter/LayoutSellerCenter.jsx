@@ -1,57 +1,38 @@
-import React, { useState } from 'react';
-import { withStyles, Hidden } from '@material-ui/core';
-import Navigator from './Navigator';
-import Header from './Header';
+import React from 'react';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Icon from '@material-ui/core/Icon';
 
-const drawerWidth = 256;
+import { Root, Header, Nav, Content, presets } from './Layout';
+import NavContentEx from './components/NavContentEx';
+import NavHeaderEx from './components/NavHeaderEx';
+import HeaderEx from './components/HeaderEx';
 
-const styles = theme => ({
-  root: {
-    minHeight: '100vh',
-  },
-  drawer: {
-    [theme.breakpoints.up('sm')]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-  },
-  appContent: {
-    flex: 1,
-    display: 'flex',
-  },
-  mainContent: {
-    flex: 1,
-    padding: '48px 36px 0',
-  },
-});
-
-const LayoutSellerCenter = ({ classes, children }) => {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+// add presets.create{}() to config props in Root to change the behavior, looking and layout
+// <Root config={presets.createCozyLayout()}> ...
+const LayoutSellerCenter = ({ children }) => {
   return (
-    <div className={classes.root}>
-      <Header onDrawerToggle={handleDrawerToggle} />
-
-      <div className={classes.appContent}>
-        <div className={classes.drawer}>
-          <Hidden smUp implementation="js">
-            <Navigator
-              PaperProps={{ style: { width: drawerWidth } }}
-              variant="temporary"
-              open={mobileOpen}
-              onClose={handleDrawerToggle}
-            />
-          </Hidden>
-          <Hidden xsDown implementation="css">
-            <Navigator PaperProps={{ style: { width: drawerWidth } }} />
-          </Hidden>
-        </div>
-        <main className={classes.mainContent}>{children}</main>
-      </div>
-    </div>
+    <Root config={presets.createDefaultLayout()} style={{ minHeight: '100vh' }}>
+      <CssBaseline />
+      <Header
+        menuIcon={{
+          inactive: <Icon>menu_rounded</Icon>,
+          active: <Icon>chevron_left</Icon>,
+        }}
+      >
+        {({ screen, collapsed }) => <HeaderEx screen={screen} collapsed={collapsed} />}
+      </Header>
+      <Nav
+        collapsedIcon={{
+          inactive: <Icon>chevron_left</Icon>,
+          active: <Icon>chevron_right</Icon>,
+        }}
+        header={({ collapsed }) => <NavHeaderEx collapsed={collapsed} />}
+      >
+        <NavContentEx />
+      </Nav>
+      <Content>{children}</Content>
+    </Root>
   );
 };
 
-export default withStyles(styles)(LayoutSellerCenter);
+export default LayoutSellerCenter;

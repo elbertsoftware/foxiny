@@ -77,22 +77,22 @@ class App extends Component<Props, State> {
         </Switch>
         <Switch>
           {/* Place two Route in Switch component, the /seller/(.*) will be matched before /(.+) path */}
-          <Route exact path="/seller/sign" component={SignView} />
-          <Route exact path="/seller/register-seller" component={withAuthenticator(RegisterSeller)} />
-          <Route exact path="/seller/seller-declaration" component={withAuthenticator(SellerDeclaration)} />
+          <Route exact path="/sellers/sign" component={SignView} />
+          <Route exact path="/sellers/register-seller" component={withAuthenticator(RegisterSeller)} />
+          <Route exact path="/sellers/seller-declaration" component={withAuthenticator(SellerDeclaration)} />
           <Route
             exact
-            path="/seller/(.*)"
+            path="/sellers/(.*)"
             render={() => (
               <LayoutSellerCenter>
                 <Switch>
-                  <Route path="/seller/request-product" component={RequestProduct} />
+                  <Route path="/sellers/request-product" component={RequestProduct} />
                 </Switch>
                 <Switch>
-                  <Route path="/seller/add-product" component={AddProduct} />
+                  <Route path="/sellers/add-product" component={AddProduct} />
                 </Switch>
                 <Switch>
-                  <Route path="/seller/list-product" component={withAuthenticator(ListProduct)} />
+                  <Route path="/sellers/list-product" component={withAuthenticator(ListProduct)} />
                 </Switch>
               </LayoutSellerCenter>
             )}

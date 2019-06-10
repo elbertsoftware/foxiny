@@ -388,11 +388,6 @@ const SellerProfileCard = ({ classes, cover, image, retailerInfo, ...props }) =>
   );
 };
 
-SellerProfileCard.propTypes = {
-  image: PropTypes.string.isRequired,
-  cover: PropTypes.string.isRequired,
-};
-
 export default compose(
   graphql(UPDATE_RETAILER, { name: 'updateRetailer' }),
   graphql(RESEND_RETAILER_CONFIMATION, { name: 'resendConfirmation' }),

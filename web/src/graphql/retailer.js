@@ -42,6 +42,36 @@ const RESEND_RETAILER_CONFIMATION = gql`
   }
 `;
 
+const UPLOAD_SOCIAL_ID_MEDIA = gql`
+  mutation uploadSocialIDMediaRetailer($sellerId: String!, $files: [Upload!]!) {
+    uploadSocialIDMediaRetailer(sellerId: $sellerId, files: $files) {
+      id
+      uri
+    }
+  }
+`;
+
+const DELETE_SOCIAL_ID_MEDIA = gql`
+  mutation deleteSocialIDMediaRetailer($sellerId: String!, $fileIds: [String!]) {
+    deleteSocialIDMediaRetailer(sellerId: $sellerId, fileIds: $fileIds)
+  }
+`;
+
+const UPLOAD_BUSINESS_LICENSE = gql`
+  mutation uploadBusinessLicenseMediaRetailer($sellerId: String!, $files: [Upload!]!) {
+    uploadBusinessLicenseMediaRetailer(sellerId: $sellerId, files: $files) {
+      id
+      uri
+    }
+  }
+`;
+
+const DELETE_BUSINESS_LICENSE = gql`
+  mutation deleteBusinessLicenseMediaRetailer($sellerId: String!, $fileIds: [String!]) {
+    deleteBusinessLicenseMediaRetailer(sellerId: $sellerId, fileIds: $fileIds)
+  }
+`;
+
 const RETAILERS = gql`
   query {
     myRetailers {
@@ -56,8 +86,22 @@ const RETAILERS = gql`
       businessAddress {
         city
       }
+      socialNumberImages {
+        id
+        uri
+      }
     }
   }
 `;
 
-export { RETAILERS, REGISTER_RETAILER, UPDATE_RETAILER, UPLOAD_AVATAR_RETAILER, RESEND_RETAILER_CONFIMATION };
+export {
+  RETAILERS,
+  REGISTER_RETAILER,
+  UPDATE_RETAILER,
+  UPLOAD_AVATAR_RETAILER,
+  RESEND_RETAILER_CONFIMATION,
+  UPLOAD_SOCIAL_ID_MEDIA,
+  UPLOAD_BUSINESS_LICENSE,
+  DELETE_BUSINESS_LICENSE,
+  DELETE_SOCIAL_ID_MEDIA,
+};

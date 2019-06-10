@@ -184,47 +184,14 @@ export const Mutation = {
       },
       data: {
         socialNumberImages: {
-          disconnect: medias.map(media => ({
-            id: media.id,
+          disconnect: fileIds.map(id => ({
+            id: id,
           })),
         },
       },
     });
 
     return fileIds;
-  },
-
-  uploadBusinessLicenseMediaRetailer: async (parent, { files, sellerId }, { prisma, request, cache, i18n }, info) => {
-    const userId = await getUserIDFromRequest(request, cache, i18n);
-
-    // TODO: validate input
-    // TODO: check permission
-
-    const medias = await Promise.all(
-      files.map(async file => {
-        const uploaded = await file;
-        const media = await s3DocumentsUploader(prisma, uploaded, {
-          sellerId: sellerId,
-          isDocument: true,
-          isBusinessLicense: true,
-        });
-        return media;
-      }),
-    );
-
-    const updatedRetailer = await prisma.mutation.updateRetailer({
-      where: {
-        id: sellerId,
-      },
-      data: {
-        businessLicenseImages: {
-          connect: medias.map(media => ({
-            id: media.id,
-          })),
-        },
-      },
-    });
-    return medias;
   },
 
   deleteBusinessLicenseMediaRetailer: async (parent, { fileIds, sellerId }, { prisma, request, cache, i18n }, info) => {
@@ -239,8 +206,8 @@ export const Mutation = {
       },
       data: {
         businessLicenseImages: {
-          disconnect: medias.map(media => ({
-            id: media.id,
+          disconnect: fileIds.map(id => ({
+            id: id,
           })),
         },
       },
