@@ -9,7 +9,7 @@ import {
   restructureProductRetailer2FriendlyProduct,
 } from "../../utils/productUtils/dataHelper";
 import { validateCreateNewProductInput, validateUpdateProductInput } from "../../utils/productUtils/validation";
-import { checkSellerPermissions } from "../../utils/productUtils/permissionChecker";
+import { checkSellerPermissions } from "../../utils/permissionChecker";
 import { s3ProductMediasUploader } from "../../utils/s3Uploader";
 
 // TODO:

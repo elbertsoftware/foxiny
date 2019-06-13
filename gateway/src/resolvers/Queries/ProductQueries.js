@@ -1,7 +1,7 @@
 // @flow
 
 import logger from "../../utils/logger";
-import { checkSellerPermissions } from "../../utils/productUtils/permissionChecker";
+import { checkSellerPermissions } from "../../utils/permissionChecker";
 import { restructureProduct2FriendlyProduct } from "../../utils/productUtils/dataHelper";
 
 export const Query = {

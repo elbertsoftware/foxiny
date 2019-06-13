@@ -46,7 +46,7 @@ export const Mutation = {
     const productMedias = await Promise.all(
       files.map(async file => {
         const uploaded = await file;
-        const media = await s3ProductMediasUploader(prisma, uploaded, { userId: user.id });
+        const media = await s3ProductMediasUploader(prisma, uploaded, { userId: userId });
         return media;
       }),
     );
@@ -184,8 +184,8 @@ export const Mutation = {
       },
       data: {
         socialNumberImages: {
-          disconnect: medias.map(media => ({
-            id: media.id,
+          disconnect: fileIds.map(id => ({
+            id: id,
           })),
         },
       },
@@ -239,8 +239,8 @@ export const Mutation = {
       },
       data: {
         businessLicenseImages: {
-          disconnect: medias.map(media => ({
-            id: media.id,
+          disconnect: fileIds.map(id => ({
+            id: id,
           })),
         },
       },

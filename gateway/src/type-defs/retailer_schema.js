@@ -13,6 +13,7 @@ export const retailerSchema = gql`
     businessAddress: Address! # one to one
     businessPhone: String! # maybe different to user's phone
     businessEmail: String!
+    businessLink: String!
 
     socialNumber: String!
     socialNumberImages: [Media!]!
@@ -32,7 +33,7 @@ export const retailerSchema = gql`
 
     # Orders
 
-    enabled: Boolean!
+    approved: Boolean
 
     createdAt: String!
     updatedAt: String!
@@ -47,8 +48,8 @@ export const retailerSchema = gql`
     registerRetailer(data: RegisterRetailer!): RegisterdRetailer!
     updateRetailer(retailerId: String!, data: UpdateRetailerInput!): Retailer!
     resendRetailerConfirmationCode(emailOrPhone: String!): Boolean!
-    approveReatiler(retailerId: String!): Retailer!
-    rejectReatiler(retailerId: String!): Retailer!
+    approveRetailer(retailerId: String!): Retailer!
+    # rejectRetailer(retailerId: String!): Retailer!
     deleteRetailer(retailerId: String!): Boolean!
   }
 
@@ -62,16 +63,13 @@ export const retailerSchema = gql`
   }
 
   input UpdateRetailerInput {
-    businessCoverId: String
-    businessAvatarId: String
-
     businessName: String
     businessEmail: String
     emailConfirmCode: String
     businessPhone: String
     phoneConfirmCode: String
     businessAddress: CreateAddressInput
-
+    businessLink: String
     socialNumber: String
     socialNumberImageIds: [String!]
     businessLicense: String
