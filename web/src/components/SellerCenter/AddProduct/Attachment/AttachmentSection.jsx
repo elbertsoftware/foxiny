@@ -1,6 +1,8 @@
 import React from 'react';
+import PropsType from 'prop-types';
 import { withStyles, Paper, Typography, AppBar, Toolbar } from '@material-ui/core';
 import { useDropzone } from 'react-dropzone';
+import ApprovalContainer from '../../../../utils/ApprovalContainer';
 
 const styles = theme => ({
   paper: {
@@ -33,7 +35,7 @@ const styles = theme => ({
   },
 });
 
-const AttachmentSection = ({ classes }) => {
+const AttachmentSection = ({ classes, edit, review, ...props }) => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
 
   const files = acceptedFiles.map(file => (
@@ -73,17 +75,27 @@ const AttachmentSection = ({ classes }) => {
           </Typography>
         </div>
       </div>
-      <section className="container">
-        <div {...getRootProps({ className: `${classes.dropzone}` })}>
-          <input {...getInputProps()} />
-          <p>Kéo thả tệp đính kèm vào đây, hoặc click để duyệt file</p>
-        </div>
-        <aside>
-          <h4>Tệp của bạn:</h4>
-          <ul>{files}</ul>
-        </aside>
-      </section>
+      <ApprovalContainer review={review} name="checkAttachedFile">
+        <section className="container">
+          <div {...getRootProps({ className: `${classes.dropzone}` })}>
+            <input {...getInputProps()} />
+            <p>Kéo thả tệp đính kèm vào đây, hoặc click để duyệt file</p>
+          </div>
+          <aside>
+            <h4>Tệp của bạn:</h4>
+            <ul>{files}</ul>
+          </aside>
+        </section>
+      </ApprovalContainer>
     </Paper>
   );
+};
+AttachmentSection.propsType = {
+  edit: PropsType.bool,
+  review: PropsType.bool,
+};
+AttachmentSection.defaultProps = {
+  edit: true,
+  review: true,
 };
 export default withStyles(styles)(AttachmentSection);

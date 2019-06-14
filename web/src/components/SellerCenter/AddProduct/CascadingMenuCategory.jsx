@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Paper, Typography, Icon } from '@material-ui/core';
+import PropTypes from 'prop-types';
 import EnhancedList from '../../../utils/common/EnhancedList';
+import ApprovalContainer from '../../../utils/ApprovalContainer';
 
 const menuItems = [
   {
@@ -122,7 +124,7 @@ const menuItems = [
   },
 ];
 
-const CascadingMenuCategory = () => {
+const CascadingMenuCategory = ({ review, ...props }) => {
   const style = {
     display: 'flex',
     height: '50vh',
@@ -137,11 +139,21 @@ const CascadingMenuCategory = () => {
           Danh mục <Icon>info</Icon>
         </Typography>
       </div>
-      <Paper elevation={3} style={style}>
-        <EnhancedList selected={selected} setSelected={setSelected} menuItems={menuItems} />
-      </Paper>
+      <ApprovalContainer review={review} name="checkCategory">
+        <Paper elevation={3} style={style}>
+          <EnhancedList selected={selected} setSelected={setSelected} menuItems={menuItems} />
+        </Paper>
+      </ApprovalContainer>
     </React.Fragment>
   );
+};
+
+CascadingMenuCategory.propTypes = {
+  review: PropTypes.bool,
+};
+
+CascadingMenuCategory.defaultProps = {
+  review: false,
 };
 
 export default CascadingMenuCategory;

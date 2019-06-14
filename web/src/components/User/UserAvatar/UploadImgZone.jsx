@@ -56,7 +56,7 @@ const UploadImgZone = ({ classes, style, images, setImages, ...others }) => {
     () => () => {
       // Return a function to clean up when unmounting, similar to componentWillUnmount
       // Make sure to revoke the data uris to avoid memory leaks
-      images.forEach(file => URL.revokeObjectURL(file.preview));
+      images && images.forEach(file => URL.revokeObjectURL(file.preview));
     },
     [],
   );

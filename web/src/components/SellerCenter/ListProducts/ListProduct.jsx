@@ -245,7 +245,7 @@ function ListProduct(props) {
 }
 export default compose(
   graphql(GET_PRODUCT, {
-    options: props => ({ variables: { sellerId: 'cjurxpx4o00az07063f7imdn3' } }),
+    options: props => ({ variables: { sellerId: 'cjwm91tct00250740mfgj3s06' } }),
     props: ({ data: { loading, productsWoTemplateAfterCreated } }) => ({
       loading,
       productsData: productsWoTemplateAfterCreated,

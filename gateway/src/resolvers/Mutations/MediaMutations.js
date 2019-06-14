@@ -46,7 +46,7 @@ export const Mutation = {
     const productMedias = await Promise.all(
       files.map(async file => {
         const uploaded = await file;
-        const media = await s3ProductMediasUploader(prisma, uploaded, { userId: user.id });
+        const media = await s3ProductMediasUploader(prisma, uploaded, { userId: userId });
         return media;
       }),
     );

@@ -19,12 +19,14 @@ import {
 import { Field } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
 import { TextField } from 'final-form-material-ui';
+import PropTypes from 'prop-types';
 import MuiTextField from '@material-ui/core/TextField';
 import AddSelectionModal from './AddSelectionModal';
 import EnhancedTableToolbar from '../../../../utils/common/EnhancedTableToolbar';
 import ProductDataContext from '../../../../utils/context/ProductDataContext';
 import SelectOutlinedInput from '../../../../utils/common/form/SelectOutlinedInput';
 import ProductEditDataContext from '../../../../utils/context/ProductEditDataContext';
+import ApprovalContainer from '../../../../utils/ApprovalContainer';
 // import RunningModel from './RunningModel';
 
 const styles = theme => ({
@@ -65,7 +67,7 @@ const attributeArr = [
   { productId: 'sellPrice', caption: 'Giá bán' },
   { productId: 'stockQuantity', caption: 'Số lượng tồn kho' },
 ];
-const ProductProperties = ({ classes, setValue, push, pop, remove, edit }) => {
+const ProductProperties = ({ classes, setValue, push, pop, remove, edit, review, ...props }) => {
   const productData = useContext(edit ? ProductEditDataContext : ProductDataContext);
   const { products } = productData.data;
   const rowCount = products && products.length;
@@ -138,214 +140,227 @@ const ProductProperties = ({ classes, setValue, push, pop, remove, edit }) => {
           Sản phẩm có nhiều lựa chọn theo màu sắc, kích cỡ ...?
         </Typography>
       </div>
-      <Grid container spacing={16}>
-        <Grid item xs={10}>
-          <Paper>
-            <AppBar className={classes.bar} position="static" color="default" elevation={0}>
-              <Toolbar>
-                <Grid container spacing={16} alignItems="center" justify="space-between">
-                  <Typography variant="h5">Thuộc tính lựa chọn</Typography>
-                  <Button onClick={handleOpen} variant="contained" color="secondary">
-                    {options && options[0].listItems.length > 0 ? 'Chỉnh sửa' : 'Thêm lựa chọn'}
-                  </Button>
-                </Grid>
-              </Toolbar>
-            </AppBar>
-            {/* Show the gridContainer below if user already added selections */}
-            <Grid className={classes.gridContainer} container spacing={16}>
-              {options && options[0].listItems.length > 0 && (
-                <React.Fragment>
-                  <Grid item xs>
-                    <Typography variant="h6" gutterBottom>
-                      Tên thuộc tính
-                    </Typography>
-                    {options.map(option => (
-                      <Typography gutterBottom variant="subtitle1">
-                        {option.attributeName}
-                      </Typography>
-                    ))}
+      <ApprovalContainer review={review} name="checkOptions">
+        <Grid container spacing={16}>
+          <Grid item xs={10}>
+            <Paper>
+              <AppBar className={classes.bar} position="static" color="default" elevation={0}>
+                <Toolbar>
+                  <Grid container spacing={16} alignItems="center" justify="space-between">
+                    <Typography variant="h5">Thuộc tính lựa chọn</Typography>
+                    <Button onClick={handleOpen} variant="contained" color="secondary">
+                      {options && options[0].listItems.length > 0 ? 'Chỉnh sửa' : 'Thêm lựa chọn'}
+                    </Button>
                   </Grid>
-                  <Grid item xs>
-                    <Typography variant="h6" gutterBottom>
-                      Các lựa chọn
-                    </Typography>
-                    {options.map(option => (
-                      <Typography key={option.name} gutterBottom>
-                        {option.listItems.map(
-                          (item, index) =>
-                            item && `${item.optionValue} ${index !== option.listItems.length - 1 ? ', ' : ''}`,
-                        )}
+                </Toolbar>
+              </AppBar>
+              {/* Show the gridContainer below if user already added selections */}
+              <Grid className={classes.gridContainer} container spacing={16}>
+                {options && options[0].listItems.length > 0 && (
+                  <React.Fragment>
+                    <Grid item xs>
+                      <Typography variant="h6" gutterBottom>
+                        Tên thuộc tính
                       </Typography>
-                    ))}
-                  </Grid>
-                </React.Fragment>
-              )}
-            </Grid>
-          </Paper>
+                      {options.map(option => (
+                        <Typography gutterBottom variant="subtitle1">
+                          {option.attributeName}
+                        </Typography>
+                      ))}
+                    </Grid>
+                    <Grid item xs>
+                      <Typography variant="h6" gutterBottom>
+                        Các lựa chọn
+                      </Typography>
+                      {options.map(option => (
+                        <Typography key={option.name} gutterBottom>
+                          {option.listItems.map(
+                            (item, index) =>
+                              item && `${item.optionValue} ${index !== option.listItems.length - 1 ? ', ' : ''}`,
+                          )}
+                        </Typography>
+                      ))}
+                    </Grid>
+                  </React.Fragment>
+                )}
+              </Grid>
+            </Paper>
+          </Grid>
+          <Grid item xs={7}>
+            {/* <RunningModel classes={classes} />  */}
+          </Grid>
         </Grid>
-        <Grid item xs={7}>
-          {/* <RunningModel classes={classes} />  */}
-        </Grid>
-      </Grid>
-
-      <Paper className={classes.tableContainer}>
-        <EnhancedTableToolbar
-          deleteRow={deleteSelectedRow}
-          numSelected={selected.length}
-          title="Thông tin chi tiết từng sản phẩm"
-          button={
-            <Button
-              disabled={!options || !options[0].listItems[0]}
-              className={classes.addRow}
-              onClick={addRowData}
-              variant="contained"
-              color="secondary"
-            >
-              Thêm dòng
-            </Button>
-          }
-        />
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              <TableCell padding="checkbox">
-                <Checkbox
-                  indeterminate={numSelected > 0 && numSelected < rowCount}
-                  checked={numSelected === rowCount}
-                  onChange={onSelectAllClick}
-                />
-              </TableCell>
-              {options &&
-                options.map(option => <TableCell key={option.attributeName}>{option.attributeName}</TableCell>)}
-              {attributeArr.map(attr => (
-                <TableCell style={{ paddingRight: 40 }} key={attr.productId}>
-                  {attr.caption}
-                </TableCell>
-              ))}
-            </TableRow>
-            <TableRow>
-              {options && options.map(option => <TableCell key={option.attributeName} />)}
-              <TableCell key="spacing3" />
-              <TableCell key="spacing4" />
-              <TableCell key="spacing5" />
-              {attributeArr.slice(-3).map(element => (
-                <TableCell key={element.productId} className={classes.cell}>
-                  <MuiTextField
-                    InputProps={{
-                      className: classes.textField,
-                    }}
-                    onKeyPress={event => enterValueForAll(event, element.productId)}
-                    fullWidth
-                    required
-                    helperText="Nhấn Enter để nhập cho tất cả"
-                    margin="normal"
-                    name={`${element.productId}`}
-                    type="text"
-                    variant="outlined"
+      </ApprovalContainer>
+      <ApprovalContainer name="checkDetailProducts" review={review}>
+        <Paper className={classes.tableContainer}>
+          <EnhancedTableToolbar
+            deleteRow={deleteSelectedRow}
+            numSelected={selected.length}
+            title="Thông tin chi tiết từng sản phẩm"
+            button={
+              <Button
+                disabled={!options || !options[0].listItems[0]}
+                className={classes.addRow}
+                onClick={addRowData}
+                variant="contained"
+                color="secondary"
+              >
+                Thêm dòng
+              </Button>
+            }
+          />
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    indeterminate={numSelected > 0 && numSelected < rowCount}
+                    checked={numSelected === rowCount}
+                    onChange={onSelectAllClick}
                   />
                 </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <FieldArray name="products">
-              {({ fields }) =>
-                fields.map((name, index) => {
-                  const wasSelected = isSelected(index);
-                  return (
-                    <TableRow hover role="checkbox" selected={wasSelected} key={name}>
-                      <TableCell padding="checkbox">
-                        <Checkbox checked={wasSelected} onChange={event => handleClick(event, index)} />
-                      </TableCell>
-                      {options &&
-                        options.map((option, optionIndex) => (
-                          <TableCell className={classes.cell} component="th" scope="row">
-                            <Field fullWidth component={SelectOutlinedInput} name={`${name}.option${optionIndex}`}>
-                              {option.listItems.map(item => (
-                                <MenuItem value={item && item.optionValue}>{item && item.optionValue}</MenuItem>
-                              ))}
-                            </Field>
-                          </TableCell>
-                        ))}
-                      <TableCell className={classes.cell} component="th" scope="row">
-                        <Field
-                          InputProps={{
-                            className: classes.textField,
-                          }}
-                          fullWidth
-                          component={TextField}
-                          required
-                          margin="normal"
-                          name={`${name}.productName`}
-                          type="text"
-                          variant="outlined"
-                        />
-                      </TableCell>
-                      <TableCell className={classes.cell} component="th" scope="row">
-                        <Field
-                          InputProps={{
-                            className: classes.textField,
-                          }}
-                          fullWidth
-                          component={TextField}
-                          required
-                          margin="normal"
-                          name={`${name}.productId`}
-                          type="text"
-                          variant="outlined"
-                        />
-                      </TableCell>
-                      <TableCell className={classes.cell} component="th" scope="row">
-                        <Field
-                          InputProps={{
-                            className: classes.textField,
-                          }}
-                          fullWidth
-                          component={TextField}
-                          required
-                          margin="normal"
-                          name={`${name}.listPrice`}
-                          type="text"
-                          variant="outlined"
-                        />
-                      </TableCell>
-                      <TableCell className={classes.cell} component="th" scope="row">
-                        <Field
-                          InputProps={{
-                            className: classes.textField,
-                          }}
-                          fullWidth
-                          component={TextField}
-                          required
-                          margin="normal"
-                          name={`${name}.sellPrice`}
-                          type="text"
-                          variant="outlined"
-                        />
-                      </TableCell>
-                      <TableCell className={classes.cell} component="th" scope="row">
-                        <Field
-                          InputProps={{
-                            className: classes.textField,
-                          }}
-                          fullWidth
-                          component={TextField}
-                          required
-                          margin="normal"
-                          name={`${name}.stockQuantity`}
-                          type="text"
-                          variant="outlined"
-                        />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              }
-            </FieldArray>
-          </TableBody>
-        </Table>
-      </Paper>
+                {options &&
+                  options.map(option => <TableCell key={option.attributeName}>{option.attributeName}</TableCell>)}
+                {attributeArr.map(attr => (
+                  <TableCell style={{ paddingRight: 40 }} key={attr.productId}>
+                    {attr.caption}
+                  </TableCell>
+                ))}
+              </TableRow>
+              <TableRow>
+                {options && options.map(option => <TableCell key={option.attributeName} />)}
+                <TableCell key="spacing3" />
+                <TableCell key="spacing4" />
+                <TableCell key="spacing5" />
+                {attributeArr.slice(-3).map(element => (
+                  <TableCell key={element.productId} className={classes.cell}>
+                    <MuiTextField
+                      InputProps={{
+                        className: classes.textField,
+                      }}
+                      onKeyPress={event => enterValueForAll(event, element.productId)}
+                      fullWidth
+                      required
+                      helperText="Nhấn Enter để nhập cho tất cả"
+                      margin="normal"
+                      name={`${element.productId}`}
+                      type="text"
+                      variant="outlined"
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <FieldArray name="products">
+                {({ fields }) =>
+                  fields.map((name, index) => {
+                    const wasSelected = isSelected(index);
+                    return (
+                      <TableRow hover role="checkbox" selected={wasSelected} key={name}>
+                        <TableCell padding="checkbox">
+                          <Checkbox checked={wasSelected} onChange={event => handleClick(event, index)} />
+                        </TableCell>
+                        {options &&
+                          options.map((option, optionIndex) => (
+                            <TableCell className={classes.cell} component="th" scope="row">
+                              <Field fullWidth component={SelectOutlinedInput} name={`${name}.option${optionIndex}`}>
+                                {option.listItems.map(item => (
+                                  <MenuItem value={item && item.optionValue}>{item && item.optionValue}</MenuItem>
+                                ))}
+                              </Field>
+                            </TableCell>
+                          ))}
+                        <TableCell className={classes.cell} component="th" scope="row">
+                          <Field
+                            InputProps={{
+                              className: classes.textField,
+                            }}
+                            fullWidth
+                            component={TextField}
+                            required
+                            margin="normal"
+                            name={`${name}.productName`}
+                            type="text"
+                            variant="outlined"
+                          />
+                        </TableCell>
+                        <TableCell className={classes.cell} component="th" scope="row">
+                          <Field
+                            InputProps={{
+                              className: classes.textField,
+                            }}
+                            fullWidth
+                            component={TextField}
+                            required
+                            margin="normal"
+                            name={`${name}.productId`}
+                            type="text"
+                            variant="outlined"
+                          />
+                        </TableCell>
+                        <TableCell className={classes.cell} component="th" scope="row">
+                          <Field
+                            InputProps={{
+                              className: classes.textField,
+                            }}
+                            fullWidth
+                            component={TextField}
+                            required
+                            margin="normal"
+                            name={`${name}.listPrice`}
+                            type="text"
+                            variant="outlined"
+                          />
+                        </TableCell>
+                        <TableCell className={classes.cell} component="th" scope="row">
+                          <Field
+                            InputProps={{
+                              className: classes.textField,
+                            }}
+                            fullWidth
+                            component={TextField}
+                            required
+                            margin="normal"
+                            name={`${name}.sellPrice`}
+                            type="text"
+                            variant="outlined"
+                          />
+                        </TableCell>
+                        <TableCell className={classes.cell} component="th" scope="row">
+                          <Field
+                            InputProps={{
+                              className: classes.textField,
+                            }}
+                            fullWidth
+                            component={TextField}
+                            required
+                            margin="normal"
+                            name={`${name}.stockQuantity`}
+                            type="text"
+                            variant="outlined"
+                          />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                }
+              </FieldArray>
+            </TableBody>
+          </Table>
+        </Paper>
+      </ApprovalContainer>
     </Paper>
   );
+};
+
+ProductProperties.propTypes = {
+  review: PropTypes.bool,
+  edit: PropTypes.bool,
+};
+
+ProductProperties.defaultProps = {
+  review: false,
+  edit: false,
 };
 export default withStyles(styles)(ProductProperties);

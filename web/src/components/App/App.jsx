@@ -27,6 +27,7 @@ import ListProduct from '../SellerCenter/ListProducts/ListProduct';
 import SignView from '../SellerCenter/Sign/SignView';
 import RegisterSeller from '../SellerCenter/RegiserSeller/RegisterSeller';
 import SellerDeclaration from '../SellerCenter/SellerDeclaration/SellerDeclaration';
+import SellerApproval from '../SellerCenter/Approval/SellerApproval/SellerApproval';
 
 class App extends Component<Props, State> {
   state = {
@@ -80,6 +81,7 @@ class App extends Component<Props, State> {
           <Route exact path="/sellers/sign" component={SignView} />
           <Route exact path="/sellers/register-seller" component={withAuthenticator(RegisterSeller)} />
           <Route exact path="/sellers/seller-declaration" component={withAuthenticator(SellerDeclaration)} />
+          <Route exact path="/sellers/verify-sellers" component={withAuthenticator(SellerApproval)} />
           <Route
             exact
             path="/sellers/(.*)"
@@ -92,7 +94,7 @@ class App extends Component<Props, State> {
                   <Route path="/sellers/add-product" component={AddProduct} />
                 </Switch>
                 <Switch>
-                  <Route path="/sellers/list-product" component={withAuthenticator(ListProduct)} />
+                  <Route path="/sellers/list-products" component={withAuthenticator(ListProduct)} />
                 </Switch>
               </LayoutSellerCenter>
             )}

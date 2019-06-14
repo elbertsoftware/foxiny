@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import PropsType from 'prop-types';
 import { Field } from 'react-final-form';
 import { TextField } from 'final-form-material-ui';
 import RichTextEditor from 'react-rte';
 import { Typography, Paper, withStyles, Grid, Button, FormLabel } from '@material-ui/core';
 import AddBrandModal from './AddBrandModal';
+import ApprovalContainer from '../../../../utils/ApprovalContainer';
 
 const styles = theme => ({
   paper: {
@@ -41,7 +43,7 @@ const styles = theme => ({
   },
 });
 
-const BasicInfo = ({ classes, onChange }) => {
+const BasicInfo = ({ classes, onChange, review, ...props }) => {
   const [value, setValue] = useState(RichTextEditor.createEmptyValue());
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -69,69 +71,87 @@ const BasicInfo = ({ classes, onChange }) => {
       </Paper>
       <Grid container spacing={16}>
         <Grid item xs>
-          <Field
-            fullWidth
-            component={TextField}
-            required
-            margin="normal"
-            label="Tên sản phẩm"
-            name="productName"
-            type="text"
-            variant="outlined"
-          />
-        </Grid>
-        <Grid item xs>
-          <div className={classes.createNew}>
+          <ApprovalContainer review={review} name="checkProductName">
             <Field
               fullWidth
               component={TextField}
               required
               margin="normal"
-              label="Thương hiệu"
-              name="brandName"
+              label="Tên sản phẩm"
+              name="productName"
               type="text"
               variant="outlined"
-              helperText="Không tìm thấy thương hiệu phù hợp? Vui lòng nhấn vào nút Tạo mới"
             />
-            <Button onClick={handleOpen} className={classes.btnCreate} variant="text" color="secondary">
-              Tạo mới
-            </Button>
-            <AddBrandModal openModal={open} handleCloseModal={handleClose} />
-          </div>
+          </ApprovalContainer>
+        </Grid>
+        <Grid item xs>
+          <ApprovalContainer review={review} name="checkBrandname">
+            <div className={classes.createNew}>
+              <Field
+                fullWidth
+                component={TextField}
+                required
+                margin="normal"
+                label="Thương hiệu"
+                name="brandName"
+                type="text"
+                variant="outlined"
+                helperText="Không tìm thấy thương hiệu phù hợp? Vui lòng nhấn vào nút Tạo mới"
+              />
+
+              <Button onClick={handleOpen} className={classes.btnCreate} variant="text" color="secondary">
+                Tạo mới
+              </Button>
+              <AddBrandModal openModal={open} handleCloseModal={handleClose} />
+            </div>
+          </ApprovalContainer>
         </Grid>
       </Grid>
       <Grid container spacing={16}>
         <Grid item xs>
-          <Field
-            fullWidth
-            component={TextField}
-            margin="normal"
-            label="Xuất xứ thương hiệu"
-            name="fromWhere"
-            type="text"
-            variant="outlined"
-          />
+          <ApprovalContainer review={review} name="checkFromWhere">
+            <Field
+              fullWidth
+              component={TextField}
+              margin="normal"
+              label="Xuất xứ thương hiệu"
+              name="fromWhere"
+              type="text"
+              variant="outlined"
+            />
+          </ApprovalContainer>
         </Grid>
         <Grid item xs />
       </Grid>
-      <Field
-        className={classes.textField}
-        component={TextField}
-        multiline
-        fullWidth
-        rows="4"
-        margin="normal"
-        label="Đặc điểm nổi bật"
-        name="briefDescription"
-        type="text"
-        variant="outlined"
-        helperText="Tối thiểu 3 ý, mỗi ý 1 dòng"
-      />
-      <div className={classes.textEditorContainer}>
-        <FormLabel className={classes.detailInfo}>Mô tả chi tiết sản phẩm *</FormLabel>
-        <RichTextEditor className={classes.richTextEditor} value={value} onChange={onChangeValue} />
-      </div>
+      <ApprovalContainer review={review} name="checkDescription">
+        <Field
+          className={classes.textField}
+          component={TextField}
+          multiline
+          fullWidth
+          rows="4"
+          margin="normal"
+          label="Đặc điểm nổi bật"
+          name="briefDescription"
+          type="text"
+          variant="outlined"
+          helperText="Tối thiểu 3 ý, mỗi ý 1 dòng"
+        />
+      </ApprovalContainer>
+      <ApprovalContainer review={review} name="checkDetailDescription">
+        <div className={classes.textEditorContainer}>
+          <FormLabel className={classes.detailInfo}>Mô tả chi tiết sản phẩm *</FormLabel>
+          <RichTextEditor className={classes.richTextEditor} value={value} onChange={onChangeValue} />
+        </div>
+      </ApprovalContainer>
     </Paper>
   );
+};
+
+BasicInfo.propType = {
+  review: PropsType.bool,
+};
+BasicInfo.defaultProps = {
+  review: false,
 };
 export default withStyles(styles)(BasicInfo);

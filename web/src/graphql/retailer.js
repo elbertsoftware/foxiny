@@ -76,6 +76,11 @@ const RETAILERS = gql`
   query {
     myRetailers {
       id
+      owner {
+        user {
+          name
+        }
+      }
       businessName
       businessEmail
       businessPhone

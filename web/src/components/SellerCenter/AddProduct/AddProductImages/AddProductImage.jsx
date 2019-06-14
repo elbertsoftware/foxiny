@@ -2,12 +2,14 @@
 /* eslint-disable no-param-reassign */
 import React, { useState, useContext, useEffect } from 'react';
 import { Button, Slide, Dialog, AppBar, Toolbar, Typography, withStyles } from '@material-ui/core';
+import PropTypes from 'prop-types';
 import AddProductImgSection from './AddProductImgSection';
 import ApplyImgMultiSecModal from './ApplyImgMultiSecModal';
 import OpenContext from '../../../../utils/context/OpenContextAddProduct';
 import ProductDataContext from '../../../../utils/context/ProductDataContext';
 import ProductDetailPage from '../../../Product/ProductDetail/ProductDetailPage';
 import ProductEditDataContext from '../../../../utils/context/ProductEditDataContext';
+import ApprovalContainer from '../../../../utils/ApprovalContainer';
 
 const styles = {
   appBar: {
@@ -40,7 +42,7 @@ export const Preview = withStyles(styles)(({ classes, open, handleClose, product
 });
 
 function AddProductImage(props) {
-  const { setValue, edit } = props;
+  const { setValue, edit, review } = props;
   // Get product data from final form STATE using context
   const productData = useContext(edit ? ProductEditDataContext : ProductDataContext);
   const { products } = productData.data;
@@ -125,15 +127,17 @@ function AddProductImage(props) {
         handleClose={handleClose}
         products={products}
       />
-      {products.map((product, index) => (
-        <AddProductImgSection
-          files={images[index]}
-          setImages={handleUpdateImages(index)}
-          setIndexProduct={handleSetIndex(index)}
-          key={`product${index}`}
-          productName={product.productName}
-        />
-      ))}
+      <ApprovalContainer review={review} name="checkImageProducts">
+        {products.map((product, index) => (
+          <AddProductImgSection
+            files={images[index]}
+            setImages={handleUpdateImages(index)}
+            setIndexProduct={handleSetIndex(index)}
+            key={`product${index}`}
+            productName={product.productName}
+          />
+        ))}
+      </ApprovalContainer>
       <Button onClick={handleOpenPreview} variant="contained">
         Xem trước
       </Button>
@@ -148,5 +152,15 @@ function AddProductImage(props) {
     </OpenContext.Provider>
   );
 }
+
+AddProductImage.propTypes = {
+  edit: PropTypes.bool,
+  review: PropTypes.bool,
+};
+
+AddProductImage.defaultProps = {
+  edit: false,
+  review: false,
+};
 
 export default AddProductImage;

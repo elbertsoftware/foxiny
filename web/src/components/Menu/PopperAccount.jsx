@@ -40,6 +40,9 @@ const PopperAccount = ({
                 <MenuItem component={Link} to={`/profile/${userId}`} className={classes.menuItem}>
                   Trang cá nhân
                 </MenuItem>
+                <MenuItem component={Link} to="/sellers/" className={classes.menuItem}>
+                  Quản lý bán hàng
+                </MenuItem>
                 <MenuItem
                   onClick={event => {
                     handleClose(event);

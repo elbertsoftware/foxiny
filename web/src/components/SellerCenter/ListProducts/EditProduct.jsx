@@ -18,6 +18,9 @@ import arrayMutators from 'final-form-arrays';
 import { graphql, compose } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { toast } from 'react-toastify';
+import PropTypes from 'prop-types';
+import CascadingMenuCategory from '../AddProduct/CascadingMenuCategory';
+import BasicInfo from '../AddProduct/BasicInfo/BasicInfo';
 import ProductProperties from '../AddProduct/ProductProperties/ProductProperties';
 import AttachmentSection from '../AddProduct/Attachment/AttachmentSection';
 import AddProductImage from '../AddProduct/AddProductImages/AddProductImage';
@@ -63,7 +66,7 @@ const EDIT_PRODUCT = gql`
   }
 `;
 function getSteps() {
-  return ['Lựa chọn sản phẩm đăng bán', 'Hình ảnh', 'Tài liệu đính kèm'];
+  return ['Danh mục', 'Thông tin cơ bản', 'Lựa chọn sản phẩm đăng bán', 'Hình ảnh', 'Tài liệu đính kèm'];
 }
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -121,7 +124,7 @@ const styles = theme => ({
     padding: theme.spacing.unit * 3,
   },
 });
-const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, editProducts }) => {
+const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, editProducts, review }) => {
   const [activeStep, setActiveStep] = useState(0);
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -188,6 +191,11 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
     }
     setInitData(newData);
   }, [dataEdit]);
+  useEffect(() => {
+    if (!review) {
+      setActiveStep(2);
+    }
+  }, []);
 
   const onSubmit = async values => {
     const { products, options, images } = values;
@@ -257,11 +265,10 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
         },
       ),
     );
-    console.log(newProducts);
     try {
       await editProducts({
         variables: {
-          sellerId: 'cjurxpx4o00az07063f7imdn3',
+          sellerId: 'cjwm91tct00250740mfgj3s06',
           data: newProducts,
         },
       });
@@ -311,17 +318,20 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
               }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <ProductEditDataContext.Provider value={{ data: values }}>
-                    {activeStep === 0 && (
+                    {activeStep === 0 && <CascadingMenuCategory review={review} />}
+                    {activeStep === 1 && <BasicInfo review={review} />}
+                    {activeStep === 2 && (
                       <ProductProperties
-                        edit={Boolean(true)}
+                        edit
                         setValue={setValue}
                         push={push}
                         pop={pop}
                         remove={remove}
+                        review={review}
                       />
                     )}
-                    {activeStep === 1 && <AddProductImage edit={Boolean(true)} setValue={setValue} />}
-                    {activeStep === 2 && <AttachmentSection edit={Boolean(true)} />}
+                    {activeStep === 3 && <AddProductImage edit setValue={setValue} review={review} />}
+                    {activeStep === 4 && <AttachmentSection edit review={review} />}
                   </ProductEditDataContext.Provider>
                   <div className={classes.actionsContainer}>
                     <div className={classes.grow} />
@@ -355,6 +365,17 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
     </Dialog>
   );
 };
+
+EditProduct.propTypes = {
+  dataEdit: PropTypes.array,
+  review: PropTypes.bool,
+};
+
+EditProduct.defaultProps = {
+  dataEdit: [],
+  review: false,
+};
+
 export default compose(
   graphql(EDIT_PRODUCT, { name: 'editProducts' }),
   graphql(UPLOAD_IMAGES, { name: 'uploadProductImgs' }),

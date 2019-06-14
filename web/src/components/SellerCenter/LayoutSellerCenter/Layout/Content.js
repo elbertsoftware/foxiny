@@ -1,45 +1,30 @@
-import React, { useContext } from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import { LayoutContext } from "./Root";
+import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import { LayoutContext } from './Root';
 
 const styles = ({ transitions }) => ({
   root: {
     flexGrow: 1,
-    transition: transitions.create(["margin"], {
+    transition: transitions.create(['margin'], {
       easing: transitions.easing.sharp,
-      duration: transitions.duration.leavingScreen
-    })
-  }
+      duration: transitions.duration.leavingScreen,
+    }),
+  },
 });
 
-const Content = ({
-  className,
-  component: Component,
-  classes,
-  style,
-  ...props
-}) => {
+const Content = ({ className, component: Component, classes, style, ...props }) => {
   const ctx = useContext(LayoutContext);
-  const {
-    navVariant,
-    navWidth,
-    collapsible,
-    collapsed,
-    collapsedWidth,
-    open,
-    navAnchor,
-    squeezed
-  } = ctx;
+  const { navVariant, navWidth, collapsible, collapsed, collapsedWidth, open, navAnchor, squeezed } = ctx;
   const getMargin = () => {
-    if (navAnchor !== "left") return 0;
-    if (navVariant === "persistent" && open) {
+    if (navAnchor !== 'left') return 0;
+    if (navVariant === 'persistent' && open) {
       // open is effect only when
       // navVariant === 'persistent' ||
       // navVariant === 'temporary'
       return navWidth;
     }
-    if (navVariant === "permanent") {
+    if (navVariant === 'permanent') {
       if (collapsible) {
         if (collapsed) return collapsedWidth;
         return navWidth;
@@ -49,16 +34,16 @@ const Content = ({
     return 0;
   };
   const getWidth = () => {
-    if (navVariant === "persistent" && open) {
+    if (navVariant === 'persistent' && open) {
       // open is effect only when
       // navVariant === 'persistent' ||
       // navVariant === 'temporary'
       if (squeezed) {
-        return "auto";
+        return 'auto';
       }
-      return "100%";
+      return '100%';
     }
-    return "auto";
+    return 'auto';
   };
   return (
     <Component
@@ -67,7 +52,7 @@ const Content = ({
       style={{
         ...style,
         marginLeft: getMargin(),
-        width: getWidth()
+        width: getWidth(),
       }}
     />
   );
@@ -77,12 +62,12 @@ Content.propTypes = {
   className: PropTypes.string,
   classes: PropTypes.shape({}).isRequired,
   component: PropTypes.elementType,
-  style: PropTypes.shape({})
+  style: PropTypes.shape({}),
 };
 Content.defaultProps = {
-  className: "",
-  component: "main",
-  style: {}
+  className: '',
+  component: 'main',
+  style: {},
 };
 
-export default withStyles(styles, { name: "MuiContent" })(Content);
+export default withStyles(styles, { name: 'MuiContent' })(Content);
