@@ -1,13 +1,13 @@
 // @flow
 
 import logger from "../../utils/logger";
-import { checkSellerPermissions } from "../../utils/permissionChecker";
+import { checkUserSellerOwnership } from "../../utils/permissionChecker";
 import { restructureProduct2FriendlyProduct } from "../../utils/productUtils/dataHelper";
 
 export const Query = {
   productsWoTemplateAfterCreated: async (parent, { sellerId, approved }, { prisma, cache, request }, info) => {
     // NOTE: check permission
-    await checkSellerPermissions(prisma, cache, request, sellerId);
+    await checkUserSellerOwnership(prisma, cache, request, sellerId);
 
     const newInfo = `{
       id

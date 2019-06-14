@@ -5,18 +5,18 @@ export const retailerSchema = gql`
   type Retailer {
     id: ID!
 
-    owner: Assignment
+    owner: [Assignment!]
 
     businessCover: Media # Avatar
     businessAvatar: Media # Avatar
     businessName: String! #  displayed on Retailer profile and foxiny listings
-    businessAddress: Address! # one to one
+    businessAddress: Address # one to one
     businessPhone: String! # maybe different to user's phone
     businessEmail: String!
-    businessLink: String!
+    businessLink: String
 
-    socialNumber: String!
-    socialNumberImages: [Media!]!
+    socialNumber: String
+    socialNumberImages: [Media!]
     businessLicense: String
     businessLicenseImages: [Media!]
     # Tax

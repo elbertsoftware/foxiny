@@ -6,7 +6,7 @@ import { sendConfirmationText } from "../../utils/sms";
 import { sendConfirmationEmail } from "../../utils/email";
 import { sendConfirmationEsms } from "../../utils/smsVN";
 import { getUserIDFromRequest, generateConfirmation, verifyConfirmation } from "../../utils/authentication";
-import { checkSellerPermissions } from "../../utils/permissionChecker";
+import { checkUserSellerOwnership } from "../../utils/permissionChecker";
 import { classifyEmailPhone } from "../../utils/productUtils/validation";
 
 // TODO: log transactions
@@ -105,7 +105,7 @@ export const Mutation = {
     // try {
     // NOTE: check permission
     const userId = await getUserIDFromRequest(request, cache, i18n);
-    await checkSellerPermissions(prisma, cache, request, retailerId);
+    await checkUserSellerOwnership(prisma, cache, request, retailerId);
 
     const retailer = await prisma.query.retailer(
       {

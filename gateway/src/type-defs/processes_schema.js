@@ -37,7 +37,7 @@ export const processesSchema = gql`
   extend type Query {
     retailerApprovals(query: String): [Approval!]
     retailerApprovalProcesses(query: String): [ApprovalProcess!]!
-    lastRetailerApprovalProcess(query: String!): ApprovalProcess!
+    lastRetailerApprovalProcess(query: String!): ApprovalProcess
     # manufacturerApproval(query: String): Approval!
   }
 
