@@ -3,6 +3,8 @@
 import { extractFragmentReplacements } from 'prisma-binding';
 import { merge } from 'lodash';
 
+import GraphQLJSON from 'graphql-type-json';
+
 import logger from '../utils/logger';
 
 import { Query as userQueries } from './Queries/UserQueries';
@@ -15,6 +17,8 @@ import { Mutation as productMutations } from './Mutations/ProductMutations';
 import { Mutation as retailerMutations } from './Mutations/RetailerMutations';
 import { Query as retailerQueries } from './Queries/RetailerQueries';
 import { Mutation as mediaMutations } from './Mutations/MediaMutations';
+import { Query as approvalQueries } from './Queries/ApprovalQueries';
+import { Mutation as approvalMutations } from './Mutations/ApprovalMutations';
 // media queries
 
 // import Subscription from './Subscription'
@@ -22,11 +26,19 @@ import { User } from './Resolvers/User';
 import { Media } from './Resolvers/Media';
 
 const resolvers = {
-  Query: merge(userQueries, categoryQueries, productQueries, retailerQueries),
-  Mutation: merge(userMutations, categoryMutations, productMutations, retailerMutations, mediaMutations),
+  Query: merge(userQueries, categoryQueries, productQueries, retailerQueries, approvalQueries),
+  Mutation: merge(
+    userMutations,
+    categoryMutations,
+    productMutations,
+    retailerMutations,
+    mediaMutations,
+    approvalMutations,
+  ),
   // Subscription,
   User,
   Media,
+  JSON: GraphQLJSON, // usung a custom scalar to handle JSON
 };
 
 // extractFragmentReplacements() goes thru all resolvers and retrieve fragment definitions

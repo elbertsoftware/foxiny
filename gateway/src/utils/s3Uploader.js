@@ -5,6 +5,10 @@ import cuid from 'cuid';
 import { getFileInfo } from './fsHelper';
 import logger from './logger';
 
+// TODO: subfolder is no-need
+// TODO: keep only filename
+
+// NOTE: AWS S3 declaration
 AWS.config.update({
   accessKeyId: process.env.S3_ACCESS_KEY,
   secretAccessKey: process.env.S3_SECRET_KEY,
@@ -17,6 +21,17 @@ const s3 = new AWS.S3({
     Bucket: process.env.S3_IMAGES_BUCKET,
   },
 });
+
+/**
+ * rename uploaded filed
+ * @param {String} id userId or selleId
+ * @param {String} filename raw file name
+ * @param {String} ext file extension
+ */
+const renameFile = (id, filename, ext) => {
+  const newFilename = `${id}_${filename}.${ext}`;
+  return newFilename;
+};
 
 const saveToUser = async (prisma, userId, data) => {
   const updatedUser = await prisma.mutation.updateUser(
@@ -113,7 +128,7 @@ const s3ProfileMediaUploader = async (prisma, upload, args) => {
 
     const data = await getFileInfo(filename, args.userId || args.sellerId, createReadStream);
 
-    const key = `${args.userId || args.sellerId}_${new Date().getTime()}.${data.ext}`; // pattern: userID_tick.extention
+    const key = renameFile(args.userId || args.sellerId, data.name, data.ext); // pattern: userID_tick.extention
     logger.debug(`🔵✅  READ FILE: done. UPLOADING ${key} TO S3...`);
     // Upload to S3
     const response = await s3
@@ -163,7 +178,7 @@ const s3ProductMediasUploader = async (prisma, upload, userId) => {
 
     const data = await getFileInfo(filename, userId, createReadStream);
 
-    const key = `${userId}_${new Date().getTime()}.${data.ext}`; // pattern: userId_tick.extention
+    const key = renameFile(userId, data.name, data.ext); // pattern: userId_tick.extention
     logger.debug(`🔵✅  READ FILE: done. UPLOADING ${key} TO S3...`);
     // Upload to S3
     const response = await s3
@@ -217,7 +232,7 @@ const s3DocumentsUploader = async (prisma, upload, args) => {
 
     const data = await getFileInfo(filename, args.sellerId, createReadStream);
 
-    const key = `${args.sellerId}_${new Date().getTime()}.${data.ext}`; // pattern: userID_tick.extention
+    const key = renameFile(args.sellerId, data.name, data.ext); // pattern: userID_tick.extention
     logger.debug(`🔵✅  READ FILE: done. FILE ${key} IS UPLOADING TO S3...`);
     // Upload to S3
     const response = await s3

@@ -36,6 +36,12 @@ export const User = {
     return null; // never show password
   },
 
+  // assignment: () => {
+  //   resolve: (parent, args, { request, cache, i18n }) => {
+  //     return resolveField(parent, request, cache, i18n, parent.phone);
+  //   },
+  // },
+
   // if user has not set avatar yet, return default
   profileMedia: {
     resolve: (parent, args, { request, cache }) => {

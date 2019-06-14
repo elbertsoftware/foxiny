@@ -6,7 +6,7 @@ import { sendConfirmationText } from '../../utils/sms';
 import { sendConfirmationEmail } from '../../utils/email';
 import { sendConfirmationEsms } from '../../utils/smsVN';
 import { getUserIDFromRequest, generateConfirmation, verifyConfirmation } from '../../utils/authentication';
-import { checkSellerPermissions } from '../../utils/productUtils/permissionChecker';
+import { checkSellerPermissions } from '../../utils/permissionChecker';
 import { classifyEmailPhone } from '../../utils/productUtils/validation';
 
 // TODO: log transactions
@@ -74,7 +74,6 @@ export const Mutation = {
       businessAddress: {
         create: data.businessAddress,
       },
-      enabled: false,
       owner: {
         create: {
           user: {
@@ -169,6 +168,7 @@ export const Mutation = {
             create: data.businessAddress,
           }
         : undefined,
+      businessLink: data.businessLink,
 
       businessCover: data.businessCoverId
         ? {
@@ -220,6 +220,8 @@ export const Mutation = {
     //   throw new Error(error);
     // }
   },
+
+  // TODO: no need to check existed email
   resendRetailerConfirmationCode: async (parent, { emailOrPhone }, { prisma, request, cache, i18n }, info) => {
     const userId = await getUserIDFromRequest(request, cache, i18n);
     const user = await prisma.query.user(
@@ -302,5 +304,70 @@ export const Mutation = {
     }
 
     return false;
+  },
+
+  approveRetailer: async (parent, { sellerId }, { prisma, request, cache, i18n }, info) => {
+    // TODO: check permission
+    const userId = await getUserIDFromRequest(request, cache, i18n);
+    // TODO: validate input
+    const approval = await prisma.query.approval({
+      where: {
+        sellerId: newData.sellerId,
+      },
+    });
+    const retailer = await prisma.query.retailer({
+      where: {
+        id: sellerId,
+      },
+    });
+
+    if (!approval || approval.isClosed) {
+      const error = i18n.t`Approval is closed or does not exist`;
+      throw new Error(error);
+    }
+    if (!retailer || retailer.approved === true) {
+      const error = i18n.t`Retailer not found or approved`;
+      throw new Error(error);
+    }
+
+    await prisma.mutation.updateApproval({
+      where: {
+        sellerId: sellerId,
+      },
+      data: {
+        isClosed: true,
+      },
+    });
+
+    return prisma.mutation.updateRetailer({
+      where: {
+        id: sellerId,
+      },
+      data: {
+        approved: true,
+      },
+    });
+  },
+
+  deleteRetailer: async (parent, { sellerId }, { prisma, request, cache, i18n }, info) => {
+    // TODO: check permission
+    const userId = await getUserIDFromRequest(request, cache, i18n);
+    // TODO: validate input
+    const retailer = await prisma.query.retailer({
+      where: {
+        id: sellerId,
+      },
+    });
+    // TODO: if retailer sells any goods, deletion is denied
+    if (!retailer || retailer.approved === true) {
+      const error = i18n.t`Cannot delete retailer`;
+      throw new Error(error);
+    }
+
+    return prisma.mutation.deleteRetailer({
+      where: {
+        id: sellerId,
+      },
+    });
   },
 };

@@ -1,9 +1,9 @@
 //@flow
 
 import _ from "lodash";
-import { getUserIDFromRequest } from "../authentication";
-import logger from "../logger";
-import { validateIsEmpty } from "../validation";
+import { getUserIDFromRequest } from "./authentication";
+import logger from "./logger";
+import { validateIsEmpty } from "./validation";
 
 const checkSellerPermissions = async (prisma, cache, request, sellerId) => {
   const userId = await getUserIDFromRequest(request, cache);
@@ -30,7 +30,9 @@ const checkSellerPermissions = async (prisma, cache, request, sellerId) => {
   );
 
   if (!seller) {
-    logger.debug(`🛑❌  CHECK_SELLER_PERMISSION: Seller ${newSellerId} not found`);
+    logger.debug(
+      `🛑❌  CHECK_SELLER_PERMISSION: Seller ${newSellerId} not found`,
+    );
     throw new Error(`Access is denied`);
   }
 
@@ -45,7 +47,14 @@ const checkSellerPermissions = async (prisma, cache, request, sellerId) => {
   return true;
 };
 
-const checkStaffPermission = async (prisma, cache, request, i18n, requiredPermission = null, exception = null) => {
+const checkStaffPermission = async (
+  prisma,
+  cache,
+  request,
+  i18n,
+  requiredPermissions = null,
+  exception = null,
+) => {
   const userId = await getUserIDFromRequest(request, cache, i18n);
 
   const user = await prisma.query.user(
@@ -56,13 +65,14 @@ const checkStaffPermission = async (prisma, cache, request, i18n, requiredPermis
     },
     "{ id assignment { id roles { id type permissions { id type } } permissions { id type } } }",
   );
-  const allRoles = user.assignment.roles.map(role => role.type);
-  const allRights = user.assignment.roles.permissions.map(right => right.type);
-  const flattenedRights = [].concat(...allRights);
 
   if (!user) {
     throw new Error(`Access is denied`);
   }
+
+  const allRoles = user.assignment.roles.map(role => role.type);
+  const allRights = user.assignment.roles.permissions.map(right => right.type);
+  const flattenedRights = [].concat(...allRights);
 
   // exceptions
   if (
@@ -73,11 +83,7 @@ const checkStaffPermission = async (prisma, cache, request, i18n, requiredPermis
     return true;
   }
 
-  if (_.union(flattenedRights, requiredPermission)) {
-    return true;
-  }
-
-  if (_.union(user.assignment.permissions.map(right => right.type), requiredPermission)) {
+  if (_.intersection(flattenedRights, requiredPermissions).length > 0) {
     return true;
   }
 

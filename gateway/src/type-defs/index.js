@@ -1,15 +1,17 @@
 // @flow
-import { gql } from 'apollo-server-express';
+import { gql } from "apollo-server-express";
 
-import { userSchema } from './user_schema';
-import { mediaSchema } from './media_schema';
-import { addressSchema } from './address_schema';
+import { userSchema } from "./user_schema";
+import { mediaSchema } from "./media_schema";
+import { addressSchema } from "./address_schema";
 // import { manufacturerSchema } from './manufacturer_schema';
-import { retailerSchema } from './retailer_schema';
-import { rolePermAssignSchema } from './rolePermAssign_schema';
-import { categorySchema } from './category_schema';
-import { productSchema } from './product_schema';
-import { reviewSchema } from './review_schema';
+import { retailerSchema } from "./retailer_schema";
+import { rolePermAssignSchema } from "./rolePermAssign_schema";
+import { categorySchema } from "./category_schema";
+import { productSchema } from "./product_schema";
+import { reviewSchema } from "./review_schema";
+
+import { processesSchema } from "./processes_schema";
 
 const root = gql`
   type Query {
@@ -32,4 +34,5 @@ export const schema = [
   categorySchema,
   productSchema,
   reviewSchema,
+  processesSchema,
 ];
