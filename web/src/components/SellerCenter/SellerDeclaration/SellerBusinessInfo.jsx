@@ -60,7 +60,7 @@ const ImageCardReview = withStyles(imgCardStyles)(({ src, classes, removeItem, .
   );
 });
 
-const SellerBusinessInfo = ({ classes, theme, myRetailers, review, ...props }) => {
+const SellerBusinessInfo = ({ classes, theme, seller, review, ...props }) => {
   // from Graphql
   const { uploadSocialIDMediaRetailer, deleteSocialIDMediaRetailer } = props;
   const [activeTabId, setActiveTabId] = useState(0);
@@ -68,10 +68,10 @@ const SellerBusinessInfo = ({ classes, theme, myRetailers, review, ...props }) =
   const [socialIDMedias, setSocialIDMedias] = useState([]);
   const [deleteIds, setDeleteIds] = useState([]);
   useEffect(() => {
-    if (myRetailers) {
-      setSocialIDMedias(myRetailers[0].socialNumberImages);
+    if (seller) {
+      setSocialIDMedias(seller.socialNumberImages);
     }
-  }, [myRetailers]);
+  }, [seller]);
   const handleTabChange = (e, id) => {
     setActiveTabId(id);
   };
@@ -97,7 +97,7 @@ const SellerBusinessInfo = ({ classes, theme, myRetailers, review, ...props }) =
       if (socialIDMedias.length > 0) {
         await deleteSocialIDMediaRetailer({
           variables: {
-            sellerId: myRetailers[0].id,
+            sellerId: seller.id,
             fileIds: deleteIds,
           },
         });
@@ -109,7 +109,7 @@ const SellerBusinessInfo = ({ classes, theme, myRetailers, review, ...props }) =
           },
         } = await uploadSocialIDMediaRetailer({
           variables: {
-            sellerId: myRetailers[0].id,
+            sellerId: seller.id,
             files: images,
           },
         });
@@ -159,15 +159,16 @@ const SellerBusinessInfo = ({ classes, theme, myRetailers, review, ...props }) =
                 </Typography>
                 <Typography gutterBottom>Tải ảnh CMND của bạn bao gồm mặt trước và mặt sau.</Typography>
                 <UploadImgZone style={classes.uploadZone} images={images} setImages={setImages} />
-                <ApprovalContainer review={review} name="checkSocialIDMedia">
-                  <Grid className={classes.gridContainer} wrap="nowrap" container spacing={2}>
-                    {images.map((image, index) => (
-                      <Grid key={image.path} item>
-                        <ImageCardReview src={image.preview} removeItem={removeItem(index)} />
-                      </Grid>
-                    ))}
-                    {socialIDMedias.map((image, index) => (
-                      <Grid key={image.id} item>
+
+                <Grid className={classes.gridContainer} wrap="nowrap" container spacing={2}>
+                  {images.map((image, index) => (
+                    <Grid key={image.path} item>
+                      <ImageCardReview src={image.preview} removeItem={removeItem(index)} />
+                    </Grid>
+                  ))}
+                  {socialIDMedias.map((image, index) => (
+                    <Grid key={image.id} item>
+                      <ApprovalContainer review={review} name={`checkSocialIDMedia${index}`}>
                         <ImageCardReview
                           src={image.uri}
                           removeItem={() => {
@@ -175,11 +176,10 @@ const SellerBusinessInfo = ({ classes, theme, myRetailers, review, ...props }) =
                             addDeletedId(image.id);
                           }}
                         />
-                      </Grid>
-                    ))}
-                  </Grid>
-                </ApprovalContainer>
-
+                      </ApprovalContainer>
+                    </Grid>
+                  ))}
+                </Grid>
                 <div className={classes.buttonContainer}>
                   <Button
                     onClick={uploadSocialIDOrBusinessLicense}

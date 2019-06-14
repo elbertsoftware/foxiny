@@ -2,70 +2,68 @@
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Paper, Typography, TableRow, TableCell, Link, Button } from '@material-ui/core';
-import { graphql } from 'react-apollo';
-import { RETAILERS } from '../../../../graphql/retailer';
+import { graphql, compose } from 'react-apollo';
+import { GET_PRODUCT } from '../../../../graphql/product';
 
 import Loading from '../../../App/Loading';
 import useStyles from '../style/approvalStyles';
 import ListApproval from '../components/ListApproval';
-import ApproveSellerModal from './ApproveSellerModal';
+import EditProduct from '../../ListProducts/EditProduct';
 
-const columns = ['Nhà bán', 'Người dùng tạo', 'Ngày tạo', 'Tình trạng', 'Chi tiết'];
+const columns = ['Sản phẩm', 'Giá bán', 'Tồn kho', 'Ngày tạo', 'Chi tiết'];
 
-function SellerApproval(props) {
-  const { loading, sellers } = props;
+function ProductApproval(props) {
+  const { loading, productsData } = props;
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
   const handleClose = () => {
     setOpen(false);
   };
 
-  const reviewComponent = useMemo(
-    () => <ApproveSellerModal open={open} seller={sellers && sellers[activeIndex]} handleClose={handleClose} />,
+  const editComponent = useMemo(
+    () => <EditProduct review open={open} handleClose={handleClose} dataEdit={productsData && productsData} />,
     [open],
   );
 
   if (loading) return <Loading />;
 
   return (
-    <ListApproval columns={columns} arrayLength={sellers && sellers.length}>
+    <ListApproval columns={columns} arrayLength={productsData && productsData.length}>
       {(page, rowsPerPage) => (
         <React.Fragment>
-          {sellers &&
-            sellers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((seller, index) => (
-              <TableRow key={seller.id}>
+          {productsData &&
+            productsData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((product, index) => (
+              <TableRow key={product.productId}>
                 <TableCell component="th" scope="row">
                   <Paper className={classes.productCard} elevation={0} square>
                     <img
                       className={classes.img}
                       alt="product"
                       src={
-                        (seller.businessAvatar && seller.businessAvatar.uri) ||
+                        (product.productMedias[0] && product.productMedias[0].uri) ||
                         'https://cdn.pixabay.com/photo/2019/04/26/07/14/store-4156934_960_720.png'
                       }
                     />
                     <Paper elevation={0} square>
-                      <Typography component={Link}>{seller.businessName}</Typography>
-                      <Typography variant="subtitle2">Email: {seller.businessEmail}</Typography>
-                      <Typography variant="subtitle2">Phone: {seller.businessPhone}</Typography>
+                      <Typography component={Link}>{product.productName}</Typography>
+                      <Typography variant="subtitle2">ID: {product.productId}</Typography>
                     </Paper>
                   </Paper>
                 </TableCell>
                 <TableCell>
-                  <Typography> {seller.owner.user.name}</Typography>
+                  <Typography>{product.sellPrice * 1000}</Typography>
                 </TableCell>
-                <TableCell>{seller.createdAt}</TableCell>
                 <TableCell>
-                  <Typography>
-                    {seller.approved === null ? 'Đang chờ duyệt' : `${seller.approved ? 'Đã duyệt' : 'Từ chối'}`}
-                  </Typography>
+                  <Typography variant="body1">Foxiny: 0</Typography>
+                  <Typography variant="body1">Nhà bán hàng: {product.stockQuantity}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body1">14/05/2019 12:08:43</Typography>
                 </TableCell>
                 <TableCell>
                   <Button
                     onClick={() => {
                       setOpen(true);
-                      setActiveIndex(index);
                     }}
                     variant="contained"
                     color="secondary"
@@ -76,18 +74,21 @@ function SellerApproval(props) {
                 </TableCell>
               </TableRow>
             ))}
-          {reviewComponent}
+          {editComponent}
         </React.Fragment>
       )}
     </ListApproval>
   );
 }
 
-SellerApproval.propTypes = {};
+ProductApproval.propTypes = {};
 
-export default graphql(RETAILERS, {
-  props: ({ data: { loading, myRetailers } }) => ({
-    loading,
-    sellers: myRetailers,
+export default compose(
+  graphql(GET_PRODUCT, {
+    options: props => ({ variables: { sellerId: 'cjwvucj76003n0840cgcr2xt6' } }),
+    props: ({ data: { loading, productsWoTemplateAfterCreated } }) => ({
+      loading,
+      productsData: productsWoTemplateAfterCreated,
+    }),
   }),
-})(SellerApproval);
+)(ProductApproval);

@@ -27,39 +27,7 @@ import { Redirect } from 'react-router';
 import Loading from '../../App/Loading';
 import { Preview } from '../AddProduct/AddProductImages/AddProductImage';
 import EditProduct from './EditProduct';
-
-const GET_PRODUCT = gql`
-  query productsWoTemplateAfterCreated($sellerId: String!) {
-    productsWoTemplateAfterCreated(sellerId: $sellerId) {
-      productTemplateId
-      productId
-      name
-      productName
-      briefDescription
-      brand
-      category {
-        id
-        name
-      }
-      descriptions {
-        fromRetailers
-      }
-      productMedias {
-        id
-        uri
-      }
-      listPrice
-      sellPrice
-      stockQuantity
-      inStock
-      approved
-      attributes {
-        attributeName
-        value
-      }
-    }
-  }
-`;
+import { GET_PRODUCT } from '../../../graphql/product';
 
 const styles = {
   bar: {
@@ -245,7 +213,7 @@ function ListProduct(props) {
 }
 export default compose(
   graphql(GET_PRODUCT, {
-    options: props => ({ variables: { sellerId: 'cjwm91tct00250740mfgj3s06' } }),
+    options: props => ({ variables: { sellerId: 'cjwvucj76003n0840cgcr2xt6' } }),
     props: ({ data: { loading, productsWoTemplateAfterCreated } }) => ({
       loading,
       productsData: productsWoTemplateAfterCreated,

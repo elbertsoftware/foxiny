@@ -268,7 +268,7 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
     try {
       await editProducts({
         variables: {
-          sellerId: 'cjwm91tct00250740mfgj3s06',
+          sellerId: 'cjwvucj76003n0840cgcr2xt6',
           data: newProducts,
         },
       });

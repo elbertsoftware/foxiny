@@ -1,9 +1,10 @@
 // @flow
 
-import logger from "../../utils/logger";
+import logger from '../../utils/logger';
+import { getUserIDFromRequest } from '../../utils/authentication';
 
 export const Query = {
-  retailerApprovals: async (parent, { query }, { prisma, request }, info) => {
+  retailerApprovals: async (parent, { query }, { prisma, cache, request, i18n }, info) => {
     // TODO: check permission
     const userId = await getUserIDFromRequest(request, cache, i18n);
     const opArgs = {};
@@ -21,7 +22,7 @@ export const Query = {
     return prisma.query.approvals(opArgs, info);
   },
 
-  retailerApprovalProcesses: async (parent, { query }, { prisma, request }, info) => {
+  retailerApprovalProcesses: async (parent, { query }, { prisma, cache, request, i18n }, info) => {
     // TODO: check permission
     const userId = await getUserIDFromRequest(request, cache, i18n);
     const opArgs = {};
@@ -41,7 +42,7 @@ export const Query = {
     return prisma.query.approvalProcesses(opArgs, info);
   },
 
-  lastRetailerApprovalProcess: async (parent, { query }, { prisma, request }, info) => {
+  lastRetailerApprovalProcess: async (parent, { query }, { prisma, cache, request, i18n }, info) => {
     // TODO: check permission
     const userId = await getUserIDFromRequest(request, cache, i18n);
     const opArgs = {};
@@ -56,9 +57,12 @@ export const Query = {
           },
         ],
       };
-      opArgs.last = true;
+      opArgs.last = 1;
+    } else {
+      return [];
     }
 
-    return prisma.query.approvalProcesses(opArgs, info);
+    const approvalProcess = await prisma.query.approvalProcesses(opArgs, info);
+    return approvalProcess.pop() || null;
   },
 };

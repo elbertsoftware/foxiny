@@ -312,7 +312,7 @@ export const Mutation = {
     // TODO: validate input
     const approval = await prisma.query.approval({
       where: {
-        sellerId: newData.sellerId,
+        sellerId: sellerId,
       },
     });
     const retailer = await prisma.query.retailer({

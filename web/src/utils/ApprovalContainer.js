@@ -36,6 +36,7 @@ const useStyles = makeStyles(theme => ({
     padding: '4px 16px',
     backgroundColor: red[300],
     justifyContent: 'space-between',
+    marginTop: 8,
   },
   textMessage: {
     color: theme.palette.background.light,
@@ -70,11 +71,14 @@ const useStyles = makeStyles(theme => ({
   rejected: {
     backgroundColor: red[500],
   },
+  marginTop: {
+    marginTop: 8,
+  },
 }));
 
 const ApprovalContainer = ({ review, name, children, ...props }) => {
   const classes = useStyles();
-  const { setValue } = useContext(SetValueFunction);
+  const { setValue, values } = useContext(SetValueFunction);
   const [fieldValue, setFieldValue] = useState(undefined);
   const [elevation, setElevation] = useState(0);
   const [isSaved, setIsSave] = useState(false);
@@ -97,6 +101,17 @@ const ApprovalContainer = ({ review, name, children, ...props }) => {
       setValue(`reviewValues.${name}`, null);
     }
   }, [isAccepted]);
+  React.useEffect(() => {
+    if (values.reviewValues) {
+      if (values.reviewValues[name] === null) {
+        setIsAccepted(true);
+      } else if (values.reviewValues[name] !== undefined) {
+        setIsAccepted(false);
+        setFieldValue(values.reviewValues[name]);
+        setIsSave(true);
+      }
+    }
+  }, []);
   if (!review) return children;
   return (
     <Paper
@@ -128,7 +143,7 @@ const ApprovalContainer = ({ review, name, children, ...props }) => {
       {isAccepted === false && (
         <React.Fragment>
           {!isSaved ? (
-            <div className={classes.flex}>
+            <div className={`${classes.flex} ${classes.marginTop}`}>
               <Field
                 component={TextField}
                 className={classes.textField}

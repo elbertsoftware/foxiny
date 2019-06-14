@@ -30,7 +30,7 @@ const SellerDeclaration = ({ classes, theme, ...props }) => {
         cover="https://cdn.pixabay.com/photo/2019/04/26/07/14/store-4156934_960_720.png"
         retailerInfo={myRetailers && myRetailers[0]}
       />
-      <SellerBusinessInfo myRetailers={myRetailers} className={classes.width} />
+      <SellerBusinessInfo seller={myRetailers[0]} className={classes.width} />
       <div className={classes.background} />
       <div className={`${classes.background} ${classes.v2}`} />
     </Grid>

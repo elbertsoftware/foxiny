@@ -99,8 +99,36 @@ const RETAILERS = gql`
   }
 `;
 
+const ALL_RETAILERS = gql`
+  query {
+    retailers {
+      id
+      owner {
+        user {
+          name
+        }
+      }
+      businessName
+      businessEmail
+      businessPhone
+      businessAvatar {
+        id
+        uri
+      }
+      businessAddress {
+        city
+      }
+      socialNumberImages {
+        id
+        uri
+      }
+    }
+  }
+`;
+
 export {
   RETAILERS,
+  ALL_RETAILERS,
   REGISTER_RETAILER,
   UPDATE_RETAILER,
   UPLOAD_AVATAR_RETAILER,

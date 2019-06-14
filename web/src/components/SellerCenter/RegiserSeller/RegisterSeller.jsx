@@ -88,7 +88,7 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
       console.log(data);
       toast.success('Đăng ký thành công !');
       window.location.reload();
-      history.push('/seller/seller-declaration');
+      history.push('/sellers/seller-declaration');
     } catch (error) {
       toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra!');
     }

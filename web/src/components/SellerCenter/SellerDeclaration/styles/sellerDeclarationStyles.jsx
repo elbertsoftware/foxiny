@@ -125,7 +125,7 @@ const styles = theme => ({
     },
   },
   gridContainer: {
-    width: '85%',
+    width: '100%',
     overflow: 'auto',
     padding: '16px 0',
   },
