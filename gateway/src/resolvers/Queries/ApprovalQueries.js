@@ -42,6 +42,7 @@ export const Query = {
     return prisma.query.approvalProcesses(opArgs, info);
   },
 
+  // TODO: how 'bout wrong seller ID?
   lastRetailerApprovalProcess: async (parent, { query }, { prisma, cache, request, i18n }, info) => {
     // TODO: check permission
     const userId = await getUserIDFromRequest(request, cache, i18n);

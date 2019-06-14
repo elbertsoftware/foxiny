@@ -16,4 +16,4 @@ const resolveField = async (parent, request, cache, i18n, value) => {
 };
 
 // fragment is needed to be sure User.id included no matter what the clients ask for it in the selection
-export const User = {};
+export const Retailer = {};

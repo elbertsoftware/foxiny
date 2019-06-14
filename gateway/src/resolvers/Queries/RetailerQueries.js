@@ -25,7 +25,7 @@ export const Query = {
       where: {
         AND: [
           {
-            owner: {
+            owner_some: {
               user: {
                 id: userId,
               },

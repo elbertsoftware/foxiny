@@ -5,7 +5,7 @@ import { getUserIDFromRequest } from "./authentication";
 import logger from "./logger";
 import { validateIsEmpty } from "./validation";
 
-const checkSellerPermissions = async (prisma, cache, request, sellerId) => {
+const checkUserSellerOwnership = async (prisma, cache, request, sellerId) => {
   const userId = await getUserIDFromRequest(request, cache);
 
   const user = await prisma.query.user({
@@ -36,7 +36,8 @@ const checkSellerPermissions = async (prisma, cache, request, sellerId) => {
     throw new Error(`Access is denied`);
   }
 
-  if (seller.owner.user.id !== user.id) {
+  const allSellerIds = seller.owner.map(usr => usr.id);
+  if (allSellerIds.includes(userId)) {
     logger.debug(`🛑❌  CHECK_SELLER_PERMISSION: Access  is denied`);
     throw new Error(`Access is denied`);
   }
@@ -90,4 +91,4 @@ const checkStaffPermission = async (
   return false;
 };
 
-export { checkSellerPermissions, checkStaffPermission };
+export { checkUserSellerOwnership, checkStaffPermission };

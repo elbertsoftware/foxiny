@@ -6,7 +6,7 @@ import { sendConfirmationText } from '../../utils/sms';
 import { sendConfirmationEmail } from '../../utils/email';
 import { sendConfirmationEsms } from '../../utils/smsVN';
 import { getUserIDFromRequest, generateConfirmation, verifyConfirmation } from '../../utils/authentication';
-import { checkSellerPermissions } from '../../utils/permissionChecker';
+import { checkUserSellerOwnership } from '../../utils/permissionChecker';
 import { classifyEmailPhone } from '../../utils/productUtils/validation';
 
 // TODO: log transactions
@@ -105,7 +105,7 @@ export const Mutation = {
     // try {
     // NOTE: check permission
     const userId = await getUserIDFromRequest(request, cache, i18n);
-    await checkSellerPermissions(prisma, cache, request, retailerId);
+    await checkUserSellerOwnership(prisma, cache, request, retailerId);
 
     const retailer = await prisma.query.retailer(
       {
@@ -306,18 +306,18 @@ export const Mutation = {
     return false;
   },
 
-  approveRetailer: async (parent, { sellerId }, { prisma, request, cache, i18n }, info) => {
+  approveRetailer: async (parent, { retailerId }, { prisma, request, cache, i18n }, info) => {
     // TODO: check permission
     const userId = await getUserIDFromRequest(request, cache, i18n);
     // TODO: validate input
     const approval = await prisma.query.approval({
       where: {
-        sellerId: sellerId,
+        sellerId: retailerId,
       },
     });
     const retailer = await prisma.query.retailer({
       where: {
-        id: sellerId,
+        id: retailerId,
       },
     });
 
@@ -332,7 +332,7 @@ export const Mutation = {
 
     await prisma.mutation.updateApproval({
       where: {
-        sellerId: sellerId,
+        sellerId: retailerId,
       },
       data: {
         isClosed: true,
@@ -341,7 +341,7 @@ export const Mutation = {
 
     return prisma.mutation.updateRetailer({
       where: {
-        id: sellerId,
+        id: retailerId,
       },
       data: {
         approved: true,

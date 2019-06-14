@@ -9,7 +9,7 @@ import {
   restructureProductRetailer2FriendlyProduct,
 } from '../../utils/productUtils/dataHelper';
 import { validateCreateNewProductInput, validateUpdateProductInput } from '../../utils/productUtils/validation';
-import { checkSellerPermissions } from '../../utils/permissionChecker';
+import { checkUserSellerOwnership } from '../../utils/permissionChecker';
 import { s3ProductMediasUploader } from '../../utils/s3Uploader';
 
 // TODO:
@@ -20,7 +20,7 @@ export const Mutation = {
   createBrandNewProductWVariants: async (parent, { sellerId, data }, { prisma, request, cache, i18n }, info) => {
     try {
       // NOTE: check permission
-      await checkSellerPermissions(prisma, cache, request, sellerId);
+      await checkUserSellerOwnership(prisma, cache, request, sellerId);
 
       // NOTE: validate input
       const newData = validateCreateNewProductInput(data);
@@ -143,7 +143,7 @@ export const Mutation = {
 
   updateProducts: async (parent, { sellerId, data }, { prisma, request, cache, i18n }, info) => {
     // NOTE: check permission
-    await checkSellerPermissions(prisma, cache, request, sellerId);
+    await checkUserSellerOwnership(prisma, cache, request, sellerId);
 
     // TODO: validate input
     const newData = validateUpdateProductInput(data);
@@ -322,7 +322,7 @@ export const Mutation = {
 
   toggleProductStatus: async (parent, { sellerId, productId }, { prisma, request, cache, i18n }, info) => {
     // NOTE: check permission
-    await checkSellerPermissions(prisma, cache, request, sellerId);
+    await checkUserSellerOwnership(prisma, cache, request, sellerId);
 
     const product = await prisma.query.productRetailer({
       where: {
