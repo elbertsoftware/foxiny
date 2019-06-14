@@ -5,14 +5,23 @@ import logger from "../../utils/logger";
 import { sendConfirmationText } from "../../utils/sms";
 import { sendConfirmationEmail } from "../../utils/email";
 import { sendConfirmationEsms } from "../../utils/smsVN";
-import { getUserIDFromRequest, generateConfirmation, verifyConfirmation } from "../../utils/authentication";
+import {
+  getUserIDFromRequest,
+  generateConfirmation,
+  verifyConfirmation,
+} from "../../utils/authentication";
 import { checkUserSellerOwnership } from "../../utils/permissionChecker";
 import { classifyEmailPhone } from "../../utils/productUtils/validation";
 
 // TODO: log transactions
 
 export const Mutation = {
-  registerRetailer: async (parent, { data }, { prisma, request, cache, i18n }, info) => {
+  registerRetailer: async (
+    parent,
+    { data },
+    { prisma, request, cache, i18n },
+    info,
+  ) => {
     // try {
     const userId = await getUserIDFromRequest(request, cache, i18n);
 
@@ -36,12 +45,23 @@ export const Mutation = {
     // NOTE: verify email and phone
     if (data.businessEmail !== user.email) {
       // email:
-      const matchedEmail = await verifyConfirmation(cache, data.emailConfirmCode, userId, i18n);
+      const matchedEmail = await verifyConfirmation(
+        cache,
+        data.emailConfirmCode,
+        userId,
+        i18n,
+      );
       if (matchedEmail) {
         const { email, phone } = classifyEmailPhone(matchedEmail);
         if ((email || phone) !== data.businessEmail) {
-          logger.debug(`email confirmation matched: ${matchedEmail} but wrong email`);
-          logger.debug(`code ${data.emailConfirmCode} enteredEmail ${data.businessEmail} codedEmail ${email}`);
+          logger.debug(
+            `email confirmation matched: ${matchedEmail} but wrong email`,
+          );
+          logger.debug(
+            `code ${data.emailConfirmCode} enteredEmail ${
+              data.businessEmail
+            } codedEmail ${email}`,
+          );
           const error = i18n._(t`Unable to confirm user`);
           throw new Error(error);
         }
@@ -52,12 +72,23 @@ export const Mutation = {
     }
     // phone:
     if (data.businessPhone !== user.phone) {
-      const matchedPhone = await verifyConfirmation(cache, data.phoneConfirmCode, userId, i18n);
+      const matchedPhone = await verifyConfirmation(
+        cache,
+        data.phoneConfirmCode,
+        userId,
+        i18n,
+      );
       if (matchedPhone) {
         const { email, phone } = classifyEmailPhone(matchedPhone);
         if ((email || phone) !== data.businessPhone) {
-          logger.debug(`phone confirmation matched: ${matchedPhone} but wrong phone`);
-          logger.debug(`code ${data.phoneConfirmCode} enteredPhone ${data.businessPhone} codedPhone ${phone}`);
+          logger.debug(
+            `phone confirmation matched: ${matchedPhone} but wrong phone`,
+          );
+          logger.debug(
+            `code ${data.phoneConfirmCode} enteredPhone ${
+              data.businessPhone
+            } codedPhone ${phone}`,
+          );
           const error = i18n._(t`Unable to confirm user`);
           throw new Error(error);
         }
@@ -101,7 +132,12 @@ export const Mutation = {
     // }
   },
 
-  updateRetailer: async (parent, { retailerId, data }, { prisma, request, cache, i18n }, info) => {
+  updateRetailer: async (
+    parent,
+    { retailerId, data },
+    { prisma, request, cache, i18n },
+    info,
+  ) => {
     // try {
     // NOTE: check permission
     const userId = await getUserIDFromRequest(request, cache, i18n);
@@ -125,12 +161,23 @@ export const Mutation = {
     if (data.businessEmail && data.businessEmail !== retailer.businessEmail) {
       if (data.businessEmail !== retailer.owner.user.email) {
         // email:
-        const matchedEmail = await verifyConfirmation(cache, data.emailConfirmCode, userId, i18n);
+        const matchedEmail = await verifyConfirmation(
+          cache,
+          data.emailConfirmCode,
+          userId,
+          i18n,
+        );
         if (matchedEmail) {
           const { email, phone } = classifyEmailPhone(matchedEmail);
           if ((email || phone) !== data.businessEmail) {
-            logger.debug(`email confirmation matched: ${matchedEmail} but wrong email`);
-            logger.debug(`code ${data.emailConfirmCode} enteredEmail ${data.businessEmail} codedEmail ${email}`);
+            logger.debug(
+              `email confirmation matched: ${matchedEmail} but wrong email`,
+            );
+            logger.debug(
+              `code ${data.emailConfirmCode} enteredEmail ${
+                data.businessEmail
+              } codedEmail ${email}`,
+            );
             const error = i18n._(t`Unable to confirm user`);
             throw new Error(error);
           }
@@ -143,12 +190,23 @@ export const Mutation = {
     if (data.businessPhone && data.businessPhone !== retailer.businessPhone) {
       // phone:
       if (data.businessPhone !== retailer.owner.user.phone) {
-        const matchedPhone = await verifyConfirmation(cache, data.phoneConfirmCode, userId, i18n);
+        const matchedPhone = await verifyConfirmation(
+          cache,
+          data.phoneConfirmCode,
+          userId,
+          i18n,
+        );
         if (matchedPhone) {
           const { email, phone } = classifyEmailPhone(matchedPhone);
           if ((email || phone) !== data.businessPhone) {
-            logger.debug(`email confirmation matched: ${matchedPhone} but wrong email`);
-            logger.debug(`code ${data.emailConfirmCode} enteredEmail ${data.businessPhone} codedEmail ${email}`);
+            logger.debug(
+              `email confirmation matched: ${matchedPhone} but wrong email`,
+            );
+            logger.debug(
+              `code ${data.emailConfirmCode} enteredEmail ${
+                data.businessPhone
+              } codedEmail ${email}`,
+            );
             const error = i18n._(t`Unable to confirm user`);
             throw new Error(error);
           }
@@ -222,7 +280,12 @@ export const Mutation = {
   },
 
   // TODO: no need to check existed email
-  resendRetailerConfirmationCode: async (parent, { emailOrPhone }, { prisma, request, cache, i18n }, info) => {
+  resendRetailerConfirmationCode: async (
+    parent,
+    { emailOrPhone },
+    { prisma, request, cache, i18n },
+    info,
+  ) => {
     const userId = await getUserIDFromRequest(request, cache, i18n);
     const user = await prisma.query.user(
       {
@@ -306,18 +369,23 @@ export const Mutation = {
     return false;
   },
 
-  approveRetailer: async (parent, { sellerId }, { prisma, request, cache, i18n }, info) => {
+  approveRetailer: async (
+    parent,
+    { retailerId },
+    { prisma, request, cache, i18n },
+    info,
+  ) => {
     // TODO: check permission
     const userId = await getUserIDFromRequest(request, cache, i18n);
     // TODO: validate input
     const approval = await prisma.query.approval({
       where: {
-        sellerId: newData.sellerId,
+        sellerId: retailerId,
       },
     });
     const retailer = await prisma.query.retailer({
       where: {
-        id: sellerId,
+        id: retailerId,
       },
     });
 
@@ -332,7 +400,7 @@ export const Mutation = {
 
     await prisma.mutation.updateApproval({
       where: {
-        sellerId: sellerId,
+        sellerId: retailerId,
       },
       data: {
         isClosed: true,
@@ -341,7 +409,7 @@ export const Mutation = {
 
     return prisma.mutation.updateRetailer({
       where: {
-        id: sellerId,
+        id: retailerId,
       },
       data: {
         approved: true,
@@ -349,7 +417,12 @@ export const Mutation = {
     });
   },
 
-  deleteRetailer: async (parent, { sellerId }, { prisma, request, cache, i18n }, info) => {
+  deleteRetailer: async (
+    parent,
+    { sellerId },
+    { prisma, request, cache, i18n },
+    info,
+  ) => {
     // TODO: check permission
     const userId = await getUserIDFromRequest(request, cache, i18n);
     // TODO: validate input
