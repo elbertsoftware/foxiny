@@ -85,7 +85,7 @@ ProductApproval.propTypes = {};
 
 export default compose(
   graphql(GET_PRODUCT, {
-    options: props => ({ variables: { sellerId: 'cjwvucj76003n0840cgcr2xt6' } }),
+    options: props => ({ variables: { sellerId: 'cjurxpx4o00az07063f7imdn3' } }),
     props: ({ data: { loading, productsWoTemplateAfterCreated } }) => ({
       loading,
       productsData: productsWoTemplateAfterCreated,

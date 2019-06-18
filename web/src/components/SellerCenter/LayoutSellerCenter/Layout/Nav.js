@@ -1,78 +1,53 @@
-import React, { useContext, useRef } from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import Grow from "@material-ui/core/Grow";
-import { LayoutContext } from "./Root";
+import React, { useContext, useRef } from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import Grow from '@material-ui/core/Grow';
+import { LayoutContext } from './Root';
 
-const styles = ({
-  breakpoints,
-  transitions,
-  palette,
-  spacing,
-  zIndex,
-  shadows
-}) => ({
+const styles = ({ breakpoints, transitions, palette, spacing, zIndex, shadows }) => ({
   root: {},
   container: {
-    overflow: "hidden",
-    display: "flex",
+    overflow: 'hidden',
+    display: 'flex',
     flexGrow: 1,
-    flexDirection: "column",
-    transition: transitions.create(["width"], {
+    flexDirection: 'column',
+    transition: transitions.create(['width'], {
       easing: transitions.easing.sharp,
-      duration: transitions.duration.leavingScreen
-    })
+      duration: transitions.duration.leavingScreen,
+    }),
   },
   content: {
     flexGrow: 1,
-    overflow: "auto"
+    overflow: 'auto',
   },
   collapseButton: {
     backgroundColor: palette.grey[50],
-    textAlign: "center",
+    textAlign: 'center',
     borderRadius: 0,
-    borderTop: "1px solid",
-    borderColor: "rgba(0,0,0,0.12)",
-    [breakpoints.up("sm")]: {
-      minHeight: 40
-    }
+    borderTop: '1px solid',
+    borderColor: 'rgba(0,0,0,0.12)',
+    [breakpoints.up('sm')]: {
+      minHeight: 40,
+    },
   },
   closeButton: {
-    position: "absolute",
+    position: 'absolute',
     bottom: spacing.unit * 2,
     zIndex: zIndex.modal + 1,
     background: palette.common.white,
     boxShadow: shadows[2],
-    "@media (hover: none)": {
-      backgroundColor: palette.grey[300]
-    }
-  }
+    '@media (hover: none)': {
+      backgroundColor: palette.grey[300],
+    },
+  },
 });
 
-const Nav = ({
-  className,
-  component: Component,
-  classes,
-  header,
-  children,
-  collapsedIcon,
-  ...props
-}) => {
+const Nav = ({ className, component: Component, classes, header, children, collapsedIcon, ...props }) => {
   const ctx = useContext(LayoutContext);
-  const {
-    open,
-    setOpen,
-    navVariant,
-    navAnchor,
-    navWidth,
-    collapsedWidth,
-    collapsible,
-    collapsed,
-    setCollapse
-  } = ctx;
+  const { open, setOpen, navVariant, navAnchor, navWidth, collapsedWidth, collapsible, collapsed, setCollapse } = ctx;
   const getWidth = () => {
     if (collapsible && collapsed) return collapsedWidth;
     return navWidth;
@@ -90,29 +65,19 @@ const Nav = ({
         anchor={navAnchor}
       >
         <div className={classes.container} style={{ width: getWidth() }}>
-          {typeof header === "function" ? header(ctx) : header}
+          {typeof header === 'function' ? header(ctx) : header}
           <div ref={contentRef} className={classes.content}>
-            {typeof children === "function" ? children(ctx) : children}
+            {typeof children === 'function' ? children(ctx) : children}
           </div>
           {shouldRenderButton && (
-            <Button
-              className={classes.collapseButton}
-              fullWidth
-              onClick={setCollapse}
-            >
-              {collapsed
-                ? collapsedIcon.active
-                : collapsedIcon.inactive || collapsedIcon.active}
+            <Button className={classes.collapseButton} fullWidth onClick={setCollapse}>
+              {collapsed ? collapsedIcon.active : collapsedIcon.inactive || collapsedIcon.active}
             </Button>
           )}
         </div>
       </Drawer>
-      <Grow in={open && navVariant === "temporary" && collapsedIcon}>
-        <IconButton
-          className={classes.closeButton}
-          style={{ left: navWidth + 16 }}
-          onClick={setOpen}
-        >
+      <Grow in={open && navVariant === 'temporary' && collapsedIcon}>
+        <IconButton className={classes.closeButton} style={{ left: navWidth + 16 }} onClick={setOpen}>
           {collapsedIcon.inactive}
         </IconButton>
       </Grow>
@@ -128,14 +93,14 @@ Nav.propTypes = {
   header: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   collapsedIcon: PropTypes.shape({
     inactive: PropTypes.node.isRequired,
-    active: PropTypes.node
-  })
+    active: PropTypes.node,
+  }),
 };
 Nav.defaultProps = {
-  className: "",
-  component: "div",
+  className: '',
+  component: 'div',
   header: null,
-  collapsedIcon: null
+  collapsedIcon: null,
 };
 
-export default withStyles(styles, { name: "MuiNav" })(Nav);
+export default withStyles(styles, { name: 'MuiNav' })(Nav);

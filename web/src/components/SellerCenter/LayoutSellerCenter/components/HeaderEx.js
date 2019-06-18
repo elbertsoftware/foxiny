@@ -67,7 +67,7 @@ const HeaderEx = ({ classes, screen }) => (
       Foxiny Seller Center
     </Typography>
     <div className={classes.grow} />
-    <div className={classes.search}>
+    {/*<div className={classes.search}>
       <div className={classes.searchIcon}>
         <Icon>search</Icon>
       </div>
@@ -78,7 +78,7 @@ const HeaderEx = ({ classes, screen }) => (
           input: classes.inputInput,
         }}
       />
-    </div>
+      </div>*/}
     {screen === 'xs' && (
       <IconButton>
         <Icon>more_vert</Icon>
@@ -91,19 +91,6 @@ const HeaderEx = ({ classes, screen }) => (
         </IconButton>
         <IconButton>
           <Icon>more_vert</Icon>
-        </IconButton>
-      </>
-    )}
-    {isWidthUp('md', screen) && (
-      <>
-        <IconButton>
-          <Icon>favorite</Icon>
-        </IconButton>
-        <IconButton>
-          <Icon>phone</Icon>
-        </IconButton>
-        <IconButton>
-          <Icon>camera</Icon>
         </IconButton>
       </>
     )}

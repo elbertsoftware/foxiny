@@ -21,9 +21,9 @@ export default ProtectedRoute => {
     }
   }
 
-  AuthHOC.contextTypes = {
-    router: PropTypes.object.isRequired,
-  };
+  // AuthHOC.contextTypes = {
+  //   router: PropTypes.object.isRequired,
+  // };
 
   return graphql(getCurrentUser, {
     props: ({ data: { loading, me, error } }) => ({

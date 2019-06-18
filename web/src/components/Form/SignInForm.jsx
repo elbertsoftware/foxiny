@@ -81,7 +81,7 @@ class SignInForm extends React.Component {
       if (token) {
         setAuthorizationToken(token);
         if (this.props.sellerCenter) {
-          this.props.history.push('/seller/');
+          this.props.history.push('/sellers/register-seller');
         } else {
           this.props.history.push('/');
         }

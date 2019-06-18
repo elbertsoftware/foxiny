@@ -1,5 +1,5 @@
 # source: http://localhost:4466/foxiny/dev
-# timestamp: Fri Jun 14 2019 12:33:09 GMT+0700 (Indochina Time)
+# timestamp: Sat Jun 15 2019 00:12:52 GMT+0700 (Indochina Time)
 
 type Address implements Node {
   id: ID!
@@ -2076,9 +2076,9 @@ input AssignmentCreateInput {
   permissions: PermissionCreateManyInput
 }
 
-input AssignmentCreateOneWithoutRetailersInput {
-  create: AssignmentCreateWithoutRetailersInput
-  connect: AssignmentWhereUniqueInput
+input AssignmentCreateManyWithoutRetailersInput {
+  create: [AssignmentCreateWithoutRetailersInput!]
+  connect: [AssignmentWhereUniqueInput!]
 }
 
 input AssignmentCreateOneWithoutUserInput {
@@ -2129,6 +2129,123 @@ type AssignmentPreviousValues {
   updatedAt: DateTime!
 }
 
+input AssignmentScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [AssignmentScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [AssignmentScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [AssignmentScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
 type AssignmentSubscriptionPayload {
   mutation: MutationType!
   node: Assignment
@@ -2176,17 +2293,29 @@ input AssignmentUpdateInput {
   permissions: PermissionUpdateManyInput
 }
 
+input AssignmentUpdateManyDataInput {
+  _version: Int
+}
+
 input AssignmentUpdateManyMutationInput {
   _version: Int
 }
 
-input AssignmentUpdateOneWithoutRetailersInput {
-  create: AssignmentCreateWithoutRetailersInput
-  connect: AssignmentWhereUniqueInput
-  disconnect: Boolean
-  delete: Boolean
-  update: AssignmentUpdateWithoutRetailersDataInput
-  upsert: AssignmentUpsertWithoutRetailersInput
+input AssignmentUpdateManyWithoutRetailersInput {
+  create: [AssignmentCreateWithoutRetailersInput!]
+  connect: [AssignmentWhereUniqueInput!]
+  set: [AssignmentWhereUniqueInput!]
+  disconnect: [AssignmentWhereUniqueInput!]
+  delete: [AssignmentWhereUniqueInput!]
+  update: [AssignmentUpdateWithWhereUniqueWithoutRetailersInput!]
+  updateMany: [AssignmentUpdateManyWithWhereNestedInput!]
+  deleteMany: [AssignmentScalarWhereInput!]
+  upsert: [AssignmentUpsertWithWhereUniqueWithoutRetailersInput!]
+}
+
+input AssignmentUpdateManyWithWhereNestedInput {
+  where: AssignmentScalarWhereInput!
+  data: AssignmentUpdateManyDataInput!
 }
 
 input AssignmentUpdateOneWithoutUserInput {
@@ -2212,14 +2341,20 @@ input AssignmentUpdateWithoutUserDataInput {
   permissions: PermissionUpdateManyInput
 }
 
-input AssignmentUpsertWithoutRetailersInput {
-  update: AssignmentUpdateWithoutRetailersDataInput!
-  create: AssignmentCreateWithoutRetailersInput!
+input AssignmentUpdateWithWhereUniqueWithoutRetailersInput {
+  where: AssignmentWhereUniqueInput!
+  data: AssignmentUpdateWithoutRetailersDataInput!
 }
 
 input AssignmentUpsertWithoutUserInput {
   update: AssignmentUpdateWithoutUserDataInput!
   create: AssignmentCreateWithoutUserInput!
+}
+
+input AssignmentUpsertWithWhereUniqueWithoutRetailersInput {
+  where: AssignmentWhereUniqueInput!
+  update: AssignmentUpdateWithoutRetailersDataInput!
+  create: AssignmentCreateWithoutRetailersInput!
 }
 
 input AssignmentWhereInput {
@@ -8897,7 +9032,7 @@ enum Region {
 type Retailer implements Node {
   id: ID!
   _version: Int!
-  owner: Assignment
+  owner(where: AssignmentWhereInput, orderBy: AssignmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Assignment!]
   businessCover: Media
   businessAvatar: Media
   businessName: String
@@ -8935,7 +9070,7 @@ input RetailerCreateInput {
   socialNumber: String
   businessLicense: String
   approved: Boolean
-  owner: AssignmentCreateOneWithoutRetailersInput
+  owner: AssignmentCreateManyWithoutRetailersInput
   businessCover: MediaCreateOneInput
   businessAvatar: MediaCreateOneInput
   businessAddress: AddressCreateOneInput
@@ -8987,7 +9122,7 @@ input RetailerCreateWithoutProductsInput {
   socialNumber: String
   businessLicense: String
   approved: Boolean
-  owner: AssignmentCreateOneWithoutRetailersInput
+  owner: AssignmentCreateManyWithoutRetailersInput
   businessCover: MediaCreateOneInput
   businessAvatar: MediaCreateOneInput
   businessAddress: AddressCreateOneInput
@@ -9452,7 +9587,7 @@ input RetailerUpdateDataInput {
   socialNumber: String
   businessLicense: String
   approved: Boolean
-  owner: AssignmentUpdateOneWithoutRetailersInput
+  owner: AssignmentUpdateManyWithoutRetailersInput
   businessCover: MediaUpdateOneInput
   businessAvatar: MediaUpdateOneInput
   businessAddress: AddressUpdateOneInput
@@ -9470,7 +9605,7 @@ input RetailerUpdateInput {
   socialNumber: String
   businessLicense: String
   approved: Boolean
-  owner: AssignmentUpdateOneWithoutRetailersInput
+  owner: AssignmentUpdateManyWithoutRetailersInput
   businessCover: MediaUpdateOneInput
   businessAvatar: MediaUpdateOneInput
   businessAddress: AddressUpdateOneInput
@@ -9562,7 +9697,7 @@ input RetailerUpdateWithoutProductsDataInput {
   socialNumber: String
   businessLicense: String
   approved: Boolean
-  owner: AssignmentUpdateOneWithoutRetailersInput
+  owner: AssignmentUpdateManyWithoutRetailersInput
   businessCover: MediaUpdateOneInput
   businessAvatar: MediaUpdateOneInput
   businessAddress: AddressUpdateOneInput
@@ -9950,7 +10085,9 @@ input RetailerWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
-  owner: AssignmentWhereInput
+  owner_every: AssignmentWhereInput
+  owner_some: AssignmentWhereInput
+  owner_none: AssignmentWhereInput
   businessCover: MediaWhereInput
   businessAvatar: MediaWhereInput
   businessAddress: AddressWhereInput

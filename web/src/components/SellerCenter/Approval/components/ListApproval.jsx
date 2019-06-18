@@ -8,22 +8,33 @@ import {
   Typography,
   Table,
   TableBody,
-  TableHead,
   TableRow,
   TableCell,
   Tabs,
   Tab,
   TablePagination,
+  TableFooter,
+  InputBase,
+  Icon,
 } from '@material-ui/core';
 import TablePaginationActions from '../../../../utils/common/TablePaginationActions';
 import useStyles from '../style/approvalStyles';
+import { EnhancedTableHead } from '../../../../utils/common/TableUtils';
 
 function ListApproval(props) {
-  const { columns, children, arrayLength } = props;
+  const { headRows, children, arrayLength } = props;
   const classes = useStyles();
   const [value, setValue] = useState(0);
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState(headRows && headRows[0].id);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  function handleRequestSort(event, property) {
+    const isDesc = orderBy === property && order === 'desc';
+    setOrder(isDesc ? 'asc' : 'desc');
+    setOrderBy(property);
+  }
 
   function handleChangePage(event, newPage) {
     setPage(newPage);
@@ -40,8 +51,8 @@ function ListApproval(props) {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, arrayLength - page * rowsPerPage);
   return (
     <Paper elevation={0}>
-      <AppBar className={classes.bar} position="static" color="default" elevation={0}>
-        <Toolbar>
+      <AppBar className={classes.bar} position="static" color="inherit" elevation={0}>
+        <Toolbar className={classes.toolbar}>
           <Typography variant="h5">Danh sách</Typography>
         </Toolbar>
       </AppBar>
@@ -55,15 +66,18 @@ function ListApproval(props) {
       </Paper>
       <div className={classes.tableWrapper}>
         <Table className={classes.table}>
-          <TableHead>
+          <EnhancedTableHead order={order} orderBy={orderBy} onRequestSort={handleRequestSort} headRows={headRows} />
+          <TableBody>
+            {children(page, rowsPerPage, order, orderBy)}
+
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 48 * emptyRows }}>
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
+          </TableBody>
+          <TableFooter>
             <TableRow>
-              {columns.map((columnName, index) => (
-                <TableCell key={index}>{columnName}</TableCell>
-              ))}
-            </TableRow>
-            <TableRow>
-              <TableCell />
-              <TableCell />
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 colSpan={3}
@@ -79,16 +93,7 @@ function ListApproval(props) {
                 ActionsComponent={TablePaginationActions}
               />
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {children(page, rowsPerPage)}
-
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 48 * emptyRows }}>
-                <TableCell colSpan={6} />
-              </TableRow>
-            )}
-          </TableBody>
+          </TableFooter>
         </Table>
       </div>
     </Paper>

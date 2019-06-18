@@ -1,32 +1,16 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
-import {
-  Grid,
-  Typography,
-  Tabs,
-  Tab,
-  withStyles,
-  CircularProgress,
-  Button,
-  FormControl,
-  MenuItem,
-  InputLabel,
-} from '@material-ui/core';
-import { Form, Field } from 'react-final-form';
-import classnames from 'classnames';
+import { Grid, Typography, Tabs, Tab, withStyles } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
-import RFTextField from '../../../utils/common/form/RFTextField';
-import FormButton from '../../../utils/common/form/FormButton';
+
 import TabContainer from '../../../utils/common/TabContainer';
-import google from '../../../images/google.svg';
 import signStyles from './signStyles';
-import SelectList from '../../Form/Fields/SelectList';
 import SignIn from '../../SignIn/SignIn';
 import SignUp from '../../SignUp/SignUp';
 import ConfirmPage from '../../Form/ConfirmPage';
 
-const Sign = ({ classes, theme, history }) => {
+const SignView = ({ classes, theme, history }) => {
   const [activeTabId, setActiveTabId] = useState(0);
   const [userId, setUserId] = useState('');
   const handleTabChange = (e, id) => {
@@ -47,7 +31,7 @@ const Sign = ({ classes, theme, history }) => {
           <Tabs value={activeTabId} onChange={handleTabChange} indicatorColor="primary" textColor="primary" centered>
             <Tab label="Đăng nhập" classes={{ root: classes.tab }} />
             <Tab label="Đăng ký" classes={{ root: classes.tab }} />
-            <Tab label={activeTabId === 2 ? "Xác thực" : "" } disabled classes={{ root: classes.tab }} />
+            <Tab label={activeTabId === 2 ? 'Xác thực' : ''} disabled classes={{ root: classes.tab }} />
           </Tabs>
 
           <SwipeableViews
@@ -84,4 +68,4 @@ const Sign = ({ classes, theme, history }) => {
   );
 };
 
-export default withStyles(signStyles, { withTheme: true })(Sign);
+export default withStyles(signStyles, { withTheme: true })(SignView);

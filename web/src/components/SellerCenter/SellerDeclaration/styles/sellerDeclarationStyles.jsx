@@ -1,6 +1,7 @@
 import guilloche from '../../../../images/guilloche.png';
 
 const styles = theme => ({
+  article: { width: '100%', margin: '0 auto' },
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -12,7 +13,7 @@ const styles = theme => ({
     zIndex: 100,
     borderRadius: theme.spacing(2), // 16px
     transition: '0.3s',
-    width: '50%',
+    width: '60%',
     minHeight: '600px',
     boxShadow: '0px 14px 80px rgba(34, 35, 58, 0.2)',
     backgroundColor: '#ffffff',

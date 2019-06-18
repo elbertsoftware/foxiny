@@ -32,7 +32,7 @@ const SellerProfileCard = ({ classes, cover, image, retailerInfo, ...props }) =>
     businessName: retailerInfo.businessName,
     businessEmail: retailerInfo.businessEmail,
     businessPhone: retailerInfo.businessPhone,
-    businessAddress: retailerInfo.businessAddress.city,
+    businessAddress: retailerInfo.businessAddress && retailerInfo.businessAddress.city,
     countryCode: 84,
   });
   const [isEmailConfirmed, setIsEmailConfirmed] = useState(false);
@@ -218,7 +218,9 @@ const SellerProfileCard = ({ classes, cover, image, retailerInfo, ...props }) =>
                 <Icon color="secondary">location_on</Icon>
               </Grid>
               <Grid item>
-                <Typography gutterBottom>{retailerInfo.businessAddress.city}</Typography>
+                <Typography gutterBottom>
+                  {retailerInfo.businessAddress && retailerInfo.businessAddress.city}
+                </Typography>
               </Grid>
             </Grid>
           </React.Fragment>

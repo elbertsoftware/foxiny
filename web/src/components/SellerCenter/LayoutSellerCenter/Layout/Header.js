@@ -1,22 +1,22 @@
-import React, { useContext } from "react";
-import PropTypes from "prop-types";
-import { withStyles, withTheme } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import { LayoutContext } from "./Root";
+import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
+import { withStyles, withTheme } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import { LayoutContext } from './Root';
 
 const styles = ({ transitions }) => ({
   root: {
-    transition: transitions.create(["margin", "width"], {
+    transition: transitions.create(['margin', 'width'], {
       easing: transitions.easing.sharp,
-      duration: transitions.duration.leavingScreen
-    })
+      duration: transitions.duration.leavingScreen,
+    }),
   },
   menuButton: {
     marginLeft: -8,
-    marginRight: 8
-  }
+    marginRight: 8,
+  },
 });
 
 const createGet = (
@@ -24,10 +24,10 @@ const createGet = (
   normal,
   shrink,
   pushed,
-  unsqueeze
+  unsqueeze,
 ) => () => {
-  if (clipped || navAnchor !== "left") return normal;
-  if (navVariant === "persistent" && open) {
+  if (clipped || navAnchor !== 'left') return normal;
+  if (navVariant === 'persistent' && open) {
     // open is effect only when
     // navVariant === 'persistent' ||
     // navVariant === 'temporary'
@@ -36,7 +36,7 @@ const createGet = (
     }
     return unsqueeze;
   }
-  if (navVariant === "permanent") {
+  if (navVariant === 'permanent') {
     if (collapsible) {
       if (collapsed) return shrink;
       return pushed;
@@ -58,27 +58,13 @@ const Header = ({
   ...props
 }) => {
   const ctx = useContext(LayoutContext);
-  const {
-    clipped,
-    collapsedWidth,
-    navWidth,
-    navVariant,
-    headerPosition,
-    open,
-    setOpen
-  } = ctx;
-  const getWidth = createGet(
-    ctx,
-    "100%",
-    `calc(100% - ${collapsedWidth}px)`,
-    `calc(100% - ${navWidth}px)`,
-    "100%"
-  );
+  const { clipped, collapsedWidth, navWidth, navVariant, headerPosition, open, setOpen } = ctx;
+  const getWidth = createGet(ctx, '100%', `calc(100% - ${collapsedWidth}px)`, `calc(100% - ${navWidth}px)`, '100%');
   const getMargin = createGet(ctx, 0, collapsedWidth, navWidth, navWidth);
-  const shouldRenderMenu = navVariant !== "permanent" && !!menuIcon;
+  const shouldRenderMenu = navVariant !== 'permanent' && !!menuIcon;
   return (
     <AppBar
-      color={"default"}
+      color="inherit"
       elevation={0}
       {...props}
       className={`${className} ${classes.root}`}
@@ -87,7 +73,7 @@ const Header = ({
         ...style,
         zIndex: clipped ? theme.zIndex.drawer + 1 : theme.zIndex.appBar,
         width: getWidth(),
-        marginLeft: getMargin()
+        marginLeft: getMargin(),
       }}
     >
       <Toolbar {...toolbarProps}>
@@ -96,7 +82,7 @@ const Header = ({
             {open ? menuIcon.active : menuIcon.inactive || menuIcon.active}
           </IconButton>
         )}
-        {typeof children === "function" ? children(ctx) : children}
+        {typeof children === 'function' ? children(ctx) : children}
       </Toolbar>
     </AppBar>
   );
@@ -113,16 +99,16 @@ Header.propTypes = {
   toolbarProps: PropTypes.shape({}),
   menuIcon: PropTypes.shape({
     inactive: PropTypes.node.isRequired,
-    active: PropTypes.node
-  })
+    active: PropTypes.node,
+  }),
 };
 Header.defaultProps = {
-  className: "",
-  component: "div",
+  className: '',
+  component: 'div',
   style: {},
-  position: "relative",
+  position: 'relative',
   toolbarProps: {},
-  menuIcon: null
+  menuIcon: null,
 };
 
-export default withTheme(withStyles(styles, { name: "MuiHeader" })(Header));
+export default withTheme(withStyles(styles, { name: 'MuiHeader' })(Header));

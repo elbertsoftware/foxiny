@@ -1,81 +1,81 @@
 const presets = {
   createDefaultLayout() {
     return {
-      navWidth: 256,
-      navAnchor: "left",
+      navWidth: 300,
+      navAnchor: 'left',
       navVariant: {
-        xs: "temporary",
-        sm: "permanent"
+        xs: 'temporary',
+        sm: 'permanent',
       },
       collapsible: {
         xs: false,
-        sm: true
+        sm: true,
       },
       collapsedWidth: 64,
       clipped: false,
-      headerPosition: "relative",
+      headerPosition: 'relative',
       squeezed: false,
-      footerShrink: true
+      footerShrink: true,
     };
   },
   createFixedLayout: config => ({
     ...presets.createDefaultLayout(),
     navVariant: {
-      xs: "temporary",
-      md: "permanent"
+      xs: 'temporary',
+      md: 'permanent',
     },
     collapsible: {
       xs: false,
-      md: true
+      md: true,
     },
     clipped: true,
     squeezed: true,
-    headerPosition: "sticky",
-    ...config
+    headerPosition: 'sticky',
+    ...config,
   }),
   createContentBasedLayout: config => ({
     ...presets.createDefaultLayout(),
     navWidth: {
       sm: 200,
-      md: 256
+      md: 256,
     },
     navVariant: {
-      xs: "temporary",
-      sm: "persistent"
+      xs: 'temporary',
+      sm: 'persistent',
     },
     collapsible: false,
-    ...config
+    ...config,
   }),
   createCozyLayout: config => ({
     ...presets.createDefaultLayout(),
     navVariant: {
-      xs: "persistent",
-      sm: "permanent"
+      xs: 'persistent',
+      sm: 'permanent',
     },
     navWidth: {
       sm: 200,
       md: 256,
-      xs: 64
+      xs: 64,
     },
     collapsible: {
       xs: false,
-      sm: true
+      sm: true,
     },
     footerShrink: false,
     clipped: false,
-    ...config
+    ...config,
   }),
   createMuiTreasuryLayout: config => ({
     ...presets.createDefaultLayout(),
     navWidth: 200,
     navVariant: {
-      xs: "temporary",
-      md: "permanent"
+      xs: 'temporary',
+      md: 'permanent',
     },
     clipped: true,
     collapsible: false,
-    ...config
-  })
+    ...config,
+  }),
 };
 
 export default presets;

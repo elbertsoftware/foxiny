@@ -1,67 +1,49 @@
-import React from "react";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import Icon from "@material-ui/core/Icon";
-import Divider from "@material-ui/core/Divider";
+import React from 'react';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Icon from '@material-ui/core/Icon';
+import Divider from '@material-ui/core/Divider';
 
 const list = [
   {
-    primaryText: "My Files",
-    icon: "folder"
+    primaryText: 'Thêm sản phẩm',
+    icon: 'add_box',
+    href: '/sellers/add-product',
   },
   {
-    primaryText: "Shared with me",
-    icon: "people"
+    primaryText: 'Danh sách sản phẩm',
+    icon: 'ballot',
+    href: '/sellers/list-products',
   },
   {
-    primaryText: "Starred",
-    icon: "star"
+    primaryText: 'Duyệt tài khoản bán hàng',
+    icon: 'how_to_reg',
+    href: '/sellers/approve-sellers',
   },
   {
-    primaryText: "Recent",
-    icon: "schedule"
+    primaryText: 'Duyệt sản phẩm',
+    icon: 'offline_pin',
+    href: '/sellers/approve-products',
   },
-  {
-    primaryText: "Offline",
-    icon: "offline_pin"
-  },
-  {
-    primaryText: "Uploads",
-    icon: "publish"
-  },
-  {
-    primaryText: "Backups",
-    icon: "backup"
-  },
-  {
-    primaryText: "Trash",
-    icon: "delete"
-  }
 ];
 const NavContentEx = () => (
   <List>
-    {list.map(({ primaryText, icon }, i) => (
-      <ListItem selected={i === 0} button>
+    {list.map(({ primaryText, icon, href }, i) => (
+      <ListItem key={href} component="a" href={href} selected={i === 0} button>
         <ListItemIcon>
           <Icon>{icon}</Icon>
         </ListItemIcon>
-        <ListItemText
-          primary={primaryText}
-          primaryTypographyProps={{ noWrap: true }}
-        />
+        <ListItemText primary={primaryText} primaryTypographyProps={{ noWrap: true }} />
       </ListItem>
     ))}
-    <Divider style={{ margin: "12px 0" }} />
+    <Divider style={{ margin: '12px 0' }} />
     <ListItem button>
       <ListItemIcon>
         <Icon>settings</Icon>
       </ListItemIcon>
-      <ListItemText
-        primary={"Settings & account"}
-        primaryTypographyProps={{ noWrap: true }}
-      />
+      <ListItemText primary={'Settings & account'} primaryTypographyProps={{ noWrap: true }} />
     </ListItem>
   </List>
 );

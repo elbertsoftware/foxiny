@@ -9,6 +9,7 @@ import UploadImgZone from '../../User/UserAvatar/UploadImgZone';
 import sellerDeclarationStyles from './styles/sellerDeclarationStyles';
 import { UPLOAD_SOCIAL_ID_MEDIA, DELETE_SOCIAL_ID_MEDIA } from '../../../graphql/retailer';
 import ApprovalContainer from '../../../utils/ApprovalContainer';
+import ReactMediumZoom from '../../../utils/common/ReactMediumZoom';
 
 const imgCardStyles = theme => ({
   container: {
@@ -32,6 +33,7 @@ const imgCardStyles = theme => ({
     width: 200,
     height: 200,
     objectFit: 'contain',
+    zIndex: 150,
   },
   buttonContainer: {
     display: 'flex',
@@ -54,7 +56,7 @@ const ImageCardReview = withStyles(imgCardStyles)(({ src, classes, removeItem, .
         </IconButton>
       </div>
       <Paper elevation={0} className={classes.imageContainer}>
-        <img className={classes.fitImage} src={src} alt="review" />
+        <ReactMediumZoom container="#sellerBusinessContainer" className={classes.fitImage} src={src} alt="review" />
       </Paper>
     </div>
   );
@@ -125,7 +127,7 @@ const SellerBusinessInfo = ({ classes, theme, seller, review, ...props }) => {
     }
   };
   return (
-    <Paper className={`${classes.wrapper}`}>
+    <Paper id="sellerBusinessContainer" className={`${classes.wrapper}`}>
       <Typography className={classes.title}>Thông tin tài khoản bán hàng</Typography>
       <Typography align="center" className={classes.subtitle} variant="subtitle2">
         Vui lòng cung cấp những thông tin cần thiết tùy theo loại hình kinh doanh mà bạn đã đăng ký trước đó. Đây là

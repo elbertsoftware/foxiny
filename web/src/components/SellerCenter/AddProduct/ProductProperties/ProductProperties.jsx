@@ -22,7 +22,7 @@ import { TextField } from 'final-form-material-ui';
 import PropTypes from 'prop-types';
 import MuiTextField from '@material-ui/core/TextField';
 import AddSelectionModal from './AddSelectionModal';
-import EnhancedTableToolbar from '../../../../utils/common/EnhancedTableToolbar';
+import { EnhancedTableToolbar } from '../../../../utils/common/TableUtils';
 import ProductDataContext from '../../../../utils/context/ProductDataContext';
 import SelectOutlinedInput from '../../../../utils/common/form/SelectOutlinedInput';
 import ProductEditDataContext from '../../../../utils/context/ProductEditDataContext';

@@ -355,7 +355,7 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
                       )}
                     </div>
                   </div>
-                  <pre>{JSON.stringify(values, 0, 2)}</pre>
+                  {/*<pre>{JSON.stringify(values, 0, 2)}</pre>*/}
                 </form>
               )}
             />
