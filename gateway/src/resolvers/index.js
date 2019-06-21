@@ -17,8 +17,9 @@ import { Mutation as productMutations } from "./Mutations/ProductMutations";
 import { Mutation as retailerMutations } from "./Mutations/RetailerMutations";
 import { Query as retailerQueries } from "./Queries/RetailerQueries";
 import { Mutation as mediaMutations } from "./Mutations/MediaMutations";
-import { Query as approvalQueries } from "./Queries/ApprovalQueries";
-import { Mutation as approvalMutations } from "./Mutations/ApprovalMutations";
+
+import { Mutation as staffMutations } from "./Mutations/StaffMutations";
+import { Query as staffQueries } from "./Queries/StaffQueries";
 // media queries
 
 // import Subscription from './Subscription'
@@ -26,14 +27,20 @@ import { User } from "./Resolvers/User";
 import { Media } from "./Resolvers/Media";
 
 const resolvers = {
-  Query: merge(userQueries, categoryQueries, productQueries, retailerQueries, approvalQueries),
+  Query: merge(
+    userQueries,
+    categoryQueries,
+    productQueries,
+    retailerQueries,
+    staffQueries,
+  ),
   Mutation: merge(
     userMutations,
     categoryMutations,
     productMutations,
     retailerMutations,
     mediaMutations,
-    approvalMutations,
+    staffMutations,
   ),
   // Subscription,
   User,

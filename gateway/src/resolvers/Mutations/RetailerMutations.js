@@ -1,6 +1,7 @@
 // @flow
 
 import { t } from "@lingui/macro";
+const { addFragmentToInfo } = require("graphql-binding");
 import logger from "../../utils/logger";
 import { sendConfirmationText } from "../../utils/sms";
 import { sendConfirmationEmail } from "../../utils/email";
@@ -120,7 +121,52 @@ export const Mutation = {
       data: retailerData,
     });
 
-    // TODO: log transaction
+    // add role to user
+    await prisma.mutation.updateUser({
+      where: {
+        id: userId,
+      },
+      data: {
+        assignment: {
+          update: {
+            roles: {
+              connect: {
+                name: "RETAILER",
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // open supportcase for approval
+    await prisma.mutation.createSupportCase({
+      data: {
+        subject: "New Retailer Approval",
+        status: {
+          connect: {
+            name: "OPEN",
+          },
+        },
+        severity: {
+          connect: {
+            name: "MEDIUM",
+          },
+        },
+        catergory: {
+          connect: {
+            name: "CREATE_RETAILER_APPROVAL",
+          },
+        },
+        openByUser: {
+          connect: {
+            id: userId,
+          },
+        },
+        retailerId: retailer.id,
+      },
+    });
+
     return {
       userId: userId,
       retailerId: retailer.id,
@@ -261,6 +307,7 @@ export const Mutation = {
         : undefined,
     };
 
+    const fragment = "{ fragment retailerIdForRetailer on Retailer { id } }";
     const updatedRetailer = await prisma.mutation.updateRetailer(
       {
         where: {
@@ -268,8 +315,36 @@ export const Mutation = {
         },
         data: updateData,
       },
-      info,
+      addFragmentToInfo(info, fragment),
     );
+
+    // open supportcase for approval
+    await prisma.mutation.createSupportCase({
+      data: {
+        subject: "New Retailer Approval",
+        status: {
+          connect: {
+            name: "OPEN",
+          },
+        },
+        severity: {
+          connect: {
+            name: "MEDIUM",
+          },
+        },
+        catergory: {
+          connect: {
+            name: "UPDATE_RETAILER_APPROVAL",
+          },
+        },
+        openByUser: {
+          connect: {
+            id: userId,
+          },
+        },
+        retailerId: updatedRetailer.id,
+      },
+    });
 
     return updatedRetailer;
     // } catch (err) {
@@ -314,21 +389,21 @@ export const Mutation = {
       }
 
       // check email is already registered or not
-      const existedUser = await prisma.query.user({
-        where: {
-          email: email,
-        },
-      });
-      const existedRetailer = await prisma.query.retailer({
-        where: {
-          businessEmail: email,
-        },
-      });
+      // const existedUser = await prisma.query.user({
+      //   where: {
+      //     email: email,
+      //   },
+      // });
+      // const existedRetailer = await prisma.query.retailer({
+      //   where: {
+      //     businessEmail: email,
+      //   },
+      // });
 
-      if (existedUser || existedRetailer) {
-        const error = i18n._(t`Email is already existed`);
-        throw new Error(error);
-      }
+      // if (existedUser || existedRetailer) {
+      //   const error = i18n._(t`Email is already existed`);
+      //   throw new Error(error);
+      // }
 
       const code = generateConfirmation(cache, userId, email);
       sendConfirmationEmail("Seller", email, code);
@@ -343,21 +418,21 @@ export const Mutation = {
       }
 
       // check phone is already registered or not
-      const existedUser = await prisma.query.user({
-        where: {
-          phone: phone,
-        },
-      });
-      const existedRetailer = await prisma.query.retailer({
-        where: {
-          businessPhone: phone,
-        },
-      });
+      // const existedUser = await prisma.query.user({
+      //   where: {
+      //     phone: phone,
+      //   },
+      // });
+      // const existedRetailer = await prisma.query.retailer({
+      //   where: {
+      //     businessPhone: phone,
+      //   },
+      // });
 
-      if (existedUser || existedRetailer) {
-        const error = i18n._(t`Phone is already existed`);
-        throw new Error(error);
-      }
+      // if (existedUser || existedRetailer) {
+      //   const error = i18n._(t`Phone is already existed`);
+      //   throw new Error(error);
+      // }
 
       const code = generateConfirmation(cache, userId, phone);
       // sendConfirmationText("Seller", phone, code);
@@ -367,80 +442,5 @@ export const Mutation = {
     }
 
     return false;
-  },
-
-  approveRetailer: async (
-    parent,
-    { retailerId },
-    { prisma, request, cache, i18n },
-    info,
-  ) => {
-    // TODO: check permission
-    const userId = await getUserIDFromRequest(request, cache, i18n);
-    // TODO: validate input
-    const approval = await prisma.query.approval({
-      where: {
-        sellerId: retailerId,
-      },
-    });
-    const retailer = await prisma.query.retailer({
-      where: {
-        id: retailerId,
-      },
-    });
-
-    if (!approval || approval.isClosed) {
-      const error = i18n.t`Approval is closed or does not exist`;
-      throw new Error(error);
-    }
-    if (!retailer || retailer.approved === true) {
-      const error = i18n.t`Retailer not found or approved`;
-      throw new Error(error);
-    }
-
-    await prisma.mutation.updateApproval({
-      where: {
-        sellerId: retailerId,
-      },
-      data: {
-        isClosed: true,
-      },
-    });
-
-    return prisma.mutation.updateRetailer({
-      where: {
-        id: retailerId,
-      },
-      data: {
-        approved: true,
-      },
-    });
-  },
-
-  deleteRetailer: async (
-    parent,
-    { sellerId },
-    { prisma, request, cache, i18n },
-    info,
-  ) => {
-    // TODO: check permission
-    const userId = await getUserIDFromRequest(request, cache, i18n);
-    // TODO: validate input
-    const retailer = await prisma.query.retailer({
-      where: {
-        id: sellerId,
-      },
-    });
-    // TODO: if retailer sells any goods, deletion is denied
-    if (!retailer || retailer.approved === true) {
-      const error = i18n.t`Cannot delete retailer`;
-      throw new Error(error);
-    }
-
-    return prisma.mutation.deleteRetailer({
-      where: {
-        id: sellerId,
-      },
-    });
   },
 };

@@ -20,7 +20,7 @@ export const rolePermAssignSchema = gql`
     name: String # Administrator, Assistant, Owner
     description: String!
     type: String! # root, assistant, authenticated, public
-    permissions: [Permission!]!
+    permissions: [Permission!]! 
 
     createdAt: String!
     updatedAt: String!

@@ -2,7 +2,7 @@ type Permission {
   id: ID! @id
   _version: Int! @default(value: 1)
 
-  type: String
+  type: String @unique
   # controller: String
   # action: String
   # policy: String
@@ -15,7 +15,7 @@ type Role {
   id: ID! @id
   _version: Int! @default(value: 1)
 
-  name: String # Administrator, Assistant, Owner
+  name: String  @unique# Administrator, Product-Staff, Retailer-Staff, Assistant, Owner
   description: String
   type: String # root, assistant, authenticated, public
   permissions: [Permission!] @relation(link: TABLE, name: "RoleToPermission", onDelete: SET_NULL)

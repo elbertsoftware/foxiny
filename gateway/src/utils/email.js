@@ -1,8 +1,8 @@
 // @flow
 
-import email from '@sendgrid/mail';
+import email from "@sendgrid/mail";
 
-import logger from './logger';
+import logger from "./logger";
 
 email.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -42,7 +42,7 @@ const sendConfirmationEmail = async (name, to, code) => {
   const msg = {
     to,
     from,
-    subject: '[foxiny] Account Confirmation',
+    subject: "[foxiny] Account Confirmation",
     text,
     html,
   };
@@ -57,7 +57,54 @@ const sendConfirmationEmail = async (name, to, code) => {
 
 const sendResetPasswordEmail = (name, to, password) => {
   // TBD
-  logger.info(`TBD name: ${name}, email: ${to}, temporary password: ${password}`);
+  logger.info(
+    `TBD name: ${name}, email: ${to}, temporary password: ${password}`,
+  );
 };
 
 export { sendConfirmationEmail, sendResetPasswordEmail };
+
+const sendCorrespondence = async (sellerName, to, content) => {
+  const text = `
+    Dear ${name},
+    
+    We have reviewed your Retailer registration, we need you to edit or provide the following information:
+
+    ${content}
+    
+    We will review one more time and response as soon as possible. Thank you for using our service.
+
+    Best regards,
+    Foxiny Admin
+  `;
+
+  const html = `
+    <p>Dear <strong>${name}</strong>,</p>
+    <br>
+    <p>We have reviewed your Retailer registration, we need you to edit or provide the following information:</p>
+    <br>
+    <p><strong>${code}</strong></p>
+    <br>
+    <p>We will review one more time and response as soon as possible. Thank you for using our service.</p>
+    <br>
+    <p>Best regards,</p>
+    <p><strong>Foxiny Admin</strong></p>
+  `;
+
+  const msg = {
+    to,
+    from,
+    subject: "[foxiny] Retailer Registration Review",
+    text,
+    html,
+  };
+
+  try {
+    await email.send(msg);
+    logger.debug(`Sent review email to ${to}`);
+  } catch (error) {
+    logger.error(`Failed to send review email to ${to}: ${error}`);
+  }
+};
+
+export { sendCorrespondence };

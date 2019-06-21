@@ -11,8 +11,8 @@ type Retailer {
     @relation(link: INLINE, name: "RetailerAvatarToMedia", onDelete: CASCADE) # Avatar
   businessName: String @unique #  displayed on Retailer profile and foxiny listings
   businessAddress: Address @relation(link: INLINE, onDelete: CASCADE) # one to one
-  businessPhone: String @unique # maybe different to user's phone
-  businessEmail: String @unique # maybe different to user's phone
+  businessPhone: String # maybe different to user's phone
+  businessEmail: String # maybe different to user's phone
   businessLink: String @unique # contains the route of store/shop
   # personal info
   socialNumber: String
@@ -45,7 +45,7 @@ type Retailer {
   # Orders
 
   # null: waiting for approvement, false: rejected, true: approved
-  approved: Boolean @default(value: false)
+  approved: Boolean
 
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
