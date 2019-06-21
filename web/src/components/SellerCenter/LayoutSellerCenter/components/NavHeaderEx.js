@@ -4,13 +4,20 @@ import { graphql } from 'react-apollo';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
+import { Redirect } from 'react-router';
 import { RETAILERS } from '../../../../graphql/retailer';
 import Loading from '../../../App/Loading';
+import withAuth from '../../../../utils/RouteProtector';
 
 const NavHeaderEx = ({ collapsed, ...props }) => {
   // Form graphql
-  const { loading, sellers } = props;
+  const { loading, sellers, userLoggedIn } = props;
+
+  if (!userLoggedIn) {
+    return <Redirect to="/sellers/sign" />;
+  }
   if (loading) return <Loading />;
+
   return (
     <>
       <div style={{ padding: collapsed ? 8 : 16, transition: '0.3s' }}>
@@ -21,16 +28,16 @@ const NavHeaderEx = ({ collapsed, ...props }) => {
             transition: '0.3s',
           }}
           src={
-            (sellers[0] && sellers[0].businessAvatar && sellers[0].businessAvatar.uri) ||
+            (sellers && sellers[0] && sellers[0].businessAvatar && sellers[0].businessAvatar.uri) ||
             'https://cdn.pixabay.com/photo/2019/04/26/07/14/store-4156934_960_720.png'
           }
         />
         <div style={{ paddingBottom: 16 }} />
         <Typography variant={'h6'} noWrap>
-          {sellers[0] && sellers[0].businessName}
+          {sellers && sellers[0] && sellers[0].businessName}
         </Typography>
         <Typography color={'textSecondary'} noWrap gutterBottom>
-          {sellers[0] && sellers[0].businessEmail}
+          {sellers && sellers[0] && sellers[0].businessEmail}
         </Typography>
       </div>
       <Divider />
@@ -48,4 +55,4 @@ export default graphql(RETAILERS, {
     loading,
     sellers: myRetailers,
   }),
-})(NavHeaderEx);
+})(withAuth(NavHeaderEx));

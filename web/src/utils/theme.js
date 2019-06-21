@@ -113,6 +113,10 @@ const theme = {
       },
     },
     MuiButton: {
+      root: {
+        borderRadius: 100,
+        minHeight: 30,
+      },
       textSecondary: {
         '&:hover': {
           backgroundColor: '#rgba(0, 0, 0, 0.08)',
@@ -124,6 +128,7 @@ const theme = {
         },
       },
       containedSecondary: {
+        color: '#fff',
         '&:hover': {
           backgroundColor: '#c17b00',
         },

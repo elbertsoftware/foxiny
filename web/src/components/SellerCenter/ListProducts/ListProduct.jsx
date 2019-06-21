@@ -20,6 +20,8 @@ import {
   ClickAwayListener,
   MenuItem,
   Icon,
+  Slide,
+  Dialog,
 } from '@material-ui/core';
 import { graphql, compose } from 'react-apollo';
 import { gql } from 'apollo-boost';
@@ -35,6 +37,12 @@ const styles = {
   },
   table: {
     marginTop: 16,
+  },
+  appBar: {
+    position: 'relative',
+  },
+  flex: {
+    flex: 1,
   },
   img: {
     width: 200,
@@ -58,11 +66,15 @@ const styles = {
   },
 };
 
+function Transition(props) {
+  return <Slide direction="up" {...props} />;
+}
+
 function ListProduct(props) {
   const { classes, loading, productsData, userLoggedIn } = props;
   if (loading) return <Loading />;
   if (!userLoggedIn()) {
-    return <Redirect to="/signin" />;
+    return <Redirect to="/sellers/signin" />;
   }
   const checkedArrayObject =
     productsData &&
@@ -105,7 +117,21 @@ function ListProduct(props) {
   const handleCloseDialog = () => setOpenEditDialog(false);
 
   const editComponent = useMemo(
-    () => <EditProduct open={openEditDialog} handleClose={handleCloseDialog} dataEdit={productsData && productsData} />,
+    () => (
+      <Dialog fullScreen open={openEditDialog} onClose={handleCloseDialog} TransitionComponent={Transition}>
+        <AppBar className={classes.appBar}>
+          <Toolbar>
+            <Typography variant="h6" color="inherit" className={classes.flex}>
+              Chỉnh sửa sản phẩm
+            </Typography>
+            <Button color="inherit" onClick={handleCloseDialog}>
+              Đóng
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <EditProduct review dataEdit={productsData && productsData} />
+      </Dialog>
+    ),
     [openEditDialog],
   );
 
@@ -153,7 +179,7 @@ function ListProduct(props) {
                     <Typography variant="body1">Nhà bán hàng: {product.stockQuantity}</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body1">14/05/2019 12:08:43</Typography>
+                    <Typography variant="body1">{product.createdAt}</Typography>
                   </TableCell>
                   <TableCell>
                     <FormControlLabel

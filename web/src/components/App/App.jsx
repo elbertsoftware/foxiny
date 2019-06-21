@@ -30,6 +30,7 @@ import SellerDeclaration from '../SellerCenter/SellerDeclaration/SellerDeclarati
 import SellerApproval from '../SellerCenter/Approval/SellerApproval/SellerApproval';
 import ProductApproval from '../SellerCenter/Approval/ProductApproval/ProductApproval';
 import ApproveSeller from '../SellerCenter/Approval/SellerApproval/ApproveSeller';
+import CaseDetailPage from '../SellerCenter/SupportService/CaseDetailPage';
 
 class App extends Component<Props, State> {
   state = {
@@ -101,7 +102,8 @@ class App extends Component<Props, State> {
                 <Route exact path="/sellers/approve-sellers/:id" component={ApproveSeller} />
                 <Route exact path="/sellers/approve-sellers" component={withAuthenticator(SellerApproval)} />
 
-                <Route path="/sellers/approve-products" component={withAuthenticator(ProductApproval)} />
+                <Route exact path="/sellers/approve-products" component={withAuthenticator(ProductApproval)} />
+                <Route exact path="/sellers/support/case-detail/:id" component={withAuthenticator(CaseDetailPage)} />
               </LayoutSellerCenter>
             )}
           />

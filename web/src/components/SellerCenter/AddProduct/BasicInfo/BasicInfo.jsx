@@ -78,7 +78,7 @@ const BasicInfo = ({ classes, onChange, review, ...props }) => {
               required
               margin="normal"
               label="Tên sản phẩm"
-              name="productName"
+              name="name"
               type="text"
               variant="outlined"
             />

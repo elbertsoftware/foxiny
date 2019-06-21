@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { green, red } from '@material-ui/core/colors';
 import { Field } from 'react-final-form';
 import { TextField } from 'final-form-material-ui';
+import { debounce } from 'debounce';
 import SetValueFunction from './context/SetValueFunc';
 
 const useStyles = makeStyles(theme => ({
@@ -87,6 +88,9 @@ const ApprovalContainer = ({ review, name, children, ...props }) => {
   const saveContent = () => {
     setIsSave(true);
   };
+  const saveTextValueDebounce = debounce(textValue => {
+    setFieldValue(textValue);
+  }, 1000);
   const rootContainer = classNames({
     [classes.root]: true,
     [classes.sucess]: isAccepted,
@@ -153,7 +157,7 @@ const ApprovalContainer = ({ review, name, children, ...props }) => {
                 type="text"
               >
                 {fieldState => {
-                  setFieldValue(fieldState.input.value);
+                  saveTextValueDebounce(fieldState.input.value);
                   return (
                     <Field
                       component={TextField}

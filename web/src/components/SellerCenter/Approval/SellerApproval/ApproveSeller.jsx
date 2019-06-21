@@ -42,7 +42,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ApproveSeller = ({ match, location, ...props }) => {
+const ApproveSeller = ({ history, match, location, ...props }) => {
   const classes = useStyles();
   // From graphql
   const { createRetailerApprovalProcess, approveRetailerInfo } = props;
@@ -78,8 +78,17 @@ const ApproveSeller = ({ match, location, ...props }) => {
         toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra!');
       }
     }
-    // In case of surely approving the seller info
+    // In case of disapproved
     if (isSubmited === 2) {
+      history.push({
+        pathname: `/sellers/support/case-detail/${match.params.id}`,
+        state: {
+          approved: false,
+        },
+      });
+    }
+    // In case of surely approving the seller info
+    if (isSubmited === 3) {
       // Kiểm tra đã đủ số field cần duyệt chưa. Ở đây xét duyệt 2 tấm ảnh (2 field) và giá trị của các field === null (Quy ước = null nghĩa là đã verified)
       const arrayKeyOfValues = Object.keys(values.reviewValues);
       if (arrayKeyOfValues.length === 2 && checkAllValuesIsNull(values.reviewValues)) {
@@ -100,6 +109,12 @@ const ApproveSeller = ({ match, location, ...props }) => {
         });
         if (resultAfterApproval.data.approveRetailer) {
           toast.success('Duyệt thành công tài khoản bán hàng.');
+          history.push({
+            pathname: `/sellers/support/case-detail/${match.params.id}`,
+            state: {
+              approved: true,
+            },
+          });
         }
       } else {
         toast.warn('Vui lòng duyệt đầy đủ thông tin.');
@@ -124,8 +139,10 @@ const ApproveSeller = ({ match, location, ...props }) => {
             <Button className={classes.closeSave} onClick={() => setIsSubmited(1)} color="primary">
               Đóng và Lưu
             </Button>
-            <Button color="primary">Từ chối</Button>
-            <Button onClick={() => setIsSubmited(2)} variant="contained" color="secondary">
+            <Button onClick={() => setIsSubmited(2)} color="primary">
+              Từ chối
+            </Button>
+            <Button onClick={() => setIsSubmited(3)} variant="contained" color="secondary">
               Duyệt
             </Button>
           </div>

@@ -8,6 +8,7 @@ const useStyles = makeStyles(({ spacing, transitions, breakpoints, palette, shap
     justifyContent: 'space-between',
   },
   table: {
+    position: 'relative',
     marginTop: 16,
   },
   tableWrapper: {
@@ -77,6 +78,11 @@ const useStyles = makeStyles(({ spacing, transitions, breakpoints, palette, shap
         width: 320,
       },
     },
+  },
+  emptyDataMessage: {
+    position: 'absolute',
+    top: '43%',
+    left: '50%',
   },
 }));
 export default useStyles;

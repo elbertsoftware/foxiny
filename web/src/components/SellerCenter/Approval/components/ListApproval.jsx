@@ -14,8 +14,6 @@ import {
   Tab,
   TablePagination,
   TableFooter,
-  InputBase,
-  Icon,
 } from '@material-ui/core';
 import TablePaginationActions from '../../../../utils/common/TablePaginationActions';
 import useStyles from '../style/approvalStyles';
@@ -78,6 +76,8 @@ function ListApproval(props) {
           </TableBody>
           <TableFooter>
             <TableRow>
+              <TableCell />
+              <TableCell />
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 colSpan={3}

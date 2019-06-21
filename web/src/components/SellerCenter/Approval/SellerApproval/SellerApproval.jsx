@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Paper, Typography, TableRow, TableCell, Link, Button, InputBase, Icon } from '@material-ui/core';
+import { Typography, TableRow, TableCell, Link, Button, InputBase, Icon } from '@material-ui/core';
 import { graphql } from 'react-apollo';
 import { debounce } from 'debounce';
 import { ALL_RETAILERS } from '../../../../graphql/retailer';
@@ -143,6 +143,11 @@ function SellerApproval(props) {
                     </TableCell>
                   </TableRow>
                 ))}
+            {(sellers.length === 0 || cloneSellers.length === 0) && (
+              <TableRow>
+                <Typography className={classes.emptyDataMessage}>Không tìm thấy dữ liệu</Typography>
+              </TableRow>
+            )}
           </React.Fragment>
         )}
       </ListApproval>

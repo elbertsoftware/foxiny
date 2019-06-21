@@ -68,9 +68,6 @@ const EDIT_PRODUCT = gql`
 function getSteps() {
   return ['Danh mục', 'Thông tin cơ bản', 'Lựa chọn sản phẩm đăng bán', 'Hình ảnh', 'Tài liệu đính kèm'];
 }
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
 const styles = theme => ({
   bar: {
     borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
@@ -98,12 +95,7 @@ const styles = theme => ({
     fontSize: 15,
     marginRight: 4,
   },
-  appBar: {
-    position: 'relative',
-  },
-  flex: {
-    flex: 1,
-  },
+
   paper: {
     padding: '30px 20px 20px',
   },
@@ -124,7 +116,7 @@ const styles = theme => ({
     padding: theme.spacing.unit * 3,
   },
 });
-const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, editProducts, review }) => {
+const EditProduct = ({ classes, dataEdit, uploadProductImgs, editProducts, review }) => {
   const [activeStep, setActiveStep] = useState(0);
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -137,6 +129,12 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
   useEffect(() => {
     const newData = {};
     if (dataEdit.length > 0) {
+      // Product template info (using when approving products)
+      if (review) {
+        newData.name = dataEdit[0].name;
+        newData.brandName = dataEdit[0].brand;
+        newData.briefDescription = dataEdit[0].briefDescription;
+      }
       // For options list
       const groupedOption = dataEdit.map(x =>
         x.attributes.reduce((acc, curr) => {
@@ -278,91 +276,72 @@ const EditProduct = ({ classes, open, handleClose, dataEdit, uploadProductImgs, 
     }
   };
   return (
-    <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
-      <AppBar className={classes.appBar}>
-        <Toolbar>
-          <Typography variant="h6" color="inherit" className={classes.flex}>
-            Chỉnh sửa sản phẩm
-          </Typography>
-          <Button color="inherit" onClick={handleClose}>
-            Đóng
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <Paper className={classes.paper}>
-        <Stepper activeStep={activeStep}>
-          {steps.map(label => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        <div>
-          <Paper square elevation={0} className={classes.finishedContainer}>
-            <Form
-              onSubmit={onSubmit}
-              initialValues={initData}
-              mutators={{
-                setValue: ([field, value], state, { changeValue }) => {
-                  changeValue(state, field, () => value);
-                },
-                ...arrayMutators,
-              }}
-              render={({
-                handleSubmit,
-                submitting,
-                form: {
-                  mutators: { setValue, push, pop, remove },
-                },
-                values,
-              }) => (
-                <form onSubmit={handleSubmit} noValidate>
-                  <ProductEditDataContext.Provider value={{ data: values }}>
-                    {activeStep === 0 && <CascadingMenuCategory review={review} />}
-                    {activeStep === 1 && <BasicInfo review={review} />}
-                    {activeStep === 2 && (
-                      <ProductProperties
-                        edit
-                        setValue={setValue}
-                        push={push}
-                        pop={pop}
-                        remove={remove}
-                        review={review}
-                      />
-                    )}
-                    {activeStep === 3 && <AddProductImage edit setValue={setValue} review={review} />}
-                    {activeStep === 4 && <AttachmentSection edit review={review} />}
-                  </ProductEditDataContext.Provider>
-                  <div className={classes.actionsContainer}>
-                    <div className={classes.grow} />
-                    <div>
-                      <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
-                        Quay lại
+    <Paper className={classes.paper}>
+      <Stepper activeStep={activeStep}>
+        {steps.map(label => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+      <div>
+        <Paper square elevation={0} className={classes.finishedContainer}>
+          <Form
+            onSubmit={onSubmit}
+            initialValues={initData}
+            mutators={{
+              setValue: ([field, value], state, { changeValue }) => {
+                changeValue(state, field, () => value);
+              },
+              ...arrayMutators,
+            }}
+            render={({
+              handleSubmit,
+              submitting,
+              form: {
+                mutators: { setValue, push, pop, remove },
+              },
+              values,
+            }) => (
+              <form onSubmit={handleSubmit} noValidate>
+                <ProductEditDataContext.Provider value={{ data: values }}>
+                  {activeStep === 0 && <CascadingMenuCategory review={review} />}
+                  {activeStep === 1 && <BasicInfo review={review} />}
+                  {activeStep === 2 && (
+                    <ProductProperties edit setValue={setValue} push={push} pop={pop} remove={remove} review={review} />
+                  )}
+                  {activeStep === 3 && <AddProductImage edit setValue={setValue} review={review} />}
+                  {activeStep === 4 && <AttachmentSection edit review={review} />}
+                </ProductEditDataContext.Provider>
+                <div className={classes.actionsContainer}>
+                  <div className={classes.grow} />
+                  <div>
+                    <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
+                      Quay lại
+                    </Button>
+                    {activeStep === steps.length ? (
+                      <FormButton className={classes.buttonAction} disabled={submitting} color="secondary" fullWidth>
+                        {submitting ? 'Thực hiện...' : 'Chỉnh sửa'}
+                      </FormButton>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={handleNext}
+                        className={classes.buttonAction}
+                      >
+                        {activeStep === steps.length - 1 ? 'Hoàn thành' : 'Tiếp'}
                       </Button>
-                      {activeStep === steps.length ? (
-                        <FormButton className={classes.buttonAction} disabled={submitting} color="secondary" fullWidth>
-                          {submitting ? 'Thực hiện...' : 'Chỉnh sửa'}
-                        </FormButton>
-                      ) : (
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          onClick={handleNext}
-                          className={classes.buttonAction}
-                        >
-                          {activeStep === steps.length - 1 ? 'Hoàn thành' : 'Tiếp'}
-                        </Button>
-                      )}
-                    </div>
+                    )}
                   </div>
-                  {/*<pre>{JSON.stringify(values, 0, 2)}</pre>*/}
-                </form>
-              )}
-            />
-          </Paper>
-        </div>
-      </Paper>
-    </Dialog>
+                </div>
+                {/*<pre>{JSON.stringify(values, 0, 2)}</pre>*/}
+              </form>
+            )}
+          />
+        </Paper>
+      </div>
+    </Paper>
   );
 };
 
