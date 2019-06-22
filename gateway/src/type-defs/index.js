@@ -11,9 +11,12 @@ import { categorySchema } from "./category_schema";
 import { productSchema } from "./product_schema";
 import { reviewSchema } from "./review_schema";
 
-import { processesSchema } from "./processes_schema";
+import { supportSchema } from "./support_schema";
+import { staffSchema } from "./staff_schema";
 
 const root = gql`
+  scalar JSON
+
   type Query {
     root: Boolean
   }
@@ -34,5 +37,6 @@ export const schema = [
   categorySchema,
   productSchema,
   reviewSchema,
-  processesSchema,
+  supportSchema,
+  staffSchema,
 ];

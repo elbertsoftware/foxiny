@@ -48,17 +48,14 @@ export const retailerSchema = gql`
     registerRetailer(data: RegisterRetailer!): RegisterdRetailer!
     updateRetailer(retailerId: String!, data: UpdateRetailerInput!): Retailer!
     resendRetailerConfirmationCode(emailOrPhone: String!): Boolean!
-    approveRetailer(retailerId: String!): Retailer!
-    # rejectRetailer(retailerId: String!): Retailer!
-    deleteRetailer(retailerId: String!): Boolean!
   }
 
   input RegisterRetailer {
     businessName: String!
     businessEmail: String!
-    emailConfirmCode: String!
+    emailConfirmCode: String
     businessPhone: String!
-    phoneConfirmCode: String!
+    phoneConfirmCode: String
     businessAddress: CreateAddressInput!
   }
 

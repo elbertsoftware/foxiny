@@ -9,7 +9,7 @@ datamodel:
   - model/category.graphql
   - model/product.graphql
   - model/review.graphql
-  - model/processes.graphql
+  - model/support.graphql
 secret: ${env:PRISMA_SECRET}
 
 seed:

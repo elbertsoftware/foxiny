@@ -26,7 +26,7 @@ export const Query = {
 
   me: async (parent, args, { prisma, request, cache, i18n }, info) => {
     const userId = await getUserIDFromRequest(request, cache, i18n);
-    
+
     const user = await prisma.query.user(
       {
         where: {
