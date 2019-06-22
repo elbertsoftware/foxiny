@@ -19,7 +19,6 @@ import SelectList from './Fields/SelectList';
 import { email, phone, required, formatInternationalPhone } from '../../utils/common/form/validation';
 import { countries } from '../../utils/callingcodes';
 import { setAuthorizationToken, setUserInfo } from '../../utils/authentication';
-import updateUser from '../../graphql/updateUser';
 
 const focusOnError = createDecorator();
 
@@ -54,7 +53,7 @@ class SignInForm extends React.Component {
   }
 
   onSubmit = async values => {
-    const { login, updateUser } = this.props;
+    const { login } = this.props;
     let data;
     try {
       if (values.email) {

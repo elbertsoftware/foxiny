@@ -5,10 +5,8 @@ type Retailer {
   owner: [Assignment] @relation(onDelete: SET_NULL)
 
   # seller info
-  businessCover: Media
-    @relation(link: INLINE, name: "RetailerCoverToMedia", onDelete: CASCADE) # Avatar
-  businessAvatar: Media
-    @relation(link: INLINE, name: "RetailerAvatarToMedia", onDelete: CASCADE) # Avatar
+  businessCover: Media @relation(link: INLINE, name: "RetailerCoverToMedia", onDelete: CASCADE) # Avatar
+  businessAvatar: Media @relation(link: INLINE, name: "RetailerAvatarToMedia", onDelete: CASCADE) # Avatar
   businessName: String @unique #  displayed on Retailer profile and foxiny listings
   businessAddress: Address @relation(link: INLINE, onDelete: CASCADE) # one to one
   businessPhone: String @unique # maybe different to user's phone
@@ -16,19 +14,9 @@ type Retailer {
   businessLink: String @unique # contains the route of store/shop
   # personal info
   socialNumber: String
-  socialNumberImages: [Media!]
-    @relation(
-      link: TABLE
-      name: "RetailerSocialNumberImgToMedia"
-      onDelete: CASCADE
-    )
+  socialNumberImages: [Media!] @relation(link: TABLE, name: "RetailerSocialNumberImgToMedia", onDelete: CASCADE)
   businessLicense: String # contains a link to file: image, pdf of license
-  businessLicenseImages: [Media!]
-    @relation(
-      link: TABLE
-      name: "RetailerBusinessLicenseImgToMedia"
-      onDelete: CASCADE
-    )
+  businessLicenseImages: [Media!] @relation(link: TABLE, name: "RetailerBusinessLicenseImgToMedia", onDelete: CASCADE)
 
   # Tax
   # Billing
@@ -45,7 +33,7 @@ type Retailer {
   # Orders
 
   # null: waiting for approvement, false: rejected, true: approved
-  approved: Boolean @default(value: false)
+  approved: Boolean
 
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt

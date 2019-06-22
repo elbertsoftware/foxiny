@@ -27,8 +27,7 @@ import UpdateEmailFields from './Fields/UpdateEmailFields';
 import UpdatePhoneFields from './Fields/UpdatePhoneFields';
 import UpdatePasswordFields from './Fields/UpdatePasswordFields';
 import FormButton from '../../utils/common/form/FormButton';
-import UPDATE_USER from '../../graphql/updateUser';
-import { RESEND_CONFIRMATION } from '../../graphql/confirmUser';
+import { UPDATE_USER, RESEND_CONFIRMATION } from '../../graphql/user';
 import { removeAuthorizationToken, removeUserInfo } from '../../utils/authentication';
 import Loading from '../App/Loading';
 

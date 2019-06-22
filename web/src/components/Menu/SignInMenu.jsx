@@ -2,19 +2,11 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Button, Typography, Badge, Grid, Avatar, IconButton } from '@material-ui/core';
 import { Mutation } from 'react-apollo';
-import { gql } from 'apollo-boost';
 import { Redirect } from 'react-router-dom';
 import { removeAuthorizationToken } from '../../utils/authentication';
 import PopperAccount from './PopperAccount';
 import PopperNotification from './PopperNotification';
-
-const LOGOUT = gql`
-  mutation logout($all: Boolean = false) {
-    logout(all: $all) {
-      token
-    }
-  }
-`;
+import { LOGOUT } from '../../graphql/user';
 
 const styles = theme => ({
   popper: {

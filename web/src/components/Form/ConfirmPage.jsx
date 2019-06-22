@@ -12,7 +12,7 @@ import RFTextField from '../../utils/common/form/RFTextField';
 import FormButton from '../../utils/common/form/FormButton';
 import AppForm from '../../utils/common/form/AppForm';
 import { required } from '../../utils/common/form/validation';
-import { CONFIRM_USER, RESEND_CONFIRMATION } from '../../graphql/confirmUser';
+import { CONFIRM_USER, RESEND_CONFIRMATION } from '../../graphql/user';
 
 let count = 59;
 
