@@ -1,8 +1,8 @@
 // @flow
 
-import email from "@sendgrid/mail";
+import email from '@sendgrid/mail';
 
-import logger from "./logger";
+import logger from './logger';
 
 email.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -42,7 +42,7 @@ const sendConfirmationEmail = async (name, to, code) => {
   const msg = {
     to,
     from,
-    subject: "[foxiny] Account Confirmation",
+    subject: '[foxiny] Account Confirmation',
     text,
     html,
   };
@@ -57,14 +57,12 @@ const sendConfirmationEmail = async (name, to, code) => {
 
 const sendResetPasswordEmail = (name, to, password) => {
   // TBD
-  logger.info(
-    `TBD name: ${name}, email: ${to}, temporary password: ${password}`,
-  );
+  logger.info(`TBD name: ${name}, email: ${to}, temporary password: ${password}`);
 };
 
 export { sendConfirmationEmail, sendResetPasswordEmail };
 
-const sendCorrespondence = async (sellerName, to, content) => {
+const sendCorrespondence = async (name, to, content) => {
   const text = `
     Dear ${name},
     
@@ -83,7 +81,7 @@ const sendCorrespondence = async (sellerName, to, content) => {
     <br>
     <p>We have reviewed your Retailer registration, we need you to edit or provide the following information:</p>
     <br>
-    <p><strong>${code}</strong></p>
+    <p><strong>${content}</strong></p>
     <br>
     <p>We will review one more time and response as soon as possible. Thank you for using our service.</p>
     <br>
@@ -94,7 +92,7 @@ const sendCorrespondence = async (sellerName, to, content) => {
   const msg = {
     to,
     from,
-    subject: "[foxiny] Retailer Registration Review",
+    subject: '[foxiny] Retailer Registration Review',
     text,
     html,
   };

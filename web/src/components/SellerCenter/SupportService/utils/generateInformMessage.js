@@ -11,29 +11,23 @@ const useStyles = makeStyles(({ spacing }) => ({
     marginBottom: spacing(2),
   },
 }));
-const GenerateInformMessages = ({ approved, processData, ...props }) => {
+const GenerateInformMessages = ({ note, processData, ...props }) => {
   const classes = useStyles();
   return (
-    <>
+    <React.Fragment>
       <Typography className={classes.bottomSpace}>Xin chào,</Typography>
       <Typography className={classes.bottomSpace}>Cảm ơn bạn vì đã sử dụng dịch vụ của chúng tôi.</Typography>
-      {!approved ? (
+      {note ? (
         <React.Fragment>
           <Typography className={classes.bottomSpace}>
             Chúng tôi thấy rằng bạn đã cập nhật thông tin cho tài khoản bán hàng, nhưng chúng tôi cần bạn xác thực trở
             lại một lần nữa vì những lý do sau:
           </Typography>
-
-          {Object.keys(processData.reviewValues).map(key => {
-            const message = processData.reviewValues[key];
-            if (message == null) return null;
-            return (
-              <Typography variant="subtitle2" className={classes.bottomSpace}>
-                <strong>{messages[key]}: </strong>
-                {processData.reviewValues[key]}
-              </Typography>
-            );
-          })}
+          {note.split('<br />').map(ele => (
+            <Typography variant="subtitle2" className={classes.bottomSpace}>
+              <strong>{ele}</strong>
+            </Typography>
+          ))}
         </React.Fragment>
       ) : (
         <Typography className={classes.bottomSpace}>
@@ -47,8 +41,8 @@ const GenerateInformMessages = ({ approved, processData, ...props }) => {
         hoàn tất việc xét duyệt tài khoản bán hàng của bạn.
       </Typography>
       <Typography className={classes.bottomSpace}>Xin cảm ơn.</Typography>
-    </>
+    </React.Fragment>
   );
 };
 
-export default GenerateInformMessages;
+export { GenerateInformMessages, messages };

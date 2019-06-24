@@ -47,18 +47,27 @@ const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
   },
 }));
 
-const CaseDetailPage = ({ match, location, ...props }) => {
+const CaseDetailPage = ({ match, ...props }) => {
   const classes = useStyles();
   return (
-    <Query query={LAST_APPROVAL_PROCESS} variables={{ query: match.params.id }}>
-      {({ data, loading }) => {
+    <Query
+      query={LAST_APPROVAL_PROCESS}
+      variables={{
+        query: {
+          retailerId: match.params.id,
+        },
+      }}
+    >
+      {({ data: { lastRetailerApprovalProcess }, loading }) => {
         if (loading) return <Loading />;
+        const supportCaseInfo = lastRetailerApprovalProcess[0].supportCase;
+        console.log(supportCaseInfo);
         return (
           <Paper className={classes.root} elevation={0}>
             <AppBar className={classes.bar} position="static" color="inherit" elevation={0}>
               <div>
                 <Toolbar className={classes.toolbar}>
-                  <Typography variant="h2">CASE ID 6133476357473</Typography>
+                  <Typography variant="h2">CASE ID {supportCaseInfo.id}</Typography>
                   <Button variant="contained" color="secondary">
                     Reopen case
                   </Button>
@@ -76,25 +85,23 @@ const CaseDetailPage = ({ match, location, ...props }) => {
                   <Typography className={classes.title} variant="h6">
                     Subject
                   </Typography>
-                  <Typography className={classes.content}>
-                    Your AWs Access Key is Exposed for AES Account 11293213123123
-                  </Typography>
+                  <Typography className={classes.content}>{supportCaseInfo.subject}</Typography>
                   <Typography className={classes.title} variant="h6">
                     Case ID
                   </Typography>
-                  <Typography className={classes.content}>617816273817</Typography>
+                  <Typography className={classes.content}>{supportCaseInfo.id}</Typography>
                   <Typography className={classes.title} variant="h6">
                     Created
                   </Typography>
-                  <Typography className={classes.content}>2019-06-05</Typography>
+                  <Typography className={classes.content}>{supportCaseInfo.createdAt}</Typography>
                   <Typography className={classes.title} variant="h6">
                     Case type
                   </Typography>
-                  <Typography className={classes.content}>Account</Typography>
+                  <Typography className={classes.content}>{supportCaseInfo.catergory.name}</Typography>
                   <Typography className={classes.title} variant="h6">
                     Opened by
                   </Typography>
-                  <Typography>minhkha791140@gmail.com</Typography>
+                  <Typography>{supportCaseInfo.openByUser.email}</Typography>
                 </Grid>
                 <Grid item xs={6}>
                   <div className={classes.flexContainer}>
@@ -117,11 +124,14 @@ const CaseDetailPage = ({ match, location, ...props }) => {
                 </Grid>
               </Grid>
             </Paper>
-            <CorrespondenceCard
-              processData={data.lastRetailerApprovalProcess && data.lastRetailerApprovalProcess.processData}
-              approved={location.state.approved}
-              className={classes.correspondence}
-            />
+            {lastRetailerApprovalProcess &&
+              lastRetailerApprovalProcess.map(processData => (
+                <CorrespondenceCard
+                  processData={processData.data}
+                  note={processData.note}
+                  className={classes.correspondence}
+                />
+              ))}
           </Paper>
         );
       }}

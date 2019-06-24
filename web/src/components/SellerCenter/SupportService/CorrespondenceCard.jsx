@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Paper, AppBar, Toolbar, Typography, Grid, Avatar, Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import GenerateInformMessages from '../Approval/utils/generateInformMessage';
+import { GenerateInformMessages } from './utils/generateInformMessage';
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
   bar: {
@@ -29,7 +29,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   },
 }));
 
-const CorrespondenceCard = ({ approved, processData, className, ...props }) => {
+const CorrespondenceCard = ({ note, processData, className, ...props }) => {
   const classes = useStyles();
   return (
     <Paper className={className}>
@@ -50,7 +50,7 @@ const CorrespondenceCard = ({ approved, processData, className, ...props }) => {
         <Grid className={classes.content} item xs={10}>
           <div className={classes.verticalDivider} />
           <div>
-            <GenerateInformMessages approved={approved} processData={processData} />
+            <GenerateInformMessages note={note} processData={processData} />
             <Link href="https://mobbin.design/">https://mobbin.design/</Link>
             <br />
             <Link href="https://www.producthunt.com/">https://www.producthunt.com//</Link>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Typography, Button, Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { Form } from 'react-final-form';
@@ -10,6 +10,7 @@ import {
   LAST_APPROVAL_PROCESS,
   CREATE_RETAILER_APPROVAL_PROCESS,
   APPROVE_RETAILER_INFO,
+  DISAPPROVE_RETAILER_INFO,
 } from '../../../../graphql/approvement';
 import Loading from '../../../App/Loading';
 
@@ -42,10 +43,17 @@ const useStyles = makeStyles({
   },
 });
 
+let oldData;
+
+const messages = {
+  checkSocialIDMedia0: 'Ảnh CMND đầu tiên',
+  checkSocialIDMedia1: 'Ảnh CMND thứ hai',
+};
+
 const ApproveSeller = ({ history, match, location, ...props }) => {
   const classes = useStyles();
   // From graphql
-  const { createRetailerApprovalProcess, approveRetailerInfo } = props;
+  const { createRetailerApprovalProcess, approveRetailerInfo, disapproveRetailerInfo } = props;
 
   const [isSubmited, setIsSubmited] = useState(0); // 0:default, 1: Close&Save 2:Approve
 
@@ -61,14 +69,22 @@ const ApproveSeller = ({ history, match, location, ...props }) => {
   };
 
   const onSubmit = async values => {
+    const data = {
+      reviewValues: {
+        ...oldData,
+        ...values.reviewValues,
+      },
+    };
+    const arrayKeyOfValues = Object.keys(values.reviewValues);
     // In case of Close and Save the approval process
     if (isSubmited === 1) {
       try {
+        console.log(values.reviewValues, oldData);
         const result = await createRetailerApprovalProcess({
           variables: {
             data: {
               retailerId: match.params.id,
-              processData: values,
+              data,
             },
           },
         });
@@ -80,41 +96,48 @@ const ApproveSeller = ({ history, match, location, ...props }) => {
     }
     // In case of disapproved
     if (isSubmited === 2) {
-      history.push({
-        pathname: `/sellers/support/case-detail/${match.params.id}`,
-        state: {
-          approved: false,
-        },
-      });
+      try {
+        // Generate messages to inform
+        const reasonMessage = arrayKeyOfValues.reduce((previous, current, index) => {
+          if (values.reviewValues[current] != null) {
+            return `${messages[current]}: ${values.reviewValues[current]}<br />` + previous;
+          }
+        }, '');
+        console.log(reasonMessage);
+        const resultAfterDisapproval = await disapproveRetailerInfo({
+          variables: {
+            data: {
+              retailerId: match.params.id,
+              data,
+              note: reasonMessage,
+            },
+          },
+        });
+        if (resultAfterDisapproval.data.disapproveRetailer) {
+          history.push(`/sellers/support/case-detail/${match.params.id}`);
+          window.location.reload();
+        }
+      } catch (error) {
+        toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra!');
+      }
     }
     // In case of surely approving the seller info
     if (isSubmited === 3) {
       // Kiểm tra đã đủ số field cần duyệt chưa. Ở đây xét duyệt 2 tấm ảnh (2 field) và giá trị của các field === null (Quy ước = null nghĩa là đã verified)
-      const arrayKeyOfValues = Object.keys(values.reviewValues);
       if (arrayKeyOfValues.length === 2 && checkAllValuesIsNull(values.reviewValues)) {
-        // Lưu process
-        await createRetailerApprovalProcess({
-          variables: {
-            data: {
-              retailerId: match.params.id,
-              processData: values,
-            },
-          },
-        });
         // Approve cho seller
         const resultAfterApproval = await approveRetailerInfo({
           variables: {
-            retailerId: match.params.id,
+            data: {
+              retailerId: match.params.id,
+              data,
+            },
           },
         });
         if (resultAfterApproval.data.approveRetailer) {
           toast.success('Duyệt thành công tài khoản bán hàng.');
-          history.push({
-            pathname: `/sellers/support/case-detail/${match.params.id}`,
-            state: {
-              approved: true,
-            },
-          });
+          history.push(`/sellers/support/case-detail/${match.params.id}`);
+          window.location.reload();
         }
       } else {
         toast.warn('Vui lòng duyệt đầy đủ thông tin.');
@@ -125,7 +148,6 @@ const ApproveSeller = ({ history, match, location, ...props }) => {
   };
 
   useEffect(() => {
-    console.log(match.params.id);
     if (isSubmited !== 0) {
       document.getElementById('approvalForm').dispatchEvent(new Event('submit', { cancelable: true }));
     }
@@ -148,13 +170,22 @@ const ApproveSeller = ({ history, match, location, ...props }) => {
           </div>
         </Paper>
       </div>
-      <Query query={LAST_APPROVAL_PROCESS} variables={{ query: match.params.id }}>
+      <Query
+        query={LAST_APPROVAL_PROCESS}
+        variables={{
+          query: {
+            retailerId: match.params.id,
+          },
+        }}
+      >
         {({ data, loading }) => {
           if (loading) return <Loading />;
+          const processData = data.lastRetailerApprovalProcess && data.lastRetailerApprovalProcess[0].data.reviewValues;
+          oldData = processData;
           return (
             <Form
               onSubmit={onSubmit}
-              initialValues={data.lastRetailerApprovalProcess && data.lastRetailerApprovalProcess.processData}
+              initialValues={{ reviewValues: processData }}
               subscription={{ submitting: true, values: true }}
               mutators={{
                 setValue: ([field, value], state, { changeValue }) => {
@@ -177,6 +208,7 @@ const ApproveSeller = ({ history, match, location, ...props }) => {
                         <SellerBusinessInfo seller={location.state.seller} review />
                       </div>
                     </SetValueFunction.Provider>
+                    <pre>{JSON.stringify(values, 0, 2)}</pre>
                   </form>
                 );
               }}
@@ -191,4 +223,5 @@ const ApproveSeller = ({ history, match, location, ...props }) => {
 export default compose(
   graphql(CREATE_RETAILER_APPROVAL_PROCESS, { name: 'createRetailerApprovalProcess' }),
   graphql(APPROVE_RETAILER_INFO, { name: 'approveRetailerInfo' }),
+  graphql(DISAPPROVE_RETAILER_INFO, { name: 'disapproveRetailerInfo' }),
 )(ApproveSeller);

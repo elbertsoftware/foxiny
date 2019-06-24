@@ -1,5 +1,5 @@
 # source: http://localhost:4466/foxiny/dev
-# timestamp: Sat Jun 15 2019 00:12:52 GMT+0700 (Indochina Time)
+# timestamp: Sat Jun 22 2019 08:22:41 GMT+0700 (Indochina Time)
 
 type Address implements Node {
   id: ID!
@@ -1229,14 +1229,6 @@ type AggregateAddress {
   count: Int!
 }
 
-type AggregateApproval {
-  count: Int!
-}
-
-type AggregateApprovalProcess {
-  count: Int!
-}
-
 type AggregateAssignment {
   count: Int!
 }
@@ -1305,745 +1297,28 @@ type AggregateSecurityQuestion {
   count: Int!
 }
 
-type AggregateUser {
+type AggregateSupportCase {
   count: Int!
 }
 
-type Approval implements Node {
-  id: ID!
-  _version: Int!
-  sellerId: String
-  type: ApprovalType
-  isClosed: Boolean
-  processes(where: ApprovalProcessWhereInput, orderBy: ApprovalProcessOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ApprovalProcess!]
-  createdAt: DateTime!
-  updatedAt: DateTime!
+type AggregateSupportCategory {
+  count: Int!
 }
 
-"""A connection to a list of items."""
-type ApprovalConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [ApprovalEdge]!
-  aggregate: AggregateApproval!
+type AggregateSupportCorrespondence {
+  count: Int!
 }
 
-input ApprovalCreateInput {
-  id: ID
-  _version: Int
-  sellerId: String
-  type: ApprovalType
-  isClosed: Boolean
-  processes: ApprovalProcessCreateManyWithoutApprovalInput
+type AggregateSupportSeverity {
+  count: Int!
 }
 
-input ApprovalCreateOneWithoutProcessesInput {
-  create: ApprovalCreateWithoutProcessesInput
-  connect: ApprovalWhereUniqueInput
+type AggregateSupportStatus {
+  count: Int!
 }
 
-input ApprovalCreateWithoutProcessesInput {
-  id: ID
-  _version: Int
-  sellerId: String
-  type: ApprovalType
-  isClosed: Boolean
-}
-
-"""An edge in a connection."""
-type ApprovalEdge {
-  """The item at the end of the edge."""
-  node: Approval!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum ApprovalOrderByInput {
-  id_ASC
-  id_DESC
-  _version_ASC
-  _version_DESC
-  sellerId_ASC
-  sellerId_DESC
-  type_ASC
-  type_DESC
-  isClosed_ASC
-  isClosed_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type ApprovalPreviousValues {
-  id: ID!
-  _version: Int!
-  sellerId: String
-  type: ApprovalType
-  isClosed: Boolean
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type ApprovalProcess implements Node {
-  id: ID!
-  _version: Int!
-  createdBy: User!
-  approval: Approval!
-  processData: Json
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-"""A connection to a list of items."""
-type ApprovalProcessConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [ApprovalProcessEdge]!
-  aggregate: AggregateApprovalProcess!
-}
-
-input ApprovalProcessCreateInput {
-  id: ID
-  _version: Int
-  processData: Json
-  createdBy: UserCreateOneInput!
-  approval: ApprovalCreateOneWithoutProcessesInput!
-}
-
-input ApprovalProcessCreateManyWithoutApprovalInput {
-  create: [ApprovalProcessCreateWithoutApprovalInput!]
-  connect: [ApprovalProcessWhereUniqueInput!]
-}
-
-input ApprovalProcessCreateWithoutApprovalInput {
-  id: ID
-  _version: Int
-  processData: Json
-  createdBy: UserCreateOneInput!
-}
-
-"""An edge in a connection."""
-type ApprovalProcessEdge {
-  """The item at the end of the edge."""
-  node: ApprovalProcess!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum ApprovalProcessOrderByInput {
-  id_ASC
-  id_DESC
-  _version_ASC
-  _version_DESC
-  processData_ASC
-  processData_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type ApprovalProcessPreviousValues {
-  id: ID!
-  _version: Int!
-  processData: Json
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-input ApprovalProcessScalarWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ApprovalProcessScalarWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ApprovalProcessScalarWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ApprovalProcessScalarWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  _version: Int
-
-  """All values that are not equal to given value."""
-  _version_not: Int
-
-  """All values that are contained in given list."""
-  _version_in: [Int!]
-
-  """All values that are not contained in given list."""
-  _version_not_in: [Int!]
-
-  """All values less than the given value."""
-  _version_lt: Int
-
-  """All values less than or equal the given value."""
-  _version_lte: Int
-
-  """All values greater than the given value."""
-  _version_gt: Int
-
-  """All values greater than or equal the given value."""
-  _version_gte: Int
-  createdAt: DateTime
-
-  """All values that are not equal to given value."""
-  createdAt_not: DateTime
-
-  """All values that are contained in given list."""
-  createdAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  createdAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  createdAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  createdAt_lte: DateTime
-
-  """All values greater than the given value."""
-  createdAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-
-  """All values that are not equal to given value."""
-  updatedAt_not: DateTime
-
-  """All values that are contained in given list."""
-  updatedAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  updatedAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  updatedAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  updatedAt_lte: DateTime
-
-  """All values greater than the given value."""
-  updatedAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  updatedAt_gte: DateTime
-}
-
-type ApprovalProcessSubscriptionPayload {
-  mutation: MutationType!
-  node: ApprovalProcess
-  updatedFields: [String!]
-  previousValues: ApprovalProcessPreviousValues
-}
-
-input ApprovalProcessSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ApprovalProcessSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ApprovalProcessSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ApprovalProcessSubscriptionWhereInput!]
-
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: ApprovalProcessWhereInput
-}
-
-input ApprovalProcessUpdateInput {
-  _version: Int
-  processData: Json
-  createdBy: UserUpdateOneRequiredInput
-  approval: ApprovalUpdateOneRequiredWithoutProcessesInput
-}
-
-input ApprovalProcessUpdateManyDataInput {
-  _version: Int
-  processData: Json
-}
-
-input ApprovalProcessUpdateManyMutationInput {
-  _version: Int
-  processData: Json
-}
-
-input ApprovalProcessUpdateManyWithoutApprovalInput {
-  create: [ApprovalProcessCreateWithoutApprovalInput!]
-  connect: [ApprovalProcessWhereUniqueInput!]
-  set: [ApprovalProcessWhereUniqueInput!]
-  disconnect: [ApprovalProcessWhereUniqueInput!]
-  delete: [ApprovalProcessWhereUniqueInput!]
-  update: [ApprovalProcessUpdateWithWhereUniqueWithoutApprovalInput!]
-  updateMany: [ApprovalProcessUpdateManyWithWhereNestedInput!]
-  deleteMany: [ApprovalProcessScalarWhereInput!]
-  upsert: [ApprovalProcessUpsertWithWhereUniqueWithoutApprovalInput!]
-}
-
-input ApprovalProcessUpdateManyWithWhereNestedInput {
-  where: ApprovalProcessScalarWhereInput!
-  data: ApprovalProcessUpdateManyDataInput!
-}
-
-input ApprovalProcessUpdateWithoutApprovalDataInput {
-  _version: Int
-  processData: Json
-  createdBy: UserUpdateOneRequiredInput
-}
-
-input ApprovalProcessUpdateWithWhereUniqueWithoutApprovalInput {
-  where: ApprovalProcessWhereUniqueInput!
-  data: ApprovalProcessUpdateWithoutApprovalDataInput!
-}
-
-input ApprovalProcessUpsertWithWhereUniqueWithoutApprovalInput {
-  where: ApprovalProcessWhereUniqueInput!
-  update: ApprovalProcessUpdateWithoutApprovalDataInput!
-  create: ApprovalProcessCreateWithoutApprovalInput!
-}
-
-input ApprovalProcessWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ApprovalProcessWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ApprovalProcessWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ApprovalProcessWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  _version: Int
-
-  """All values that are not equal to given value."""
-  _version_not: Int
-
-  """All values that are contained in given list."""
-  _version_in: [Int!]
-
-  """All values that are not contained in given list."""
-  _version_not_in: [Int!]
-
-  """All values less than the given value."""
-  _version_lt: Int
-
-  """All values less than or equal the given value."""
-  _version_lte: Int
-
-  """All values greater than the given value."""
-  _version_gt: Int
-
-  """All values greater than or equal the given value."""
-  _version_gte: Int
-  createdAt: DateTime
-
-  """All values that are not equal to given value."""
-  createdAt_not: DateTime
-
-  """All values that are contained in given list."""
-  createdAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  createdAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  createdAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  createdAt_lte: DateTime
-
-  """All values greater than the given value."""
-  createdAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-
-  """All values that are not equal to given value."""
-  updatedAt_not: DateTime
-
-  """All values that are contained in given list."""
-  updatedAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  updatedAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  updatedAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  updatedAt_lte: DateTime
-
-  """All values greater than the given value."""
-  updatedAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  updatedAt_gte: DateTime
-  createdBy: UserWhereInput
-  approval: ApprovalWhereInput
-}
-
-input ApprovalProcessWhereUniqueInput {
-  id: ID
-}
-
-type ApprovalSubscriptionPayload {
-  mutation: MutationType!
-  node: Approval
-  updatedFields: [String!]
-  previousValues: ApprovalPreviousValues
-}
-
-input ApprovalSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ApprovalSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ApprovalSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ApprovalSubscriptionWhereInput!]
-
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: ApprovalWhereInput
-}
-
-enum ApprovalType {
-  PRODUCT
-  RETAILER
-  MANUFACTURER
-}
-
-input ApprovalUpdateInput {
-  _version: Int
-  sellerId: String
-  type: ApprovalType
-  isClosed: Boolean
-  processes: ApprovalProcessUpdateManyWithoutApprovalInput
-}
-
-input ApprovalUpdateManyMutationInput {
-  _version: Int
-  sellerId: String
-  type: ApprovalType
-  isClosed: Boolean
-}
-
-input ApprovalUpdateOneRequiredWithoutProcessesInput {
-  create: ApprovalCreateWithoutProcessesInput
-  connect: ApprovalWhereUniqueInput
-  update: ApprovalUpdateWithoutProcessesDataInput
-  upsert: ApprovalUpsertWithoutProcessesInput
-}
-
-input ApprovalUpdateWithoutProcessesDataInput {
-  _version: Int
-  sellerId: String
-  type: ApprovalType
-  isClosed: Boolean
-}
-
-input ApprovalUpsertWithoutProcessesInput {
-  update: ApprovalUpdateWithoutProcessesDataInput!
-  create: ApprovalCreateWithoutProcessesInput!
-}
-
-input ApprovalWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ApprovalWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ApprovalWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ApprovalWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  _version: Int
-
-  """All values that are not equal to given value."""
-  _version_not: Int
-
-  """All values that are contained in given list."""
-  _version_in: [Int!]
-
-  """All values that are not contained in given list."""
-  _version_not_in: [Int!]
-
-  """All values less than the given value."""
-  _version_lt: Int
-
-  """All values less than or equal the given value."""
-  _version_lte: Int
-
-  """All values greater than the given value."""
-  _version_gt: Int
-
-  """All values greater than or equal the given value."""
-  _version_gte: Int
-  sellerId: String
-
-  """All values that are not equal to given value."""
-  sellerId_not: String
-
-  """All values that are contained in given list."""
-  sellerId_in: [String!]
-
-  """All values that are not contained in given list."""
-  sellerId_not_in: [String!]
-
-  """All values less than the given value."""
-  sellerId_lt: String
-
-  """All values less than or equal the given value."""
-  sellerId_lte: String
-
-  """All values greater than the given value."""
-  sellerId_gt: String
-
-  """All values greater than or equal the given value."""
-  sellerId_gte: String
-
-  """All values containing the given string."""
-  sellerId_contains: String
-
-  """All values not containing the given string."""
-  sellerId_not_contains: String
-
-  """All values starting with the given string."""
-  sellerId_starts_with: String
-
-  """All values not starting with the given string."""
-  sellerId_not_starts_with: String
-
-  """All values ending with the given string."""
-  sellerId_ends_with: String
-
-  """All values not ending with the given string."""
-  sellerId_not_ends_with: String
-  type: ApprovalType
-
-  """All values that are not equal to given value."""
-  type_not: ApprovalType
-
-  """All values that are contained in given list."""
-  type_in: [ApprovalType!]
-
-  """All values that are not contained in given list."""
-  type_not_in: [ApprovalType!]
-  isClosed: Boolean
-
-  """All values that are not equal to given value."""
-  isClosed_not: Boolean
-  createdAt: DateTime
-
-  """All values that are not equal to given value."""
-  createdAt_not: DateTime
-
-  """All values that are contained in given list."""
-  createdAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  createdAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  createdAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  createdAt_lte: DateTime
-
-  """All values greater than the given value."""
-  createdAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-
-  """All values that are not equal to given value."""
-  updatedAt_not: DateTime
-
-  """All values that are contained in given list."""
-  updatedAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  updatedAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  updatedAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  updatedAt_lte: DateTime
-
-  """All values greater than the given value."""
-  updatedAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  updatedAt_gte: DateTime
-  processes_every: ApprovalProcessWhereInput
-  processes_some: ApprovalProcessWhereInput
-  processes_none: ApprovalProcessWhereInput
-}
-
-input ApprovalWhereUniqueInput {
-  id: ID
-  sellerId: String
+type AggregateUser {
+  count: Int!
 }
 
 type Assignment implements Node {
@@ -4790,18 +4065,21 @@ type Mutation {
   createProductAttributeValue(data: ProductAttributeValueCreateInput!): ProductAttributeValue!
   createProductRetailer(data: ProductRetailerCreateInput!): ProductRetailer!
   createReview(data: ReviewCreateInput!): Review!
-  createApproval(data: ApprovalCreateInput!): Approval!
-  createApprovalProcess(data: ApprovalProcessCreateInput!): ApprovalProcess!
+  createSupportCase(data: SupportCaseCreateInput!): SupportCase!
+  createSupportCorrespondence(data: SupportCorrespondenceCreateInput!): SupportCorrespondence!
   createProductOption(data: ProductOptionCreateInput!): ProductOption!
+  createSupportStatus(data: SupportStatusCreateInput!): SupportStatus!
   createProduct(data: ProductCreateInput!): Product!
+  createSupportCategory(data: SupportCategoryCreateInput!): SupportCategory!
   createPermission(data: PermissionCreateInput!): Permission!
-  createUser(data: UserCreateInput!): User!
   createCategory(data: CategoryCreateInput!): Category!
   createAddress(data: AddressCreateInput!): Address!
+  createUser(data: UserCreateInput!): User!
   createMedia(data: MediaCreateInput!): Media!
   createRetailer(data: RetailerCreateInput!): Retailer!
   createRole(data: RoleCreateInput!): Role!
   createDescription(data: DescriptionCreateInput!): Description!
+  createSupportSeverity(data: SupportSeverityCreateInput!): SupportSeverity!
   updateSecurityQuestion(data: SecurityQuestionUpdateInput!, where: SecurityQuestionWhereUniqueInput!): SecurityQuestion
   updateSecurityAnswer(data: SecurityAnswerUpdateInput!, where: SecurityAnswerWhereUniqueInput!): SecurityAnswer
   updateAssignment(data: AssignmentUpdateInput!, where: AssignmentWhereUniqueInput!): Assignment
@@ -4811,18 +4089,21 @@ type Mutation {
   updateProductAttributeValue(data: ProductAttributeValueUpdateInput!, where: ProductAttributeValueWhereUniqueInput!): ProductAttributeValue
   updateProductRetailer(data: ProductRetailerUpdateInput!, where: ProductRetailerWhereUniqueInput!): ProductRetailer
   updateReview(data: ReviewUpdateInput!, where: ReviewWhereUniqueInput!): Review
-  updateApproval(data: ApprovalUpdateInput!, where: ApprovalWhereUniqueInput!): Approval
-  updateApprovalProcess(data: ApprovalProcessUpdateInput!, where: ApprovalProcessWhereUniqueInput!): ApprovalProcess
+  updateSupportCase(data: SupportCaseUpdateInput!, where: SupportCaseWhereUniqueInput!): SupportCase
+  updateSupportCorrespondence(data: SupportCorrespondenceUpdateInput!, where: SupportCorrespondenceWhereUniqueInput!): SupportCorrespondence
   updateProductOption(data: ProductOptionUpdateInput!, where: ProductOptionWhereUniqueInput!): ProductOption
+  updateSupportStatus(data: SupportStatusUpdateInput!, where: SupportStatusWhereUniqueInput!): SupportStatus
   updateProduct(data: ProductUpdateInput!, where: ProductWhereUniqueInput!): Product
+  updateSupportCategory(data: SupportCategoryUpdateInput!, where: SupportCategoryWhereUniqueInput!): SupportCategory
   updatePermission(data: PermissionUpdateInput!, where: PermissionWhereUniqueInput!): Permission
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
   updateAddress(data: AddressUpdateInput!, where: AddressWhereUniqueInput!): Address
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateMedia(data: MediaUpdateInput!, where: MediaWhereUniqueInput!): Media
   updateRetailer(data: RetailerUpdateInput!, where: RetailerWhereUniqueInput!): Retailer
   updateRole(data: RoleUpdateInput!, where: RoleWhereUniqueInput!): Role
   updateDescription(data: DescriptionUpdateInput!, where: DescriptionWhereUniqueInput!): Description
+  updateSupportSeverity(data: SupportSeverityUpdateInput!, where: SupportSeverityWhereUniqueInput!): SupportSeverity
   deleteSecurityQuestion(where: SecurityQuestionWhereUniqueInput!): SecurityQuestion
   deleteSecurityAnswer(where: SecurityAnswerWhereUniqueInput!): SecurityAnswer
   deleteAssignment(where: AssignmentWhereUniqueInput!): Assignment
@@ -4832,18 +4113,21 @@ type Mutation {
   deleteProductAttributeValue(where: ProductAttributeValueWhereUniqueInput!): ProductAttributeValue
   deleteProductRetailer(where: ProductRetailerWhereUniqueInput!): ProductRetailer
   deleteReview(where: ReviewWhereUniqueInput!): Review
-  deleteApproval(where: ApprovalWhereUniqueInput!): Approval
-  deleteApprovalProcess(where: ApprovalProcessWhereUniqueInput!): ApprovalProcess
+  deleteSupportCase(where: SupportCaseWhereUniqueInput!): SupportCase
+  deleteSupportCorrespondence(where: SupportCorrespondenceWhereUniqueInput!): SupportCorrespondence
   deleteProductOption(where: ProductOptionWhereUniqueInput!): ProductOption
+  deleteSupportStatus(where: SupportStatusWhereUniqueInput!): SupportStatus
   deleteProduct(where: ProductWhereUniqueInput!): Product
+  deleteSupportCategory(where: SupportCategoryWhereUniqueInput!): SupportCategory
   deletePermission(where: PermissionWhereUniqueInput!): Permission
-  deleteUser(where: UserWhereUniqueInput!): User
   deleteCategory(where: CategoryWhereUniqueInput!): Category
   deleteAddress(where: AddressWhereUniqueInput!): Address
+  deleteUser(where: UserWhereUniqueInput!): User
   deleteMedia(where: MediaWhereUniqueInput!): Media
   deleteRetailer(where: RetailerWhereUniqueInput!): Retailer
   deleteRole(where: RoleWhereUniqueInput!): Role
   deleteDescription(where: DescriptionWhereUniqueInput!): Description
+  deleteSupportSeverity(where: SupportSeverityWhereUniqueInput!): SupportSeverity
   upsertSecurityQuestion(where: SecurityQuestionWhereUniqueInput!, create: SecurityQuestionCreateInput!, update: SecurityQuestionUpdateInput!): SecurityQuestion!
   upsertSecurityAnswer(where: SecurityAnswerWhereUniqueInput!, create: SecurityAnswerCreateInput!, update: SecurityAnswerUpdateInput!): SecurityAnswer!
   upsertAssignment(where: AssignmentWhereUniqueInput!, create: AssignmentCreateInput!, update: AssignmentUpdateInput!): Assignment!
@@ -4853,18 +4137,21 @@ type Mutation {
   upsertProductAttributeValue(where: ProductAttributeValueWhereUniqueInput!, create: ProductAttributeValueCreateInput!, update: ProductAttributeValueUpdateInput!): ProductAttributeValue!
   upsertProductRetailer(where: ProductRetailerWhereUniqueInput!, create: ProductRetailerCreateInput!, update: ProductRetailerUpdateInput!): ProductRetailer!
   upsertReview(where: ReviewWhereUniqueInput!, create: ReviewCreateInput!, update: ReviewUpdateInput!): Review!
-  upsertApproval(where: ApprovalWhereUniqueInput!, create: ApprovalCreateInput!, update: ApprovalUpdateInput!): Approval!
-  upsertApprovalProcess(where: ApprovalProcessWhereUniqueInput!, create: ApprovalProcessCreateInput!, update: ApprovalProcessUpdateInput!): ApprovalProcess!
+  upsertSupportCase(where: SupportCaseWhereUniqueInput!, create: SupportCaseCreateInput!, update: SupportCaseUpdateInput!): SupportCase!
+  upsertSupportCorrespondence(where: SupportCorrespondenceWhereUniqueInput!, create: SupportCorrespondenceCreateInput!, update: SupportCorrespondenceUpdateInput!): SupportCorrespondence!
   upsertProductOption(where: ProductOptionWhereUniqueInput!, create: ProductOptionCreateInput!, update: ProductOptionUpdateInput!): ProductOption!
+  upsertSupportStatus(where: SupportStatusWhereUniqueInput!, create: SupportStatusCreateInput!, update: SupportStatusUpdateInput!): SupportStatus!
   upsertProduct(where: ProductWhereUniqueInput!, create: ProductCreateInput!, update: ProductUpdateInput!): Product!
+  upsertSupportCategory(where: SupportCategoryWhereUniqueInput!, create: SupportCategoryCreateInput!, update: SupportCategoryUpdateInput!): SupportCategory!
   upsertPermission(where: PermissionWhereUniqueInput!, create: PermissionCreateInput!, update: PermissionUpdateInput!): Permission!
-  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
   upsertAddress(where: AddressWhereUniqueInput!, create: AddressCreateInput!, update: AddressUpdateInput!): Address!
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertMedia(where: MediaWhereUniqueInput!, create: MediaCreateInput!, update: MediaUpdateInput!): Media!
   upsertRetailer(where: RetailerWhereUniqueInput!, create: RetailerCreateInput!, update: RetailerUpdateInput!): Retailer!
   upsertRole(where: RoleWhereUniqueInput!, create: RoleCreateInput!, update: RoleUpdateInput!): Role!
   upsertDescription(where: DescriptionWhereUniqueInput!, create: DescriptionCreateInput!, update: DescriptionUpdateInput!): Description!
+  upsertSupportSeverity(where: SupportSeverityWhereUniqueInput!, create: SupportSeverityCreateInput!, update: SupportSeverityUpdateInput!): SupportSeverity!
   updateManySecurityQuestions(data: SecurityQuestionUpdateManyMutationInput!, where: SecurityQuestionWhereInput): BatchPayload!
   updateManySecurityAnswers(data: SecurityAnswerUpdateManyMutationInput!, where: SecurityAnswerWhereInput): BatchPayload!
   updateManyAssignments(data: AssignmentUpdateManyMutationInput!, where: AssignmentWhereInput): BatchPayload!
@@ -4874,18 +4161,21 @@ type Mutation {
   updateManyProductAttributeValues(data: ProductAttributeValueUpdateManyMutationInput!, where: ProductAttributeValueWhereInput): BatchPayload!
   updateManyProductRetailers(data: ProductRetailerUpdateManyMutationInput!, where: ProductRetailerWhereInput): BatchPayload!
   updateManyReviews(data: ReviewUpdateManyMutationInput!, where: ReviewWhereInput): BatchPayload!
-  updateManyApprovals(data: ApprovalUpdateManyMutationInput!, where: ApprovalWhereInput): BatchPayload!
-  updateManyApprovalProcesses(data: ApprovalProcessUpdateManyMutationInput!, where: ApprovalProcessWhereInput): BatchPayload!
+  updateManySupportCases(data: SupportCaseUpdateManyMutationInput!, where: SupportCaseWhereInput): BatchPayload!
+  updateManySupportCorrespondences(data: SupportCorrespondenceUpdateManyMutationInput!, where: SupportCorrespondenceWhereInput): BatchPayload!
   updateManyProductOptions(data: ProductOptionUpdateManyMutationInput!, where: ProductOptionWhereInput): BatchPayload!
+  updateManySupportStatuses(data: SupportStatusUpdateManyMutationInput!, where: SupportStatusWhereInput): BatchPayload!
   updateManyProducts(data: ProductUpdateManyMutationInput!, where: ProductWhereInput): BatchPayload!
+  updateManySupportCategories(data: SupportCategoryUpdateManyMutationInput!, where: SupportCategoryWhereInput): BatchPayload!
   updateManyPermissions(data: PermissionUpdateManyMutationInput!, where: PermissionWhereInput): BatchPayload!
-  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
   updateManyAddresses(data: AddressUpdateManyMutationInput!, where: AddressWhereInput): BatchPayload!
+  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyMedias(data: MediaUpdateManyMutationInput!, where: MediaWhereInput): BatchPayload!
   updateManyRetailers(data: RetailerUpdateManyMutationInput!, where: RetailerWhereInput): BatchPayload!
   updateManyRoles(data: RoleUpdateManyMutationInput!, where: RoleWhereInput): BatchPayload!
   updateManyDescriptions(data: DescriptionUpdateManyMutationInput!, where: DescriptionWhereInput): BatchPayload!
+  updateManySupportSeverities(data: SupportSeverityUpdateManyMutationInput!, where: SupportSeverityWhereInput): BatchPayload!
   deleteManySecurityQuestions(where: SecurityQuestionWhereInput): BatchPayload!
   deleteManySecurityAnswers(where: SecurityAnswerWhereInput): BatchPayload!
   deleteManyAssignments(where: AssignmentWhereInput): BatchPayload!
@@ -4895,18 +4185,21 @@ type Mutation {
   deleteManyProductAttributeValues(where: ProductAttributeValueWhereInput): BatchPayload!
   deleteManyProductRetailers(where: ProductRetailerWhereInput): BatchPayload!
   deleteManyReviews(where: ReviewWhereInput): BatchPayload!
-  deleteManyApprovals(where: ApprovalWhereInput): BatchPayload!
-  deleteManyApprovalProcesses(where: ApprovalProcessWhereInput): BatchPayload!
+  deleteManySupportCases(where: SupportCaseWhereInput): BatchPayload!
+  deleteManySupportCorrespondences(where: SupportCorrespondenceWhereInput): BatchPayload!
   deleteManyProductOptions(where: ProductOptionWhereInput): BatchPayload!
+  deleteManySupportStatuses(where: SupportStatusWhereInput): BatchPayload!
   deleteManyProducts(where: ProductWhereInput): BatchPayload!
+  deleteManySupportCategories(where: SupportCategoryWhereInput): BatchPayload!
   deleteManyPermissions(where: PermissionWhereInput): BatchPayload!
-  deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyCategories(where: CategoryWhereInput): BatchPayload!
   deleteManyAddresses(where: AddressWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyMedias(where: MediaWhereInput): BatchPayload!
   deleteManyRetailers(where: RetailerWhereInput): BatchPayload!
   deleteManyRoles(where: RoleWhereInput): BatchPayload!
   deleteManyDescriptions(where: DescriptionWhereInput): BatchPayload!
+  deleteManySupportSeverities(where: SupportSeverityWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
 }
 
@@ -5399,6 +4692,7 @@ input PermissionWhereInput {
 
 input PermissionWhereUniqueInput {
   id: ID
+  type: String
 }
 
 enum PrismaDatabase {
@@ -8960,18 +8254,21 @@ type Query {
   productAttributeValues(where: ProductAttributeValueWhereInput, orderBy: ProductAttributeValueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductAttributeValue]!
   productRetailers(where: ProductRetailerWhereInput, orderBy: ProductRetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductRetailer]!
   reviews(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Review]!
-  approvals(where: ApprovalWhereInput, orderBy: ApprovalOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Approval]!
-  approvalProcesses(where: ApprovalProcessWhereInput, orderBy: ApprovalProcessOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ApprovalProcess]!
+  supportCases(where: SupportCaseWhereInput, orderBy: SupportCaseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SupportCase]!
+  supportCorrespondences(where: SupportCorrespondenceWhereInput, orderBy: SupportCorrespondenceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SupportCorrespondence]!
   productOptions(where: ProductOptionWhereInput, orderBy: ProductOptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductOption]!
+  supportStatuses(where: SupportStatusWhereInput, orderBy: SupportStatusOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SupportStatus]!
   products(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Product]!
+  supportCategories(where: SupportCategoryWhereInput, orderBy: SupportCategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SupportCategory]!
   permissions(where: PermissionWhereInput, orderBy: PermissionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Permission]!
-  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
   addresses(where: AddressWhereInput, orderBy: AddressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Address]!
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   medias(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Media]!
   retailers(where: RetailerWhereInput, orderBy: RetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Retailer]!
   roles(where: RoleWhereInput, orderBy: RoleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Role]!
   descriptions(where: DescriptionWhereInput, orderBy: DescriptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Description]!
+  supportSeverities(where: SupportSeverityWhereInput, orderBy: SupportSeverityOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SupportSeverity]!
   securityQuestion(where: SecurityQuestionWhereUniqueInput!): SecurityQuestion
   securityAnswer(where: SecurityAnswerWhereUniqueInput!): SecurityAnswer
   assignment(where: AssignmentWhereUniqueInput!): Assignment
@@ -8981,18 +8278,21 @@ type Query {
   productAttributeValue(where: ProductAttributeValueWhereUniqueInput!): ProductAttributeValue
   productRetailer(where: ProductRetailerWhereUniqueInput!): ProductRetailer
   review(where: ReviewWhereUniqueInput!): Review
-  approval(where: ApprovalWhereUniqueInput!): Approval
-  approvalProcess(where: ApprovalProcessWhereUniqueInput!): ApprovalProcess
+  supportCase(where: SupportCaseWhereUniqueInput!): SupportCase
+  supportCorrespondence(where: SupportCorrespondenceWhereUniqueInput!): SupportCorrespondence
   productOption(where: ProductOptionWhereUniqueInput!): ProductOption
+  supportStatus(where: SupportStatusWhereUniqueInput!): SupportStatus
   product(where: ProductWhereUniqueInput!): Product
+  supportCategory(where: SupportCategoryWhereUniqueInput!): SupportCategory
   permission(where: PermissionWhereUniqueInput!): Permission
-  user(where: UserWhereUniqueInput!): User
   category(where: CategoryWhereUniqueInput!): Category
   address(where: AddressWhereUniqueInput!): Address
+  user(where: UserWhereUniqueInput!): User
   media(where: MediaWhereUniqueInput!): Media
   retailer(where: RetailerWhereUniqueInput!): Retailer
   role(where: RoleWhereUniqueInput!): Role
   description(where: DescriptionWhereUniqueInput!): Description
+  supportSeverity(where: SupportSeverityWhereUniqueInput!): SupportSeverity
   securityQuestionsConnection(where: SecurityQuestionWhereInput, orderBy: SecurityQuestionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SecurityQuestionConnection!
   securityAnswersConnection(where: SecurityAnswerWhereInput, orderBy: SecurityAnswerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SecurityAnswerConnection!
   assignmentsConnection(where: AssignmentWhereInput, orderBy: AssignmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AssignmentConnection!
@@ -9002,18 +8302,21 @@ type Query {
   productAttributeValuesConnection(where: ProductAttributeValueWhereInput, orderBy: ProductAttributeValueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductAttributeValueConnection!
   productRetailersConnection(where: ProductRetailerWhereInput, orderBy: ProductRetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductRetailerConnection!
   reviewsConnection(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ReviewConnection!
-  approvalsConnection(where: ApprovalWhereInput, orderBy: ApprovalOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ApprovalConnection!
-  approvalProcessesConnection(where: ApprovalProcessWhereInput, orderBy: ApprovalProcessOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ApprovalProcessConnection!
+  supportCasesConnection(where: SupportCaseWhereInput, orderBy: SupportCaseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SupportCaseConnection!
+  supportCorrespondencesConnection(where: SupportCorrespondenceWhereInput, orderBy: SupportCorrespondenceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SupportCorrespondenceConnection!
   productOptionsConnection(where: ProductOptionWhereInput, orderBy: ProductOptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductOptionConnection!
+  supportStatusesConnection(where: SupportStatusWhereInput, orderBy: SupportStatusOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SupportStatusConnection!
   productsConnection(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductConnection!
+  supportCategoriesConnection(where: SupportCategoryWhereInput, orderBy: SupportCategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SupportCategoryConnection!
   permissionsConnection(where: PermissionWhereInput, orderBy: PermissionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PermissionConnection!
-  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
   addressesConnection(where: AddressWhereInput, orderBy: AddressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AddressConnection!
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   mediasConnection(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MediaConnection!
   retailersConnection(where: RetailerWhereInput, orderBy: RetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RetailerConnection!
   rolesConnection(where: RoleWhereInput, orderBy: RoleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RoleConnection!
   descriptionsConnection(where: DescriptionWhereInput, orderBy: DescriptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): DescriptionConnection!
+  supportSeveritiesConnection(where: SupportSeverityWhereInput, orderBy: SupportSeverityOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SupportSeverityConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -10105,8 +9408,6 @@ input RetailerWhereInput {
 input RetailerWhereUniqueInput {
   id: ID
   businessName: String
-  businessPhone: String
-  businessEmail: String
   businessLink: String
 }
 
@@ -11473,6 +10774,7 @@ input RoleWhereInput {
 
 input RoleWhereUniqueInput {
   id: ID
+  name: String
 }
 
 type SecurityAnswer implements Node {
@@ -12306,18 +11608,1897 @@ type Subscription {
   productAttributeValue(where: ProductAttributeValueSubscriptionWhereInput): ProductAttributeValueSubscriptionPayload
   productRetailer(where: ProductRetailerSubscriptionWhereInput): ProductRetailerSubscriptionPayload
   review(where: ReviewSubscriptionWhereInput): ReviewSubscriptionPayload
-  approval(where: ApprovalSubscriptionWhereInput): ApprovalSubscriptionPayload
-  approvalProcess(where: ApprovalProcessSubscriptionWhereInput): ApprovalProcessSubscriptionPayload
+  supportCase(where: SupportCaseSubscriptionWhereInput): SupportCaseSubscriptionPayload
+  supportCorrespondence(where: SupportCorrespondenceSubscriptionWhereInput): SupportCorrespondenceSubscriptionPayload
   productOption(where: ProductOptionSubscriptionWhereInput): ProductOptionSubscriptionPayload
+  supportStatus(where: SupportStatusSubscriptionWhereInput): SupportStatusSubscriptionPayload
   product(where: ProductSubscriptionWhereInput): ProductSubscriptionPayload
+  supportCategory(where: SupportCategorySubscriptionWhereInput): SupportCategorySubscriptionPayload
   permission(where: PermissionSubscriptionWhereInput): PermissionSubscriptionPayload
-  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
   address(where: AddressSubscriptionWhereInput): AddressSubscriptionPayload
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   media(where: MediaSubscriptionWhereInput): MediaSubscriptionPayload
   retailer(where: RetailerSubscriptionWhereInput): RetailerSubscriptionPayload
   role(where: RoleSubscriptionWhereInput): RoleSubscriptionPayload
   description(where: DescriptionSubscriptionWhereInput): DescriptionSubscriptionPayload
+  supportSeverity(where: SupportSeveritySubscriptionWhereInput): SupportSeveritySubscriptionPayload
+}
+
+type SupportCase implements Node {
+  id: ID!
+  _version: Int!
+  subject: String
+  status: SupportStatus
+  severity: SupportSeverity
+  catergory: SupportCategory
+  openByUser: User
+  retailerId: String
+  manufacturerId: String
+  productId: String
+  correspondence(where: SupportCorrespondenceWhereInput, orderBy: SupportCorrespondenceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SupportCorrespondence!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type SupportCaseConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [SupportCaseEdge]!
+  aggregate: AggregateSupportCase!
+}
+
+input SupportCaseCreateInput {
+  id: ID
+  _version: Int
+  subject: String
+  retailerId: String
+  manufacturerId: String
+  productId: String
+  status: SupportStatusCreateOneInput
+  severity: SupportSeverityCreateOneInput
+  catergory: SupportCategoryCreateOneInput
+  openByUser: UserCreateOneInput
+  correspondence: SupportCorrespondenceCreateManyWithoutSupportCaseInput
+}
+
+input SupportCaseCreateOneWithoutCorrespondenceInput {
+  create: SupportCaseCreateWithoutCorrespondenceInput
+  connect: SupportCaseWhereUniqueInput
+}
+
+input SupportCaseCreateWithoutCorrespondenceInput {
+  id: ID
+  _version: Int
+  subject: String
+  retailerId: String
+  manufacturerId: String
+  productId: String
+  status: SupportStatusCreateOneInput
+  severity: SupportSeverityCreateOneInput
+  catergory: SupportCategoryCreateOneInput
+  openByUser: UserCreateOneInput
+}
+
+"""An edge in a connection."""
+type SupportCaseEdge {
+  """The item at the end of the edge."""
+  node: SupportCase!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum SupportCaseOrderByInput {
+  id_ASC
+  id_DESC
+  _version_ASC
+  _version_DESC
+  subject_ASC
+  subject_DESC
+  retailerId_ASC
+  retailerId_DESC
+  manufacturerId_ASC
+  manufacturerId_DESC
+  productId_ASC
+  productId_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type SupportCasePreviousValues {
+  id: ID!
+  _version: Int!
+  subject: String
+  retailerId: String
+  manufacturerId: String
+  productId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type SupportCaseSubscriptionPayload {
+  mutation: MutationType!
+  node: SupportCase
+  updatedFields: [String!]
+  previousValues: SupportCasePreviousValues
+}
+
+input SupportCaseSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SupportCaseSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SupportCaseSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SupportCaseSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: SupportCaseWhereInput
+}
+
+input SupportCaseUpdateInput {
+  _version: Int
+  subject: String
+  retailerId: String
+  manufacturerId: String
+  productId: String
+  status: SupportStatusUpdateOneInput
+  severity: SupportSeverityUpdateOneInput
+  catergory: SupportCategoryUpdateOneInput
+  openByUser: UserUpdateOneInput
+  correspondence: SupportCorrespondenceUpdateManyWithoutSupportCaseInput
+}
+
+input SupportCaseUpdateManyMutationInput {
+  _version: Int
+  subject: String
+  retailerId: String
+  manufacturerId: String
+  productId: String
+}
+
+input SupportCaseUpdateOneWithoutCorrespondenceInput {
+  create: SupportCaseCreateWithoutCorrespondenceInput
+  connect: SupportCaseWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: SupportCaseUpdateWithoutCorrespondenceDataInput
+  upsert: SupportCaseUpsertWithoutCorrespondenceInput
+}
+
+input SupportCaseUpdateWithoutCorrespondenceDataInput {
+  _version: Int
+  subject: String
+  retailerId: String
+  manufacturerId: String
+  productId: String
+  status: SupportStatusUpdateOneInput
+  severity: SupportSeverityUpdateOneInput
+  catergory: SupportCategoryUpdateOneInput
+  openByUser: UserUpdateOneInput
+}
+
+input SupportCaseUpsertWithoutCorrespondenceInput {
+  update: SupportCaseUpdateWithoutCorrespondenceDataInput!
+  create: SupportCaseCreateWithoutCorrespondenceInput!
+}
+
+input SupportCaseWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SupportCaseWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SupportCaseWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SupportCaseWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  subject: String
+
+  """All values that are not equal to given value."""
+  subject_not: String
+
+  """All values that are contained in given list."""
+  subject_in: [String!]
+
+  """All values that are not contained in given list."""
+  subject_not_in: [String!]
+
+  """All values less than the given value."""
+  subject_lt: String
+
+  """All values less than or equal the given value."""
+  subject_lte: String
+
+  """All values greater than the given value."""
+  subject_gt: String
+
+  """All values greater than or equal the given value."""
+  subject_gte: String
+
+  """All values containing the given string."""
+  subject_contains: String
+
+  """All values not containing the given string."""
+  subject_not_contains: String
+
+  """All values starting with the given string."""
+  subject_starts_with: String
+
+  """All values not starting with the given string."""
+  subject_not_starts_with: String
+
+  """All values ending with the given string."""
+  subject_ends_with: String
+
+  """All values not ending with the given string."""
+  subject_not_ends_with: String
+  retailerId: String
+
+  """All values that are not equal to given value."""
+  retailerId_not: String
+
+  """All values that are contained in given list."""
+  retailerId_in: [String!]
+
+  """All values that are not contained in given list."""
+  retailerId_not_in: [String!]
+
+  """All values less than the given value."""
+  retailerId_lt: String
+
+  """All values less than or equal the given value."""
+  retailerId_lte: String
+
+  """All values greater than the given value."""
+  retailerId_gt: String
+
+  """All values greater than or equal the given value."""
+  retailerId_gte: String
+
+  """All values containing the given string."""
+  retailerId_contains: String
+
+  """All values not containing the given string."""
+  retailerId_not_contains: String
+
+  """All values starting with the given string."""
+  retailerId_starts_with: String
+
+  """All values not starting with the given string."""
+  retailerId_not_starts_with: String
+
+  """All values ending with the given string."""
+  retailerId_ends_with: String
+
+  """All values not ending with the given string."""
+  retailerId_not_ends_with: String
+  manufacturerId: String
+
+  """All values that are not equal to given value."""
+  manufacturerId_not: String
+
+  """All values that are contained in given list."""
+  manufacturerId_in: [String!]
+
+  """All values that are not contained in given list."""
+  manufacturerId_not_in: [String!]
+
+  """All values less than the given value."""
+  manufacturerId_lt: String
+
+  """All values less than or equal the given value."""
+  manufacturerId_lte: String
+
+  """All values greater than the given value."""
+  manufacturerId_gt: String
+
+  """All values greater than or equal the given value."""
+  manufacturerId_gte: String
+
+  """All values containing the given string."""
+  manufacturerId_contains: String
+
+  """All values not containing the given string."""
+  manufacturerId_not_contains: String
+
+  """All values starting with the given string."""
+  manufacturerId_starts_with: String
+
+  """All values not starting with the given string."""
+  manufacturerId_not_starts_with: String
+
+  """All values ending with the given string."""
+  manufacturerId_ends_with: String
+
+  """All values not ending with the given string."""
+  manufacturerId_not_ends_with: String
+  productId: String
+
+  """All values that are not equal to given value."""
+  productId_not: String
+
+  """All values that are contained in given list."""
+  productId_in: [String!]
+
+  """All values that are not contained in given list."""
+  productId_not_in: [String!]
+
+  """All values less than the given value."""
+  productId_lt: String
+
+  """All values less than or equal the given value."""
+  productId_lte: String
+
+  """All values greater than the given value."""
+  productId_gt: String
+
+  """All values greater than or equal the given value."""
+  productId_gte: String
+
+  """All values containing the given string."""
+  productId_contains: String
+
+  """All values not containing the given string."""
+  productId_not_contains: String
+
+  """All values starting with the given string."""
+  productId_starts_with: String
+
+  """All values not starting with the given string."""
+  productId_not_starts_with: String
+
+  """All values ending with the given string."""
+  productId_ends_with: String
+
+  """All values not ending with the given string."""
+  productId_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  status: SupportStatusWhereInput
+  severity: SupportSeverityWhereInput
+  catergory: SupportCategoryWhereInput
+  openByUser: UserWhereInput
+  correspondence_every: SupportCorrespondenceWhereInput
+  correspondence_some: SupportCorrespondenceWhereInput
+  correspondence_none: SupportCorrespondenceWhereInput
+}
+
+input SupportCaseWhereUniqueInput {
+  id: ID
+}
+
+type SupportCategory implements Node {
+  id: ID!
+  _version: Int!
+  name: String
+  parentId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type SupportCategoryConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [SupportCategoryEdge]!
+  aggregate: AggregateSupportCategory!
+}
+
+input SupportCategoryCreateInput {
+  id: ID
+  _version: Int
+  name: String
+  parentId: String
+}
+
+input SupportCategoryCreateOneInput {
+  create: SupportCategoryCreateInput
+  connect: SupportCategoryWhereUniqueInput
+}
+
+"""An edge in a connection."""
+type SupportCategoryEdge {
+  """The item at the end of the edge."""
+  node: SupportCategory!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum SupportCategoryOrderByInput {
+  id_ASC
+  id_DESC
+  _version_ASC
+  _version_DESC
+  name_ASC
+  name_DESC
+  parentId_ASC
+  parentId_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type SupportCategoryPreviousValues {
+  id: ID!
+  _version: Int!
+  name: String
+  parentId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type SupportCategorySubscriptionPayload {
+  mutation: MutationType!
+  node: SupportCategory
+  updatedFields: [String!]
+  previousValues: SupportCategoryPreviousValues
+}
+
+input SupportCategorySubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SupportCategorySubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SupportCategorySubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SupportCategorySubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: SupportCategoryWhereInput
+}
+
+input SupportCategoryUpdateDataInput {
+  _version: Int
+  name: String
+  parentId: String
+}
+
+input SupportCategoryUpdateInput {
+  _version: Int
+  name: String
+  parentId: String
+}
+
+input SupportCategoryUpdateManyMutationInput {
+  _version: Int
+  name: String
+  parentId: String
+}
+
+input SupportCategoryUpdateOneInput {
+  create: SupportCategoryCreateInput
+  connect: SupportCategoryWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: SupportCategoryUpdateDataInput
+  upsert: SupportCategoryUpsertNestedInput
+}
+
+input SupportCategoryUpsertNestedInput {
+  update: SupportCategoryUpdateDataInput!
+  create: SupportCategoryCreateInput!
+}
+
+input SupportCategoryWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SupportCategoryWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SupportCategoryWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SupportCategoryWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  parentId: String
+
+  """All values that are not equal to given value."""
+  parentId_not: String
+
+  """All values that are contained in given list."""
+  parentId_in: [String!]
+
+  """All values that are not contained in given list."""
+  parentId_not_in: [String!]
+
+  """All values less than the given value."""
+  parentId_lt: String
+
+  """All values less than or equal the given value."""
+  parentId_lte: String
+
+  """All values greater than the given value."""
+  parentId_gt: String
+
+  """All values greater than or equal the given value."""
+  parentId_gte: String
+
+  """All values containing the given string."""
+  parentId_contains: String
+
+  """All values not containing the given string."""
+  parentId_not_contains: String
+
+  """All values starting with the given string."""
+  parentId_starts_with: String
+
+  """All values not starting with the given string."""
+  parentId_not_starts_with: String
+
+  """All values ending with the given string."""
+  parentId_ends_with: String
+
+  """All values not ending with the given string."""
+  parentId_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+input SupportCategoryWhereUniqueInput {
+  id: ID
+  name: String
+}
+
+type SupportCorrespondence implements Node {
+  id: ID!
+  _version: Int!
+  supportCase: SupportCase
+  respondedBy: User
+  note: String
+  data: Json
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type SupportCorrespondenceConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [SupportCorrespondenceEdge]!
+  aggregate: AggregateSupportCorrespondence!
+}
+
+input SupportCorrespondenceCreateInput {
+  id: ID
+  _version: Int
+  note: String
+  data: Json
+  supportCase: SupportCaseCreateOneWithoutCorrespondenceInput
+  respondedBy: UserCreateOneInput
+}
+
+input SupportCorrespondenceCreateManyWithoutSupportCaseInput {
+  create: [SupportCorrespondenceCreateWithoutSupportCaseInput!]
+  connect: [SupportCorrespondenceWhereUniqueInput!]
+}
+
+input SupportCorrespondenceCreateWithoutSupportCaseInput {
+  id: ID
+  _version: Int
+  note: String
+  data: Json
+  respondedBy: UserCreateOneInput
+}
+
+"""An edge in a connection."""
+type SupportCorrespondenceEdge {
+  """The item at the end of the edge."""
+  node: SupportCorrespondence!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum SupportCorrespondenceOrderByInput {
+  id_ASC
+  id_DESC
+  _version_ASC
+  _version_DESC
+  note_ASC
+  note_DESC
+  data_ASC
+  data_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type SupportCorrespondencePreviousValues {
+  id: ID!
+  _version: Int!
+  note: String
+  data: Json
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input SupportCorrespondenceScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SupportCorrespondenceScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SupportCorrespondenceScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SupportCorrespondenceScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  note: String
+
+  """All values that are not equal to given value."""
+  note_not: String
+
+  """All values that are contained in given list."""
+  note_in: [String!]
+
+  """All values that are not contained in given list."""
+  note_not_in: [String!]
+
+  """All values less than the given value."""
+  note_lt: String
+
+  """All values less than or equal the given value."""
+  note_lte: String
+
+  """All values greater than the given value."""
+  note_gt: String
+
+  """All values greater than or equal the given value."""
+  note_gte: String
+
+  """All values containing the given string."""
+  note_contains: String
+
+  """All values not containing the given string."""
+  note_not_contains: String
+
+  """All values starting with the given string."""
+  note_starts_with: String
+
+  """All values not starting with the given string."""
+  note_not_starts_with: String
+
+  """All values ending with the given string."""
+  note_ends_with: String
+
+  """All values not ending with the given string."""
+  note_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+type SupportCorrespondenceSubscriptionPayload {
+  mutation: MutationType!
+  node: SupportCorrespondence
+  updatedFields: [String!]
+  previousValues: SupportCorrespondencePreviousValues
+}
+
+input SupportCorrespondenceSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SupportCorrespondenceSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SupportCorrespondenceSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SupportCorrespondenceSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: SupportCorrespondenceWhereInput
+}
+
+input SupportCorrespondenceUpdateInput {
+  _version: Int
+  note: String
+  data: Json
+  supportCase: SupportCaseUpdateOneWithoutCorrespondenceInput
+  respondedBy: UserUpdateOneInput
+}
+
+input SupportCorrespondenceUpdateManyDataInput {
+  _version: Int
+  note: String
+  data: Json
+}
+
+input SupportCorrespondenceUpdateManyMutationInput {
+  _version: Int
+  note: String
+  data: Json
+}
+
+input SupportCorrespondenceUpdateManyWithoutSupportCaseInput {
+  create: [SupportCorrespondenceCreateWithoutSupportCaseInput!]
+  connect: [SupportCorrespondenceWhereUniqueInput!]
+  set: [SupportCorrespondenceWhereUniqueInput!]
+  disconnect: [SupportCorrespondenceWhereUniqueInput!]
+  delete: [SupportCorrespondenceWhereUniqueInput!]
+  update: [SupportCorrespondenceUpdateWithWhereUniqueWithoutSupportCaseInput!]
+  updateMany: [SupportCorrespondenceUpdateManyWithWhereNestedInput!]
+  deleteMany: [SupportCorrespondenceScalarWhereInput!]
+  upsert: [SupportCorrespondenceUpsertWithWhereUniqueWithoutSupportCaseInput!]
+}
+
+input SupportCorrespondenceUpdateManyWithWhereNestedInput {
+  where: SupportCorrespondenceScalarWhereInput!
+  data: SupportCorrespondenceUpdateManyDataInput!
+}
+
+input SupportCorrespondenceUpdateWithoutSupportCaseDataInput {
+  _version: Int
+  note: String
+  data: Json
+  respondedBy: UserUpdateOneInput
+}
+
+input SupportCorrespondenceUpdateWithWhereUniqueWithoutSupportCaseInput {
+  where: SupportCorrespondenceWhereUniqueInput!
+  data: SupportCorrespondenceUpdateWithoutSupportCaseDataInput!
+}
+
+input SupportCorrespondenceUpsertWithWhereUniqueWithoutSupportCaseInput {
+  where: SupportCorrespondenceWhereUniqueInput!
+  update: SupportCorrespondenceUpdateWithoutSupportCaseDataInput!
+  create: SupportCorrespondenceCreateWithoutSupportCaseInput!
+}
+
+input SupportCorrespondenceWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SupportCorrespondenceWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SupportCorrespondenceWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SupportCorrespondenceWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  note: String
+
+  """All values that are not equal to given value."""
+  note_not: String
+
+  """All values that are contained in given list."""
+  note_in: [String!]
+
+  """All values that are not contained in given list."""
+  note_not_in: [String!]
+
+  """All values less than the given value."""
+  note_lt: String
+
+  """All values less than or equal the given value."""
+  note_lte: String
+
+  """All values greater than the given value."""
+  note_gt: String
+
+  """All values greater than or equal the given value."""
+  note_gte: String
+
+  """All values containing the given string."""
+  note_contains: String
+
+  """All values not containing the given string."""
+  note_not_contains: String
+
+  """All values starting with the given string."""
+  note_starts_with: String
+
+  """All values not starting with the given string."""
+  note_not_starts_with: String
+
+  """All values ending with the given string."""
+  note_ends_with: String
+
+  """All values not ending with the given string."""
+  note_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  supportCase: SupportCaseWhereInput
+  respondedBy: UserWhereInput
+}
+
+input SupportCorrespondenceWhereUniqueInput {
+  id: ID
+}
+
+type SupportSeverity implements Node {
+  id: ID!
+  _version: Int!
+  name: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type SupportSeverityConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [SupportSeverityEdge]!
+  aggregate: AggregateSupportSeverity!
+}
+
+input SupportSeverityCreateInput {
+  id: ID
+  _version: Int
+  name: String
+}
+
+input SupportSeverityCreateOneInput {
+  create: SupportSeverityCreateInput
+  connect: SupportSeverityWhereUniqueInput
+}
+
+"""An edge in a connection."""
+type SupportSeverityEdge {
+  """The item at the end of the edge."""
+  node: SupportSeverity!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum SupportSeverityOrderByInput {
+  id_ASC
+  id_DESC
+  _version_ASC
+  _version_DESC
+  name_ASC
+  name_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type SupportSeverityPreviousValues {
+  id: ID!
+  _version: Int!
+  name: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type SupportSeveritySubscriptionPayload {
+  mutation: MutationType!
+  node: SupportSeverity
+  updatedFields: [String!]
+  previousValues: SupportSeverityPreviousValues
+}
+
+input SupportSeveritySubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SupportSeveritySubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SupportSeveritySubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SupportSeveritySubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: SupportSeverityWhereInput
+}
+
+input SupportSeverityUpdateDataInput {
+  _version: Int
+  name: String
+}
+
+input SupportSeverityUpdateInput {
+  _version: Int
+  name: String
+}
+
+input SupportSeverityUpdateManyMutationInput {
+  _version: Int
+  name: String
+}
+
+input SupportSeverityUpdateOneInput {
+  create: SupportSeverityCreateInput
+  connect: SupportSeverityWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: SupportSeverityUpdateDataInput
+  upsert: SupportSeverityUpsertNestedInput
+}
+
+input SupportSeverityUpsertNestedInput {
+  update: SupportSeverityUpdateDataInput!
+  create: SupportSeverityCreateInput!
+}
+
+input SupportSeverityWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SupportSeverityWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SupportSeverityWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SupportSeverityWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+input SupportSeverityWhereUniqueInput {
+  id: ID
+  name: String
+}
+
+type SupportStatus implements Node {
+  id: ID!
+  _version: Int!
+  name: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type SupportStatusConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [SupportStatusEdge]!
+  aggregate: AggregateSupportStatus!
+}
+
+input SupportStatusCreateInput {
+  id: ID
+  _version: Int
+  name: String
+}
+
+input SupportStatusCreateOneInput {
+  create: SupportStatusCreateInput
+  connect: SupportStatusWhereUniqueInput
+}
+
+"""An edge in a connection."""
+type SupportStatusEdge {
+  """The item at the end of the edge."""
+  node: SupportStatus!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum SupportStatusOrderByInput {
+  id_ASC
+  id_DESC
+  _version_ASC
+  _version_DESC
+  name_ASC
+  name_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type SupportStatusPreviousValues {
+  id: ID!
+  _version: Int!
+  name: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type SupportStatusSubscriptionPayload {
+  mutation: MutationType!
+  node: SupportStatus
+  updatedFields: [String!]
+  previousValues: SupportStatusPreviousValues
+}
+
+input SupportStatusSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SupportStatusSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SupportStatusSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SupportStatusSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: SupportStatusWhereInput
+}
+
+input SupportStatusUpdateDataInput {
+  _version: Int
+  name: String
+}
+
+input SupportStatusUpdateInput {
+  _version: Int
+  name: String
+}
+
+input SupportStatusUpdateManyMutationInput {
+  _version: Int
+  name: String
+}
+
+input SupportStatusUpdateOneInput {
+  create: SupportStatusCreateInput
+  connect: SupportStatusWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: SupportStatusUpdateDataInput
+  upsert: SupportStatusUpsertNestedInput
+}
+
+input SupportStatusUpsertNestedInput {
+  update: SupportStatusUpdateDataInput!
+  create: SupportStatusCreateInput!
+}
+
+input SupportStatusWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SupportStatusWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SupportStatusWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SupportStatusWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  _version: Int
+
+  """All values that are not equal to given value."""
+  _version_not: Int
+
+  """All values that are contained in given list."""
+  _version_in: [Int!]
+
+  """All values that are not contained in given list."""
+  _version_not_in: [Int!]
+
+  """All values less than the given value."""
+  _version_lt: Int
+
+  """All values less than or equal the given value."""
+  _version_lte: Int
+
+  """All values greater than the given value."""
+  _version_gt: Int
+
+  """All values greater than or equal the given value."""
+  _version_gte: Int
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+input SupportStatusWhereUniqueInput {
+  id: ID
+  name: String
 }
 
 type User implements Node {
@@ -12571,9 +13752,11 @@ input UserUpdateManyMutationInput {
   recoverable: Boolean
 }
 
-input UserUpdateOneRequiredInput {
+input UserUpdateOneInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
   update: UserUpdateDataInput
   upsert: UserUpsertNestedInput
 }

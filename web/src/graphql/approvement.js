@@ -1,8 +1,18 @@
 import gql from 'graphql-tag';
 
 const APPROVE_RETAILER_INFO = gql`
-  mutation approveRetailer($retailerId: String!) {
-    approveRetailer(retailerId: $retailerId) {
+  mutation approveRetailer($data: ApproveRetailerInput!) {
+    approveRetailer(data: $data) {
+      id
+      businessName
+      approved
+    }
+  }
+`;
+
+const DISAPPROVE_RETAILER_INFO = gql`
+  mutation disapproveRetailer($data: ApproveRetailerInput!) {
+    disapproveRetailer(data: $data) {
       id
       businessName
       approved
@@ -14,22 +24,70 @@ const CREATE_RETAILER_APPROVAL_PROCESS = gql`
   mutation createRetailerApprovalProcess($data: CreateRetailerApprovalProcessInput!) {
     createRetailerApprovalProcess(data: $data) {
       id
-      processData
+      data
+    }
+  }
+`;
+
+const RETAILER_APPROVAL_PROCESS = gql`
+  query retailerApprovalProcesses($query: ApprovalQueryInput!) {
+    retailerApprovalProcesses(query: $query) {
+      id
+      supportCase {
+        id
+        subject
+        status {
+          name
+        }
+        openByUser {
+          id
+          name
+          email
+        }
+        catergory {
+          name
+        }
+        createdAt
+      }
+      respondedBy {
+        id
+        name
+      }
+      data
     }
   }
 `;
 
 const LAST_APPROVAL_PROCESS = gql`
-  query lastRetailerApprovalProcess($query: String!) {
+  query lastRetailerApprovalProcess($query: ApprovalQueryInput!) {
     lastRetailerApprovalProcess(query: $query) {
       id
-      createdBy {
+      supportCase {
         id
-        name
+        subject
+        status {
+          name
+        }
+        openByUser {
+          id
+          name
+          email
+        }
+        catergory {
+          name
+        }
+        createdAt
       }
-      processData
+      data
+      note
     }
   }
 `;
 
-export { CREATE_RETAILER_APPROVAL_PROCESS, APPROVE_RETAILER_INFO, LAST_APPROVAL_PROCESS };
+export {
+  CREATE_RETAILER_APPROVAL_PROCESS,
+  APPROVE_RETAILER_INFO,
+  DISAPPROVE_RETAILER_INFO,
+  RETAILER_APPROVAL_PROCESS,
+  LAST_APPROVAL_PROCESS,
+};

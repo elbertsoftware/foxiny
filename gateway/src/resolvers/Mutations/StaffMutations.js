@@ -1,20 +1,15 @@
 // @flow
 
-import { t } from "@lingui/macro";
-const { addFragmentToInfo } = require("graphql-binding");
-import logger from "../../utils/logger";
-import { sendCorrespondence } from "../../utils/email";
-import { getUserIDFromRequest } from "../../utils/authentication";
-import { checkStaffPermission } from "../../utils/permissionChecker";
+import { t } from '@lingui/macro';
+const { addFragmentToInfo } = require('graphql-binding');
+import logger from '../../utils/logger';
+import { sendCorrespondence } from '../../utils/email';
+import { getUserIDFromRequest } from '../../utils/authentication';
+import { checkStaffPermission } from '../../utils/permissionChecker';
 // TODO: log transactions
 
 export const Mutation = {
-  createRetailerApprovalProcess: async (
-    parent,
-    { data },
-    { prisma, request, cache, i18n },
-    info,
-  ) => {
+  createRetailerApprovalProcess: async (parent, { data }, { prisma, request, cache, i18n }, info) => {
     // TODO: check permissions
     const userId = await getUserIDFromRequest(request, cache, i18n);
     // await checkStaffPermission(prisma, cache, request, i18n, ["ADMINISTRATOR"])
@@ -39,7 +34,7 @@ export const Mutation = {
             id: retailerUsers[0].id,
           },
           catergory: {
-            name: "CREATE_RETAILER_APPROVAL",
+            name: 'CREATE_RETAILER_APPROVAL',
           },
           retailerId: newData.retailerId,
         },
@@ -52,28 +47,28 @@ export const Mutation = {
       approval = approval.pop();
     }
 
-    if (approval.length === 0 || approval.status.name === "CLOSED") {
+    if (approval.length === 0 || approval.status.name === 'CLOSED') {
       approval = await prisma.mutation.createSupportCase({
         data: {
-          subject: newData.subject ? newData.subject : "New Retailer Approval",
+          subject: newData.subject ? newData.subject : 'New Retailer Approval',
           caseType: {
             connect: {
-              name: "Retailer Account",
+              name: 'Retailer Account',
             },
           },
           status: {
             connect: {
-              name: "OPEN",
+              name: 'OPEN',
             },
           },
           severity: {
             connect: {
-              name: "MEDIUM",
+              name: 'MEDIUM',
             },
           },
           catergory: {
             connect: {
-              name: "CREATE_RETAILER_APPROVAL",
+              name: 'CREATE_RETAILER_APPROVAL',
             },
           },
           openByUser: {
@@ -107,12 +102,7 @@ export const Mutation = {
     );
   },
 
-  approveRetailer: async (
-    parent,
-    { data },
-    { prisma, request, cache, i18n },
-    info,
-  ) => {
+  approveRetailer: async (parent, { data }, { prisma, request, cache, i18n }, info) => {
     // TODO: check permission
     const userId = await getUserIDFromRequest(request, cache, i18n);
     // TODO: validate input
@@ -121,7 +111,7 @@ export const Mutation = {
     let approval = await prisma.query.supportCases({
       where: {
         catergory: {
-          name: "CREATE_RETAILER_APPROVAL",
+          name: 'CREATE_RETAILER_APPROVAL',
         },
         retailerId: newData.retailerId,
       },
@@ -158,7 +148,7 @@ export const Mutation = {
       data: {
         status: {
           connect: {
-            name: "APPROVED",
+            name: 'APPROVED',
           },
         },
         correspondence: {
@@ -188,12 +178,7 @@ export const Mutation = {
     );
   },
 
-  disapproveRetailer: async (
-    parent,
-    { data },
-    { prisma, request, cache, i18n },
-    info,
-  ) => {
+  disapproveRetailer: async (parent, { data }, { prisma, request, cache, i18n }, info) => {
     // TODO: check permission
     const userId = await getUserIDFromRequest(request, cache, i18n);
     // TODO: validate input
@@ -202,7 +187,7 @@ export const Mutation = {
     let approval = await prisma.query.supportCases({
       where: {
         catergory: {
-          name: "CREATE_RETAILER_APPROVAL",
+          name: 'CREATE_RETAILER_APPROVAL',
         },
         retailerId: newData.retailerId,
       },
@@ -231,7 +216,7 @@ export const Mutation = {
     }
 
     // save last record, close support case
-    const supportCase = prisma.mutation.updateSupportCase(
+    const supportCase = await prisma.mutation.updateSupportCase(
       {
         where: {
           id: approval.id,
@@ -250,7 +235,7 @@ export const Mutation = {
           },
         },
       },
-      "{ openByUser { email } }",
+      '{ openByUser { email } }',
     );
 
     const updatedRetailer = await prisma.mutation.updateRetailer(
@@ -265,21 +250,12 @@ export const Mutation = {
       info,
     );
 
-    await sendCorrespondence(
-      updatedRetailer.businessName,
-      supportCase.openByUser.email,
-      newData.note,
-    );
+    await sendCorrespondence(updatedRetailer.businessName, supportCase.openByUser.email, newData.note);
 
     return updatedRetailer;
   },
 
-  deleteRetailer: async (
-    parent,
-    { sellerId },
-    { prisma, request, cache, i18n },
-    info,
-  ) => {
+  deleteRetailer: async (parent, { sellerId }, { prisma, request, cache, i18n }, info) => {
     // TODO: check permission
     const userId = await getUserIDFromRequest(request, cache, i18n);
     // TODO: validate input
