@@ -33,7 +33,7 @@ export const retailerSchema = gql`
 
     # Orders
 
-    approved: Boolean
+    enabled: Boolean
 
     createdAt: String!
     updatedAt: String!

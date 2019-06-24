@@ -8,8 +8,11 @@ import {
   restrutureProductTemplate2FriendlyProduct,
   restructureProductRetailer2FriendlyProduct,
 } from "../../utils/productUtils/dataHelper";
-import { validateCreateNewProductInput, validateUpdateProductInput } from "../../utils/productUtils/validation";
-import { checkUserSellerOwnership } from "../../utils/permissionChecker";
+import {
+  validateCreateNewProductInput,
+  validateUpdateProductInput,
+} from "../../utils/productUtils/validation";
+import { checkUserRetailerOwnership } from "../../utils/permissionChecker";
 import { s3ProductMediasUploader } from "../../utils/s3Uploader";
 
 // TODO:
@@ -17,7 +20,12 @@ import { s3ProductMediasUploader } from "../../utils/s3Uploader";
 // generate sku
 
 export const Mutation = {
-  createBrandNewProductWVariants: async (parent, { sellerId, data }, { prisma, request, cache, i18n }, info) => {
+  createBrandNewProductWVariants: async (
+    parent,
+    { sellerId, data },
+    { prisma, request, cache, i18n },
+    info,
+  ) => {
     try {
       // NOTE: check permission
       await checkUserSellerOwnership(prisma, cache, request, sellerId);
@@ -128,10 +136,15 @@ export const Mutation = {
         },
       };
 
-      const productTemplate = await prisma.mutation.createProductTemplate({ data: productTemplateData }, newInfo);
+      const productTemplate = await prisma.mutation.createProductTemplate(
+        { data: productTemplateData },
+        newInfo,
+      );
 
       // NOTE: reconstruct to-be-returned object, more friendly
-      const friendlyProduct = restrutureProductTemplate2FriendlyProduct(productTemplate);
+      const friendlyProduct = restrutureProductTemplate2FriendlyProduct(
+        productTemplate,
+      );
 
       return friendlyProduct;
     } catch (err) {
@@ -141,7 +154,12 @@ export const Mutation = {
     }
   },
 
-  updateProducts: async (parent, { sellerId, data }, { prisma, request, cache, i18n }, info) => {
+  updateProducts: async (
+    parent,
+    { sellerId, data },
+    { prisma, request, cache, i18n },
+    info,
+  ) => {
     // NOTE: check permission
     await checkUserSellerOwnership(prisma, cache, request, sellerId);
 
@@ -320,7 +338,12 @@ export const Mutation = {
     return restructureProductRetailer2FriendlyProduct(updatedProducts);
   },
 
-  toggleProductStatus: async (parent, { sellerId, productId }, { prisma, request, cache, i18n }, info) => {
+  toggleProductStatus: async (
+    parent,
+    { sellerId, productId },
+    { prisma, request, cache, i18n },
+    info,
+  ) => {
     // NOTE: check permission
     await checkUserSellerOwnership(prisma, cache, request, sellerId);
 
@@ -349,10 +372,17 @@ export const Mutation = {
       newInfo,
     );
 
-    const friendlyProduct = restructureProductRetailer2FriendlyProduct([updatedProduct]).pop();
+    const friendlyProduct = restructureProductRetailer2FriendlyProduct([
+      updatedProduct,
+    ]).pop();
 
     return friendlyProduct;
   },
 
-  approveProduct: async (parent, { data }, { prisma, request, cache }, info) => {},
+  approveProduct: async (
+    parent,
+    { data },
+    { prisma, request, cache },
+    info,
+  ) => {},
 };

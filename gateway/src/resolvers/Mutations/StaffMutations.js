@@ -141,8 +141,8 @@ export const Mutation = {
         const error = i18n.t`Approval is closed`;
         throw new Error(error);
       }
-      if (!retailer || retailer.approved === true) {
-        const error = i18n.t`Retailer not found or approved`;
+      if (!retailer || retailer.enabled === true) {
+        const error = i18n.t`Retailer not found or disabled`;
         throw new Error(error);
       }
     } else {
@@ -181,7 +181,7 @@ export const Mutation = {
           id: newData.retailerId,
         },
         data: {
-          approved: true,
+          enabled: true,
         },
       },
       info,
@@ -221,8 +221,8 @@ export const Mutation = {
         const error = i18n.t`Approval is closed`;
         throw new Error(error);
       }
-      if (!retailer || retailer.approved === true) {
-        const error = i18n.t`Retailer not found or approved`;
+      if (!retailer || retailer.enabled === true) {
+        const error = i18n.t`Retailer not found or disabled`;
         throw new Error(error);
       }
     } else {
@@ -231,7 +231,7 @@ export const Mutation = {
     }
 
     // save last record, close support case
-    const supportCase = prisma.mutation.updateSupportCase(
+    const supportCase = await prisma.mutation.updateSupportCase(
       {
         where: {
           id: approval.id,
@@ -259,7 +259,7 @@ export const Mutation = {
           id: newData.retailerId,
         },
         data: {
-          approved: false,
+          enabled: false,
         },
       },
       info,
@@ -290,7 +290,7 @@ export const Mutation = {
       },
     });
     // TODO: if retailer sells any goods, deletion is denied
-    if (!retailer || retailer.approved === true) {
+    if (!retailer || retailer.enabled === true) {
       const error = i18n.t`Cannot delete retailer`;
       throw new Error(error);
     }

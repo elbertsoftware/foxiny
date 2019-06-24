@@ -1,25 +1,56 @@
-# type Manufacturer {
-#   id: ID! @id
-#   _version: Int! @default(value: 1)
+type Manufacturer {
+  id: ID! @id
+  _version: Int! @default(value: 1)
 
-#   assistants: [Assignment!] @relation(name: "AssignmentToManufacturer", onDelete: SET_NULL)
+  owner: [Assignment!] @relation(onDelete: SET_NULL)
 
-#   profileMedia: Media @relation(name: "ManufacturerToMedia", onDelete: CASCADE) # Avatar
-#   businessName: String @unique #  displayed on Retailer profile and foxiny listings
-#   address: Address @relation(name: "ManufacturerToAddress", onDelete: CASCADE) # one to one
-#   phone: String @unique # maybe different to user's phone
-#   # Products
+  # seller info
+  businessCover: Media
+    @relation(link: INLINE, name: "ManufacturerCoverToMedia", onDelete: CASCADE) # Avatar
+  businessAvatar: Media
+    @relation(
+      link: INLINE
+      name: "ManufacturerAvatarToMedia"
+      onDelete: CASCADE
+    ) # Avatar
+  businessName: String @unique #  displayed on Manufacturer profile and foxiny listings
+  businessAddress: Address @relation(link: INLINE, onDelete: CASCADE) # one to one
+  businessPhone: String # maybe different to user's phone
+  businessEmail: String # maybe different to user's phone
+  businessLink: String @unique # contains the route of store/shop
+  # personal info
+  # socialNumber: String
+  # socialNumberImages: [Media!]
+  #   @relation(
+  #     link: TABLE
+  #     name: "ManufacturerSocialNumberImgToMedia"
+  #     onDelete: CASCADE
+  #   )
+  businessLicense: String # contains a link to file: image, pdf of license
+  businessLicenseImages: [Media!]
+    @relation(
+      link: TABLE
+      name: "ManufacturerBusinessLicenseImgToMedia"
+      onDelete: CASCADE
+    )
 
-#   # Reviews, reminder to use interface/union in yoga to resolve reviews
-#   #reviews: [ID!]! # list of reviews this vendor received from another members
+  # Tax
+  # Billing
+  # Warehouse
 
-#   # Rewards
+  # Products
+  # products: [ProductManufacturer!] @relation(link: TABLE, onDelete: CASCADE)
 
-#   # Orders
-#   # Tax
-#   # Billing
-#   # Warehouse
+  # Reviews, reminder to use interface/union in yoga to resolve reviews
+  #reviews: [ID!]! # list of reviews this vendor received from another members
 
-#   createdAt: DateTime!
-#   updatedAt: DateTime!
-# }
+  # Rewards
+
+  # Orders
+
+  # null: waiting for approvement, false: denied/disabled, true: approved/enabled
+  enabled: Boolean
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}

@@ -9,7 +9,7 @@ export const staffSchema = gql`
     ): [SupportCorrespondence!]!
     lastRetailerApprovalProcess(
       query: ApprovalQueryInput!
-    ): SupportCorrespondence
+    ): [SupportCorrespondence]
     # manufacturerApproval(query: String): Approval!
   }
 

@@ -64,7 +64,7 @@ const sendResetPasswordEmail = (name, to, password) => {
 
 export { sendConfirmationEmail, sendResetPasswordEmail };
 
-const sendCorrespondence = async (sellerName, to, content) => {
+const sendCorrespondence = async (name, to, content) => {
   const text = `
     Dear ${name},
     
@@ -83,7 +83,7 @@ const sendCorrespondence = async (sellerName, to, content) => {
     <br>
     <p>We have reviewed your Retailer registration, we need you to edit or provide the following information:</p>
     <br>
-    <p><strong>${code}</strong></p>
+    <p><strong>${content}</strong></p>
     <br>
     <p>We will review one more time and response as soon as possible. Thank you for using our service.</p>
     <br>
