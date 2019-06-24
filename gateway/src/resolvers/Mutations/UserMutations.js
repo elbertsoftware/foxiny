@@ -26,17 +26,24 @@ import logger from "../../utils/logger";
 import { sendConfirmationEmail } from "../../utils/email";
 import { sendConfirmationText } from "../../utils/sms";
 import { sendConfirmationEsms } from "../../utils/smsVN";
+import { checkUserPermission } from "../../utils/permissionChecker";
 
 // TODO: un-comment sendConfirmation
-// TODO: handling errors in a frendly way: https://www.youtube.com/watch?v=fUq1iHiDniY
+// NOTE: handling errors in a frendly way: https://www.youtube.com/watch?v=fUq1iHiDniY
 // NOTE: almost of data input will be validated, trimmed and normalized
+// TODO: check and assign roles/permissions
 
 export const Mutation = {
   /**
    * Create user
    * user must enter: name, email or phone and pwd
    */
-  createUser: async (parent, { data }, { prisma, cache, request, i18n }, info) => {
+  createUser: async (
+    parent,
+    { data },
+    { prisma, cache, request, i18n },
+    info,
+  ) => {
     let newData;
     try {
       newData = validateCreateInput(data, i18n);
@@ -53,6 +60,15 @@ export const Mutation = {
           ...newData,
           password, // replace plain text password with the hashed one
           enabled: false, // user needs to confirm before the account become enabled
+          assignment: {
+            create: {
+              roles: {
+                connect: {
+                  name: "USER",
+                },
+              },
+            },
+          },
         },
       },
       info,
@@ -60,23 +76,26 @@ export const Mutation = {
 
     // for transact-log
     logger.info(
-      `CREATE_USER | 1 | ${newData.name} | ${newData.email || undefined} | ${newData.phone || undefined} | ${
-        newData.password
-      }`,
+      `CREATE_USER | 1 | ${newData.name} | ${newData.email ||
+        undefined} | ${newData.phone || undefined} | ${newData.password}`,
     );
 
-    const code = generateConfirmation(cache, user.id, newData.email || newData.phone);
+    const code = generateConfirmation(
+      cache,
+      user.id,
+      newData.email || newData.phone,
+    );
 
     // email the code if user is signing up via email
     if (typeof newData.email === "string") {
-      sendConfirmationEmail(newData.name, newData.email, code);
+      // sendConfirmationEmail(newData.name, newData.email, code);
     }
 
     // text the code if user is signing up via phone
     if (typeof newData.phone === "string") {
       // TODO: try to find out where does the number come from, US or VN or other, and choose the best way to send the code
       // sendConfirmationText(newData.name, newData.phone, code);
-      sendConfirmationEsms(newData.name, newData.phone, code);
+      // sendConfirmationEsms(newData.name, newData.phone, code);
     }
 
     return user;
@@ -107,7 +126,11 @@ export const Mutation = {
     if (!user) {
       logger.debug(
         `🛑❌  CONFIRM_USER: User ${
-          newData.userId ? newData.userId : newData.email ? newData.email : newData.phone
+          newData.userId
+            ? newData.userId
+            : newData.email
+            ? newData.email
+            : newData.phone
         } not found`,
       );
       const error = i18n._(t`Unable to confirm user`);
@@ -115,7 +138,12 @@ export const Mutation = {
     }
 
     // NOTE: matched contains email or phone
-    const matched = await verifyConfirmation(cache, newData.code, user.id, i18n);
+    const matched = await verifyConfirmation(
+      cache,
+      newData.code,
+      user.id,
+      i18n,
+    );
     logger.debug(`confirmation matched: ${matched}`);
     if (!matched) {
       const error = i18n._(t`Unable to confirm user`);
@@ -134,7 +162,11 @@ export const Mutation = {
     });
 
     // for transact-log
-    logger.info(`UPDATE_USER | 1 | ${user.id} | ${updateData.email || undefined} | ${updateData.phone}`);
+    logger.info(
+      `UPDATE_USER | 1 | ${user.id} | ${updateData.email || undefined} | ${
+        updateData.phone
+      }`,
+    );
 
     return true;
   },
@@ -142,7 +174,12 @@ export const Mutation = {
   /**
    * Insert or update user's security info
    */
-  upsertSecurityInfo: async (parent, { securityInfo }, { prisma, cache, request, i18n }, info) => {
+  upsertSecurityInfo: async (
+    parent,
+    { securityInfo },
+    { prisma, cache, request, i18n },
+    info,
+  ) => {
     let newData;
     try {
       newData = validateSecurityInfo(securityInfo);
@@ -220,9 +257,11 @@ export const Mutation = {
 
     // for transact-log
     logger.info(
-      `UPSERT_SECINFO | 1 | ${userId} | ${updateData[0].questionId} | ${updateData[0].answer} | ${
-        updateData[1].questionId
-      } | ${updateData[1].answer} | ${updateData[2].questionId} | ${updateData[2].answer}`,
+      `UPSERT_SECINFO | 1 | ${userId} | ${updateData[0].questionId} | ${
+        updateData[0].answer
+      } | ${updateData[1].questionId} | ${updateData[1].answer} | ${
+        updateData[2].questionId
+      } | ${updateData[2].answer}`,
     );
 
     return updatedUser;
@@ -232,7 +271,12 @@ export const Mutation = {
    * Resend confirmation
    * using this to send a confirmation code to phone or email
    */
-  resendConfirmation: async (parent, { data }, { prisma, cache, request, i18n }, info) => {
+  resendConfirmation: async (
+    parent,
+    { data },
+    { prisma, cache, request, i18n },
+    info,
+  ) => {
     // NOTE: (for client) one of three: userId, email and phone is accepted only
     let newData;
     try {
@@ -258,28 +302,37 @@ export const Mutation = {
     }
 
     logger.debug(
-      `user id ${user.id}, name ${user.name}, email ${user.email}, password ${user.phone}, enabled ${user.enabled}`,
+      `user id ${user.id}, name ${user.name}, email ${user.email}, password ${
+        user.phone
+      }, enabled ${user.enabled}`,
     );
 
-    if (user.enabled && (newData.email === user.email || newData.phone === user.phone)) {
+    if (
+      user.enabled &&
+      (newData.email === user.email || newData.phone === user.phone)
+    ) {
       const error = i18n._(t`User has been confirmed`);
       throw new Error(error);
     }
 
-    const code = generateConfirmation(cache, user.id, newData.email || newData.phone || user.email || user.phone);
+    const code = generateConfirmation(
+      cache,
+      user.id,
+      newData.email || newData.phone || user.email || user.phone,
+    );
 
     // case: user updates info and confirm new info
     // case: user wants to confirm account after signed up but not confirmed yet (disconnect or ST else)
     if (user.enabled) {
       if (typeof newData.email === "string") {
-        sendConfirmationEmail(user.name, newData.email, code);
+        // sendConfirmationEmail(user.name, newData.email, code);
         logger.debug("Email resent");
       }
 
       // text the code if user is signing up via phone
       if (typeof newData.phone === "string") {
         // sendConfirmationText(user.name, newData.phone, code);
-        sendConfirmationEsms(user.name, newData.phone, code);
+        // sendConfirmationEsms(user.name, newData.phone, code);
         logger.debug("Phone resent");
       }
       return true;
@@ -287,14 +340,14 @@ export const Mutation = {
 
     // email the code if user is signing up via email
     if (typeof user.email === "string") {
-      sendConfirmationEmail(user.name, user.email, code);
+      // sendConfirmationEmail(user.name, user.email, code);
       logger.debug("Email resent");
     }
 
     // text the code if user is signing up via phone
     if (typeof user.phone === "string") {
       // sendConfirmationText(user.name, user.phone, code);
-      sendConfirmationEsms(user.name, user.phone, code);
+      // sendConfirmationEsms(user.name, user.phone, code);
       logger.debug("Phone resent");
     }
 
@@ -337,7 +390,12 @@ export const Mutation = {
 
     return {
       userId: user.id,
-      hasRetailers: user.assignment && user.assignment.retailers && user.assignment.retailers.length > 0 ? true : false,
+      hasRetailers:
+        user.assignment &&
+        user.assignment.retailers &&
+        user.assignment.retailers.length > 0
+          ? true
+          : false,
       // hasManufacturer: user.assignment.manufacturers && user.assignment.manufacturers.length > 0 ? true : false,
       token: generateToken(user.id, request, cache),
     };
@@ -366,7 +424,12 @@ export const Mutation = {
    * update user
    * user must verify before updateing email/phone/pwd
    */
-  updateUser: async (parent, { data }, { prisma, request, cache, i18n }, info) => {
+  updateUser: async (
+    parent,
+    { data },
+    { prisma, request, cache, i18n },
+    info,
+  ) => {
     const userId = await getUserIDFromRequest(request, cache, i18n);
 
     let newData;
@@ -415,7 +478,7 @@ export const Mutation = {
       if (typeof email === "string" && canUpdate) {
         const code = generateConfirmation(cache, userId, email);
 
-        sendConfirmationEmail(user.name, email, code);
+        // sendConfirmationEmail(user.name, email, code);
         logger.debug("🔵✅  UPDATE USER: Change Email Confirmation Sent");
 
         // the update email flow is end when user confirms by enter the code
@@ -426,7 +489,7 @@ export const Mutation = {
       if (typeof phone === "string" && canUpdate) {
         const code = generateConfirmation(cache, userId, phone);
 
-        sendConfirmationText(user.name, phone, code);
+        // sendConfirmationText(user.name, phone, code);
         // sendConfirmationEsms(user.name, phone, code);
         logger.debug("🔵✅  UPDATE USER: Change Phone Confirmation Sent");
 
@@ -435,7 +498,11 @@ export const Mutation = {
       }
 
       // both password and currentPassword present which means password is about to be changed
-      if (typeof password === "string" && typeof currentPassword === "string" && canUpdate) {
+      if (
+        typeof password === "string" &&
+        typeof currentPassword === "string" &&
+        canUpdate
+      ) {
         updateData.password = hashPassword(password);
 
         // TODO: Archive current password somewhere else
@@ -456,8 +523,9 @@ export const Mutation = {
 
       // for transact-log
       logger.info(
-        `UPDATE_USER | 1 | ${userId} | ${updateData.name || undefined} | ${updateData.email ||
-          undefined} | ${updateData.phone || undefined} | ${password || undefined}`,
+        `UPDATE_USER | 1 | ${userId} | ${updateData.name ||
+          undefined} | ${updateData.email || undefined} | ${updateData.phone ||
+          undefined} | ${password || undefined}`,
       );
 
       return updatedUser;
@@ -473,6 +541,11 @@ export const Mutation = {
    */
   deleteUser: async (parent, args, { prisma, request, cache, i18n }, info) => {
     const userId = await getUserIDFromRequest(request, cache, i18n);
+
+    await checkUserPermission(prisma, cache, request, i18n, {
+      roles: ["ROOT"],
+      permissions: ["DELETE_USER"],
+    });
 
     deleteAllTokensInCache(cache, userId);
 
@@ -492,7 +565,12 @@ export const Mutation = {
    * request reset password
    * this will log user out of all devices
    */
-  requestResetPwd: async (parent, { mailOrPhone }, { prisma, request, cache, i18n }, info) => {
+  requestResetPwd: async (
+    parent,
+    { mailOrPhone },
+    { prisma, request, cache, i18n },
+    info,
+  ) => {
     const user = (await prisma.query.users(
       {
         where: {
@@ -541,7 +619,12 @@ export const Mutation = {
   /**
    * reset password
    */
-  resetPassword: async (parent, { data }, { prisma, request, cache, i18n }, info) => {
+  resetPassword: async (
+    parent,
+    { data },
+    { prisma, request, cache, i18n },
+    info,
+  ) => {
     let newData;
     try {
       newData = validateResetPwdInput(data);
@@ -582,11 +665,17 @@ export const Mutation = {
 
     const canResetPwd =
       securityInfo[0].answer ===
-        securityAnswers.find(x => x.securityQuestion.id === securityInfo[0].questionId).answer &&
+        securityAnswers.find(
+          x => x.securityQuestion.id === securityInfo[0].questionId,
+        ).answer &&
       securityInfo[1].answer ===
-        securityAnswers.find(x => x.securityQuestion.id === securityInfo[1].questionId).answer &&
+        securityAnswers.find(
+          x => x.securityQuestion.id === securityInfo[1].questionId,
+        ).answer &&
       securityInfo[2].answer ===
-        securityAnswers.find(x => x.securityQuestion.id === securityInfo[2].questionId).answer &&
+        securityAnswers.find(
+          x => x.securityQuestion.id === securityInfo[2].questionId,
+        ).answer &&
       securityInfo.length === 3;
 
     // TODO: after x tries, prevent user from trying to recover account in y minutes

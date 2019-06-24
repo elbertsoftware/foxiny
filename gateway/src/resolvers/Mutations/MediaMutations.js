@@ -2,9 +2,9 @@
 
 import { t } from '@lingui/macro';
 import logger from '../../utils/logger';
-import { getUserIDFromRequest } from '../../utils/authentication';
 import { s3ProfileMediaUploader, s3ProductMediasUploader, s3DocumentsUploader } from '../../utils/s3Uploader';
-import { validateImageUploadInput } from '../../utils/validation';
+import { validateUploadInput } from '../../utils/validation';
+import { checkUserPermission } from '../../utils/permissionChecker';
 
 // TODO: optimize me by using promiseAll
 
@@ -16,37 +16,33 @@ export const Mutation = {
   uploadProfileMedia: async (parent, { file }, { prisma, request, cache, i18n }, info) => {
     const uploadedFile = await file;
     try {
-      validateImageUploadInput(uploadedFile);
+      validateUploadInput(uploadedFile);
     } catch (err) {
       logger.error(`🛑❌  Unable to upload avatar ${err.message}`);
       const error = i18n._(t`Invalid input`);
       throw new Error(error);
     }
 
-    const userId = await getUserIDFromRequest(request, cache, i18n);
-
-    const user = await prisma.query.user({
-      where: {
-        id: userId,
-      },
+    const user = await checkUserPermission(prisma, cache, request, i18n, {
+      roles: ['USER', 'ROOT'],
+      permissions: ['UPLOAD_USER_MEDIA'],
     });
-
-    if (!user) {
-      logger.debug(`🛑❌  UPLOAD_PROFILE_MEDIA: User ${userId} not found`);
-      const error = i18n._(t`Unable to upload avatar`);
-      throw new Error(error); // try NOT to provide enough information so hackers can guess
-    }
 
     return s3ProfileMediaUploader(prisma, uploadedFile, { userId: user.id });
   },
 
   uploadProductMedias: async (parent, { files }, { prisma, request, cache, i18n }, info) => {
-    const userId = await getUserIDFromRequest(request, cache, i18n);
+    const user = await checkUserPermission(prisma, cache, request, i18n, {
+      roles: ['RETAILER', 'RETAILER_ADMIN', 'ROOT'],
+      permissions: ['UPLOAD_PRODUCT_MEDIA'],
+    });
 
     const productMedias = await Promise.all(
       files.map(async file => {
         const uploaded = await file;
-        const media = await s3ProductMediasUploader(prisma, uploaded, { userId: userId });
+        const media = await s3ProductMediasUploader(prisma, uploaded, {
+          userId: user.id,
+        });
         return media;
       }),
     );
@@ -63,7 +59,7 @@ export const Mutation = {
   uploadBusinessCover: async (parent, { file, sellerId }, { prisma, request, cache, i18n }, info) => {
     const uploadedFile = await file;
     try {
-      validateImageUploadInput(uploadedFile);
+      validateUploadInput(uploadedFile);
     } catch (err) {
       logger.error(`🛑❌  Unable to upload avatar ${err.message}`);
       const error = i18n._(t`Invalid input`);
@@ -71,30 +67,32 @@ export const Mutation = {
     }
 
     // TODO: check permission, optimized these following lines
-    const userId = await getUserIDFromRequest(request, cache, i18n);
+    // const userId = await getUserIDFromRequest(request, cache, i18n);
 
-    const user = await prisma.query.user(
-      {
-        where: {
-          id: userId,
-        },
-      },
-      '{ id assignment { id retailers { id } } }',
-    );
+    await checkUserPermission(prisma, cache, request, i18n, {
+      roles: ['RETAILER', 'RETAILER_ADMIN', 'ROOT'],
+      permissions: ['UPLOAD_RETAILER_MEDIA'],
+    });
 
-    if (
-      !user ||
-      !user.assignment ||
-      !user.assignment.retailers ||
-      !user.assignment.retailers.length > 0 ||
-      !user.assignment.retailers.map(retailer => retailer.id).includes(sellerId)
-    ) {
-      logger.error(`🛑❌  UPLOAD_PROFILE_MEDIA: User ${userId} not found or Retailer ${sellerId} not found`);
-      const error = i18n._(t`Unable to upload avatar`);
-      throw new Error(error); // try NOT to provide enough information so hackers can guess
-    }
+    // if (
+    //   !user ||
+    //   !user.assignment ||
+    //   !user.assignment.retailers ||
+    //   !user.assignment.retailers.length > 0 ||
+    //   !user.assignment.retailers.map(retailer => retailer.id).includes(sellerId)
+    // ) {
+    //   logger.error(
+    //     `🛑❌  UPLOAD_PROFILE_MEDIA: User ${userId} not found or Retailer ${sellerId} not found`,
+    //   );
+    //   const error = i18n._(t`Unable to upload avatar`);
+    //   throw new Error(error); // try NOT to provide enough information so hackers can guess
+    // }
 
-    return s3ProfileMediaUploader(prisma, uploadedFile, { sellerId: sellerId, isCover: true });
+    // NOTE: upload and save to db
+    return s3ProfileMediaUploader(prisma, uploadedFile, {
+      sellerId: sellerId,
+      isCover: true,
+    });
   },
 
   /**
@@ -104,7 +102,7 @@ export const Mutation = {
   uploadBusinessAvatar: async (parent, { file, sellerId }, { prisma, request, cache, i18n }, info) => {
     const uploadedFile = await file;
     try {
-      validateImageUploadInput(uploadedFile);
+      validateUploadInput(uploadedFile);
     } catch (err) {
       logger.error(`🛑❌  Unable to upload avatar ${err.message}`);
       const error = i18n._(t`Invalid input`);
@@ -112,41 +110,40 @@ export const Mutation = {
     }
 
     // TODO: check permission, optimized these following lines
-    const userId = await getUserIDFromRequest(request, cache, i18n);
+    // const userId = await getUserIDFromRequest(request, cache, i18n);
 
-    const user = await prisma.query.user(
-      {
-        where: {
-          id: userId,
-        },
-      },
-      '{ id assignment { id retailers { id } } }',
-    );
+    const user = await checkUserPermission(prisma, cache, request, i18n, {
+      roles: ['RETAILER', 'RETAILER_ADMIN', 'ROOT'],
+      permissions: ['UPLOAD_RETAILER_MEDIA'],
+    });
 
-    if (
-      !user ||
-      !user.assignment ||
-      !user.assignment.retailers ||
-      !user.assignment.retailers.length > 0 ||
-      !user.assignment.retailers.map(retailer => retailer.id).includes(sellerId)
-    ) {
-      logger.error(`🛑❌  UPLOAD_PROFILE_MEDIA: User ${userId} not found or Retailer ${sellerId} not found`);
-      const error = i18n._(t`Unable to upload avatar`);
-      throw new Error(error); // try NOT to provide enough information so hackers can guess
-    }
-
-    return s3ProfileMediaUploader(prisma, uploadedFile, { sellerId: sellerId, isAvatar: true });
+    // NOTE: upload and save to db
+    return s3ProfileMediaUploader(prisma, uploadedFile, {
+      sellerId: sellerId,
+      isAvatar: true,
+    });
   },
 
   uploadSocialIDMediaRetailer: async (parent, { files, sellerId }, { prisma, request, cache, i18n }, info) => {
-    const userId = await getUserIDFromRequest(request, cache, i18n);
+    await checkUserPermission(prisma, cache, request, i18n, {
+      roles: ['RETAILER', 'RETAILER_ADMIN', 'ROOT'],
+      permissions: ['UPLOAD_RETAILER_MEDIA'],
+    });
 
-    // TODO: validate input
-    // TODO: check permission
-
+    // NOTE: upload file to S3
     const medias = await Promise.all(
       files.map(async file => {
         const uploaded = await file;
+
+        // validate input
+        try {
+          validateUploadInput(uploaded);
+        } catch (err) {
+          logger.error(`🛑❌  Unable to upload avatar ${err.message}`);
+          const error = i18n._(t`Invalid input`);
+          throw new Error(error);
+        }
+
         const media = await s3DocumentsUploader(prisma, uploaded, {
           sellerId: sellerId,
           isDocument: true,
@@ -156,6 +153,7 @@ export const Mutation = {
       }),
     );
 
+    // NOTE: update retailer
     const updatedRetailer = await prisma.mutation.updateRetailer({
       where: {
         id: sellerId,
@@ -173,10 +171,10 @@ export const Mutation = {
   },
 
   deleteSocialIDMediaRetailer: async (parent, { fileIds, sellerId }, { prisma, request, cache, i18n }, info) => {
-    const userId = await getUserIDFromRequest(request, cache, i18n);
-
-    // TODO: validate input
-    // TODO: check permission
+    await checkUserPermission(prisma, cache, request, i18n, {
+      roles: ['RETAILER', 'RETAILER_ADMIN', 'ROOT'],
+      permissions: ['UPDATE_RETAILER'],
+    });
 
     await prisma.mutation.updateRetailer({
       where: {
@@ -194,11 +192,56 @@ export const Mutation = {
     return fileIds;
   },
 
-  deleteBusinessLicenseMediaRetailer: async (parent, { fileIds, sellerId }, { prisma, request, cache, i18n }, info) => {
-    const userId = await getUserIDFromRequest(request, cache, i18n);
+  uploadBusinessLicenseMediaRetailer: async (parent, { files, sellerId }, { prisma, request, cache, i18n }, info) => {
+    await checkUserPermission(prisma, cache, request, i18n, {
+      roles: ['RETAILER', 'RETAILER_ADMIN', 'ROOT'],
+      permissions: ['UPLOAD_RETAILER_MEDIA'],
+    });
 
-    // TODO: validate input
-    // TODO: check permission
+    // NOTE: Upload files to S3
+    const medias = await Promise.all(
+      files.map(async file => {
+        const uploaded = await file;
+
+        // validate input
+        try {
+          validateUploadInput(uploaded);
+        } catch (err) {
+          logger.error(`🛑❌  Unable to upload avatar ${err.message}`);
+          const error = i18n._(t`Invalid input`);
+          throw new Error(error);
+        }
+
+        const media = await s3DocumentsUploader(prisma, uploaded, {
+          sellerId: sellerId,
+          isDocument: true,
+          isBusinessLicense: true,
+        });
+        return media;
+      }),
+    );
+
+    // NOTE: update retailer
+    const updatedRetailer = await prisma.mutation.updateRetailer({
+      where: {
+        id: sellerId,
+      },
+      data: {
+        businessLicenseImages: {
+          connect: medias.map(media => ({
+            id: media.id,
+          })),
+        },
+      },
+    });
+    return medias;
+  },
+
+  deleteBusinessLicenseMediaRetailer: async (parent, { fileIds, sellerId }, { prisma, request, cache, i18n }, info) => {
+    await checkUserPermission(prisma, cache, request, i18n, {
+      roles: ['RETAILER', 'RETAILER_ADMIN', 'ROOT'],
+      permissions: ['UPDATE_RETAILER'],
+    });
 
     await prisma.mutation.updateRetailer({
       where: {

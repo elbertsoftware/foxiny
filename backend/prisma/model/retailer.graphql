@@ -32,8 +32,8 @@ type Retailer {
 
   # Orders
 
-  # null: waiting for approvement, false: rejected, true: approved
-  approved: Boolean
+  # null: waiting for approvement, false: denied/disabled, true: approved/enabled
+  enabled: Boolean
 
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt

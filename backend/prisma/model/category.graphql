@@ -6,6 +6,8 @@ type Category {
   parentId: [Category!] @relation(link: TABLE, name: "CategoryTree")
   productTemplates: [ProductTemplate!] @relation(onDelete: SET_NULL)
 
+  trans_name: [Trans_Category] @relation(link: TABLE, onDelete: CASCADE)
+
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }
@@ -19,6 +21,8 @@ type Brand {
   # manufacturer: Manufacturer @relation(name: "ManufacturerToBrand", onDelete: SET_NULL)
 
   # brandOrigin: Region # takes the region enum (from address schema)
+
+  trans_brandName: [Trans_Brand] @relation(link: TABLE, onDelete: CASCADE)
 
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt

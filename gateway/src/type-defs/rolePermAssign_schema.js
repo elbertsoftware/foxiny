@@ -64,7 +64,7 @@ export const rolePermAssignSchema = gql`
     type: String!
     # controller: String!
     # action: String!
-    policy: String!
+    # policy: String!
     enabled: Boolean!
   }
 

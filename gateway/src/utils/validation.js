@@ -222,7 +222,7 @@ const validateImageFileType = mimetype => {
   if (!IMAGE_TYPES.includes(mimetype)) throw new Error('File type is not allowed');
 };
 
-const validateImageUploadInput = upload => {
+const validateUploadInput = upload => {
   if (!upload) throw new Error('Invalid Input');
 
   const { createReadStream, filename, mimetype, encoding } = upload;
@@ -235,4 +235,4 @@ const validateImageUploadInput = upload => {
   validateImageFileType(mimetype);
 };
 
-export { validateImageFileType, validateImageUploadInput };
+export { validateImageFileType, validateUploadInput };
