@@ -27,43 +27,35 @@ const styles = () => ({
   },
   bottomTypo: {
     position: 'absolute',
-    bottom: 15,
-    left: 20,
+    bottom: '1%',
+    left: '1%',
   },
 });
 
-const UploadImgZone = ({ classes, style, images, setImages, ...others }) => {
-  // getImages: The callback function passed from upper component to set images for parent component
-  const [isRejected, setIsRejected] = useState(false);
-  const onDropAccepted = async files => {
-    let listFiles = [];
-    if (images.length > 0) {
-      const listAddedPreview = files.map(file => Object.assign(file, { preview: URL.createObjectURL(file) }));
-      listFiles = listFiles.concat(images, listAddedPreview);
-      console.log(listFiles);
-      // setFiles(listFiles);
-      setImages(listFiles);
-      return;
+const messages = {
+  'image/jpeg': '.JPEG',
+  'image/png': '.PNG',
+  'image/svg': '.SVG',
+  'image/gif': '.GIF',
+  'application/pdf': '.PDF',
+};
+
+const UploadImgZone = ({ classes, style, fileTypes, ...others }) => {
+  const generateMessages = fileTypes => {
+    let acceptedTypes;
+    if (fileTypes) {
+      acceptedTypes = fileTypes.reduce((type, currentType, index) => {
+        if (type === '') return type + messages[currentType];
+        return type + ', ' + messages[currentType];
+      }, '');
     }
-    const fileList = files.map(file => Object.assign(file, { preview: URL.createObjectURL(file) }));
-    setImages(fileList);
-    setIsRejected(false);
+    return acceptedTypes;
   };
-  const onDropRejected = () => {
-    setIsRejected(true);
-  };
-  useEffect(
-    () => () => {
-      // Return a function to clean up when unmounting, similar to componentWillUnmount
-      // Make sure to revoke the data uris to avoid memory leaks
-      images && images.forEach(file => URL.revokeObjectURL(file.preview));
-    },
-    [],
-  );
+  const { isRejected, onDropAccepted, onDropRejected } = others;
   return (
     <React.Fragment>
       <Dropzone
-        accept="image/jpeg, image/png, image/svg, image/gif"
+        accept={fileTypes || 'image/jpeg, image/png, image/svg, image/gif'}
         onDropAccepted={onDropAccepted}
         onDropRejected={onDropRejected}
         maxSize={1000000}
@@ -81,9 +73,11 @@ const UploadImgZone = ({ classes, style, images, setImages, ...others }) => {
               <Typography className="title" gutterBottom color="primary" align="center" variant="h2">
                 {isDragAccept ? 'Thả' : 'Kéo'} tệp vào đây
               </Typography>
-              <Typography align="center">(Chỉ hỗ trợ định dạng .JPEG, .PNG, .SVG, .GIF)</Typography>
+              <Typography align="center">
+                (Chỉ hỗ trợ định dạng {generateMessages(fileTypes) || '.JPEG, .PNG, .SVG, .GIF'})
+              </Typography>
               {(isDragReject || (isRejected && !isDragAccept)) && (
-                <Typography className={classes.bottomTypo} variant="body2" color="error">
+                <Typography className={classes.bottomTypo} variant="subtitle2" color="error">
                   Tệp chứa định dạng không hợp lệ hoặc dung lượng vượt quá 1MB...
                 </Typography>
               )}

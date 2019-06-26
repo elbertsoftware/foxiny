@@ -128,7 +128,7 @@ function SellerApproval(props) {
                     <TableCell>{seller.createdAt}</TableCell>
                     <TableCell>
                       <Typography>
-                        {seller.approved === null ? 'Đang chờ duyệt' : `${seller.approved ? 'Đã duyệt' : 'Từ chối'}`}
+                        {seller.enabled === null ? 'Đang chờ duyệt' : `${seller.enabled ? 'Đã duyệt' : 'Từ chối'}`}
                       </Typography>
                     </TableCell>
                     <TableCell>

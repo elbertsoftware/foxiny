@@ -51,9 +51,9 @@ const CorrespondenceCard = ({ note, processData, className, ...props }) => {
           <div className={classes.verticalDivider} />
           <div>
             <GenerateInformMessages note={note} processData={processData} />
-            <Link href="https://mobbin.design/">https://mobbin.design/</Link>
+            <Link href="https://mobbin.design/">https://foxiny.com/</Link>
             <br />
-            <Link href="https://www.producthunt.com/">https://www.producthunt.com//</Link>
+            <Link href="https://www.producthunt.com/">https://www.support.foxiny.com//</Link>
           </div>
         </Grid>
       </Grid>

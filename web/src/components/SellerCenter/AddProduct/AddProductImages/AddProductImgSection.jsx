@@ -13,7 +13,7 @@ import {
   Button,
 } from '@material-ui/core';
 import OpenContext from '../../../../utils/context/OpenContextAddProduct';
-import UploadImgZone from '../../../User/UserAvatar/UploadImgZone';
+import UploadImgZone from '../../../User/UserAvatar/UploadFileZone';
 
 const styles = () => ({
   root: {

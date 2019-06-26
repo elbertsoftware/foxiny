@@ -165,9 +165,9 @@ const AddProduct = ({ classes, createNewProduct, uploadProductImgs }) => {
     try {
       await createNewProduct({
         variables: {
-          sellerId: 'cjurxpx4o00az07063f7imdn3',
+          sellerId: 'cjx8wso1x00f30a89i06iqz0n',
           data: {
-            name: values.productName,
+            name: values.name,
             briefDescription: values.briefDescription,
             categoryIds: ['cjuqqr6lb008b0806ngt5fe6h', 'cjuqqrc7l008j0806a88o4xhq'],
             products: newProducts,

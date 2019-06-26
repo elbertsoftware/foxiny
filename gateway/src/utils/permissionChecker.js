@@ -1,9 +1,9 @@
 //@flow
 
-import _ from "lodash";
-import { getUserIDFromRequest } from "./authentication";
-import logger from "./logger";
-import { resolversClaim } from "./prisma.js";
+import _ from 'lodash';
+import { getUserIDFromRequest } from './authentication';
+import logger from './logger';
+import { resolversClaim } from './prisma.js';
 
 // const reconstructResolversClaim = claim => {
 //   let allRoles =
@@ -253,14 +253,7 @@ import { resolversClaim } from "./prisma.js";
  * @param {Object} required contains required roles or permissions
  * @param {Object} exception contains exceptional roles or permissions
  */
-const checkUserPermission = async (
-  prisma,
-  cache,
-  request,
-  i18n,
-  required = null,
-  exception = null,
-) => {
+const checkUserPermission = async (prisma, cache, request, i18n, required = null, exception = null) => {
   const userId = await getUserIDFromRequest(request, cache, i18n);
 
   let user = await prisma.query.user(
@@ -269,7 +262,7 @@ const checkUserPermission = async (
         id: userId,
       },
     },
-    "{ id assignment { id retailers { id enabled } manufacturers { id  enabled } roles { id type permissions { id type } } permissions { id type } } enabled }",
+    '{ id assignment { id retailers { id enabled } manufacturers { id  enabled } roles { id type permissions { id type } } permissions { id type } } enabled }',
   );
 
   if (!user || !user.enabled) {
@@ -278,27 +271,16 @@ const checkUserPermission = async (
   }
 
   // reconstruct list of role and permission
-  const allRoles = user.assignment.roles
-    ? user.assignment.roles.map(role => role.type)
-    : [];
-  let flattenedRights = user.assignment.permissions.map(
-    permission => permission.type,
-  );
+  const allRoles = user.assignment.roles ? user.assignment.roles.map(role => role.type) : [];
+  let flattenedRights = user.assignment.permissions.map(permission => permission.type);
   user.assignment.roles.forEach(role => {
-    flattenedRights = [
-      ...flattenedRights,
-      ...role.permissions.map(right => right.type),
-    ];
+    flattenedRights = [...flattenedRights, ...role.permissions.map(right => right.type)];
   });
   const allRetailers = user.assignment.retailers
-    ? user.assignment.retailers
-        .filter(retailer => retailer.enabled)
-        .map(retailer => retailer.id)
+    ? user.assignment.retailers.filter(retailer => retailer.enabled).map(retailer => retailer.id)
     : [];
   const allManufacturers = user.assignment.manufacturers
-    ? user.assignment.manufacturers
-        .filter(manu => manu.enabled)
-        .map(manu => manu.id)
+    ? user.assignment.manufacturers.filter(manu => manu.enabled).map(manu => manu.id)
     : [];
   // reconstruct user object
   user = {
@@ -341,16 +323,9 @@ const checkUserPermission = async (
  * @param {String} retailerId string of retailerId
  * @param {Object} exception contain exceptional roles and permissions
  */
-const checkUserRetailerOwnership = async (
-  prisma,
-  request,
-  cache,
-  i18n,
-  retailerId,
-  exception = null,
-) => {
+const checkUserRetailerOwnership = async (prisma, request, cache, i18n, retailerId, exception = null) => {
   const user = await checkUserPermission(prisma, cache, request, i18n, {
-    roles: ["RETAILER", "RETAILER_ADMIN", "ROOT"],
+    roles: ['RETAILER', 'RETAILER_ADMIN', 'ROOT'],
   });
 
   if (user.retailers.includes(retailerId)) {
@@ -377,16 +352,9 @@ const checkUserRetailerOwnership = async (
  * @param {String} manufacturerId string of manufacturerId
  * @param {Object} exception contain exceptional roles and permissions
  */
-const checkUserManufacturerOwnership = async (
-  prisma,
-  request,
-  cache,
-  i18n,
-  manufacturerId,
-  exception = null,
-) => {
+const checkUserManufacturerOwnership = async (prisma, request, cache, i18n, manufacturerId, exception = null) => {
   const user = await checkUserPermission(prisma, cache, request, i18n, {
-    roles: ["RETAILER", "RETAILER_ADMIN", "ROOT"],
+    roles: ['RETAILER', 'RETAILER_ADMIN', 'ROOT'],
   });
 
   if (user.retailers.includes(retailerId)) {
@@ -404,28 +372,15 @@ const checkUserManufacturerOwnership = async (
   throw new Error(error);
 };
 
-const checkUserSellerOwnership = async (
-  prisma,
-  request,
-  cache,
-  i18n,
-  sellerId,
-  exception = null,
-) => {
+const checkUserSellerOwnership = async (prisma, cache, request, i18n, sellerId, exception = null) => {
   const user = await checkUserPermission(prisma, cache, request, i18n, {
-    roles: [
-      "RETAILER",
-      "RETAILER_ADMIN",
-      "MANUFACTURER",
-      "MANUFACTURER_ADMIN",
-      "ROOT",
-    ],
+    roles: ['RETAILER', 'RETAILER_ADMIN', 'MANUFACTURER', 'MANUFACTURER_ADMIN', 'ROOT'],
   });
 
   if (user.retailers.includes(sellerId)) {
     return { ...user, isRetailer: true, isManufacturer: false };
   }
-  if (user.manufacturer.included(sellerId)) {
+  if (user.manufacturers.includes(sellerId)) {
     return { ...user, isRetailer: false, isManufacturer: true };
   }
 
@@ -440,9 +395,4 @@ const checkUserSellerOwnership = async (
   throw new Error(error);
 };
 
-export {
-  checkUserPermission,
-  checkUserRetailerOwnership,
-  checkUserManufacturerOwnership,
-  checkUserSellerOwnership,
-};
+export { checkUserPermission, checkUserRetailerOwnership, checkUserManufacturerOwnership, checkUserSellerOwnership };

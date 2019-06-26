@@ -5,7 +5,7 @@ const APPROVE_RETAILER_INFO = gql`
     approveRetailer(data: $data) {
       id
       businessName
-      approved
+      enabled
     }
   }
 `;
@@ -15,7 +15,7 @@ const DISAPPROVE_RETAILER_INFO = gql`
     disapproveRetailer(data: $data) {
       id
       businessName
-      approved
+      enabled
     }
   }
 `;
@@ -74,6 +74,9 @@ const LAST_APPROVAL_PROCESS = gql`
           email
         }
         catergory {
+          name
+        }
+        severity {
           name
         }
         createdAt

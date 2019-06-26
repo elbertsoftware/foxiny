@@ -18,8 +18,8 @@ const EnhancedList = ({ classes, menuItems, selected, setSelected, ...others }) 
       if (menuItem.hasOwnProperty('subMenuItems')) {
         return (
           <SubList
-            key={menuItem.key}
-            caption={menuItem.caption}
+            key={menuItem.id}
+            caption={menuItem.name}
             menuItems={menuItem.subMenuItems}
             onClick={menuItem.onClick}
             selected={selected}
@@ -33,16 +33,16 @@ const EnhancedList = ({ classes, menuItems, selected, setSelected, ...others }) 
           classes={{ selected: classes.selected }}
           button
           className={classes.listItem}
-          key={menuItem.key}
+          key={menuItem.id}
           onClick={() => {
-            setSelected(menuItem.key);
+            setSelected(menuItem.id);
             if (menuItem.onClick) {
               menuItem.onClick();
             }
           }}
-          selected={selected === menuItem.key}
+          selected={selected === menuItem.id}
         >
-          <ListItemText>{menuItem.caption}</ListItemText>
+          <ListItemText>{menuItem.name}</ListItemText>
         </ListItem>
       );
     });

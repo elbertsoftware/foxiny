@@ -100,7 +100,7 @@ const ApproveSeller = ({ history, match, location, ...props }) => {
         // Generate messages to inform
         const reasonMessage = arrayKeyOfValues.reduce((previous, current, index) => {
           if (values.reviewValues[current] != null) {
-            return `${messages[current]}: ${values.reviewValues[current]}<br />` + previous;
+            return previous + `${messages[current]}: ${values.reviewValues[current]}<br />`;
           }
         }, '');
         console.log(reasonMessage);
@@ -114,8 +114,10 @@ const ApproveSeller = ({ history, match, location, ...props }) => {
           },
         });
         if (resultAfterDisapproval.data.disapproveRetailer) {
-          history.push(`/sellers/support/case-detail/${match.params.id}`);
-          window.location.reload();
+          setTimeout(() => {
+            window.location.reload();
+            history.push(`/sellers/support/case-detail/${match.params.id}`);
+          }, 10);
         }
       } catch (error) {
         toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra!');
@@ -180,7 +182,8 @@ const ApproveSeller = ({ history, match, location, ...props }) => {
       >
         {({ data, loading }) => {
           if (loading) return <Loading />;
-          const processData = data.lastRetailerApprovalProcess && data.lastRetailerApprovalProcess[0].data.reviewValues;
+          const processData =
+            data.lastRetailerApprovalProcess.length > 0 && data.lastRetailerApprovalProcess[0].data.reviewValues;
           oldData = processData;
           return (
             <Form

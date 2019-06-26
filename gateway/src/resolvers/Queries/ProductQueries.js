@@ -5,9 +5,9 @@ import { checkUserSellerOwnership } from '../../utils/permissionChecker';
 import { restructureProduct2FriendlyProduct } from '../../utils/productUtils/dataHelper';
 
 export const Query = {
-  productsWoTemplateAfterCreated: async (parent, { sellerId, approved }, { prisma, cache, request }, info) => {
+  productsWoTemplateAfterCreated: async (parent, { sellerId, approved }, { prisma, cache, request, i18n }, info) => {
     // NOTE: check permission
-    await checkUserSellerOwnership(prisma, cache, request, sellerId);
+    await checkUserSellerOwnership(prisma, cache, request, i18n, sellerId);
 
     const newInfo = `{
       id

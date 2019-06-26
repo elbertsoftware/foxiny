@@ -95,7 +95,7 @@ const RETAILERS = gql`
         id
         uri
       }
-      approved
+      enabled
     }
   }
 `;
@@ -123,7 +123,7 @@ const ALL_RETAILERS = gql`
         id
         uri
       }
-      approved
+      enabled
     }
   }
 `;

@@ -6,121 +6,121 @@ import ApprovalContainer from '../../../utils/ApprovalContainer';
 
 const menuItems = [
   {
-    key: 'noithat',
-    caption: 'Nội thất',
+    id: 'noithat',
+    name: 'Nội thất',
     subMenuItems: [
       {
-        key: '1',
-        caption: 'Bàn ghế',
+        id: '1',
+        name: 'Bàn ghế',
         subMenuItems: [
           {
-            key: '11',
-            caption: 'Bàn tròn',
+            id: '11',
+            name: 'Bàn tròn',
             onClick: () => {},
           },
           {
-            key: '12',
-            caption: 'Bàn vuông',
+            id: '12',
+            name: 'Bàn vuông',
             onClick: () => {},
           },
           {
-            key: '13',
-            caption: 'Bàn đá',
+            id: '13',
+            name: 'Bàn đá',
             subMenuItems: [
               {
-                key: '131',
-                caption: 'Đá hoa cương',
+                id: '131',
+                name: 'Đá hoa cương',
                 onClick: () => {},
               },
               {
-                key: '132',
-                caption: 'Gỗ',
+                id: '132',
+                name: 'Gỗ',
                 onClick: () => {},
               },
             ],
             onClick: () => {},
           },
           {
-            key: '14',
-            caption: 'Bàn kiếng',
+            id: '14',
+            name: 'Bàn kiếng',
             onClick: () => {},
           },
         ],
         onClick: () => {},
       },
       {
-        key: '2',
-        caption: 'Sofa',
+        id: '2',
+        name: 'Sofa',
         onClick: () => {},
       },
       {
-        key: '3',
-        caption: 'Đồ decor',
+        id: '3',
+        name: 'Đồ decor',
         onClick: () => {},
       },
     ],
   },
   {
-    key: 'ngoaithat',
-    caption: 'Ngoại thất',
+    id: 'ngoaithat',
+    name: 'Ngoại thất',
     subMenuItems: [
       {
-        key: 'ngoaithat1',
-        caption: 'Cay xanh',
+        id: 'ngoaithat1',
+        name: 'Cay xanh',
         subMenuItems: [
           {
-            key: 'cayxanh1',
-            caption: 'Cay dua',
+            id: 'cayxanh1',
+            name: 'Cay dua',
             onClick: () => {},
           },
           {
-            key: 'cayxanh2',
-            caption: 'Cay hoa giay',
+            id: 'cayxanh2',
+            name: 'Cay hoa giay',
             onClick: () => {},
           },
           {
-            key: 'cayxanh3',
-            caption: 'Cay van tho',
+            id: 'cayxanh3',
+            name: 'Cay van tho',
             onClick: () => {},
           },
           {
-            key: 'cayxanh4',
-            caption: 'Cay hoa su',
+            id: 'cayxanh4',
+            name: 'Cay hoa su',
             onClick: () => {},
           },
         ],
         onClick: () => {},
       },
       {
-        key: 'ngoaithat2',
-        caption: 'Cửa',
+        id: 'ngoaithat2',
+        name: 'Cửa',
         onClick: () => {},
       },
     ],
   },
   {
-    key: 'danhmuc3',
-    caption: 'Danh mục 3',
+    id: 'danhmuc3',
+    name: 'Danh mục 3',
   },
   {
-    key: 'danhmuc4',
-    caption: 'Danh mục 4',
+    id: 'danhmuc4',
+    name: 'Danh mục 4',
   },
   {
-    key: 'danhmuc5',
-    caption: 'Danh mục 5',
+    id: 'danhmuc5',
+    name: 'Danh mục 5',
   },
   {
-    key: 'danhmuc6',
-    caption: 'Danh mục 6',
+    id: 'danhmuc6',
+    name: 'Danh mục 6',
   },
   {
-    key: 'danhmuc7',
-    caption: 'Danh mục 7',
+    id: 'danhmuc7',
+    name: 'Danh mục 7',
   },
   {
-    key: 'danhmuc8',
-    caption: 'Danh mục 8',
+    id: 'danhmuc8',
+    name: 'Danh mục 8',
   },
 ];
 

@@ -110,11 +110,11 @@ const CaseDetailPage = ({ match, ...props }) => {
                       <Typography className={classes.title} variant="h6">
                         Status
                       </Typography>
-                      <Typography className={classes.content}>Resolved </Typography>
+                      <Typography className={classes.content}>{supportCaseInfo.status.name}</Typography>
                       <Typography className={classes.title} variant="h6">
                         Severity
                       </Typography>
-                      <Typography className={classes.content}>Urgent business impacting question</Typography>
+                      <Typography className={classes.content}>{supportCaseInfo.severity.name}</Typography>
                       <Typography className={classes.title} variant="h6">
                         Category
                       </Typography>

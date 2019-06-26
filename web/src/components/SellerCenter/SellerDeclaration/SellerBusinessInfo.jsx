@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { compose, graphql } from 'react-apollo';
 import TabContainer from '../../../utils/common/TabContainer';
 import peopleImage from '../../../images/people-fill-out-form.jpg';
-import UploadImgZone from '../../User/UserAvatar/UploadImgZone';
+import UploadFileZone from '../../User/UserAvatar/UploadFileZone';
 import sellerDeclarationStyles from './styles/sellerDeclarationStyles';
 import { UPLOAD_SOCIAL_ID_MEDIA, DELETE_SOCIAL_ID_MEDIA } from '../../../graphql/retailer';
 import ApprovalContainer from '../../../utils/ApprovalContainer';
@@ -69,6 +69,25 @@ const SellerBusinessInfo = ({ classes, theme, seller, review, ...props }) => {
   const [images, setImages] = useState([]);
   const [socialIDMedias, setSocialIDMedias] = useState([]);
   const [deleteIds, setDeleteIds] = useState([]);
+  const [isRejected, setRejected] = useState(false);
+  const onDropAccepted = acceptedFiles => {
+    setRejected(false);
+    let listFiles = [];
+    if (images.length > 0) {
+      const listAddedPreview = acceptedFiles.map(file => Object.assign(file, { preview: URL.createObjectURL(file) }));
+      listFiles = listFiles.concat(images, listAddedPreview);
+      console.log(listFiles);
+      // setFiles(listFiles);
+      setImages(listFiles);
+      return;
+    }
+    const fileList = acceptedFiles.map(file => Object.assign(file, { preview: URL.createObjectURL(file) }));
+    setImages(fileList);
+  };
+
+  const onDropRejected = React.useCallback(() => {
+    setRejected(true);
+  });
   useEffect(() => {
     if (seller) {
       setSocialIDMedias(seller.socialNumberImages);
@@ -160,12 +179,23 @@ const SellerBusinessInfo = ({ classes, theme, seller, review, ...props }) => {
                   <strong>Cá nhân</strong>
                 </Typography>
                 <Typography gutterBottom>Tải ảnh CMND của bạn bao gồm mặt trước và mặt sau.</Typography>
-                <UploadImgZone style={classes.uploadZone} images={images} setImages={setImages} />
+                <UploadFileZone
+                  style={classes.uploadZone}
+                  onDropAccepted={onDropAccepted}
+                  onDropRejected={onDropRejected}
+                  isRejected={isRejected}
+                  maxSize={3000000}
+                  fileTypes={['image/jpeg', 'image/png', 'image/svg', 'application/pdf']}
+                />
 
                 <Grid className={classes.gridContainer} wrap="nowrap" container spacing={2}>
                   {images.map((image, index) => (
                     <Grid key={image.path} item>
-                      <ImageCardReview src={image.preview} removeItem={removeItem(index)} />
+                      {image.type.includes('application') ? (
+                        <Typography align="center">📁 {`${image.path} (${image.size}KB)`} </Typography>
+                      ) : (
+                        <ImageCardReview src={image.preview} removeItem={removeItem(index)} />
+                      )}
                     </Grid>
                   ))}
                   {socialIDMedias.map((image, index) => (
