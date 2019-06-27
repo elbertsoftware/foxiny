@@ -45,8 +45,8 @@ const validateCreateNewProductInput = data => {
     throw new Error("Invalid input");
   }
 
-  if (!data.categoryIds || data.categoryIds.length === 0) {
-    logger.error("Invalid categoryIds");
+  if (!data.catalogIds || data.catalogIds.length === 0) {
+    logger.error("Invalid catalogIds");
     throw new Error("Invalid input");
   }
 
@@ -57,7 +57,7 @@ const validateCreateNewProductInput = data => {
 
   newData.name = validateIsEmpty(data.name).toLowerCase();
   newData.briefDescription = validateIsEmpty(data.briefDescription);
-  newData.categoryIds = data.categoryIds;
+  newData.catalogIds = data.catalogIds;
   newData.detailDescription = data.detailDescription;
   newData.products = data.products.map(product => validateProduct(product));
 

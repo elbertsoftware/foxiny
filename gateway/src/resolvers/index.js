@@ -9,8 +9,8 @@ import logger from "../utils/logger";
 
 import { Query as userQueries } from "./Queries/UserQueries";
 import { Mutation as userMutations } from "./Mutations/UserMutations";
-import { Query as categoryQueries } from "./Queries/CategoryQueries";
-import { Mutation as categoryMutations } from "./Mutations/CategoryMutations";
+import { Query as catalogQueries } from "./Queries/CatalogQueries";
+import { Mutation as catalogMutations } from "./Mutations/CatalogMutations";
 import { Query as productQueries } from "./Queries/ProductQueries";
 import { Mutation as productMutations } from "./Mutations/ProductMutations";
 // product queries
@@ -29,14 +29,14 @@ import { Media } from "./Resolvers/Media";
 const resolvers = {
   Query: merge(
     userQueries,
-    categoryQueries,
+    catalogQueries,
     productQueries,
     retailerQueries,
     staffQueries,
   ),
   Mutation: merge(
     userMutations,
-    categoryMutations,
+    catalogMutations,
     productMutations,
     retailerMutations,
     mediaMutations,

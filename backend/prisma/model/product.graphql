@@ -4,7 +4,7 @@ type ProductTemplate {
 
   name: String
   briefDescription: String
-  category: [Category!] @relation(link: TABLE, onDelete: SET_NULL)
+  catalog: [Catalog!] @relation(link: TABLE, onDelete: SET_NULL)
   # unit: Unit
 
   products: [Product!] @relation(link: TABLE, onDelete: CASCADE)

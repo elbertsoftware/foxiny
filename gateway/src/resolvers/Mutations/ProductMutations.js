@@ -12,7 +12,7 @@ import {
   validateCreateNewProductInput,
   validateUpdateProductInput,
 } from "../../utils/productUtils/validation";
-import { checkUserRetailerOwnership } from "../../utils/permissionChecker";
+import { checkUserSellerOwnership } from "../../utils/permissionChecker";
 import { s3ProductMediasUploader } from "../../utils/s3Uploader";
 
 // TODO:
@@ -28,7 +28,7 @@ export const Mutation = {
   ) => {
     try {
       // NOTE: check permission
-      await checkUserSellerOwnership(prisma, cache, request, sellerId);
+      await checkUserSellerOwnership(prisma, cache, request, i18n, sellerId);
 
       // NOTE: validate input
       const newData = validateCreateNewProductInput(data);
@@ -71,13 +71,13 @@ export const Mutation = {
       // NOTE: 2 - create product and it's template
       // NOTE: fragment ensure all needed-info always be returned
       // NOTE: lacking of manufacturer!!!
-      const newInfo = `{ id name briefDescription category { id name } descriptions { retailer { id } description } brand { id brandName } products { id productMedias { id uri } productRetailers { id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } retailer { id businessName } rating enabled approved createdAt updatedAt } options { id attribute { id name } value { id name} } sku } createdAt updatedAt }`;
+      const newInfo = `{ id name briefDescription catalog { id name } descriptions { retailer { id } description } brand { id brandName } products { id productMedias { id uri } productRetailers { id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } retailer { id businessName } rating enabled approved createdAt updatedAt } options { id attribute { id name } value { id name} } sku } createdAt updatedAt }`;
 
       const productTemplateData = {
         name: data.name,
         briefDescription: data.briefDescription,
-        category: {
-          connect: data.categoryIds.map(id => ({ id: id })),
+        catalog: {
+          connect: data.catalogIds.map(id => ({ id: id })),
         },
         descriptions: {
           create: {
@@ -161,7 +161,7 @@ export const Mutation = {
     info,
   ) => {
     // NOTE: check permission
-    await checkUserSellerOwnership(prisma, cache, request, sellerId);
+    await checkUserSellerOwnership(prisma, cache, request, i18n, sellerId);
 
     // TODO: validate input
     const newData = validateUpdateProductInput(data);
@@ -203,7 +203,7 @@ export const Mutation = {
     }
 
     const newInfo =
-      "{ id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } product { productTemplate { id name briefDescription brand { id brandName } category { id name } descriptions { retailer { id } description } } options { attribute { name } value { name } } } rating enabled approved createdAt updatedAt }";
+      "{ id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } product { productTemplate { id name briefDescription brand { id brandName } catalog { id name } descriptions { retailer { id } description } } options { attribute { name } value { name } } } rating enabled approved createdAt updatedAt }";
 
     // NOTE: 2 - update
     const updatedProducts = await Promise.all(
@@ -345,7 +345,7 @@ export const Mutation = {
     info,
   ) => {
     // NOTE: check permission
-    await checkUserSellerOwnership(prisma, cache, request, sellerId);
+    await checkUserSellerOwnership(prisma, cache, request, i18n, sellerId);
 
     const product = await prisma.query.productRetailer({
       where: {
@@ -358,7 +358,7 @@ export const Mutation = {
       throw new Error(error);
     }
 
-    const newInfo = `{ id productName listPrice sellPrice stockQuantity product { productTemplate { id name briefDescription category { id name } brand { id brandName } descriptions { retailer { id } description } } options { attribute { name } value { name } } } inStock productMedias { id uri } rating enabled approved createdAt updatedAt }`;
+    const newInfo = `{ id productName listPrice sellPrice stockQuantity product { productTemplate { id name briefDescription catalog { id name } brand { id brandName } descriptions { retailer { id } description } } options { attribute { name } value { name } } } inStock productMedias { id uri } rating enabled approved createdAt updatedAt }`;
 
     const updatedProduct = await prisma.mutation.updateProductRetailer(
       {

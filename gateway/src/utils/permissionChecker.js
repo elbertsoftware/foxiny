@@ -406,8 +406,8 @@ const checkUserManufacturerOwnership = async (
 
 const checkUserSellerOwnership = async (
   prisma,
-  request,
   cache,
+  request,
   i18n,
   sellerId,
   exception = null,
@@ -425,13 +425,14 @@ const checkUserSellerOwnership = async (
   if (user.retailers.includes(sellerId)) {
     return { ...user, isRetailer: true, isManufacturer: false };
   }
-  if (user.manufacturer.included(sellerId)) {
+  if (user.manufacturers.includes(sellerId)) {
     return { ...user, isRetailer: false, isManufacturer: true };
   }
 
   if (
-    _.intersection(user.roles, exception.roles).length > 0 ||
-    _.intersection(user.permissions, exception.permissions).length > 0
+    exception &&
+    (_.intersection(user.roles, exception.roles).length > 0 ||
+      _.intersection(user.permissions, exception.permissions).length > 0)
   ) {
     return { ...user, isException: true };
   }

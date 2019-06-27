@@ -6,7 +6,7 @@ datamodel:
   - model/address.graphql
   - model/manufacturer.graphql
   - model/retailer.graphql
-  - model/category.graphql
+  - model/catalog.graphql
   - model/product.graphql
   - model/review.graphql
   - model/support.graphql

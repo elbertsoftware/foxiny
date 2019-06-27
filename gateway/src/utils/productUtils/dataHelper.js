@@ -51,7 +51,7 @@ const restrutureProductTemplate2FriendlyProduct = productTemplate => {
     productMedias: product.productRetailers[0].productMedias,
     briefDescription: productTemplate.briefDescription,
     brand: productTemplate.brand.brandName,
-    category: productTemplate.category,
+    catalog: productTemplate.catalog,
 
     descriptions: {
       // fromManufacture
@@ -86,7 +86,7 @@ const restructureProductRetailer2FriendlyProduct = products => {
     productMedias: product.productMedias,
     briefDescription: product.product.productTemplate.briefDescription,
     brand: product.product.productTemplate.brand.brandName,
-    category: product.product.productTemplate.category,
+    catalog: product.product.productTemplate.catalog,
 
     descriptions: {
       // fromManufacture
@@ -124,7 +124,7 @@ const restructureProduct2FriendlyProduct = products => {
     productMedias: product.productMedias,
     briefDescription: product.product.productTemplate.briefDescription,
     brand: product.product.productTemplate.brand.brandName,
-    category: product.product.productTemplate.category,
+    catalog: product.product.productTemplate.catalog,
 
     descriptions: {
       // fromManufacture

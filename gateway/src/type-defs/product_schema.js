@@ -10,7 +10,7 @@ export const productSchema = gql`
     id: ID!
     name: String!
     briefDescription: String!
-    category: [Category!]!
+    catalog: [FriendlyCatalog!]!
 
     products: [FriendlyProduct!]
   }
@@ -24,7 +24,7 @@ export const productSchema = gql`
     productName: String!
     briefDescription: String
     brand: String
-    category: [Category!]
+    catalog: [FriendlyCatalog!]
 
     descriptions: Description
     productMedias: [Media!]
@@ -58,16 +58,25 @@ export const productSchema = gql`
   }
 
   extend type Query {
-    productsWoTemplateAfterCreated(sellerId: String!, query: String): [FriendlyProduct!]!
+    productsWoTemplateAfterCreated(
+      sellerId: String!
+      query: String
+    ): [FriendlyProduct!]!
     # productsManufacturers(query: String): [ProductManufacturer!]!
     # productsRetailers(query: String): [ProductRetailer!]!
   }
 
   extend type Mutation {
     # createBrandnewProduct will create a productTempalte links to many products (as variant)
-    createBrandNewProductWVariants(sellerId: String!, data: CreateProductWithTemplateInput!): [FriendlyProduct!]
+    createBrandNewProductWVariants(
+      sellerId: String!
+      data: CreateProductWithTemplateInput!
+    ): [FriendlyProduct!]
 
-    updateProducts(sellerId: String!, data: [UpdateProductInput!]!): [FriendlyProduct!]
+    updateProducts(
+      sellerId: String!
+      data: [UpdateProductInput!]!
+    ): [FriendlyProduct!]
 
     toggleProductStatus(sellerId: String!, productId: String!): FriendlyProduct!
 
@@ -77,7 +86,7 @@ export const productSchema = gql`
   input CreateProductWithTemplateInput {
     name: String!
     briefDescription: String!
-    categoryIds: [String!]!
+    catalogIds: [String!]!
 
     products: [CreateProductInput!]!
 

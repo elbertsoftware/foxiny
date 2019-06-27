@@ -3,10 +3,10 @@
 import logger from "../../utils/logger";
 
 export const Product = {
-  category: {
+  catalog: {
     resolve: (parent, args, { request }) => {
-      return parent.category.map(cate => {
-        cate.name;
+      return parent.catalog.map(cata => {
+        cata.name;
       });
     },
   },
