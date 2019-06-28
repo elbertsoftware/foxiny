@@ -20,7 +20,7 @@ export const Query = {
           id
           name
           briefDescription
-          category {
+          catalog {
             id
             name
           }

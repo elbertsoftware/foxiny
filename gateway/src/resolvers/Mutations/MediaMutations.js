@@ -3,7 +3,7 @@
 import { t } from '@lingui/macro';
 import logger from '../../utils/logger';
 import { s3ProfileMediaUploader, s3ProductMediasUploader, s3DocumentsUploader } from '../../utils/s3Uploader';
-import { validateUploadInput } from '../../utils/validation';
+import { validateUploadImageInput, validateUploadDocumnetInput } from '../../utils/validation';
 import { checkUserPermission } from '../../utils/permissionChecker';
 
 // TODO: optimize me by using promiseAll
@@ -16,7 +16,7 @@ export const Mutation = {
   uploadProfileMedia: async (parent, { file }, { prisma, request, cache, i18n }, info) => {
     const uploadedFile = await file;
     try {
-      validateUploadInput(uploadedFile);
+      validateUploadImageInput(uploadedFile);
     } catch (err) {
       logger.error(`🛑❌  Unable to upload avatar ${err.message}`);
       const error = i18n._(t`Invalid input`);
@@ -59,7 +59,7 @@ export const Mutation = {
   uploadBusinessCover: async (parent, { file, sellerId }, { prisma, request, cache, i18n }, info) => {
     const uploadedFile = await file;
     try {
-      validateUploadInput(uploadedFile);
+      validateUploadImageInput(uploadedFile);
     } catch (err) {
       logger.error(`🛑❌  Unable to upload avatar ${err.message}`);
       const error = i18n._(t`Invalid input`);
@@ -102,7 +102,7 @@ export const Mutation = {
   uploadBusinessAvatar: async (parent, { file, sellerId }, { prisma, request, cache, i18n }, info) => {
     const uploadedFile = await file;
     try {
-      validateUploadInput(uploadedFile);
+      validateUploadImageInput(uploadedFile);
     } catch (err) {
       logger.error(`🛑❌  Unable to upload avatar ${err.message}`);
       const error = i18n._(t`Invalid input`);
@@ -137,7 +137,7 @@ export const Mutation = {
 
         // validate input
         try {
-          validateUploadInput(uploaded);
+          validateUploadImageInput(uploaded);
         } catch (err) {
           logger.error(`🛑❌  Unable to upload avatar ${err.message}`);
           const error = i18n._(t`Invalid input`);
@@ -205,7 +205,7 @@ export const Mutation = {
 
         // validate input
         try {
-          validateUploadInput(uploaded);
+          validateUploadDocumnetInput(uploaded);
         } catch (err) {
           logger.error(`🛑❌  Unable to upload avatar ${err.message}`);
           const error = i18n._(t`Invalid input`);

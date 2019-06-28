@@ -7,7 +7,7 @@ import { addressSchema } from "./address_schema";
 // import { manufacturerSchema } from './manufacturer_schema';
 import { retailerSchema } from "./retailer_schema";
 import { rolePermAssignSchema } from "./rolePermAssign_schema";
-import { categorySchema } from "./category_schema";
+import { catalogSchema } from "./catalog_schema";
 import { productSchema } from "./product_schema";
 import { reviewSchema } from "./review_schema";
 
@@ -34,7 +34,7 @@ export const schema = [
   // manufacturerSchema,
   retailerSchema,
   rolePermAssignSchema,
-  categorySchema,
+  catalogSchema,
   productSchema,
   reviewSchema,
   supportSchema,

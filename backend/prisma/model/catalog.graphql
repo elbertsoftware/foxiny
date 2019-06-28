@@ -1,12 +1,13 @@
-type Category {
+type Catalog {
   id: ID! @id
   _version: Int! @default(value: 1)
 
   name: String @unique
-  parentId: [Category!] @relation(link: TABLE, name: "CategoryTree")
+  parentId: [Catalog!] @relation(link: TABLE, name: "CatalogParent")
+  children: [Catalog!]  @relation(link: TABLE, name: "CatalogChildren")
   productTemplates: [ProductTemplate!] @relation(onDelete: SET_NULL)
 
-  trans_name: [Trans_Category] @relation(link: TABLE, onDelete: CASCADE)
+  trans_name: [Trans_Catalog] @relation(link: TABLE, onDelete: CASCADE)
 
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt

@@ -20,7 +20,12 @@ export const retailerSchema = gql`
     businessLicense: String
     businessLicenseImages: [Media!]
     # Tax
-    # Billing
+    # Payment
+    bankAccNumber: String
+    bankAccName: String
+    bankName: String
+    bankBranch: String
+    swiftCode: String
     # Warehouse
 
     # Products
@@ -71,6 +76,11 @@ export const retailerSchema = gql`
     socialNumberImageIds: [String!]
     businessLicense: String
     businessLicenseImageIds: [String!]
+    bankAccNumber: String
+    bankAccName: String
+    bankName: String
+    bankBranch: String
+    swiftCode: String
   }
 
   type RegisterdRetailer {

@@ -1,14 +1,16 @@
 // @flow
 import { gql } from "apollo-server-express";
 
-export const categorySchema = gql`
-  type Category {
+export const catalogSchema = gql`
+  type FriendlyCatalog {
     id: ID!
 
     name: String!
-    parentId: [Category!]
-    productTemplates: [ProductTemplate!]
-    products: [FriendlyProduct!]
+    # localeName: String
+    parentId: [String!]
+    children: [String!]
+    # productTemplates: [ProductTemplate!]
+    # products: [FriendlyProduct!]
 
     createdAt: String!
     updatedAt: String!
@@ -18,7 +20,7 @@ export const categorySchema = gql`
     id: ID!
 
     brandName: String
-    products: [FriendlyProduct!]
+    # products: [FriendlyProduct!]
     # manufacturer: Manufacturer @relation(name: "ManufacturerToBrand", onDelete: SET_NULL)
 
     createdAt: String!
@@ -26,29 +28,31 @@ export const categorySchema = gql`
   }
 
   extend type Query {
-    categories(query: String): [Category!]
+    catalogs(query: String): [FriendlyCatalog!]
     brands(query: String): [Brand!]
   }
 
   extend type Mutation {
-    createCategory(data: [CreateCategoryInput!]!): [Category!]!
-    updateCategory(data: UpdateCategoryInput): Category!
-    deleteCategory(categoryIds: [String!]!): Boolean!
+    createCatalog(data: [CreateCatalogInput!]!): [FriendlyCatalog!]!
+    updateCatalog(data: UpdateCatalogInput): FriendlyCatalog!
+    deleteCatalog(catalogIds: [String!]!): Boolean!
 
     createBrand(data: [CreateBrandInput]): Brand!
   }
 
-  input CreateCategoryInput {
+  input CreateCatalogInput {
     name: String!
     parentId: [String!]
+    children: [String!]
     # parentId:String!
   }
 
-  input UpdateCategoryInput {
+  input UpdateCatalogInput {
     id: String
     oldName: String
     newName: String!
     parentId: [String!]
+    children: [String!]
     # oldParentId:String!
     # newParentId:String!
   }

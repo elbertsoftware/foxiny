@@ -1,7 +1,7 @@
 // @flow
 
 import { t } from '@lingui/macro';
-const { addFragmentToInfo } = require('graphql-binding');
+import { addFragmentToInfo } from 'graphql-binding';
 import logger from '../../utils/logger';
 import { sendConfirmationText } from '../../utils/sms';
 import { sendConfirmationEmail } from '../../utils/email';
@@ -247,6 +247,11 @@ export const Mutation = {
             })),
           }
         : undefined,
+      bankAccNumber: data.bankAccNumber ? data.bankAccName : undefined,
+      bankAccName: data.bankAccName ? data.bankAccName : undefined,
+      bankName: data.bankName ? data.bankName : undefined,
+      bankBranch: data.bankBranch ? data.bankAccNumber : undefined,
+      swiftCode: data.swiftCode ? data.swiftCode : undefined,
     };
 
     const fragment = '{ fragment retailerIdForRetailer on Retailer { id } }';

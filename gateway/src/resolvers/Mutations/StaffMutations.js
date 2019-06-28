@@ -1,7 +1,7 @@
 // @flow
 
 import { t } from '@lingui/macro';
-const { addFragmentToInfo } = require('graphql-binding');
+import { addFragmentToInfo } from 'graphql-binding';
 import logger from '../../utils/logger';
 import { sendCorrespondence } from '../../utils/email';
 import { getUserIDFromRequest } from '../../utils/authentication';
