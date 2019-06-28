@@ -169,7 +169,7 @@ const AddProduct = ({ classes, createNewProduct, uploadProductImgs }) => {
           data: {
             name: values.name,
             briefDescription: values.briefDescription,
-            categoryIds: ['cjuqqr6lb008b0806ngt5fe6h', 'cjuqqrc7l008j0806a88o4xhq'],
+            categoryIds: values.categoryIds,
             products: newProducts,
             brandName: values.brandName,
             detailDescription: 'Hello from Tan Binh',
@@ -212,7 +212,7 @@ const AddProduct = ({ classes, createNewProduct, uploadProductImgs }) => {
               values,
             }) => (
               <form onSubmit={handleSubmit} noValidate>
-                <ProductDataContext.Provider value={{ data: values }}>
+                <ProductDataContext.Provider value={{ data: values, setValue }}>
                   {activeStep === 2 ? (
                     <ProductProperties setValue={setValue} push={push} pop={pop} remove={remove} />
                   ) : (

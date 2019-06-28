@@ -32,6 +32,9 @@ const styles = theme => ({
       padding: 20,
     },
   },
+  swipeContainer: {
+    overflow: 'hidden',
+  },
   wrapContent: {
     display: 'flex',
     alignItems: 'center',
@@ -103,7 +106,6 @@ const styles = theme => ({
   buttonContainer: {
     display: 'flex',
     justifyContent: 'flex-end',
-    maxWidth: 600,
     padding: '0 0 16px 16px',
     marginTop: theme.spacing(4),
   },

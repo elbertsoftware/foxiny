@@ -3,6 +3,7 @@ import { Paper, Typography, Tabs, Tab, Button, withStyles, Grid, Icon, IconButto
 import SwipeableViews from 'react-swipeable-views';
 import { toast } from 'react-toastify';
 import { compose, graphql } from 'react-apollo';
+import { Form } from 'react-final-form';
 import TabContainer from '../../../utils/common/TabContainer';
 import peopleImage from '../../../images/people-fill-out-form.jpg';
 import UploadFileZone from '../../User/UserAvatar/UploadFileZone';
@@ -10,6 +11,7 @@ import sellerDeclarationStyles from './styles/sellerDeclarationStyles';
 import { UPLOAD_SOCIAL_ID_MEDIA, DELETE_SOCIAL_ID_MEDIA } from '../../../graphql/retailer';
 import ApprovalContainer from '../../../utils/ApprovalContainer';
 import ReactMediumZoom from '../../../utils/common/ReactMediumZoom';
+import BankAccount from './BankAccount';
 
 const imgCardStyles = theme => ({
   container: {
@@ -145,6 +147,7 @@ const SellerBusinessInfo = ({ classes, theme, seller, review, ...props }) => {
       toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra!');
     }
   };
+  const onSubmit = async values => {};
   return (
     <Paper id="sellerBusinessContainer" className={`${classes.wrapper}`}>
       <Typography className={classes.title}>Thông tin tài khoản bán hàng</Typography>
@@ -174,7 +177,7 @@ const SellerBusinessInfo = ({ classes, theme, seller, review, ...props }) => {
             onChangeIndex={handleChangeIndex}
           >
             {activeTabId === 0 ? (
-              <TabContainer dir={theme.direction}>
+              <TabContainer className={classes.swipeContainer} dir={theme.direction}>
                 <Typography className={classes.heading} variant="h3">
                   <strong>Cá nhân</strong>
                 </Typography>
@@ -212,23 +215,37 @@ const SellerBusinessInfo = ({ classes, theme, seller, review, ...props }) => {
                     </Grid>
                   ))}
                 </Grid>
-                <div className={classes.buttonContainer}>
-                  <Button
-                    onClick={uploadSocialIDOrBusinessLicense}
-                    variant="contained"
-                    color="secondary"
-                    className={classes.buttonAction}
-                  >
-                    Lưu
-                  </Button>
-                </div>
               </TabContainer>
             ) : (
               /* Avoiding raise invalid child: null error from react-swipe-view */
               <Typography />
             )}
-            {activeTabId === 1 ? <TabContainer dir={theme.direction} /> : <Typography />}
+            {activeTabId === 1 ? (
+              <TabContainer className={classes.swipeContainer} dir={theme.direction}>
+                <Form onSubmit={onSubmit}>
+                  {({ handleSubmit }) => {
+                    return (
+                      <form onSubmit={handleSubmit} noValidate>
+                        <BankAccount />
+                      </form>
+                    );
+                  }}
+                </Form>
+              </TabContainer>
+            ) : (
+              <Typography />
+            )}
           </SwipeableViews>
+          <div className={classes.buttonContainer}>
+            <Button
+              onClick={uploadSocialIDOrBusinessLicense}
+              variant="contained"
+              color="secondary"
+              className={classes.buttonAction}
+            >
+              Lưu
+            </Button>
+          </div>
         </div>
       </div>
     </Paper>

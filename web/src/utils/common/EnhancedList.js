@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { ListItem, ListItemText, withStyles } from '@material-ui/core';
 import MuiList from '@material-ui/core/List';
 import SubList from './SubList';
+import { capitalizeFirstLetter } from '../utilForManipulateString';
 
 const styles = theme => ({
   listItem: {
@@ -19,7 +20,7 @@ const EnhancedList = ({ classes, menuItems, selected, setSelected, ...others }) 
         return (
           <SubList
             key={menuItem.id}
-            caption={menuItem.name}
+            name={capitalizeFirstLetter(menuItem.name)}
             menuItems={menuItem.subMenuItems}
             onClick={menuItem.onClick}
             selected={selected}
@@ -42,7 +43,7 @@ const EnhancedList = ({ classes, menuItems, selected, setSelected, ...others }) 
           }}
           selected={selected === menuItem.id}
         >
-          <ListItemText>{menuItem.name}</ListItemText>
+          <ListItemText>{capitalizeFirstLetter(menuItem.name)}</ListItemText>
         </ListItem>
       );
     });

@@ -33,4 +33,26 @@ const GET_PRODUCT = gql`
   }
 `;
 
-export { GET_PRODUCT };
+const GET_CATEGORIES = gql`
+  query {
+    categories {
+      id
+      name
+      parentId {
+        id
+        name
+      }
+      productTemplates {
+        id
+        name
+      }
+      products {
+        productId
+        productName
+      }
+      createdAt
+    }
+  }
+`;
+
+export { GET_PRODUCT, GET_CATEGORIES };

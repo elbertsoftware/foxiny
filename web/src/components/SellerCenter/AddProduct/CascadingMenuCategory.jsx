@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Paper, Typography, Icon } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import { graphql } from 'react-apollo';
 import EnhancedList from '../../../utils/common/EnhancedList';
 import ApprovalContainer from '../../../utils/ApprovalContainer';
+import productContext from '../../../utils/context/ProductDataContext';
+import { GET_CATEGORIES } from '../../../graphql/product';
+import Loading from '../../App/Loading';
 
 const menuItems = [
   {
@@ -127,11 +131,19 @@ const menuItems = [
 const CascadingMenuCategory = ({ review, ...props }) => {
   const style = {
     display: 'flex',
-    height: '50vh',
+    maxHeight: '50vh',
     postion: 'relative',
     margin: '16px 0',
+    padding: 22,
   };
+  const { setValue } = useContext(productContext);
+  // Data from server
+  const { loading, categories } = props;
   const [selected, setSelected] = useState('');
+  useEffect(() => {
+    setValue('categoryIds', [selected]);
+  }, [selected]);
+  if (loading) return <Loading />;
   return (
     <React.Fragment>
       <div>
@@ -140,8 +152,10 @@ const CascadingMenuCategory = ({ review, ...props }) => {
         </Typography>
       </div>
       <ApprovalContainer review={review} name="checkCategory">
-        <Paper elevation={3} style={style}>
-          <EnhancedList selected={selected} setSelected={setSelected} menuItems={menuItems} />
+        <Paper elevation={0} style={style}>
+          <div style={{ overflow: 'auto' }}>
+            <EnhancedList selected={selected} setSelected={setSelected} menuItems={categories} />
+          </div>
         </Paper>
       </ApprovalContainer>
     </React.Fragment>
@@ -156,4 +170,9 @@ CascadingMenuCategory.defaultProps = {
   review: false,
 };
 
-export default CascadingMenuCategory;
+export default graphql(GET_CATEGORIES, {
+  props: ({ data: { loading, categories } }) => ({
+    loading,
+    categories,
+  }),
+})(CascadingMenuCategory);

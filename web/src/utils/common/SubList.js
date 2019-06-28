@@ -16,7 +16,7 @@ const styles = theme => ({
   },
 });
 
-const SubList = ({ caption, menuItems, classes, selected, setSelected }) => {
+const SubList = ({ name, menuItems, classes, selected, setSelected }) => {
   const [visibility, setDisplay] = useState('hidden');
   let timer;
   const handleOpen = () => {
@@ -33,11 +33,11 @@ const SubList = ({ caption, menuItems, classes, selected, setSelected }) => {
       <ListItem
         onMouseEnter={handleOpen}
         onMouseLeave={handleClose}
-        key={caption}
+        key={name}
         className={`${classes.listItem} subListItem`}
         button
       >
-        <ListItemText>{caption}</ListItemText>
+        <ListItemText>{name}</ListItemText>
         <ListItemIcon>
           <Icon>keyboard_arrow_right</Icon>
         </ListItemIcon>
@@ -56,7 +56,7 @@ const SubList = ({ caption, menuItems, classes, selected, setSelected }) => {
 };
 
 SubList.propTypes = {
-  caption: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
   classes: PropTypes.any,
   menuItems: PropTypes.array.isRequired,
   selected: PropTypes.string.isRequired,
