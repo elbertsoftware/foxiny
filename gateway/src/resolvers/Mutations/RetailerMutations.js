@@ -75,15 +75,6 @@ export const Mutation = {
       businessAddress: {
         create: data.businessAddress,
       },
-      owner: {
-        create: {
-          user: {
-            connect: {
-              id: userId,
-            },
-          },
-        },
-      },
     };
 
     const retailer = await prisma.mutation.createRetailer({
@@ -98,6 +89,11 @@ export const Mutation = {
       data: {
         assignment: {
           update: {
+            retailers: {
+              connect: {
+                id: retailer.id,
+              },
+            },
             roles: {
               connect: {
                 name: 'RETAILER',

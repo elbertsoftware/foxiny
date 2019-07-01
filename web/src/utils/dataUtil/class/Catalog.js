@@ -1,43 +1,10 @@
 //@flow
 
-const restructureCatalog = (catalog, languageCode) => {
-  const friendlyCatalog = catalog.map(item => ({
-    id: item.id,
-    name:
-      item.trans_name.length > 0 && item.trans_name.find(x => x.language.languageCode === languageCode)
-        ? item.trans_name.find(x => x.language.languageCode === languageCode).name
-        : item.name,
-    parentId: item.parentId.map(parent => parent.id),
-    children: item.children.map(child => child.id),
-    productTemplate: item.productTemplate ? item.productTemplate : undefined,
-    createdAt: item.createdAt,
-    updatedAt: item.updatedAt,
-  }));
-
-  return friendlyCatalog;
-};
-
-const resturectureBrand = (brand, languageCode) => {
-  const friendlyBrand = brand.map(item => ({
-    id: item.id,
-    brandName:
-      item.trans_brandName.length > 0 && item.trans_brandName.find(x => x.language.languageCode === languageCode)
-        ? item.trans_brandName.find(x => x.language.languageCode === languageCode).brandName
-        : item.brandName,
-    createdAt: item.createdAt,
-    updatedAt: item.updatedAt,
-  }));
-
-  return friendlyBrand;
-};
-
-export { restructureCatalog, resturectureBrand };
-
 /**
  * Catalog class
  * Created by TAP from FOXINY with ❤
  */
-class Catalog {
+export default class Catalog {
   /**
    * Object declaration
    * @param {String} id id of item
@@ -54,7 +21,7 @@ class Catalog {
 
   /**
    * get category by id in catalog tree
-   * //@param {String} id id of item
+   * @param {String} id id of item
    * @param {Object} node a node of catalog
    * @param {Array} done contains traversed ids
    */
@@ -118,7 +85,7 @@ class Catalog {
   // }
 
   // getRoot() {
-  //   if (node.name === "ROOT") {
+  //   if (node.name === 'ROOT') {
   //     return node;
   //   } else {
   //     done.push(node.id);

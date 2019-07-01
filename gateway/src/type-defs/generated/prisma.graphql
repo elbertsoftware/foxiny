@@ -1,5 +1,5 @@
 # source: http://localhost:4466/foxiny/dev
-# timestamp: Mon Jun 24 2019 21:56:02 GMT+0700 (Indochina Time)
+# timestamp: Fri Jun 28 2019 17:57:03 GMT+0700 (Indochina Time)
 
 type Address implements Node {
   id: ID!
@@ -1237,7 +1237,7 @@ type AggregateBrand {
   count: Int!
 }
 
-type AggregateCategory {
+type AggregateCatalog {
   count: Int!
 }
 
@@ -1333,7 +1333,7 @@ type AggregateTrans_Brand {
   count: Int!
 }
 
-type AggregateTrans_Category {
+type AggregateTrans_Catalog {
   count: Int!
 }
 
@@ -2184,77 +2184,81 @@ input BrandWhereUniqueInput {
   brandName: String
 }
 
-type Category implements Node {
+type Catalog implements Node {
   id: ID!
   _version: Int!
   name: String
-  parentId(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category!]
+  parentId(where: CatalogWhereInput, orderBy: CatalogOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Catalog!]
+  children(where: CatalogWhereInput, orderBy: CatalogOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Catalog!]
   productTemplates(where: ProductTemplateWhereInput, orderBy: ProductTemplateOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductTemplate!]
-  trans_name(where: Trans_CategoryWhereInput, orderBy: Trans_CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Trans_Category!]
+  trans_name(where: Trans_CatalogWhereInput, orderBy: Trans_CatalogOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Trans_Catalog!]
   createdAt: DateTime!
   updatedAt: DateTime!
 }
 
 """A connection to a list of items."""
-type CategoryConnection {
+type CatalogConnection {
   """Information to aid in pagination."""
   pageInfo: PageInfo!
 
   """A list of edges."""
-  edges: [CategoryEdge]!
-  aggregate: AggregateCategory!
+  edges: [CatalogEdge]!
+  aggregate: AggregateCatalog!
 }
 
-input CategoryCreateInput {
+input CatalogCreateInput {
   id: ID
   _version: Int
   name: String
-  parentId: CategoryCreateManyInput
-  productTemplates: ProductTemplateCreateManyWithoutCategoryInput
-  trans_name: Trans_CategoryCreateManyWithoutCategoryInput
+  parentId: CatalogCreateManyInput
+  children: CatalogCreateManyInput
+  productTemplates: ProductTemplateCreateManyWithoutCatalogInput
+  trans_name: Trans_CatalogCreateManyWithoutCatalogInput
 }
 
-input CategoryCreateManyInput {
-  create: [CategoryCreateInput!]
-  connect: [CategoryWhereUniqueInput!]
+input CatalogCreateManyInput {
+  create: [CatalogCreateInput!]
+  connect: [CatalogWhereUniqueInput!]
 }
 
-input CategoryCreateManyWithoutProductTemplatesInput {
-  create: [CategoryCreateWithoutProductTemplatesInput!]
-  connect: [CategoryWhereUniqueInput!]
+input CatalogCreateManyWithoutProductTemplatesInput {
+  create: [CatalogCreateWithoutProductTemplatesInput!]
+  connect: [CatalogWhereUniqueInput!]
 }
 
-input CategoryCreateOneWithoutTrans_nameInput {
-  create: CategoryCreateWithoutTrans_nameInput
-  connect: CategoryWhereUniqueInput
+input CatalogCreateOneWithoutTrans_nameInput {
+  create: CatalogCreateWithoutTrans_nameInput
+  connect: CatalogWhereUniqueInput
 }
 
-input CategoryCreateWithoutProductTemplatesInput {
+input CatalogCreateWithoutProductTemplatesInput {
   id: ID
   _version: Int
   name: String
-  parentId: CategoryCreateManyInput
-  trans_name: Trans_CategoryCreateManyWithoutCategoryInput
+  parentId: CatalogCreateManyInput
+  children: CatalogCreateManyInput
+  trans_name: Trans_CatalogCreateManyWithoutCatalogInput
 }
 
-input CategoryCreateWithoutTrans_nameInput {
+input CatalogCreateWithoutTrans_nameInput {
   id: ID
   _version: Int
   name: String
-  parentId: CategoryCreateManyInput
-  productTemplates: ProductTemplateCreateManyWithoutCategoryInput
+  parentId: CatalogCreateManyInput
+  children: CatalogCreateManyInput
+  productTemplates: ProductTemplateCreateManyWithoutCatalogInput
 }
 
 """An edge in a connection."""
-type CategoryEdge {
+type CatalogEdge {
   """The item at the end of the edge."""
-  node: Category!
+  node: Catalog!
 
   """A cursor for use in pagination."""
   cursor: String!
 }
 
-enum CategoryOrderByInput {
+enum CatalogOrderByInput {
   id_ASC
   id_DESC
   _version_ASC
@@ -2267,7 +2271,7 @@ enum CategoryOrderByInput {
   updatedAt_DESC
 }
 
-type CategoryPreviousValues {
+type CatalogPreviousValues {
   id: ID!
   _version: Int!
   name: String
@@ -2275,15 +2279,15 @@ type CategoryPreviousValues {
   updatedAt: DateTime!
 }
 
-input CategoryScalarWhereInput {
+input CatalogScalarWhereInput {
   """Logical AND on all given filters."""
-  AND: [CategoryScalarWhereInput!]
+  AND: [CatalogScalarWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [CategoryScalarWhereInput!]
+  OR: [CatalogScalarWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [CategoryScalarWhereInput!]
+  NOT: [CatalogScalarWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -2432,22 +2436,22 @@ input CategoryScalarWhereInput {
   updatedAt_gte: DateTime
 }
 
-type CategorySubscriptionPayload {
+type CatalogSubscriptionPayload {
   mutation: MutationType!
-  node: Category
+  node: Catalog
   updatedFields: [String!]
-  previousValues: CategoryPreviousValues
+  previousValues: CatalogPreviousValues
 }
 
-input CategorySubscriptionWhereInput {
+input CatalogSubscriptionWhereInput {
   """Logical AND on all given filters."""
-  AND: [CategorySubscriptionWhereInput!]
+  AND: [CatalogSubscriptionWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [CategorySubscriptionWhereInput!]
+  OR: [CatalogSubscriptionWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [CategorySubscriptionWhereInput!]
+  NOT: [CatalogSubscriptionWhereInput!]
 
   """
   The subscription event gets dispatched when it's listed in mutation_in
@@ -2468,123 +2472,127 @@ input CategorySubscriptionWhereInput {
   The subscription event gets only dispatched when some of the field names included in this list have been updated
   """
   updatedFields_contains_some: [String!]
-  node: CategoryWhereInput
+  node: CatalogWhereInput
 }
 
-input CategoryUpdateDataInput {
+input CatalogUpdateDataInput {
   _version: Int
   name: String
-  parentId: CategoryUpdateManyInput
-  productTemplates: ProductTemplateUpdateManyWithoutCategoryInput
-  trans_name: Trans_CategoryUpdateManyWithoutCategoryInput
+  parentId: CatalogUpdateManyInput
+  children: CatalogUpdateManyInput
+  productTemplates: ProductTemplateUpdateManyWithoutCatalogInput
+  trans_name: Trans_CatalogUpdateManyWithoutCatalogInput
 }
 
-input CategoryUpdateInput {
+input CatalogUpdateInput {
   _version: Int
   name: String
-  parentId: CategoryUpdateManyInput
-  productTemplates: ProductTemplateUpdateManyWithoutCategoryInput
-  trans_name: Trans_CategoryUpdateManyWithoutCategoryInput
+  parentId: CatalogUpdateManyInput
+  children: CatalogUpdateManyInput
+  productTemplates: ProductTemplateUpdateManyWithoutCatalogInput
+  trans_name: Trans_CatalogUpdateManyWithoutCatalogInput
 }
 
-input CategoryUpdateManyDataInput {
-  _version: Int
-  name: String
-}
-
-input CategoryUpdateManyInput {
-  create: [CategoryCreateInput!]
-  connect: [CategoryWhereUniqueInput!]
-  set: [CategoryWhereUniqueInput!]
-  disconnect: [CategoryWhereUniqueInput!]
-  delete: [CategoryWhereUniqueInput!]
-  update: [CategoryUpdateWithWhereUniqueNestedInput!]
-  updateMany: [CategoryUpdateManyWithWhereNestedInput!]
-  deleteMany: [CategoryScalarWhereInput!]
-  upsert: [CategoryUpsertWithWhereUniqueNestedInput!]
-}
-
-input CategoryUpdateManyMutationInput {
+input CatalogUpdateManyDataInput {
   _version: Int
   name: String
 }
 
-input CategoryUpdateManyWithoutProductTemplatesInput {
-  create: [CategoryCreateWithoutProductTemplatesInput!]
-  connect: [CategoryWhereUniqueInput!]
-  set: [CategoryWhereUniqueInput!]
-  disconnect: [CategoryWhereUniqueInput!]
-  delete: [CategoryWhereUniqueInput!]
-  update: [CategoryUpdateWithWhereUniqueWithoutProductTemplatesInput!]
-  updateMany: [CategoryUpdateManyWithWhereNestedInput!]
-  deleteMany: [CategoryScalarWhereInput!]
-  upsert: [CategoryUpsertWithWhereUniqueWithoutProductTemplatesInput!]
+input CatalogUpdateManyInput {
+  create: [CatalogCreateInput!]
+  connect: [CatalogWhereUniqueInput!]
+  set: [CatalogWhereUniqueInput!]
+  disconnect: [CatalogWhereUniqueInput!]
+  delete: [CatalogWhereUniqueInput!]
+  update: [CatalogUpdateWithWhereUniqueNestedInput!]
+  updateMany: [CatalogUpdateManyWithWhereNestedInput!]
+  deleteMany: [CatalogScalarWhereInput!]
+  upsert: [CatalogUpsertWithWhereUniqueNestedInput!]
 }
 
-input CategoryUpdateManyWithWhereNestedInput {
-  where: CategoryScalarWhereInput!
-  data: CategoryUpdateManyDataInput!
+input CatalogUpdateManyMutationInput {
+  _version: Int
+  name: String
 }
 
-input CategoryUpdateOneWithoutTrans_nameInput {
-  create: CategoryCreateWithoutTrans_nameInput
-  connect: CategoryWhereUniqueInput
+input CatalogUpdateManyWithoutProductTemplatesInput {
+  create: [CatalogCreateWithoutProductTemplatesInput!]
+  connect: [CatalogWhereUniqueInput!]
+  set: [CatalogWhereUniqueInput!]
+  disconnect: [CatalogWhereUniqueInput!]
+  delete: [CatalogWhereUniqueInput!]
+  update: [CatalogUpdateWithWhereUniqueWithoutProductTemplatesInput!]
+  updateMany: [CatalogUpdateManyWithWhereNestedInput!]
+  deleteMany: [CatalogScalarWhereInput!]
+  upsert: [CatalogUpsertWithWhereUniqueWithoutProductTemplatesInput!]
+}
+
+input CatalogUpdateManyWithWhereNestedInput {
+  where: CatalogScalarWhereInput!
+  data: CatalogUpdateManyDataInput!
+}
+
+input CatalogUpdateOneWithoutTrans_nameInput {
+  create: CatalogCreateWithoutTrans_nameInput
+  connect: CatalogWhereUniqueInput
   disconnect: Boolean
   delete: Boolean
-  update: CategoryUpdateWithoutTrans_nameDataInput
-  upsert: CategoryUpsertWithoutTrans_nameInput
+  update: CatalogUpdateWithoutTrans_nameDataInput
+  upsert: CatalogUpsertWithoutTrans_nameInput
 }
 
-input CategoryUpdateWithoutProductTemplatesDataInput {
+input CatalogUpdateWithoutProductTemplatesDataInput {
   _version: Int
   name: String
-  parentId: CategoryUpdateManyInput
-  trans_name: Trans_CategoryUpdateManyWithoutCategoryInput
+  parentId: CatalogUpdateManyInput
+  children: CatalogUpdateManyInput
+  trans_name: Trans_CatalogUpdateManyWithoutCatalogInput
 }
 
-input CategoryUpdateWithoutTrans_nameDataInput {
+input CatalogUpdateWithoutTrans_nameDataInput {
   _version: Int
   name: String
-  parentId: CategoryUpdateManyInput
-  productTemplates: ProductTemplateUpdateManyWithoutCategoryInput
+  parentId: CatalogUpdateManyInput
+  children: CatalogUpdateManyInput
+  productTemplates: ProductTemplateUpdateManyWithoutCatalogInput
 }
 
-input CategoryUpdateWithWhereUniqueNestedInput {
-  where: CategoryWhereUniqueInput!
-  data: CategoryUpdateDataInput!
+input CatalogUpdateWithWhereUniqueNestedInput {
+  where: CatalogWhereUniqueInput!
+  data: CatalogUpdateDataInput!
 }
 
-input CategoryUpdateWithWhereUniqueWithoutProductTemplatesInput {
-  where: CategoryWhereUniqueInput!
-  data: CategoryUpdateWithoutProductTemplatesDataInput!
+input CatalogUpdateWithWhereUniqueWithoutProductTemplatesInput {
+  where: CatalogWhereUniqueInput!
+  data: CatalogUpdateWithoutProductTemplatesDataInput!
 }
 
-input CategoryUpsertWithoutTrans_nameInput {
-  update: CategoryUpdateWithoutTrans_nameDataInput!
-  create: CategoryCreateWithoutTrans_nameInput!
+input CatalogUpsertWithoutTrans_nameInput {
+  update: CatalogUpdateWithoutTrans_nameDataInput!
+  create: CatalogCreateWithoutTrans_nameInput!
 }
 
-input CategoryUpsertWithWhereUniqueNestedInput {
-  where: CategoryWhereUniqueInput!
-  update: CategoryUpdateDataInput!
-  create: CategoryCreateInput!
+input CatalogUpsertWithWhereUniqueNestedInput {
+  where: CatalogWhereUniqueInput!
+  update: CatalogUpdateDataInput!
+  create: CatalogCreateInput!
 }
 
-input CategoryUpsertWithWhereUniqueWithoutProductTemplatesInput {
-  where: CategoryWhereUniqueInput!
-  update: CategoryUpdateWithoutProductTemplatesDataInput!
-  create: CategoryCreateWithoutProductTemplatesInput!
+input CatalogUpsertWithWhereUniqueWithoutProductTemplatesInput {
+  where: CatalogWhereUniqueInput!
+  update: CatalogUpdateWithoutProductTemplatesDataInput!
+  create: CatalogCreateWithoutProductTemplatesInput!
 }
 
-input CategoryWhereInput {
+input CatalogWhereInput {
   """Logical AND on all given filters."""
-  AND: [CategoryWhereInput!]
+  AND: [CatalogWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [CategoryWhereInput!]
+  OR: [CatalogWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [CategoryWhereInput!]
+  NOT: [CatalogWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -2731,18 +2739,21 @@ input CategoryWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
-  parentId_every: CategoryWhereInput
-  parentId_some: CategoryWhereInput
-  parentId_none: CategoryWhereInput
+  parentId_every: CatalogWhereInput
+  parentId_some: CatalogWhereInput
+  parentId_none: CatalogWhereInput
+  children_every: CatalogWhereInput
+  children_some: CatalogWhereInput
+  children_none: CatalogWhereInput
   productTemplates_every: ProductTemplateWhereInput
   productTemplates_some: ProductTemplateWhereInput
   productTemplates_none: ProductTemplateWhereInput
-  trans_name_every: Trans_CategoryWhereInput
-  trans_name_some: Trans_CategoryWhereInput
-  trans_name_none: Trans_CategoryWhereInput
+  trans_name_every: Trans_CatalogWhereInput
+  trans_name_some: Trans_CatalogWhereInput
+  trans_name_none: Trans_CatalogWhereInput
 }
 
-input CategoryWhereUniqueInput {
+input CatalogWhereUniqueInput {
   id: ID
   name: String
 }
@@ -3230,7 +3241,7 @@ type Language implements Node {
   id: ID!
   _version: Int!
   languageCode: String
-  trans_category(where: Trans_CategoryWhereInput, orderBy: Trans_CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Trans_Category!]
+  trans_catalog(where: Trans_CatalogWhereInput, orderBy: Trans_CatalogOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Trans_Catalog!]
   trans_brand(where: Trans_BrandWhereInput, orderBy: Trans_BrandOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Trans_Brand!]
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -3250,7 +3261,7 @@ input LanguageCreateInput {
   id: ID
   _version: Int
   languageCode: String
-  trans_category: Trans_CategoryCreateManyWithoutLanguageInput
+  trans_catalog: Trans_CatalogCreateManyWithoutLanguageInput
   trans_brand: Trans_BrandCreateManyWithoutLanguageInput
 }
 
@@ -3259,8 +3270,8 @@ input LanguageCreateOneWithoutTrans_brandInput {
   connect: LanguageWhereUniqueInput
 }
 
-input LanguageCreateOneWithoutTrans_categoryInput {
-  create: LanguageCreateWithoutTrans_categoryInput
+input LanguageCreateOneWithoutTrans_catalogInput {
+  create: LanguageCreateWithoutTrans_catalogInput
   connect: LanguageWhereUniqueInput
 }
 
@@ -3268,10 +3279,10 @@ input LanguageCreateWithoutTrans_brandInput {
   id: ID
   _version: Int
   languageCode: String
-  trans_category: Trans_CategoryCreateManyWithoutLanguageInput
+  trans_catalog: Trans_CatalogCreateManyWithoutLanguageInput
 }
 
-input LanguageCreateWithoutTrans_categoryInput {
+input LanguageCreateWithoutTrans_catalogInput {
   id: ID
   _version: Int
   languageCode: String
@@ -3350,7 +3361,7 @@ input LanguageSubscriptionWhereInput {
 input LanguageUpdateInput {
   _version: Int
   languageCode: String
-  trans_category: Trans_CategoryUpdateManyWithoutLanguageInput
+  trans_catalog: Trans_CatalogUpdateManyWithoutLanguageInput
   trans_brand: Trans_BrandUpdateManyWithoutLanguageInput
 }
 
@@ -3368,22 +3379,22 @@ input LanguageUpdateOneWithoutTrans_brandInput {
   upsert: LanguageUpsertWithoutTrans_brandInput
 }
 
-input LanguageUpdateOneWithoutTrans_categoryInput {
-  create: LanguageCreateWithoutTrans_categoryInput
+input LanguageUpdateOneWithoutTrans_catalogInput {
+  create: LanguageCreateWithoutTrans_catalogInput
   connect: LanguageWhereUniqueInput
   disconnect: Boolean
   delete: Boolean
-  update: LanguageUpdateWithoutTrans_categoryDataInput
-  upsert: LanguageUpsertWithoutTrans_categoryInput
+  update: LanguageUpdateWithoutTrans_catalogDataInput
+  upsert: LanguageUpsertWithoutTrans_catalogInput
 }
 
 input LanguageUpdateWithoutTrans_brandDataInput {
   _version: Int
   languageCode: String
-  trans_category: Trans_CategoryUpdateManyWithoutLanguageInput
+  trans_catalog: Trans_CatalogUpdateManyWithoutLanguageInput
 }
 
-input LanguageUpdateWithoutTrans_categoryDataInput {
+input LanguageUpdateWithoutTrans_catalogDataInput {
   _version: Int
   languageCode: String
   trans_brand: Trans_BrandUpdateManyWithoutLanguageInput
@@ -3394,9 +3405,9 @@ input LanguageUpsertWithoutTrans_brandInput {
   create: LanguageCreateWithoutTrans_brandInput!
 }
 
-input LanguageUpsertWithoutTrans_categoryInput {
-  update: LanguageUpdateWithoutTrans_categoryDataInput!
-  create: LanguageCreateWithoutTrans_categoryInput!
+input LanguageUpsertWithoutTrans_catalogInput {
+  update: LanguageUpdateWithoutTrans_catalogDataInput!
+  create: LanguageCreateWithoutTrans_catalogInput!
 }
 
 input LanguageWhereInput {
@@ -3554,9 +3565,9 @@ input LanguageWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
-  trans_category_every: Trans_CategoryWhereInput
-  trans_category_some: Trans_CategoryWhereInput
-  trans_category_none: Trans_CategoryWhereInput
+  trans_catalog_every: Trans_CatalogWhereInput
+  trans_catalog_some: Trans_CatalogWhereInput
+  trans_catalog_none: Trans_CatalogWhereInput
   trans_brand_every: Trans_BrandWhereInput
   trans_brand_some: Trans_BrandWhereInput
   trans_brand_none: Trans_BrandWhereInput
@@ -5451,14 +5462,14 @@ type Mutation {
   createSupportCase(data: SupportCaseCreateInput!): SupportCase!
   createSupportCorrespondence(data: SupportCorrespondenceCreateInput!): SupportCorrespondence!
   createLanguage(data: LanguageCreateInput!): Language!
-  createTrans_Category(data: Trans_CategoryCreateInput!): Trans_Category!
+  createTrans_Catalog(data: Trans_CatalogCreateInput!): Trans_Catalog!
   createTrans_Brand(data: Trans_BrandCreateInput!): Trans_Brand!
   createProductOption(data: ProductOptionCreateInput!): ProductOption!
   createSupportStatus(data: SupportStatusCreateInput!): SupportStatus!
   createProduct(data: ProductCreateInput!): Product!
   createSupportCategory(data: SupportCategoryCreateInput!): SupportCategory!
+  createCatalog(data: CatalogCreateInput!): Catalog!
   createPermission(data: PermissionCreateInput!): Permission!
-  createCategory(data: CategoryCreateInput!): Category!
   createUser(data: UserCreateInput!): User!
   createAddress(data: AddressCreateInput!): Address!
   createMedia(data: MediaCreateInput!): Media!
@@ -5480,14 +5491,14 @@ type Mutation {
   updateSupportCase(data: SupportCaseUpdateInput!, where: SupportCaseWhereUniqueInput!): SupportCase
   updateSupportCorrespondence(data: SupportCorrespondenceUpdateInput!, where: SupportCorrespondenceWhereUniqueInput!): SupportCorrespondence
   updateLanguage(data: LanguageUpdateInput!, where: LanguageWhereUniqueInput!): Language
-  updateTrans_Category(data: Trans_CategoryUpdateInput!, where: Trans_CategoryWhereUniqueInput!): Trans_Category
+  updateTrans_Catalog(data: Trans_CatalogUpdateInput!, where: Trans_CatalogWhereUniqueInput!): Trans_Catalog
   updateTrans_Brand(data: Trans_BrandUpdateInput!, where: Trans_BrandWhereUniqueInput!): Trans_Brand
   updateProductOption(data: ProductOptionUpdateInput!, where: ProductOptionWhereUniqueInput!): ProductOption
   updateSupportStatus(data: SupportStatusUpdateInput!, where: SupportStatusWhereUniqueInput!): SupportStatus
   updateProduct(data: ProductUpdateInput!, where: ProductWhereUniqueInput!): Product
   updateSupportCategory(data: SupportCategoryUpdateInput!, where: SupportCategoryWhereUniqueInput!): SupportCategory
+  updateCatalog(data: CatalogUpdateInput!, where: CatalogWhereUniqueInput!): Catalog
   updatePermission(data: PermissionUpdateInput!, where: PermissionWhereUniqueInput!): Permission
-  updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateAddress(data: AddressUpdateInput!, where: AddressWhereUniqueInput!): Address
   updateMedia(data: MediaUpdateInput!, where: MediaWhereUniqueInput!): Media
@@ -5509,14 +5520,14 @@ type Mutation {
   deleteSupportCase(where: SupportCaseWhereUniqueInput!): SupportCase
   deleteSupportCorrespondence(where: SupportCorrespondenceWhereUniqueInput!): SupportCorrespondence
   deleteLanguage(where: LanguageWhereUniqueInput!): Language
-  deleteTrans_Category(where: Trans_CategoryWhereUniqueInput!): Trans_Category
+  deleteTrans_Catalog(where: Trans_CatalogWhereUniqueInput!): Trans_Catalog
   deleteTrans_Brand(where: Trans_BrandWhereUniqueInput!): Trans_Brand
   deleteProductOption(where: ProductOptionWhereUniqueInput!): ProductOption
   deleteSupportStatus(where: SupportStatusWhereUniqueInput!): SupportStatus
   deleteProduct(where: ProductWhereUniqueInput!): Product
   deleteSupportCategory(where: SupportCategoryWhereUniqueInput!): SupportCategory
+  deleteCatalog(where: CatalogWhereUniqueInput!): Catalog
   deletePermission(where: PermissionWhereUniqueInput!): Permission
-  deleteCategory(where: CategoryWhereUniqueInput!): Category
   deleteUser(where: UserWhereUniqueInput!): User
   deleteAddress(where: AddressWhereUniqueInput!): Address
   deleteMedia(where: MediaWhereUniqueInput!): Media
@@ -5538,14 +5549,14 @@ type Mutation {
   upsertSupportCase(where: SupportCaseWhereUniqueInput!, create: SupportCaseCreateInput!, update: SupportCaseUpdateInput!): SupportCase!
   upsertSupportCorrespondence(where: SupportCorrespondenceWhereUniqueInput!, create: SupportCorrespondenceCreateInput!, update: SupportCorrespondenceUpdateInput!): SupportCorrespondence!
   upsertLanguage(where: LanguageWhereUniqueInput!, create: LanguageCreateInput!, update: LanguageUpdateInput!): Language!
-  upsertTrans_Category(where: Trans_CategoryWhereUniqueInput!, create: Trans_CategoryCreateInput!, update: Trans_CategoryUpdateInput!): Trans_Category!
+  upsertTrans_Catalog(where: Trans_CatalogWhereUniqueInput!, create: Trans_CatalogCreateInput!, update: Trans_CatalogUpdateInput!): Trans_Catalog!
   upsertTrans_Brand(where: Trans_BrandWhereUniqueInput!, create: Trans_BrandCreateInput!, update: Trans_BrandUpdateInput!): Trans_Brand!
   upsertProductOption(where: ProductOptionWhereUniqueInput!, create: ProductOptionCreateInput!, update: ProductOptionUpdateInput!): ProductOption!
   upsertSupportStatus(where: SupportStatusWhereUniqueInput!, create: SupportStatusCreateInput!, update: SupportStatusUpdateInput!): SupportStatus!
   upsertProduct(where: ProductWhereUniqueInput!, create: ProductCreateInput!, update: ProductUpdateInput!): Product!
   upsertSupportCategory(where: SupportCategoryWhereUniqueInput!, create: SupportCategoryCreateInput!, update: SupportCategoryUpdateInput!): SupportCategory!
+  upsertCatalog(where: CatalogWhereUniqueInput!, create: CatalogCreateInput!, update: CatalogUpdateInput!): Catalog!
   upsertPermission(where: PermissionWhereUniqueInput!, create: PermissionCreateInput!, update: PermissionUpdateInput!): Permission!
-  upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertAddress(where: AddressWhereUniqueInput!, create: AddressCreateInput!, update: AddressUpdateInput!): Address!
   upsertMedia(where: MediaWhereUniqueInput!, create: MediaCreateInput!, update: MediaUpdateInput!): Media!
@@ -5567,14 +5578,14 @@ type Mutation {
   updateManySupportCases(data: SupportCaseUpdateManyMutationInput!, where: SupportCaseWhereInput): BatchPayload!
   updateManySupportCorrespondences(data: SupportCorrespondenceUpdateManyMutationInput!, where: SupportCorrespondenceWhereInput): BatchPayload!
   updateManyLanguages(data: LanguageUpdateManyMutationInput!, where: LanguageWhereInput): BatchPayload!
-  updateManyTrans_Categories(data: Trans_CategoryUpdateManyMutationInput!, where: Trans_CategoryWhereInput): BatchPayload!
+  updateManyTrans_Catalogs(data: Trans_CatalogUpdateManyMutationInput!, where: Trans_CatalogWhereInput): BatchPayload!
   updateManyTrans_Brands(data: Trans_BrandUpdateManyMutationInput!, where: Trans_BrandWhereInput): BatchPayload!
   updateManyProductOptions(data: ProductOptionUpdateManyMutationInput!, where: ProductOptionWhereInput): BatchPayload!
   updateManySupportStatuses(data: SupportStatusUpdateManyMutationInput!, where: SupportStatusWhereInput): BatchPayload!
   updateManyProducts(data: ProductUpdateManyMutationInput!, where: ProductWhereInput): BatchPayload!
   updateManySupportCategories(data: SupportCategoryUpdateManyMutationInput!, where: SupportCategoryWhereInput): BatchPayload!
+  updateManyCatalogs(data: CatalogUpdateManyMutationInput!, where: CatalogWhereInput): BatchPayload!
   updateManyPermissions(data: PermissionUpdateManyMutationInput!, where: PermissionWhereInput): BatchPayload!
-  updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyAddresses(data: AddressUpdateManyMutationInput!, where: AddressWhereInput): BatchPayload!
   updateManyMedias(data: MediaUpdateManyMutationInput!, where: MediaWhereInput): BatchPayload!
@@ -5596,14 +5607,14 @@ type Mutation {
   deleteManySupportCases(where: SupportCaseWhereInput): BatchPayload!
   deleteManySupportCorrespondences(where: SupportCorrespondenceWhereInput): BatchPayload!
   deleteManyLanguages(where: LanguageWhereInput): BatchPayload!
-  deleteManyTrans_Categories(where: Trans_CategoryWhereInput): BatchPayload!
+  deleteManyTrans_Catalogs(where: Trans_CatalogWhereInput): BatchPayload!
   deleteManyTrans_Brands(where: Trans_BrandWhereInput): BatchPayload!
   deleteManyProductOptions(where: ProductOptionWhereInput): BatchPayload!
   deleteManySupportStatuses(where: SupportStatusWhereInput): BatchPayload!
   deleteManyProducts(where: ProductWhereInput): BatchPayload!
   deleteManySupportCategories(where: SupportCategoryWhereInput): BatchPayload!
+  deleteManyCatalogs(where: CatalogWhereInput): BatchPayload!
   deleteManyPermissions(where: PermissionWhereInput): BatchPayload!
-  deleteManyCategories(where: CategoryWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyAddresses(where: AddressWhereInput): BatchPayload!
   deleteManyMedias(where: MediaWhereInput): BatchPayload!
@@ -8768,7 +8779,7 @@ type ProductTemplate implements Node {
   _version: Int!
   name: String
   briefDescription: String
-  category(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category!]
+  catalog(where: CatalogWhereInput, orderBy: CatalogOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Catalog!]
   products(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Product!]
   brand: Brand
   descriptions(where: DescriptionWhereInput, orderBy: DescriptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Description!]
@@ -8791,7 +8802,7 @@ input ProductTemplateCreateInput {
   _version: Int
   name: String
   briefDescription: String
-  category: CategoryCreateManyWithoutProductTemplatesInput
+  catalog: CatalogCreateManyWithoutProductTemplatesInput
   products: ProductCreateManyWithoutProductTemplateInput
   brand: BrandCreateOneWithoutProductTemplatesInput
   descriptions: DescriptionCreateManyInput
@@ -8802,8 +8813,8 @@ input ProductTemplateCreateManyWithoutBrandInput {
   connect: [ProductTemplateWhereUniqueInput!]
 }
 
-input ProductTemplateCreateManyWithoutCategoryInput {
-  create: [ProductTemplateCreateWithoutCategoryInput!]
+input ProductTemplateCreateManyWithoutCatalogInput {
+  create: [ProductTemplateCreateWithoutCatalogInput!]
   connect: [ProductTemplateWhereUniqueInput!]
 }
 
@@ -8817,12 +8828,12 @@ input ProductTemplateCreateWithoutBrandInput {
   _version: Int
   name: String
   briefDescription: String
-  category: CategoryCreateManyWithoutProductTemplatesInput
+  catalog: CatalogCreateManyWithoutProductTemplatesInput
   products: ProductCreateManyWithoutProductTemplateInput
   descriptions: DescriptionCreateManyInput
 }
 
-input ProductTemplateCreateWithoutCategoryInput {
+input ProductTemplateCreateWithoutCatalogInput {
   id: ID
   _version: Int
   name: String
@@ -8837,7 +8848,7 @@ input ProductTemplateCreateWithoutProductsInput {
   _version: Int
   name: String
   briefDescription: String
-  category: CategoryCreateManyWithoutProductTemplatesInput
+  catalog: CatalogCreateManyWithoutProductTemplatesInput
   brand: BrandCreateOneWithoutProductTemplatesInput
   descriptions: DescriptionCreateManyInput
 }
@@ -9115,7 +9126,7 @@ input ProductTemplateUpdateInput {
   _version: Int
   name: String
   briefDescription: String
-  category: CategoryUpdateManyWithoutProductTemplatesInput
+  catalog: CatalogUpdateManyWithoutProductTemplatesInput
   products: ProductUpdateManyWithoutProductTemplateInput
   brand: BrandUpdateOneWithoutProductTemplatesInput
   descriptions: DescriptionUpdateManyInput
@@ -9145,16 +9156,16 @@ input ProductTemplateUpdateManyWithoutBrandInput {
   upsert: [ProductTemplateUpsertWithWhereUniqueWithoutBrandInput!]
 }
 
-input ProductTemplateUpdateManyWithoutCategoryInput {
-  create: [ProductTemplateCreateWithoutCategoryInput!]
+input ProductTemplateUpdateManyWithoutCatalogInput {
+  create: [ProductTemplateCreateWithoutCatalogInput!]
   connect: [ProductTemplateWhereUniqueInput!]
   set: [ProductTemplateWhereUniqueInput!]
   disconnect: [ProductTemplateWhereUniqueInput!]
   delete: [ProductTemplateWhereUniqueInput!]
-  update: [ProductTemplateUpdateWithWhereUniqueWithoutCategoryInput!]
+  update: [ProductTemplateUpdateWithWhereUniqueWithoutCatalogInput!]
   updateMany: [ProductTemplateUpdateManyWithWhereNestedInput!]
   deleteMany: [ProductTemplateScalarWhereInput!]
-  upsert: [ProductTemplateUpsertWithWhereUniqueWithoutCategoryInput!]
+  upsert: [ProductTemplateUpsertWithWhereUniqueWithoutCatalogInput!]
 }
 
 input ProductTemplateUpdateManyWithWhereNestedInput {
@@ -9175,12 +9186,12 @@ input ProductTemplateUpdateWithoutBrandDataInput {
   _version: Int
   name: String
   briefDescription: String
-  category: CategoryUpdateManyWithoutProductTemplatesInput
+  catalog: CatalogUpdateManyWithoutProductTemplatesInput
   products: ProductUpdateManyWithoutProductTemplateInput
   descriptions: DescriptionUpdateManyInput
 }
 
-input ProductTemplateUpdateWithoutCategoryDataInput {
+input ProductTemplateUpdateWithoutCatalogDataInput {
   _version: Int
   name: String
   briefDescription: String
@@ -9193,7 +9204,7 @@ input ProductTemplateUpdateWithoutProductsDataInput {
   _version: Int
   name: String
   briefDescription: String
-  category: CategoryUpdateManyWithoutProductTemplatesInput
+  catalog: CatalogUpdateManyWithoutProductTemplatesInput
   brand: BrandUpdateOneWithoutProductTemplatesInput
   descriptions: DescriptionUpdateManyInput
 }
@@ -9203,9 +9214,9 @@ input ProductTemplateUpdateWithWhereUniqueWithoutBrandInput {
   data: ProductTemplateUpdateWithoutBrandDataInput!
 }
 
-input ProductTemplateUpdateWithWhereUniqueWithoutCategoryInput {
+input ProductTemplateUpdateWithWhereUniqueWithoutCatalogInput {
   where: ProductTemplateWhereUniqueInput!
-  data: ProductTemplateUpdateWithoutCategoryDataInput!
+  data: ProductTemplateUpdateWithoutCatalogDataInput!
 }
 
 input ProductTemplateUpsertWithoutProductsInput {
@@ -9219,10 +9230,10 @@ input ProductTemplateUpsertWithWhereUniqueWithoutBrandInput {
   create: ProductTemplateCreateWithoutBrandInput!
 }
 
-input ProductTemplateUpsertWithWhereUniqueWithoutCategoryInput {
+input ProductTemplateUpsertWithWhereUniqueWithoutCatalogInput {
   where: ProductTemplateWhereUniqueInput!
-  update: ProductTemplateUpdateWithoutCategoryDataInput!
-  create: ProductTemplateCreateWithoutCategoryInput!
+  update: ProductTemplateUpdateWithoutCatalogDataInput!
+  create: ProductTemplateCreateWithoutCatalogInput!
 }
 
 input ProductTemplateWhereInput {
@@ -9420,9 +9431,9 @@ input ProductTemplateWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
-  category_every: CategoryWhereInput
-  category_some: CategoryWhereInput
-  category_none: CategoryWhereInput
+  catalog_every: CatalogWhereInput
+  catalog_some: CatalogWhereInput
+  catalog_none: CatalogWhereInput
   products_every: ProductWhereInput
   products_some: ProductWhereInput
   products_none: ProductWhereInput
@@ -9723,14 +9734,14 @@ type Query {
   supportCases(where: SupportCaseWhereInput, orderBy: SupportCaseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SupportCase]!
   supportCorrespondences(where: SupportCorrespondenceWhereInput, orderBy: SupportCorrespondenceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SupportCorrespondence]!
   languages(where: LanguageWhereInput, orderBy: LanguageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Language]!
-  trans_Categories(where: Trans_CategoryWhereInput, orderBy: Trans_CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Trans_Category]!
+  trans_Catalogs(where: Trans_CatalogWhereInput, orderBy: Trans_CatalogOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Trans_Catalog]!
   trans_Brands(where: Trans_BrandWhereInput, orderBy: Trans_BrandOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Trans_Brand]!
   productOptions(where: ProductOptionWhereInput, orderBy: ProductOptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductOption]!
   supportStatuses(where: SupportStatusWhereInput, orderBy: SupportStatusOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SupportStatus]!
   products(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Product]!
   supportCategories(where: SupportCategoryWhereInput, orderBy: SupportCategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SupportCategory]!
+  catalogs(where: CatalogWhereInput, orderBy: CatalogOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Catalog]!
   permissions(where: PermissionWhereInput, orderBy: PermissionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Permission]!
-  categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   addresses(where: AddressWhereInput, orderBy: AddressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Address]!
   medias(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Media]!
@@ -9752,14 +9763,14 @@ type Query {
   supportCase(where: SupportCaseWhereUniqueInput!): SupportCase
   supportCorrespondence(where: SupportCorrespondenceWhereUniqueInput!): SupportCorrespondence
   language(where: LanguageWhereUniqueInput!): Language
-  trans_Category(where: Trans_CategoryWhereUniqueInput!): Trans_Category
+  trans_Catalog(where: Trans_CatalogWhereUniqueInput!): Trans_Catalog
   trans_Brand(where: Trans_BrandWhereUniqueInput!): Trans_Brand
   productOption(where: ProductOptionWhereUniqueInput!): ProductOption
   supportStatus(where: SupportStatusWhereUniqueInput!): SupportStatus
   product(where: ProductWhereUniqueInput!): Product
   supportCategory(where: SupportCategoryWhereUniqueInput!): SupportCategory
+  catalog(where: CatalogWhereUniqueInput!): Catalog
   permission(where: PermissionWhereUniqueInput!): Permission
-  category(where: CategoryWhereUniqueInput!): Category
   user(where: UserWhereUniqueInput!): User
   address(where: AddressWhereUniqueInput!): Address
   media(where: MediaWhereUniqueInput!): Media
@@ -9781,14 +9792,14 @@ type Query {
   supportCasesConnection(where: SupportCaseWhereInput, orderBy: SupportCaseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SupportCaseConnection!
   supportCorrespondencesConnection(where: SupportCorrespondenceWhereInput, orderBy: SupportCorrespondenceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SupportCorrespondenceConnection!
   languagesConnection(where: LanguageWhereInput, orderBy: LanguageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LanguageConnection!
-  trans_CategoriesConnection(where: Trans_CategoryWhereInput, orderBy: Trans_CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): Trans_CategoryConnection!
+  trans_CatalogsConnection(where: Trans_CatalogWhereInput, orderBy: Trans_CatalogOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): Trans_CatalogConnection!
   trans_BrandsConnection(where: Trans_BrandWhereInput, orderBy: Trans_BrandOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): Trans_BrandConnection!
   productOptionsConnection(where: ProductOptionWhereInput, orderBy: ProductOptionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductOptionConnection!
   supportStatusesConnection(where: SupportStatusWhereInput, orderBy: SupportStatusOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SupportStatusConnection!
   productsConnection(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductConnection!
   supportCategoriesConnection(where: SupportCategoryWhereInput, orderBy: SupportCategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SupportCategoryConnection!
+  catalogsConnection(where: CatalogWhereInput, orderBy: CatalogOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CatalogConnection!
   permissionsConnection(where: PermissionWhereInput, orderBy: PermissionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PermissionConnection!
-  categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   addressesConnection(where: AddressWhereInput, orderBy: AddressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AddressConnection!
   mediasConnection(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MediaConnection!
@@ -10161,6 +10172,11 @@ type Retailer implements Node {
   socialNumberImages(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Media!]
   businessLicense: String
   businessLicenseImages(where: MediaWhereInput, orderBy: MediaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Media!]
+  bankAccNumber: String
+  bankAccName: String
+  bankName: String
+  bankBranch: String
+  swiftCode: String
   products(where: ProductRetailerWhereInput, orderBy: ProductRetailerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductRetailer!]
   enabled: Boolean
   createdAt: DateTime!
@@ -10186,6 +10202,11 @@ input RetailerCreateInput {
   businessLink: String
   socialNumber: String
   businessLicense: String
+  bankAccNumber: String
+  bankAccName: String
+  bankName: String
+  bankBranch: String
+  swiftCode: String
   enabled: Boolean
   owner: AssignmentCreateManyWithoutRetailersInput
   businessCover: MediaCreateOneInput
@@ -10220,6 +10241,11 @@ input RetailerCreateWithoutOwnerInput {
   businessLink: String
   socialNumber: String
   businessLicense: String
+  bankAccNumber: String
+  bankAccName: String
+  bankName: String
+  bankBranch: String
+  swiftCode: String
   enabled: Boolean
   businessCover: MediaCreateOneInput
   businessAvatar: MediaCreateOneInput
@@ -10238,6 +10264,11 @@ input RetailerCreateWithoutProductsInput {
   businessLink: String
   socialNumber: String
   businessLicense: String
+  bankAccNumber: String
+  bankAccName: String
+  bankName: String
+  bankBranch: String
+  swiftCode: String
   enabled: Boolean
   owner: AssignmentCreateManyWithoutRetailersInput
   businessCover: MediaCreateOneInput
@@ -10273,6 +10304,16 @@ enum RetailerOrderByInput {
   socialNumber_DESC
   businessLicense_ASC
   businessLicense_DESC
+  bankAccNumber_ASC
+  bankAccNumber_DESC
+  bankAccName_ASC
+  bankAccName_DESC
+  bankName_ASC
+  bankName_DESC
+  bankBranch_ASC
+  bankBranch_DESC
+  swiftCode_ASC
+  swiftCode_DESC
   enabled_ASC
   enabled_DESC
   createdAt_ASC
@@ -10290,6 +10331,11 @@ type RetailerPreviousValues {
   businessLink: String
   socialNumber: String
   businessLicense: String
+  bankAccNumber: String
+  bankAccName: String
+  bankName: String
+  bankBranch: String
+  swiftCode: String
   enabled: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -10606,6 +10652,206 @@ input RetailerScalarWhereInput {
 
   """All values not ending with the given string."""
   businessLicense_not_ends_with: String
+  bankAccNumber: String
+
+  """All values that are not equal to given value."""
+  bankAccNumber_not: String
+
+  """All values that are contained in given list."""
+  bankAccNumber_in: [String!]
+
+  """All values that are not contained in given list."""
+  bankAccNumber_not_in: [String!]
+
+  """All values less than the given value."""
+  bankAccNumber_lt: String
+
+  """All values less than or equal the given value."""
+  bankAccNumber_lte: String
+
+  """All values greater than the given value."""
+  bankAccNumber_gt: String
+
+  """All values greater than or equal the given value."""
+  bankAccNumber_gte: String
+
+  """All values containing the given string."""
+  bankAccNumber_contains: String
+
+  """All values not containing the given string."""
+  bankAccNumber_not_contains: String
+
+  """All values starting with the given string."""
+  bankAccNumber_starts_with: String
+
+  """All values not starting with the given string."""
+  bankAccNumber_not_starts_with: String
+
+  """All values ending with the given string."""
+  bankAccNumber_ends_with: String
+
+  """All values not ending with the given string."""
+  bankAccNumber_not_ends_with: String
+  bankAccName: String
+
+  """All values that are not equal to given value."""
+  bankAccName_not: String
+
+  """All values that are contained in given list."""
+  bankAccName_in: [String!]
+
+  """All values that are not contained in given list."""
+  bankAccName_not_in: [String!]
+
+  """All values less than the given value."""
+  bankAccName_lt: String
+
+  """All values less than or equal the given value."""
+  bankAccName_lte: String
+
+  """All values greater than the given value."""
+  bankAccName_gt: String
+
+  """All values greater than or equal the given value."""
+  bankAccName_gte: String
+
+  """All values containing the given string."""
+  bankAccName_contains: String
+
+  """All values not containing the given string."""
+  bankAccName_not_contains: String
+
+  """All values starting with the given string."""
+  bankAccName_starts_with: String
+
+  """All values not starting with the given string."""
+  bankAccName_not_starts_with: String
+
+  """All values ending with the given string."""
+  bankAccName_ends_with: String
+
+  """All values not ending with the given string."""
+  bankAccName_not_ends_with: String
+  bankName: String
+
+  """All values that are not equal to given value."""
+  bankName_not: String
+
+  """All values that are contained in given list."""
+  bankName_in: [String!]
+
+  """All values that are not contained in given list."""
+  bankName_not_in: [String!]
+
+  """All values less than the given value."""
+  bankName_lt: String
+
+  """All values less than or equal the given value."""
+  bankName_lte: String
+
+  """All values greater than the given value."""
+  bankName_gt: String
+
+  """All values greater than or equal the given value."""
+  bankName_gte: String
+
+  """All values containing the given string."""
+  bankName_contains: String
+
+  """All values not containing the given string."""
+  bankName_not_contains: String
+
+  """All values starting with the given string."""
+  bankName_starts_with: String
+
+  """All values not starting with the given string."""
+  bankName_not_starts_with: String
+
+  """All values ending with the given string."""
+  bankName_ends_with: String
+
+  """All values not ending with the given string."""
+  bankName_not_ends_with: String
+  bankBranch: String
+
+  """All values that are not equal to given value."""
+  bankBranch_not: String
+
+  """All values that are contained in given list."""
+  bankBranch_in: [String!]
+
+  """All values that are not contained in given list."""
+  bankBranch_not_in: [String!]
+
+  """All values less than the given value."""
+  bankBranch_lt: String
+
+  """All values less than or equal the given value."""
+  bankBranch_lte: String
+
+  """All values greater than the given value."""
+  bankBranch_gt: String
+
+  """All values greater than or equal the given value."""
+  bankBranch_gte: String
+
+  """All values containing the given string."""
+  bankBranch_contains: String
+
+  """All values not containing the given string."""
+  bankBranch_not_contains: String
+
+  """All values starting with the given string."""
+  bankBranch_starts_with: String
+
+  """All values not starting with the given string."""
+  bankBranch_not_starts_with: String
+
+  """All values ending with the given string."""
+  bankBranch_ends_with: String
+
+  """All values not ending with the given string."""
+  bankBranch_not_ends_with: String
+  swiftCode: String
+
+  """All values that are not equal to given value."""
+  swiftCode_not: String
+
+  """All values that are contained in given list."""
+  swiftCode_in: [String!]
+
+  """All values that are not contained in given list."""
+  swiftCode_not_in: [String!]
+
+  """All values less than the given value."""
+  swiftCode_lt: String
+
+  """All values less than or equal the given value."""
+  swiftCode_lte: String
+
+  """All values greater than the given value."""
+  swiftCode_gt: String
+
+  """All values greater than or equal the given value."""
+  swiftCode_gte: String
+
+  """All values containing the given string."""
+  swiftCode_contains: String
+
+  """All values not containing the given string."""
+  swiftCode_not_contains: String
+
+  """All values starting with the given string."""
+  swiftCode_starts_with: String
+
+  """All values not starting with the given string."""
+  swiftCode_not_starts_with: String
+
+  """All values ending with the given string."""
+  swiftCode_ends_with: String
+
+  """All values not ending with the given string."""
+  swiftCode_not_ends_with: String
   enabled: Boolean
 
   """All values that are not equal to given value."""
@@ -10703,6 +10949,11 @@ input RetailerUpdateDataInput {
   businessLink: String
   socialNumber: String
   businessLicense: String
+  bankAccNumber: String
+  bankAccName: String
+  bankName: String
+  bankBranch: String
+  swiftCode: String
   enabled: Boolean
   owner: AssignmentUpdateManyWithoutRetailersInput
   businessCover: MediaUpdateOneInput
@@ -10721,6 +10972,11 @@ input RetailerUpdateInput {
   businessLink: String
   socialNumber: String
   businessLicense: String
+  bankAccNumber: String
+  bankAccName: String
+  bankName: String
+  bankBranch: String
+  swiftCode: String
   enabled: Boolean
   owner: AssignmentUpdateManyWithoutRetailersInput
   businessCover: MediaUpdateOneInput
@@ -10739,6 +10995,11 @@ input RetailerUpdateManyDataInput {
   businessLink: String
   socialNumber: String
   businessLicense: String
+  bankAccNumber: String
+  bankAccName: String
+  bankName: String
+  bankBranch: String
+  swiftCode: String
   enabled: Boolean
 }
 
@@ -10750,6 +11011,11 @@ input RetailerUpdateManyMutationInput {
   businessLink: String
   socialNumber: String
   businessLicense: String
+  bankAccNumber: String
+  bankAccName: String
+  bankName: String
+  bankBranch: String
+  swiftCode: String
   enabled: Boolean
 }
 
@@ -10796,6 +11062,11 @@ input RetailerUpdateWithoutOwnerDataInput {
   businessLink: String
   socialNumber: String
   businessLicense: String
+  bankAccNumber: String
+  bankAccName: String
+  bankName: String
+  bankBranch: String
+  swiftCode: String
   enabled: Boolean
   businessCover: MediaUpdateOneInput
   businessAvatar: MediaUpdateOneInput
@@ -10813,6 +11084,11 @@ input RetailerUpdateWithoutProductsDataInput {
   businessLink: String
   socialNumber: String
   businessLicense: String
+  bankAccNumber: String
+  bankAccName: String
+  bankName: String
+  bankBranch: String
+  swiftCode: String
   enabled: Boolean
   owner: AssignmentUpdateManyWithoutRetailersInput
   businessCover: MediaUpdateOneInput
@@ -11154,6 +11430,206 @@ input RetailerWhereInput {
 
   """All values not ending with the given string."""
   businessLicense_not_ends_with: String
+  bankAccNumber: String
+
+  """All values that are not equal to given value."""
+  bankAccNumber_not: String
+
+  """All values that are contained in given list."""
+  bankAccNumber_in: [String!]
+
+  """All values that are not contained in given list."""
+  bankAccNumber_not_in: [String!]
+
+  """All values less than the given value."""
+  bankAccNumber_lt: String
+
+  """All values less than or equal the given value."""
+  bankAccNumber_lte: String
+
+  """All values greater than the given value."""
+  bankAccNumber_gt: String
+
+  """All values greater than or equal the given value."""
+  bankAccNumber_gte: String
+
+  """All values containing the given string."""
+  bankAccNumber_contains: String
+
+  """All values not containing the given string."""
+  bankAccNumber_not_contains: String
+
+  """All values starting with the given string."""
+  bankAccNumber_starts_with: String
+
+  """All values not starting with the given string."""
+  bankAccNumber_not_starts_with: String
+
+  """All values ending with the given string."""
+  bankAccNumber_ends_with: String
+
+  """All values not ending with the given string."""
+  bankAccNumber_not_ends_with: String
+  bankAccName: String
+
+  """All values that are not equal to given value."""
+  bankAccName_not: String
+
+  """All values that are contained in given list."""
+  bankAccName_in: [String!]
+
+  """All values that are not contained in given list."""
+  bankAccName_not_in: [String!]
+
+  """All values less than the given value."""
+  bankAccName_lt: String
+
+  """All values less than or equal the given value."""
+  bankAccName_lte: String
+
+  """All values greater than the given value."""
+  bankAccName_gt: String
+
+  """All values greater than or equal the given value."""
+  bankAccName_gte: String
+
+  """All values containing the given string."""
+  bankAccName_contains: String
+
+  """All values not containing the given string."""
+  bankAccName_not_contains: String
+
+  """All values starting with the given string."""
+  bankAccName_starts_with: String
+
+  """All values not starting with the given string."""
+  bankAccName_not_starts_with: String
+
+  """All values ending with the given string."""
+  bankAccName_ends_with: String
+
+  """All values not ending with the given string."""
+  bankAccName_not_ends_with: String
+  bankName: String
+
+  """All values that are not equal to given value."""
+  bankName_not: String
+
+  """All values that are contained in given list."""
+  bankName_in: [String!]
+
+  """All values that are not contained in given list."""
+  bankName_not_in: [String!]
+
+  """All values less than the given value."""
+  bankName_lt: String
+
+  """All values less than or equal the given value."""
+  bankName_lte: String
+
+  """All values greater than the given value."""
+  bankName_gt: String
+
+  """All values greater than or equal the given value."""
+  bankName_gte: String
+
+  """All values containing the given string."""
+  bankName_contains: String
+
+  """All values not containing the given string."""
+  bankName_not_contains: String
+
+  """All values starting with the given string."""
+  bankName_starts_with: String
+
+  """All values not starting with the given string."""
+  bankName_not_starts_with: String
+
+  """All values ending with the given string."""
+  bankName_ends_with: String
+
+  """All values not ending with the given string."""
+  bankName_not_ends_with: String
+  bankBranch: String
+
+  """All values that are not equal to given value."""
+  bankBranch_not: String
+
+  """All values that are contained in given list."""
+  bankBranch_in: [String!]
+
+  """All values that are not contained in given list."""
+  bankBranch_not_in: [String!]
+
+  """All values less than the given value."""
+  bankBranch_lt: String
+
+  """All values less than or equal the given value."""
+  bankBranch_lte: String
+
+  """All values greater than the given value."""
+  bankBranch_gt: String
+
+  """All values greater than or equal the given value."""
+  bankBranch_gte: String
+
+  """All values containing the given string."""
+  bankBranch_contains: String
+
+  """All values not containing the given string."""
+  bankBranch_not_contains: String
+
+  """All values starting with the given string."""
+  bankBranch_starts_with: String
+
+  """All values not starting with the given string."""
+  bankBranch_not_starts_with: String
+
+  """All values ending with the given string."""
+  bankBranch_ends_with: String
+
+  """All values not ending with the given string."""
+  bankBranch_not_ends_with: String
+  swiftCode: String
+
+  """All values that are not equal to given value."""
+  swiftCode_not: String
+
+  """All values that are contained in given list."""
+  swiftCode_in: [String!]
+
+  """All values that are not contained in given list."""
+  swiftCode_not_in: [String!]
+
+  """All values less than the given value."""
+  swiftCode_lt: String
+
+  """All values less than or equal the given value."""
+  swiftCode_lte: String
+
+  """All values greater than the given value."""
+  swiftCode_gt: String
+
+  """All values greater than or equal the given value."""
+  swiftCode_gte: String
+
+  """All values containing the given string."""
+  swiftCode_contains: String
+
+  """All values not containing the given string."""
+  swiftCode_not_contains: String
+
+  """All values starting with the given string."""
+  swiftCode_starts_with: String
+
+  """All values not starting with the given string."""
+  swiftCode_not_starts_with: String
+
+  """All values ending with the given string."""
+  swiftCode_ends_with: String
+
+  """All values not ending with the given string."""
+  swiftCode_not_ends_with: String
   enabled: Boolean
 
   """All values that are not equal to given value."""
@@ -13427,14 +13903,14 @@ type Subscription {
   supportCase(where: SupportCaseSubscriptionWhereInput): SupportCaseSubscriptionPayload
   supportCorrespondence(where: SupportCorrespondenceSubscriptionWhereInput): SupportCorrespondenceSubscriptionPayload
   language(where: LanguageSubscriptionWhereInput): LanguageSubscriptionPayload
-  trans_Category(where: Trans_CategorySubscriptionWhereInput): Trans_CategorySubscriptionPayload
+  trans_Catalog(where: Trans_CatalogSubscriptionWhereInput): Trans_CatalogSubscriptionPayload
   trans_Brand(where: Trans_BrandSubscriptionWhereInput): Trans_BrandSubscriptionPayload
   productOption(where: ProductOptionSubscriptionWhereInput): ProductOptionSubscriptionPayload
   supportStatus(where: SupportStatusSubscriptionWhereInput): SupportStatusSubscriptionPayload
   product(where: ProductSubscriptionWhereInput): ProductSubscriptionPayload
   supportCategory(where: SupportCategorySubscriptionWhereInput): SupportCategorySubscriptionPayload
+  catalog(where: CatalogSubscriptionWhereInput): CatalogSubscriptionPayload
   permission(where: PermissionSubscriptionWhereInput): PermissionSubscriptionPayload
-  category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   address(where: AddressSubscriptionWhereInput): AddressSubscriptionPayload
   media(where: MediaSubscriptionWhereInput): MediaSubscriptionPayload
@@ -15841,68 +16317,68 @@ input Trans_BrandWhereUniqueInput {
   id: ID
 }
 
-type Trans_Category implements Node {
+type Trans_Catalog implements Node {
   id: ID!
   _version: Int!
   language: Language
-  category: Category
+  catalog: Catalog
   name: String
   createdAt: DateTime!
   updatedAt: DateTime!
 }
 
 """A connection to a list of items."""
-type Trans_CategoryConnection {
+type Trans_CatalogConnection {
   """Information to aid in pagination."""
   pageInfo: PageInfo!
 
   """A list of edges."""
-  edges: [Trans_CategoryEdge]!
-  aggregate: AggregateTrans_Category!
+  edges: [Trans_CatalogEdge]!
+  aggregate: AggregateTrans_Catalog!
 }
 
-input Trans_CategoryCreateInput {
+input Trans_CatalogCreateInput {
   id: ID
   _version: Int
   name: String
-  language: LanguageCreateOneWithoutTrans_categoryInput
-  category: CategoryCreateOneWithoutTrans_nameInput
+  language: LanguageCreateOneWithoutTrans_catalogInput
+  catalog: CatalogCreateOneWithoutTrans_nameInput
 }
 
-input Trans_CategoryCreateManyWithoutCategoryInput {
-  create: [Trans_CategoryCreateWithoutCategoryInput!]
-  connect: [Trans_CategoryWhereUniqueInput!]
+input Trans_CatalogCreateManyWithoutCatalogInput {
+  create: [Trans_CatalogCreateWithoutCatalogInput!]
+  connect: [Trans_CatalogWhereUniqueInput!]
 }
 
-input Trans_CategoryCreateManyWithoutLanguageInput {
-  create: [Trans_CategoryCreateWithoutLanguageInput!]
-  connect: [Trans_CategoryWhereUniqueInput!]
+input Trans_CatalogCreateManyWithoutLanguageInput {
+  create: [Trans_CatalogCreateWithoutLanguageInput!]
+  connect: [Trans_CatalogWhereUniqueInput!]
 }
 
-input Trans_CategoryCreateWithoutCategoryInput {
+input Trans_CatalogCreateWithoutCatalogInput {
   id: ID
   _version: Int
   name: String
-  language: LanguageCreateOneWithoutTrans_categoryInput
+  language: LanguageCreateOneWithoutTrans_catalogInput
 }
 
-input Trans_CategoryCreateWithoutLanguageInput {
+input Trans_CatalogCreateWithoutLanguageInput {
   id: ID
   _version: Int
   name: String
-  category: CategoryCreateOneWithoutTrans_nameInput
+  catalog: CatalogCreateOneWithoutTrans_nameInput
 }
 
 """An edge in a connection."""
-type Trans_CategoryEdge {
+type Trans_CatalogEdge {
   """The item at the end of the edge."""
-  node: Trans_Category!
+  node: Trans_Catalog!
 
   """A cursor for use in pagination."""
   cursor: String!
 }
 
-enum Trans_CategoryOrderByInput {
+enum Trans_CatalogOrderByInput {
   id_ASC
   id_DESC
   _version_ASC
@@ -15915,7 +16391,7 @@ enum Trans_CategoryOrderByInput {
   updatedAt_DESC
 }
 
-type Trans_CategoryPreviousValues {
+type Trans_CatalogPreviousValues {
   id: ID!
   _version: Int!
   name: String
@@ -15923,15 +16399,15 @@ type Trans_CategoryPreviousValues {
   updatedAt: DateTime!
 }
 
-input Trans_CategoryScalarWhereInput {
+input Trans_CatalogScalarWhereInput {
   """Logical AND on all given filters."""
-  AND: [Trans_CategoryScalarWhereInput!]
+  AND: [Trans_CatalogScalarWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [Trans_CategoryScalarWhereInput!]
+  OR: [Trans_CatalogScalarWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [Trans_CategoryScalarWhereInput!]
+  NOT: [Trans_CatalogScalarWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -16080,22 +16556,22 @@ input Trans_CategoryScalarWhereInput {
   updatedAt_gte: DateTime
 }
 
-type Trans_CategorySubscriptionPayload {
+type Trans_CatalogSubscriptionPayload {
   mutation: MutationType!
-  node: Trans_Category
+  node: Trans_Catalog
   updatedFields: [String!]
-  previousValues: Trans_CategoryPreviousValues
+  previousValues: Trans_CatalogPreviousValues
 }
 
-input Trans_CategorySubscriptionWhereInput {
+input Trans_CatalogSubscriptionWhereInput {
   """Logical AND on all given filters."""
-  AND: [Trans_CategorySubscriptionWhereInput!]
+  AND: [Trans_CatalogSubscriptionWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [Trans_CategorySubscriptionWhereInput!]
+  OR: [Trans_CatalogSubscriptionWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [Trans_CategorySubscriptionWhereInput!]
+  NOT: [Trans_CatalogSubscriptionWhereInput!]
 
   """
   The subscription event gets dispatched when it's listed in mutation_in
@@ -16116,98 +16592,98 @@ input Trans_CategorySubscriptionWhereInput {
   The subscription event gets only dispatched when some of the field names included in this list have been updated
   """
   updatedFields_contains_some: [String!]
-  node: Trans_CategoryWhereInput
+  node: Trans_CatalogWhereInput
 }
 
-input Trans_CategoryUpdateInput {
+input Trans_CatalogUpdateInput {
   _version: Int
   name: String
-  language: LanguageUpdateOneWithoutTrans_categoryInput
-  category: CategoryUpdateOneWithoutTrans_nameInput
+  language: LanguageUpdateOneWithoutTrans_catalogInput
+  catalog: CatalogUpdateOneWithoutTrans_nameInput
 }
 
-input Trans_CategoryUpdateManyDataInput {
-  _version: Int
-  name: String
-}
-
-input Trans_CategoryUpdateManyMutationInput {
+input Trans_CatalogUpdateManyDataInput {
   _version: Int
   name: String
 }
 
-input Trans_CategoryUpdateManyWithoutCategoryInput {
-  create: [Trans_CategoryCreateWithoutCategoryInput!]
-  connect: [Trans_CategoryWhereUniqueInput!]
-  set: [Trans_CategoryWhereUniqueInput!]
-  disconnect: [Trans_CategoryWhereUniqueInput!]
-  delete: [Trans_CategoryWhereUniqueInput!]
-  update: [Trans_CategoryUpdateWithWhereUniqueWithoutCategoryInput!]
-  updateMany: [Trans_CategoryUpdateManyWithWhereNestedInput!]
-  deleteMany: [Trans_CategoryScalarWhereInput!]
-  upsert: [Trans_CategoryUpsertWithWhereUniqueWithoutCategoryInput!]
-}
-
-input Trans_CategoryUpdateManyWithoutLanguageInput {
-  create: [Trans_CategoryCreateWithoutLanguageInput!]
-  connect: [Trans_CategoryWhereUniqueInput!]
-  set: [Trans_CategoryWhereUniqueInput!]
-  disconnect: [Trans_CategoryWhereUniqueInput!]
-  delete: [Trans_CategoryWhereUniqueInput!]
-  update: [Trans_CategoryUpdateWithWhereUniqueWithoutLanguageInput!]
-  updateMany: [Trans_CategoryUpdateManyWithWhereNestedInput!]
-  deleteMany: [Trans_CategoryScalarWhereInput!]
-  upsert: [Trans_CategoryUpsertWithWhereUniqueWithoutLanguageInput!]
-}
-
-input Trans_CategoryUpdateManyWithWhereNestedInput {
-  where: Trans_CategoryScalarWhereInput!
-  data: Trans_CategoryUpdateManyDataInput!
-}
-
-input Trans_CategoryUpdateWithoutCategoryDataInput {
+input Trans_CatalogUpdateManyMutationInput {
   _version: Int
   name: String
-  language: LanguageUpdateOneWithoutTrans_categoryInput
 }
 
-input Trans_CategoryUpdateWithoutLanguageDataInput {
+input Trans_CatalogUpdateManyWithoutCatalogInput {
+  create: [Trans_CatalogCreateWithoutCatalogInput!]
+  connect: [Trans_CatalogWhereUniqueInput!]
+  set: [Trans_CatalogWhereUniqueInput!]
+  disconnect: [Trans_CatalogWhereUniqueInput!]
+  delete: [Trans_CatalogWhereUniqueInput!]
+  update: [Trans_CatalogUpdateWithWhereUniqueWithoutCatalogInput!]
+  updateMany: [Trans_CatalogUpdateManyWithWhereNestedInput!]
+  deleteMany: [Trans_CatalogScalarWhereInput!]
+  upsert: [Trans_CatalogUpsertWithWhereUniqueWithoutCatalogInput!]
+}
+
+input Trans_CatalogUpdateManyWithoutLanguageInput {
+  create: [Trans_CatalogCreateWithoutLanguageInput!]
+  connect: [Trans_CatalogWhereUniqueInput!]
+  set: [Trans_CatalogWhereUniqueInput!]
+  disconnect: [Trans_CatalogWhereUniqueInput!]
+  delete: [Trans_CatalogWhereUniqueInput!]
+  update: [Trans_CatalogUpdateWithWhereUniqueWithoutLanguageInput!]
+  updateMany: [Trans_CatalogUpdateManyWithWhereNestedInput!]
+  deleteMany: [Trans_CatalogScalarWhereInput!]
+  upsert: [Trans_CatalogUpsertWithWhereUniqueWithoutLanguageInput!]
+}
+
+input Trans_CatalogUpdateManyWithWhereNestedInput {
+  where: Trans_CatalogScalarWhereInput!
+  data: Trans_CatalogUpdateManyDataInput!
+}
+
+input Trans_CatalogUpdateWithoutCatalogDataInput {
   _version: Int
   name: String
-  category: CategoryUpdateOneWithoutTrans_nameInput
+  language: LanguageUpdateOneWithoutTrans_catalogInput
 }
 
-input Trans_CategoryUpdateWithWhereUniqueWithoutCategoryInput {
-  where: Trans_CategoryWhereUniqueInput!
-  data: Trans_CategoryUpdateWithoutCategoryDataInput!
+input Trans_CatalogUpdateWithoutLanguageDataInput {
+  _version: Int
+  name: String
+  catalog: CatalogUpdateOneWithoutTrans_nameInput
 }
 
-input Trans_CategoryUpdateWithWhereUniqueWithoutLanguageInput {
-  where: Trans_CategoryWhereUniqueInput!
-  data: Trans_CategoryUpdateWithoutLanguageDataInput!
+input Trans_CatalogUpdateWithWhereUniqueWithoutCatalogInput {
+  where: Trans_CatalogWhereUniqueInput!
+  data: Trans_CatalogUpdateWithoutCatalogDataInput!
 }
 
-input Trans_CategoryUpsertWithWhereUniqueWithoutCategoryInput {
-  where: Trans_CategoryWhereUniqueInput!
-  update: Trans_CategoryUpdateWithoutCategoryDataInput!
-  create: Trans_CategoryCreateWithoutCategoryInput!
+input Trans_CatalogUpdateWithWhereUniqueWithoutLanguageInput {
+  where: Trans_CatalogWhereUniqueInput!
+  data: Trans_CatalogUpdateWithoutLanguageDataInput!
 }
 
-input Trans_CategoryUpsertWithWhereUniqueWithoutLanguageInput {
-  where: Trans_CategoryWhereUniqueInput!
-  update: Trans_CategoryUpdateWithoutLanguageDataInput!
-  create: Trans_CategoryCreateWithoutLanguageInput!
+input Trans_CatalogUpsertWithWhereUniqueWithoutCatalogInput {
+  where: Trans_CatalogWhereUniqueInput!
+  update: Trans_CatalogUpdateWithoutCatalogDataInput!
+  create: Trans_CatalogCreateWithoutCatalogInput!
 }
 
-input Trans_CategoryWhereInput {
+input Trans_CatalogUpsertWithWhereUniqueWithoutLanguageInput {
+  where: Trans_CatalogWhereUniqueInput!
+  update: Trans_CatalogUpdateWithoutLanguageDataInput!
+  create: Trans_CatalogCreateWithoutLanguageInput!
+}
+
+input Trans_CatalogWhereInput {
   """Logical AND on all given filters."""
-  AND: [Trans_CategoryWhereInput!]
+  AND: [Trans_CatalogWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [Trans_CategoryWhereInput!]
+  OR: [Trans_CatalogWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [Trans_CategoryWhereInput!]
+  NOT: [Trans_CatalogWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -16355,10 +16831,10 @@ input Trans_CategoryWhereInput {
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
   language: LanguageWhereInput
-  category: CategoryWhereInput
+  catalog: CatalogWhereInput
 }
 
-input Trans_CategoryWhereUniqueInput {
+input Trans_CatalogWhereUniqueInput {
   id: ID
 }
 

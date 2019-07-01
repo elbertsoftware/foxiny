@@ -7,28 +7,20 @@ import {
   restructureProductAttributes,
   restrutureProductTemplate2FriendlyProduct,
   restructureProductRetailer2FriendlyProduct,
-} from "../../utils/productUtils/dataHelper";
-import {
-  validateCreateNewProductInput,
-  validateUpdateProductInput,
-} from "../../utils/productUtils/validation";
-import { checkUserSellerOwnership } from "../../utils/permissionChecker";
-import { s3ProductMediasUploader } from "../../utils/s3Uploader";
+} from '../../utils/productUtils/dataHelper';
+import { validateCreateNewProductInput, validateUpdateProductInput } from '../../utils/productUtils/validation';
+import { checkUserSellerOwnership } from '../../utils/permissionChecker';
+import { s3ProductMediasUploader } from '../../utils/s3Uploader';
 
 // TODO:
 // log transaction
 // generate sku
 
 export const Mutation = {
-  createBrandNewProductWVariants: async (
-    parent,
-    { sellerId, data },
-    { prisma, request, cache, i18n },
-    info,
-  ) => {
-    try {
-      // NOTE: check permission
-      await checkUserSellerOwnership(prisma, cache, request, i18n, sellerId);
+  createBrandNewProductWVariants: async (parent, { sellerId, data }, { prisma, request, cache, i18n }, info) => {
+    // try {
+    // NOTE: check permission
+    await checkUserSellerOwnership(prisma, cache, request, i18n, sellerId);
 
     // NOTE: validate input
     const newData = validateCreateNewProductInput(data);
@@ -73,7 +65,7 @@ export const Mutation = {
             connect: atts[i].data.map(value => ({ name: value })),
           },
         },
-      });
+      };
     }
     // NOTE: 2 - create product and it's template
     // NOTE: fragment ensure all needed-info always be returned
@@ -200,7 +192,7 @@ export const Mutation = {
     }
 
     const newInfo =
-      "{ id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } product { productTemplate { id name briefDescription brand { id brandName } catalog { id name } descriptions { retailer { id } description } } options { attribute { name } value { name } } } rating enabled approved createdAt updatedAt }";
+      '{ id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } product { productTemplate { id name briefDescription brand { id brandName } catalog { id name } descriptions { retailer { id } description } } options { attribute { name } value { name } } } rating enabled approved createdAt updatedAt }';
 
     // NOTE: 2 - update
     const updatedProducts = await Promise.all(

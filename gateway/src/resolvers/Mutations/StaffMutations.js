@@ -51,11 +51,6 @@ export const Mutation = {
       approval = await prisma.mutation.createSupportCase({
         data: {
           subject: newData.subject ? newData.subject : 'New Retailer Approval',
-          caseType: {
-            connect: {
-              name: 'Retailer Account',
-            },
-          },
           status: {
             connect: {
               name: 'OPEN',
