@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
-import defer from './defer';
+import defer from '../../utils/HOC/defer';
 
 function FormButton(props) {
   const { disabled, mounted, ...others } = props;

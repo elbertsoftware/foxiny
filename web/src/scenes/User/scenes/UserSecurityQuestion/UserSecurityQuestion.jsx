@@ -3,7 +3,6 @@ import { Redirect } from 'react-router';
 import { Button, Icon, Typography } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import SecurityQuesForm from './components/SecurityQuesForm';
-import Loading from '../../../App/Loading';
 
 const styles = () => ({
   root: {

@@ -12,7 +12,7 @@ import {
   MenuItem,
   Icon,
 } from '@material-ui/core';
-import { ReviewCard } from './components/CustomerReview';
+import ReviewCard from '../ProductDetail/components/CustomerReview';
 import Search from '../../../../components/Search/Search';
 
 const styles = theme => ({

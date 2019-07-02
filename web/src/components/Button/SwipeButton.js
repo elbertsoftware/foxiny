@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useRef, useState, useEffect } from 'react';
-import './style/swipebutton.css';
+import '../../utils/style/swipebutton.css';
 import { Icon, Typography } from '@material-ui/core';
 import { graphql } from 'react-apollo';
 import { RESEND_RETAILER_CONFIMATION } from '../../utils/graphql/retailer';

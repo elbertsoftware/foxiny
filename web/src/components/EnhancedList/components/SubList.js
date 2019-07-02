@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ListItem from '@material-ui/core/ListItem';
 import { Icon, ListItemText, ListItemIcon, Paper } from '@material-ui/core';
 import withStyles from '@material-ui/core/styles/withStyles';
-import EnhancedList from './EnhancedList';
+import EnhancedList from '../EnhancedList';
 
 const styles = theme => ({
   container: {

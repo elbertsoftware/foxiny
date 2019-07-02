@@ -5,8 +5,8 @@ import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import { Typography, Tabs, Tab } from '@material-ui/core';
 import { Trans } from '@lingui/macro';
-import AppForm from '../../utils/common/form/AppForm';
-import SignInForm from '../Form/SignInForm';
+import AppForm from '../../../../components/AppForm/AppForm';
+import SignInForm from './components/SignInForm';
 
 const styles = theme => ({
   h4: {

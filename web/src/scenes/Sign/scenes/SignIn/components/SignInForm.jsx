@@ -12,13 +12,18 @@ import { Typography, MenuItem } from '@material-ui/core';
 import { graphql, compose } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { toast } from 'react-toastify';
-import RFTextField from '../../utils/common/form/RFTextField';
-import FormButton from '../../utils/common/form/FormButton';
-import TabContainer from '../../utils/common/TabContainer';
-import SelectList from './Fields/SelectList';
-import { email, phone, required, formatInternationalPhone } from '../../utils/common/form/validation';
-import { countries } from '../../utils/callingcodes';
-import { setAuthorizationToken, setUserInfo } from '../../utils/authentication';
+import RFTextField from '../../../../../components/TextField/RFTextField';
+import FormButton from '../../../../../components/Button/FormButton';
+import TabContainer from '../../../../../components/TabContainer/TabContainer';
+import SelectList from '../../../../../components/Select/SelectList';
+import {
+  email,
+  phone,
+  required,
+  formatInternationalPhone,
+} from '../../../../../utils/processData/validation/validation';
+import { countries } from '../../../../../utils/processData/rawData/callingcodes';
+import { setAuthorizationToken, setUserInfo } from '../../../../../utils/processData/localStorage';
 
 const focusOnError = createDecorator();
 

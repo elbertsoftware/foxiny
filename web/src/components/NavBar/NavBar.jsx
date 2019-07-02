@@ -5,11 +5,11 @@ import { Typography, Toolbar, Button, IconButton, Icon } from '@material-ui/core
 
 import { Link } from 'react-router-dom';
 import { compose } from 'react-apollo';
-import SignInMenu from '../Menu/SignInMenu';
-import SignUpMenu from '../Menu/SignUpMenu';
-import { getAuthorizationToken } from '../../utils/authentication';
-import withAuthenticator from '../../utils/RouteProtector';
-import Search from '../../utils/common/Search';
+import SignInMenu from './components/NavSignInMenu/SignInMenu';
+import SignUpMenu from './components/NavSignUpMenu/SignUpMenu';
+import { getAuthorizationToken } from '../../utils/processData/localStorage';
+import withAuthenticator from '../../utils/HOC/withRouteProtector';
+import Search from '../Search/Search';
 
 const styles = theme => ({
   root: {

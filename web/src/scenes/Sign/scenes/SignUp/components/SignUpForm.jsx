@@ -15,9 +15,9 @@ import { Mutation } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
 import { gql } from 'apollo-boost';
 import { toast } from 'react-toastify';
-import TabContainer from '../../utils/common/TabContainer';
-import RFTextField from '../../utils/common/form/RFTextField';
-import FormButton from '../../utils/common/form/FormButton';
+import RFTextField from '../../../../../components/TextField/RFTextField';
+import FormButton from '../../../../../components/Button/FormButton';
+import TabContainer from '../../../../../components/TabContainer/TabContainer';
 import {
   email,
   phone,
@@ -25,9 +25,10 @@ import {
   confirm,
   formatInternationalPhone,
   captChaVerification,
-} from '../../utils/common/form/validation';
-import SelectList from './SelectList';
-import { countries } from '../../../utils/callingcodes';
+} from '../../../../../utils/processData/validation/validation';
+import SelectList from '../../../../../components/Select/SelectList';
+
+import { countries } from '../../../../../utils/processData/rawData/callingcodes';
 
 const focusOnError = createDecorator();
 const CREATE_USER = gql`

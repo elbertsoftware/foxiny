@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
 import getCurrentUser from '../graphql/getCurrentUser';
-import Loading from '../components/App/Loading';
+import Loading from '../../components/Loading/Loading';
 
 export default ProtectedRoute => {
   class AuthHOC extends Component {

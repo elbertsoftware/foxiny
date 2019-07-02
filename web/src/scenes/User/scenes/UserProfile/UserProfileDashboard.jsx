@@ -1,7 +1,7 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
 import { Redirect } from 'react-router';
-import UserHeader from './UserHeader';
+import UserHeader from './components/UserProfileHeader/UserProfileHeader';
 
 class UserDashboard extends React.Component {
   render() {

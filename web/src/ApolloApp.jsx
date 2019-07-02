@@ -10,8 +10,8 @@ import { ApolloProvider } from 'react-apollo';
 import { createUploadLink } from 'apollo-upload-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ToastContainer } from 'react-toastify';
-import App from './components/App/App';
-import { getAuthorizationToken } from './utils/authentication';
+import App from './scenes/App/App';
+import { getAuthorizationToken } from './utils/processData/localStorage';
 
 const uploadLink = createUploadLink({ uri: process.env.REACT_APP_GATEWAY_URL });
 

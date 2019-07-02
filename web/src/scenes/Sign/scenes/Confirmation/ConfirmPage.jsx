@@ -8,11 +8,11 @@ import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import green from '@material-ui/core/colors/green';
 import { toast } from 'react-toastify';
-import RFTextField from '../../../../utils/common/form/RFTextField';
-import FormButton from '../../../../utils/common/form/FormButton';
-import AppForm from '../../../../utils/common/form/AppForm';
-import { required } from '../../../../utils/common/form/validation';
-import { CONFIRM_USER, RESEND_CONFIRMATION } from '../../../../graphql/user';
+import RFTextField from '../../../../components/TextField/RFTextField';
+import FormButton from '../../../../components/Button/FormButton';
+import AppForm from '../../../../components/AppForm/AppForm';
+import { required } from '../../../../utils/processData/validation/validation';
+import { CONFIRM_USER, RESEND_CONFIRMATION } from '../../../../utils/graphql/user';
 
 let count = 59;
 

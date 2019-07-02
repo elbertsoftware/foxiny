@@ -1,23 +1,14 @@
 import React from 'react';
 import { graphql, compose } from 'react-apollo';
-import gql from 'graphql-tag';
 import PropTypes from 'prop-types';
 import Dropzone from 'react-dropzone';
 import classNames from 'classnames';
 import { Typography, withStyles } from '@material-ui/core';
 import AvatarEditor from 'react-avatar-editor';
 import { toast } from 'react-toastify';
-import Loading from '../../App/Loading';
-import { UPLOAD_AVATAR_RETAILER, UPDATE_RETAILER } from '../../../graphql/retailer';
-
-const UPLOAD_AVATAR = gql`
-  mutation($file: Upload!) {
-    uploadProfileMedia(file: $file) {
-      id
-      uri
-    }
-  }
-`;
+import Loading from '../../../../../components/Loading/Loading';
+import { UPLOAD_AVATAR_RETAILER, UPDATE_RETAILER } from '../../../../../utils/graphql/retailer';
+import { UPLOAD_AVATAR } from '../../../../../utils/graphql/user';
 
 const styles = () => ({
   baseStyle: {

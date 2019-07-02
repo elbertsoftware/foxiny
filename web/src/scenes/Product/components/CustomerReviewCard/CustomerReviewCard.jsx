@@ -10,6 +10,7 @@ import {
   CardContent,
   CardActions,
   Tooltip,
+  Button,
   makeStyles,
 } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
@@ -65,7 +66,8 @@ const styles = makeStyles(theme => ({
   },
 }));
 
-export const ReviewCard = ({ classes, topReview }) => {
+const ReviewCard = ({ topReview }) => {
+  const classes = styles();
   return (
     <Card className={topReview ? `${classes.card} ${classes.topReviewCard}` : `${classes.card}`}>
       {topReview && <div className={classes.ellipse} />}
@@ -136,9 +138,11 @@ export const ReviewCard = ({ classes, topReview }) => {
   );
 };
 
-ReviewCard.PropTypes = {
+ReviewCard.propTypes = {
   topReview: PropTypes.bool,
 };
 ReviewCard.defaultProps = {
   topReview: false,
 };
+
+export default ReviewCard;

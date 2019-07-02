@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import { Typography, Tabs, Tab } from '@material-ui/core';
-import AppForm from '../../utils/common/form/AppForm';
-import SignUpForm from '../Form/SignUpForm';
+import AppForm from '../../../../components/AppForm/AppForm';
+import SignUpForm from './components/SignUpForm';
 
 const styles = theme => ({
   h4: {

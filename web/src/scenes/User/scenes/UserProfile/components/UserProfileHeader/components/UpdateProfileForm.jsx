@@ -20,15 +20,18 @@ import {
   Divider,
   FormHelperText,
 } from '@material-ui/core';
-import RFTextField from '../../utils/common/form/RFTextField';
-import { formatInternationalPhone, captChaVerification } from '../../utils/common/form/validation';
-import validate from '../../utils/common/form/validateUserExpFrm';
-import SelectList from './SelectList';
-import { countries } from '../../../utils/callingcodes';
-import FormButton from '../../utils/common/form/FormButton';
-import { UPDATE_USER, RESEND_CONFIRMATION } from '../../graphql/user';
-import { removeAuthorizationToken, removeUserInfo } from '../../utils/authentication';
-import Loading from '../App/Loading';
+import RFTextField from '../../../../../../../components/TextField/RFTextField';
+import {
+  formatInternationalPhone,
+  captChaVerification,
+} from '../../../../../../../utils/processData/validation/validation';
+import validate from '../../../../../../../utils/processData/validation/validateUserExpFrm';
+import SelectList from '../../../../../../../components/Select/SelectList';
+import { countries } from '../../../../../../../utils/processData/rawData/callingcodes';
+import FormButton from '../../../../../../../components/Button/FormButton';
+import { UPDATE_USER, RESEND_CONFIRMATION } from '../../../../../../../utils/graphql/user';
+import { removeAuthorizationToken, removeUserInfo } from '../../../../../../../utils/processData/localStorage';
+import Loading from '../../../../../../../components/Loading/Loading';
 
 const focusOnError = createDecorator();
 

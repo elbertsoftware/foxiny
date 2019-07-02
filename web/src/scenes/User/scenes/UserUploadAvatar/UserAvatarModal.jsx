@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Dialog } from '@material-ui/core';
-import { DialogTitle, DialogContent, DialogActions } from '../../../utils/common/Dialog';
+import { DialogTitle, DialogContent, DialogActions } from '../../../../components/Dialog/Dialog';
 
 import UserUploadAvatar from './components/UserUploadAvatar';
 

@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-expressions */
 import axios from 'axios';
 import isEmail from 'validator/lib/isEmail';
-import { regex } from '../../callingcodes';
+import { regex } from '../rawData/callingcodes';
 
 export const email = value => {
   return value && !isEmail(value.trim()) ? 'Email không hợp lệ.' : null;

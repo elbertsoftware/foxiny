@@ -17,6 +17,15 @@ const UPDATE_USER = gql`
   }
 `;
 
+const UPLOAD_AVATAR = gql`
+  mutation($file: Upload!) {
+    uploadProfileMedia(file: $file) {
+      id
+      uri
+    }
+  }
+`;
+
 const CONFIRM_USER = gql`
   mutation confirmUser($data: ConfirmUserInput!) {
     confirmUser(data: $data)
@@ -29,4 +38,4 @@ const RESEND_CONFIRMATION = gql`
   }
 `;
 
-export { LOGOUT, UPDATE_USER, CONFIRM_USER, RESEND_CONFIRMATION };
+export { LOGOUT, UPDATE_USER, CONFIRM_USER, RESEND_CONFIRMATION, UPLOAD_AVATAR };

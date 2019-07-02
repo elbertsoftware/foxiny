@@ -6,13 +6,13 @@ import createDecorator from 'final-form-focus';
 import SwipeableViews from 'react-swipeable-views';
 import { Button, Typography } from '@material-ui/core';
 import { toast } from 'react-toastify';
-import RFTextField from '../../../../utils/common/form/RFTextField';
-import FormButton from '../../../../utils/common/form/FormButton';
-import { required } from '../../../../utils/common/form/validation';
-import AppForm from '../../../../utils/common/form/AppForm';
-import requestResetPass from '../../../../graphql/requestResetPass';
+import RFTextField from '../../../../components/TextField/RFTextField';
+import FormButton from '../../../../components/Button/FormButton';
+import { required } from '../../../../utils/processData/validation/validation';
+import AppForm from '../../../../components/AppForm/AppForm';
+import requestResetPass from '../../../../utils/graphql/requestResetPass';
 import UserAnswerQuestions from './components/UserAnswerQuestions';
-import { setAuthorizationToken } from '../../../../utils/authentication';
+import { setAuthorizationToken } from '../../../../utils/processData/localStorage';
 
 const focusOnError = createDecorator();
 

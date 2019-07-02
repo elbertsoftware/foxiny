@@ -3,10 +3,10 @@ import { withStyles } from '@material-ui/core/styles';
 import { Button, Typography, Badge, Grid, Avatar, IconButton } from '@material-ui/core';
 import { Mutation } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
-import { removeAuthorizationToken } from '../../../../utils/authentication';
+import { removeAuthorizationToken } from '../../../../utils/processData/localStorage';
 import PopperAccount from '../../../Popper/PopperAccount';
 import PopperNotification from '../../../Popper/PopperNotification';
-import { LOGOUT } from '../../../../graphql/user';
+import { LOGOUT } from '../../../../utils/graphql/user';
 
 const styles = theme => ({
   popper: {

@@ -21,9 +21,9 @@ import ProductCard from '../../components/ProductCard/ProductCard';
 import '../../../../utils/style/commonStyle.css';
 import ImgGalleryModal from './components/ImgGalerryModal';
 import '../../../../utils/style/buyBox.css';
-import { CustomerReviews } from '../CustomerReviews/CustomerReviews';
-import ProductDescription from './ProductDescription';
-import TabContainer from '../../../utils/common/TabContainer';
+import CustomerReview from './components/CustomerReview';
+import ProductDescription from './components/ProductDescription';
+import TabContainer from '../../../../components/TabContainer/TabContainer';
 
 const styles = theme => ({
   root: {
@@ -503,7 +503,7 @@ const ProductDetailPage = ({ classes, theme, optionList, productImageData, textD
 
           <RelatedProduct classes={classes} />
 
-          <CustomerReviews />
+          <CustomerReview />
         </React.Fragment>
       )}
     </Paper>

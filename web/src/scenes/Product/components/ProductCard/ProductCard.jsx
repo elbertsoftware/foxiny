@@ -16,7 +16,7 @@ import {
   Tooltip,
   SvgIcon,
 } from '@material-ui/core';
-import '../../../utils/style/gliderjs.css';
+import '../../../../utils/style/gliderjs.css';
 
 const styles = theme => ({
   card: {
