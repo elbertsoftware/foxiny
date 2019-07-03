@@ -1,15 +1,16 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-param-reassign */
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Slide, Dialog, AppBar, Toolbar, Typography, withStyles } from '@material-ui/core';
+import { Button, Slide, Dialog, AppBar, Toolbar, Typography, withStyles, makeStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import AddProductImgSection from './AddProductImgSection';
-import ApplyImgMultiSecModal from './ApplyImgMultiSecModal';
+import AddProductImgSection from './components/AddProductImgSection';
+import ApplyImgMultiSecModal from './components/ApplyImgMultiSecModal';
 import OpenContext from '../../../../../../utils/context/OpenContextAddProduct';
 import ProductDataContext from '../../../../../../utils/context/ProductDataContext';
 import ProductDetailPage from '../../../../../Product/scenes/ProductDetail/ProductDetailPage';
 import ProductEditDataContext from '../../../../../../utils/context/ProductEditDataContext';
 import ApprovalContainer from '../../../../../../components/ApproveContainer/ApprovalContainer';
+import Paper from '../../../../../../components/Paper/Paper';
 
 const styles = {
   appBar: {
@@ -39,6 +40,14 @@ export const Preview = withStyles(styles)(({ classes, open, handleClose, product
       <ProductDetailPage preview optionList={options} productImageData={productImage} textData={basicInfo} />
     </Dialog>
   );
+});
+
+const addProductImageStyles = makeStyles({
+  ruleOfImage: {
+    borderRadius: 30,
+    padding: 24,
+    margin: '16px 0',
+  },
 });
 
 function AddProductImage(props) {
@@ -117,6 +126,8 @@ function AddProductImage(props) {
     }
   }, []);
 
+  const classes = addProductImageStyles();
+
   return (
     <OpenContext.Provider value={{ setOpen: handleOpen }}>
       <ApplyImgMultiSecModal
@@ -127,6 +138,15 @@ function AddProductImage(props) {
         handleClose={handleClose}
         products={products}
       />
+      <Paper className={classes.ruleOfImage} elevation={0} background="main">
+        <Typography variant="h6">Yêu cầu đối với hình ảnh: </Typography>
+        <Typography variant="body2">1. Kích thước tối thiểu: </Typography>
+        <Typography variant="subtitle2">- Các sản phẩm nội thất: 500 x 700 px </Typography>
+        <Typography gutterBottom variant="subtitle2">
+          - Các sản phẩm khác: 500 x 500 px{' '}
+        </Typography>
+        <Typography variant="body2">2. Toàn bộ hình ảnh không chứa logo / watermark / thông tin Nhà Bán </Typography>
+      </Paper>
       <ApprovalContainer review={review} name="checkImageProducts">
         {products.map((product, index) => (
           <AddProductImgSection

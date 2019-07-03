@@ -14,7 +14,7 @@ import {
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
-import { DialogTitle, DialogContent, DialogActions } from '../../../../../../components/Dialog/Dialog';
+import { DialogTitle, DialogContent, DialogActions } from '../../../../../../../components/Dialog/Dialog';
 
 const styles = theme => ({
   root: {},

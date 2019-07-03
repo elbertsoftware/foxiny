@@ -1,11 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropsType from 'prop-types';
-import { Field } from 'react-final-form';
+import { Field, FormSpy } from 'react-final-form';
 import { TextField } from 'final-form-material-ui';
 import RichTextEditor from 'react-rte';
-import { Typography, Paper, withStyles, Grid, Button, FormLabel } from '@material-ui/core';
+import { debounce } from 'debounce';
+import MuiTextField from '@material-ui/core/TextField';
+import {
+  Typography,
+  Paper,
+  withStyles,
+  Grid,
+  Button,
+  FormLabel,
+  MenuItem,
+  Popper,
+  Grow,
+  ClickAwayListener,
+  MenuList,
+} from '@material-ui/core';
 import AddBrandModal from './components/AddBrandModal';
 import ApprovalContainer from '../../../../../../components/ApproveContainer/ApprovalContainer';
+import ProductDataContext from '../../../../../../utils/context/ProductDataContext';
 
 const styles = theme => ({
   paper: {
@@ -22,6 +37,11 @@ const styles = theme => ({
   },
   createNew: {
     display: 'flex',
+  },
+  dropdownContainer: {
+    minWidth: 200,
+    maxHeight: 300,
+    overflow: 'auto',
   },
   btnCreate: {
     height: '80%',
@@ -43,9 +63,50 @@ const styles = theme => ({
   },
 });
 
+const names = [
+  'Oliver Hansen',
+  'Van Henry',
+  'April Tucker',
+  'Ralph Hubbard',
+  'Omar Alexander',
+  'Carlos Abbott',
+  'Miriam Wagner',
+  'Bradley Wilkerson',
+  'Virginia Andrews',
+  'Kelly Snyder',
+];
+
 const BasicInfo = ({ classes, onChange, review, ...props }) => {
-  const [value, setValue] = useState(RichTextEditor.createEmptyValue());
+  const [value, setRichTextValue] = useState(RichTextEditor.createEmptyValue());
   const [open, setOpen] = useState(false);
+  const [isDefault, setIsDefault] = useState(false);
+  const [searchBrand, setSearchBrandValue] = useState('');
+  const [brandNames, setBrandName] = useState(names);
+  // Lấy function setValue của Final form (Context hiện tại đang nằm trong AddProduct)
+  const { setValue } = React.useContext(ProductDataContext);
+
+  // Search implementation in Select
+  const handleSearch = value => {
+    setSearchBrandValue(value);
+  };
+  // Search
+  const onSearchValueChange = debounce(() => {
+    const searchedArray = names.filter(brandName => brandName.toLowerCase().includes(searchBrand.toLowerCase()));
+    setBrandName(searchedArray);
+  }, 200);
+  // Neu co gia tri search thay doi, goi lai search Function, set isDefault = false de map clone Array (brandNames)
+  // Neu khong set isDefault = true de map Array mac dinh (names)
+  useEffect(() => {
+    if (searchBrand !== '') {
+      setIsDefault(false);
+      onSearchValueChange();
+      return;
+    }
+    setIsDefault(true);
+  }, [searchBrand]);
+
+  // Others
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -53,7 +114,7 @@ const BasicInfo = ({ classes, onChange, review, ...props }) => {
     setOpen(false);
   };
   const onChangeValue = value => {
-    setValue(value);
+    setRichTextValue(value);
     if (onChange) {
       // Send the changes up to the parent component as an HTML string.
       // This is here to demonstrate using `.toString()` but in a real app it
@@ -61,15 +122,33 @@ const BasicInfo = ({ classes, onChange, review, ...props }) => {
       onChange(value.toString('html'));
     }
   };
+  // Brandname field with Menu
+  const [openPopper, setOpenPopper] = useState(false);
+  const [anchorRef, setAnchorRef] = useState(null);
+  const handleOpenPopper = event => {
+    setAnchorRef(event.currentTarget);
+    setOpenPopper(true);
+  };
+  const handleClosePopper = event => {
+    if (event.target.classList.contains('menuItem')) {
+      return;
+    }
+    setOpenPopper(false);
+  };
+  const handleClickMenuItem = textValue => () => {
+    setValue('brandName', textValue);
+    setOpenPopper(false);
+  };
+
   return (
     <Paper square elevation={0} className={classes.paper}>
-      <Paper className={classes.category}>
+      <Paper elevation={0} className={classes.category}>
         <Typography>Danh mục:</Typography>
-        <Typography variant="subtitle1" className={classes.categoryName}>
-          Bàn gỗ
+        <Typography className={classes.categoryName}>
+          <strong>Bàn gỗ</strong>
         </Typography>
       </Paper>
-      <Grid container spacing={16}>
+      <Grid container spacing={2}>
         <Grid item xs>
           <ApprovalContainer review={review} name="checkProductName">
             <Field
@@ -86,42 +165,73 @@ const BasicInfo = ({ classes, onChange, review, ...props }) => {
         </Grid>
         <Grid item xs>
           <ApprovalContainer review={review} name="checkBrandname">
-            <div className={classes.createNew}>
-              <Field
-                fullWidth
-                component={TextField}
-                required
-                margin="normal"
-                label="Thương hiệu"
-                name="brandName"
-                type="text"
-                variant="outlined"
-                helperText="Không tìm thấy thương hiệu phù hợp? Vui lòng nhấn vào nút Tạo mới"
-              />
+            <ClickAwayListener onClickAway={handleClosePopper}>
+              <div className={classes.createNew}>
+                <Field name="brandName" className={classes.brandField}>
+                  {({ input }) => (
+                    <>
+                      <MuiTextField
+                        {...input}
+                        fullWidth
+                        onFocus={handleOpenPopper}
+                        required
+                        margin="normal"
+                        label="Thương hiệu"
+                        type="text"
+                        variant="outlined"
+                      />
+                      <Popper open={openPopper} anchorEl={anchorRef} placement="bottom-end" transition>
+                        {({ TransitionProps }) => (
+                          <Grow {...TransitionProps}>
+                            <Paper className={classes.dropdownContainer} id="menu-list-grow">
+                              <MenuList>
+                                {isDefault
+                                  ? names.map(brandName => (
+                                      <MenuItem
+                                        className="menuItem"
+                                        onClick={handleClickMenuItem(brandName)}
+                                        key={brandName}
+                                      >
+                                        {brandName}
+                                      </MenuItem>
+                                    ))
+                                  : brandNames.map(brandName => (
+                                      <MenuItem
+                                        className="menuItem"
+                                        onClick={handleClickMenuItem(brandName)}
+                                        key={brandName}
+                                      >
+                                        {brandName}
+                                      </MenuItem>
+                                    ))}
+                              </MenuList>
+                            </Paper>
+                          </Grow>
+                        )}
+                      </Popper>
+                    </>
+                  )}
+                </Field>
+                <FormSpy
+                  subscription={{ values: true, touched: true }}
+                  onChange={state => {
+                    const { values } = state;
+                    if (values.brandName) {
+                      handleSearch(values.brandName);
+                    } else {
+                      handleSearch('');
+                    }
+                  }}
+                />
 
-              <Button onClick={handleOpen} className={classes.btnCreate} variant="text" color="secondary">
-                Tạo mới
-              </Button>
-              <AddBrandModal openModal={open} handleCloseModal={handleClose} />
-            </div>
+                <Button onClick={handleOpen} className={classes.btnCreate} variant="text" color="secondary">
+                  Tạo mới
+                </Button>
+                <AddBrandModal openModal={open} handleCloseModal={handleClose} />
+              </div>
+            </ClickAwayListener>
           </ApprovalContainer>
         </Grid>
-      </Grid>
-      <Grid container spacing={16}>
-        <Grid item xs>
-          <ApprovalContainer review={review} name="checkFromWhere">
-            <Field
-              fullWidth
-              component={TextField}
-              margin="normal"
-              label="Xuất xứ thương hiệu"
-              name="fromWhere"
-              type="text"
-              variant="outlined"
-            />
-          </ApprovalContainer>
-        </Grid>
-        <Grid item xs />
       </Grid>
       <ApprovalContainer review={review} name="checkDescription">
         <Field

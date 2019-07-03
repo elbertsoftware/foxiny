@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Typography, TableRow, TableCell, Link, Button, InputBase, Icon } from '@material-ui/core';
 import { graphql } from 'react-apollo';
 import { debounce } from 'debounce';
+import { Redirect } from 'react-router';
 import { ALL_RETAILERS } from '../../../../../../utils/graphql/retailer';
 
 import Loading from '../../../../../../components/Loading/Loading';
@@ -20,13 +21,15 @@ const headRows = [
 ];
 
 function SellerApproval(props) {
-  const { loading, sellers, history } = props;
+  const { loading, sellers, history, userLoggedIn } = props;
   const classes = useStyles();
   const [cloneSellers, setCloneSellers] = useState([]);
   const [sellerId, setSellerId] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [isDefault, setIsDefault] = useState(true);
 
+  // Search implementation
+  // Search function
   const onSearchChangeDebounce = debounce(() => {
     const newArraySellers = sellers.filter(
       seller =>
@@ -38,33 +41,25 @@ function SellerApproval(props) {
   }, 500);
 
   const handleOnchange = event => {
-    if (event.target.value === '') {
-      setCloneSellers(sellers);
-    }
     setSearchValue(event.target.value);
   };
-  // Sau khi searchValue thay đổi, gọi hàm thực search để trả về giá trị
+  // Sau khi searchValue thay đổi, gọi hàm thực search để trả về giá trị, set IsDefault = false để map Clone Array (cloneSellers)
+  // Nếu searchValue rỗng thì set IsDefault true , để chọn map Array ban đầu (sellers)
   React.useEffect(() => {
     if (searchValue !== '') {
-      onSearchChangeDebounce();
-    }
-  }, [searchValue]);
-  // Sau khi kết quả đã được trả về cloneSellers thì bắt đầu xét điều kiện
-  // Trường hợp xóa searchValue => searchValue = empty thì trả lại data ban đầu sellers
-  // Trường hợp searchValue có giá trị thì manipulate data với cloneSellers
-  React.useEffect(() => {
-    if (searchValue === '') {
-      setIsDefault(true);
-    } else {
       setIsDefault(false);
+      onSearchChangeDebounce();
+      return;
     }
-  }, [cloneSellers]);
-  // Clone the data of sellers at the beginning
+    setIsDefault(true);
+  }, [searchValue]);
+  // Sau khi nhận được sellers từ server, clone sellers ấy
   React.useEffect(() => {
     if (!loading) {
       setCloneSellers(sellers);
     }
   }, [loading]);
+  // Others logic
 
   React.useEffect(() => {
     if (sellers && sellerId !== '') {
@@ -78,6 +73,7 @@ function SellerApproval(props) {
   }, [sellerId]);
 
   if (loading) return <Loading />;
+  if (!userLoggedIn()) return <Redirect to="/sellers/sign" />;
 
   return (
     <>

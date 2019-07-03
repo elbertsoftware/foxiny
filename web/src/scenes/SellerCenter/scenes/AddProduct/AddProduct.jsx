@@ -4,6 +4,7 @@ import { Paper, Typography, withStyles, Stepper, Step, StepLabel, Button } from 
 import { Form } from 'react-final-form';
 import { graphql, compose } from 'react-apollo';
 import { toast } from 'react-toastify';
+import { Redirect } from 'react-router';
 import arrayMutators from 'final-form-arrays';
 import CascadingMenuCategory from './components/CascadingMenuCategory/CascadingMenuCategory';
 import BasicInfo from './components/BasicInfo/BasicInfo';
@@ -64,7 +65,8 @@ function getStepContent(step) {
   }
 }
 
-const AddProduct = ({ classes, createNewProduct, uploadProductImgs }) => {
+const AddProduct = ({ classes, createNewProduct, uploadProductImgs, ...props }) => {
+  const { userLoggedIn } = props;
   const [activeStep, setActiveStep] = useState(0);
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -141,6 +143,7 @@ const AddProduct = ({ classes, createNewProduct, uploadProductImgs }) => {
       toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !');
     }
   };
+  if (!userLoggedIn()) return <Redirect to="/sellers/sign" />;
   return (
     <Paper className={classes.paper}>
       <Typography gutterBottom variant="h2">

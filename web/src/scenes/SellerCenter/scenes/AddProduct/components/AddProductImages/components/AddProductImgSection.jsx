@@ -12,8 +12,8 @@ import {
   CardActions,
   Button,
 } from '@material-ui/core';
-import OpenContext from '../../../../../../utils/context/OpenContextAddProduct';
-import UploadImgZone from '../../../../../../components/UploadFileZone/UploadFileZone';
+import OpenContext from '../../../../../../../utils/context/OpenContextAddProduct';
+import UploadImgZone from '../../../../../../../components/UploadFileZone/UploadFileZone';
 
 const styles = () => ({
   root: {

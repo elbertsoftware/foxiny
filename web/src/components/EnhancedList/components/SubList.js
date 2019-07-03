@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ListItem from '@material-ui/core/ListItem';
-import { Icon, ListItemText, ListItemIcon, Paper } from '@material-ui/core';
+import { Icon, ListItemText, ListItemIcon, Paper, ClickAwayListener } from '@material-ui/core';
 import withStyles from '@material-ui/core/styles/withStyles';
 import EnhancedList from '../EnhancedList';
 
@@ -26,7 +26,7 @@ const SubList = ({ name, menuItems, classes, selected, setSelected }) => {
   const handleClose = () => {
     timer = setTimeout(() => {
       setDisplay('hidden');
-    }, 200);
+    }, 100);
   };
   return (
     <React.Fragment>
@@ -42,17 +42,18 @@ const SubList = ({ name, menuItems, classes, selected, setSelected }) => {
           <Icon>keyboard_arrow_right</Icon>
         </ListItemIcon>
       </ListItem>
-      <Paper style={{ position: 'absolute', top: 0, left: 320, visibility, width: 300 }}>
-        <div style={{ overflow: 'auto', maxHeight: 400 }}>
-          <EnhancedList
-            onMouseEnter={handleOpen}
-            onMouseLeave={handleClose}
-            menuItems={menuItems}
-            selected={selected}
-            setSelected={setSelected}
-          />
-        </div>
-      </Paper>
+      <ClickAwayListener onClickAway={handleClose}>
+        <Paper style={{ position: 'absolute', top: 0, left: 320, visibility, width: 300 }}>
+          <div style={{ overflow: 'auto', maxHeight: 400 }}>
+            <EnhancedList
+              onMouseEnter={handleOpen}
+              menuItems={menuItems}
+              selected={selected}
+              setSelected={setSelected}
+            />
+          </div>
+        </Paper>
+      </ClickAwayListener>
     </React.Fragment>
   );
 };

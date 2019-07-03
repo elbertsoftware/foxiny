@@ -95,7 +95,7 @@ class App extends Component<Props, State> {
                   <Route path="/sellers/request-product" component={RequestProduct} />
                 </Switch>
                 <Switch>
-                  <Route path="/sellers/add-product" component={AddProduct} />
+                  <Route path="/sellers/add-product" component={withAuthenticator(AddProduct)} />
                 </Switch>
                 <Switch>
                   <Route path="/sellers/list-products" component={withAuthenticator(ListProduct)} />

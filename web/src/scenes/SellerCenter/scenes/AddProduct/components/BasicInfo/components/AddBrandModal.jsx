@@ -5,7 +5,7 @@ import { DialogTitle, DialogContent, DialogActions } from '../../../../../../../
 
 const AddBrandModal = ({ classes, openModal, handleCloseModal }) => {
   return (
-    <Dialog open={openModal} maxWidth="sm" onClose={handleCloseModal}>
+    <Dialog open={openModal} maxWidth="md" onClose={handleCloseModal}>
       <DialogTitle>Thêm thương hiệu của bạn</DialogTitle>
       <DialogContent>
         <FormLabel>Tên thương hiệu</FormLabel>

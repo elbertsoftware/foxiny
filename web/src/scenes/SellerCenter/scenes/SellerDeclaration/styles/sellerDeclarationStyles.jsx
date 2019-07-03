@@ -118,6 +118,11 @@ const styles = theme => ({
 
     color: '#ffffff',
   },
+  notify: {
+    borderRadius: 30,
+    padding: 16,
+    marginBottom: 16,
+  },
   uploadZone: {
     width: '100%',
     margin: `${theme.spacing(2)}px 0`,

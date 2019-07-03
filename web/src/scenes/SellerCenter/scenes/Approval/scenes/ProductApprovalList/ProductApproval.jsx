@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Paper, Typography, TableRow, TableCell, Link, Button, Icon, InputBase } from '@material-ui/core';
+import { Redirect } from 'react-router';
 import { graphql, compose } from 'react-apollo';
 import { debounce } from 'debounce';
 import { GET_PRODUCT } from '../../../../../../utils/graphql/product';
@@ -24,12 +25,16 @@ function ProductApproval(props) {
   const { loading, productsData } = props;
   // Props of route
   const { history } = props;
+  // Auth
+  const { userLoggedIn } = props;
   const classes = useStyles();
   const [cloneProductData, setCloneProductData] = useState([]);
   const [isDefault, setIsDefault] = useState(true);
   const [searchValue, setSearchValue] = useState('');
 
   let productTemplateId;
+  // Search implementation
+  // Search function
   const onSearchChangeDebounce = debounce(() => {
     const newArrayProducts = productsData.filter(
       product =>
@@ -41,39 +46,34 @@ function ProductApproval(props) {
   }, 500);
 
   const handleOnchange = event => {
-    if (event.target.value === '') {
-      setCloneProductData(productsData);
-    }
     setSearchValue(event.target.value);
   };
-  // Sau khi searchValue thay đổi, gọi hàm thực search để trả về giá trị
+  // Sau khi searchValue thay đổi, gọi hàm thực search để trả về giá trị, set IsDefault = false để map Clone Array (cloneSellers)
+  // Nếu searchValue rỗng thì set IsDefault true , để chọn map Array ban đầu (sellers)
   React.useEffect(() => {
     if (searchValue !== '') {
-      onSearchChangeDebounce();
-    }
-  }, [searchValue]);
-  // Sau khi kết quả đã được trả về cloneProductData thì bắt đầu xét điều kiện
-  // Trường hợp xóa searchValue => searchValue = empty thì trả lại data ban đầu sellers
-  // Trường hợp searchValue có giá trị thì manipulate data với cloneProductData
-  React.useEffect(() => {
-    if (searchValue === '') {
-      setIsDefault(true);
-    } else {
       setIsDefault(false);
+      onSearchChangeDebounce();
+      return;
     }
-  }, [cloneProductData]);
-  // Clone the data of products at the beginning
+    setIsDefault(true);
+  }, [searchValue]);
+  // Clone the data of products when have recieved it
   React.useEffect(() => {
     if (!loading) {
       setCloneProductData(productsData);
     }
   }, [loading]);
 
+  // Other logics
+
   const detailAction = productTemplateId => () => {
     history.push(`/sellers/approve-products/${productTemplateId}`);
   };
 
   if (loading) return <Loading />;
+
+  if (!userLoggedIn()) return <Redirect to="/sellers/sign" />;
 
   return (
     <>

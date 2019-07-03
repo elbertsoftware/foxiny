@@ -34,7 +34,7 @@ const BankAccount = props => {
   return (
     <Paper className={classes.root} elevation={0}>
       <div className={classes.noteContainer}>
-        <Typography gutterBottom className={classes.noteText}>
+        <Typography gutterBottom variant="h6" className={classes.noteText}>
           Lưu ý đối với tài khoản ngân hàng:
         </Typography>
         <Typography gutterBottom className={classes.noteText}>

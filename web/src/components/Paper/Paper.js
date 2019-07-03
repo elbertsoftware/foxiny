@@ -16,7 +16,6 @@ const styles = theme => ({
     backgroundColor: theme.palette.secondary.dark,
   },
   root: {
-    maxWidth: 935,
     margin: 'auto',
     marginTop: '15px',
     marginBottom: '10px',

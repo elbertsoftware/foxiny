@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Paper, Typography, Tabs, Tab, Button, withStyles, Grid, Icon, IconButton } from '@material-ui/core';
+import { Typography, Tabs, Tab, Button, withStyles, Grid, Icon, IconButton } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
 import { toast } from 'react-toastify';
 import { compose, graphql } from 'react-apollo';
@@ -12,6 +12,7 @@ import { UPLOAD_SOCIAL_ID_MEDIA, DELETE_SOCIAL_ID_MEDIA } from '../../../../../.
 import ApprovalContainer from '../../../../../../components/ApproveContainer/ApprovalContainer';
 import ReactMediumZoom from '../../../../../../components/MediumZoom/ReactMediumZoom';
 import AddBankAccount from '../AddBankAccount/AddBankAccount';
+import Paper from '../../../../../../components/Paper/Paper';
 
 const imgCardStyles = theme => ({
   container: {
@@ -182,6 +183,12 @@ const SellerBusinessInfo = ({ classes, theme, seller, review, ...props }) => {
                   <strong>Cá nhân</strong>
                 </Typography>
                 <Typography gutterBottom>Tải ảnh CMND của bạn bao gồm mặt trước và mặt sau.</Typography>
+                <Paper elevation={0} className={classes.notify} background="main">
+                  <Typography variant="h6">
+                    Yêu cầu đối với hình ảnh:{' '}
+                    <Typography variant="subtitle2">Kích thước tối thiểu 500 x 500px</Typography>
+                  </Typography>
+                </Paper>
                 <UploadFileZone
                   style={classes.uploadZone}
                   onDropAccepted={onDropAccepted}

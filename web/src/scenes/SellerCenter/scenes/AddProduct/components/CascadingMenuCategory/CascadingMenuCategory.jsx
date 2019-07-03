@@ -28,7 +28,6 @@ const CascadingMenuCategory = ({ review, ...props }) => {
   useEffect(() => {
     if (!loading) {
       setCatalogTree(Catalog.buildTree(catalogs).children);
-      console.log(catalogTree);
     }
   }, [catalogs]);
   if (loading) return <Loading />;
