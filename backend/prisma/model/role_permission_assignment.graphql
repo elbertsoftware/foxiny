@@ -41,32 +41,29 @@ type Assignment {
   updatedAt: DateTime! @updatedAt
 }
 
-type ResolversClaim {
+# TODO: mispelling
+type Policy {
   id: ID! @id
   _version: Int! @default(value: 1)
 
-  resolverName: String
+  resolver: String
 
-  requiredRoles: [Role!]
-    @relation(
-      link: TABLE
-      name: "RequiredResolversClaimRole"
-      onDelete: SET_NULL
-    )
   requiredPermissions: [Permission!]
-    @relation(
-      link: TABLE
-      name: "RequiredResolversClaimPermission"
-      onDelete: SET_NULL
-    )
-  exceptRoles: [Role!]
-    @relation(link: TABLE, name: "ExceptResolversClaimRole", onDelete: SET_NULL)
-  exceptioPermissions: [Permission!]
-    @relation(
-      link: TABLE
-      name: "ExceptResolversClaimPermission"
-      onDelete: SET_NULL
-    )
+    @relation(link: TABLE, name: "PolicyRequirePermissions", onDelete: SET_NULL)
+  # requiredPermissions: [Permission!]
+  #   @relation(
+  #     link: TABLE
+  #     name: "RequiredResolversClaimPermission"
+  #     onDelete: SET_NULL
+  #   )
+  # exceptRoles: [Role!]
+  #   @relation(link: TABLE, name: "ExceptResolversClaimRole", onDelete: SET_NULL)
+  # exceptioPermissions: [Permission!]
+  #   @relation(
+  #     link: TABLE
+  #     name: "ExceptResolversClaimPermission"
+  #     onDelete: SET_NULL
+  #   )
 
   description: String
 

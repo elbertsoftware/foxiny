@@ -3,7 +3,7 @@ import { getUserIDFromRequest } from "../../utils/authentication";
 import logger from "../../utils/logger";
 
 export const Query = {
-  users: (parent, args, { prisma, request }, info) => {
+  users: async (parent, args, { prisma, request }, info) => {
     const opArgs = {};
 
     if (args.query) {

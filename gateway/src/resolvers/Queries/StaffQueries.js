@@ -2,7 +2,9 @@
 
 import logger from "../../utils/logger";
 import { getUserIDFromRequest } from "../../utils/authentication";
+import { gatekeeper } from "../../utils/permissionChecker";
 
+// TODO: something wrong in these queries
 export const Query = {
   retailerApprovals: async (
     parent,
@@ -11,38 +13,47 @@ export const Query = {
     info,
   ) => {
     // TODO: check permission
-    const userId = await getUserIDFromRequest(request, cache, i18n);
-    // TODO: validate input
-    const newData = query;
+    const user = await gatekeeper.checkPermissions(request, "SUPPORT", i18n);
 
-    const opArgs = {};
-    if (newData) {
-      opArgs.where = {
+    // TODO: validate input
+
+    const opArgs = {
+      orderBy: "updatedAt_DESC",
+      skip: query.skip || undefined,
+      last: query.last || undefined,
+      where: {
         OR: [
+          { id: query.caseId || undefined },
           {
-            openByUser: {
-              id: userId,
-            },
-          },
-          {
-            retailerId: newData.retailerId,
-          },
-          {
-            openByUser: {
-              id: newData.userId,
+            severity: {
+              name_contains: query.severity,
             },
           },
           {
             status: {
-              name: newData.status,
+              name_contains: query.status,
+            },
+          },
+          {
+            openedByUser: {
+              id: query.openedByUserId,
+            },
+          },
+          {
+            updatedByUser_some: {
+              id: updatedByUserId,
+            },
+          },
+          {
+            correspondences_some: {
+              respondedBy: {
+                id: query.responsedByStaffUserId,
+              },
             },
           },
         ],
-      };
-    }
-    if (newData.last) {
-      opArgs.last = newData.last;
-    }
+      },
+    };
 
     return prisma.query.supportCases(opArgs, info);
   },
@@ -54,49 +65,22 @@ export const Query = {
     info,
   ) => {
     // TODO: check permission
-    const userId = await getUserIDFromRequest(request, cache, i18n);
-    // TODO: validate input
-    const newData = query;
-    const opArgs = {};
+    const user = await gatekeeper.checkPermissions(request, "SUPPORT", i18n);
 
-    if (newData) {
-      opArgs.where = {
+    // TODO: validate input
+
+    const opArgs = {
+      orderBy: "updatedAt_DESC",
+      where: {
         OR: [
           {
             supportCase: {
-              openByUser: {
-                id: userId,
-              },
-            },
-          },
-          {
-            respondedBy: {
-              id: userId,
-            },
-          },
-          {
-            supportCase: {
-              retailerId: newData.retailerId,
-            },
-          },
-          {
-            supportCase: {
-              manufacturerId: newData.manufacturerId,
-            },
-          },
-          {
-            supportCase: {
-              status: {
-                name: newData.status,
-              },
+              id: query.caseId,
             },
           },
         ],
-      };
-    }
-    if (newData.last) {
-      opArgs.last = newData.last;
-    }
+      },
+    };
 
     return prisma.query.supportCorrespondences(opArgs, info);
   },
@@ -104,53 +88,28 @@ export const Query = {
   // TODO: how 'bout wrong seller ID?
   lastRetailerApprovalProcess: async (
     parent,
-    { query },
+    { caseId },
     { prisma, cache, request, i18n },
     info,
   ) => {
     // TODO: check permission
-    const userId = await getUserIDFromRequest(request, cache, i18n);
-    // TODO: validate input
-    const newData = query;
-    const opArgs = {};
+    const user = await gatekeeper.checkPermissions(request, "SUPPORT", i18n);
 
-    if (newData) {
-      opArgs.where = {
+    // TODO: validate input
+
+    const opArgs = {
+      orderBy: "updatedAt_DESC",
+      last: 1,
+      where: {
         OR: [
           {
             supportCase: {
-              openByUser: {
-                id: userId,
-              },
-            },
-          },
-          {
-            respondedBy: {
-              id: userId,
-            },
-          },
-          {
-            supportCase: {
-              retailerId: newData.retailerId,
-            },
-          },
-          {
-            supportCase: {
-              manufacturerId: newData.manufacturerId,
-            },
-          },
-          {
-            supportCase: {
-              status: {
-                name: newData.status,
-              },
+              id: query.caseId,
             },
           },
         ],
-      };
-    }
-
-    opArgs.last = 1;
+      },
+    };
 
     return prisma.query.supportCorrespondences(opArgs, info);
   },

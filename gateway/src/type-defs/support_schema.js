@@ -52,11 +52,9 @@ export const supportSchema = gql`
     status: SupportStatus!
     severity: SupportSeverity!
     catergory: SupportCategory!
-    openByUser: User!
+    openedByUser: User!
 
-    retailerId: String
-    manufacturerId: String
-    productId: String
+    data: JSON
 
     # other targets
 
@@ -77,5 +75,10 @@ export const supportSchema = gql`
 
     createdAt: String
     updatedAt: String
+  }
+
+  extend type Query {
+    suportStatuses: [SupportStatus!]!
+    supportSeverities: [SupportSeverity!]!
   }
 `;

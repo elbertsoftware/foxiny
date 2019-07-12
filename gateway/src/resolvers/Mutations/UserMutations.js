@@ -1,6 +1,6 @@
 // @flow
 
-import { t } from "@lingui/macro";
+import { t } from '@lingui/macro';
 import {
   hashPassword,
   verifyPassword,
@@ -12,7 +12,7 @@ import {
   getTokenFromRequest,
   getUserIDFromRequest,
   cleanToken,
-} from "../../utils/authentication";
+} from '../../utils/authentication';
 import {
   validateCreateInput,
   validateConfirmInput,
@@ -21,12 +21,12 @@ import {
   validateUpdateInput,
   validateResetPwdInput,
   classifyEmailPhone,
-} from "../../utils/validation";
-import logger from "../../utils/logger";
-import { sendConfirmationEmail } from "../../utils/email";
-import { sendConfirmationText } from "../../utils/sms";
-import { sendConfirmationEsms } from "../../utils/smsVN";
-import { checkUserPermission } from "../../utils/permissionChecker";
+} from '../../utils/validation';
+import logger from '../../utils/logger';
+import { sendConfirmationEmail } from '../../utils/email';
+import { sendConfirmationText } from '../../utils/sms';
+import { sendConfirmationEsms } from '../../utils/smsVN';
+import { gatekeeper } from '../../utils/permissionChecker';
 
 // TODO: un-comment sendConfirmation
 // NOTE: handling errors in a frendly way: https://www.youtube.com/watch?v=fUq1iHiDniY
@@ -38,12 +38,7 @@ export const Mutation = {
    * Create user
    * user must enter: name, email or phone and pwd
    */
-  createUser: async (
-    parent,
-    { data },
-    { prisma, cache, request, i18n },
-    info,
-  ) => {
+  createUser: async (parent, { data }, { prisma, cache, request, i18n }, info) => {
     let newData;
     try {
       newData = validateCreateInput(data, i18n);
@@ -64,7 +59,7 @@ export const Mutation = {
             create: {
               roles: {
                 connect: {
-                  name: "USER",
+                  name: 'USER',
                 },
               },
             },
@@ -76,23 +71,20 @@ export const Mutation = {
 
     // for transact-log
     logger.info(
-      `CREATE_USER | 1 | ${newData.name} | ${newData.email ||
-        undefined} | ${newData.phone || undefined} | ${newData.password}`,
+      `CREATE_USER | 1 | ${newData.name} | ${newData.email || undefined} | ${newData.phone || undefined} | ${
+        newData.password
+      }`,
     );
 
-    const code = generateConfirmation(
-      cache,
-      user.id,
-      newData.email || newData.phone,
-    );
+    const code = generateConfirmation(cache, user.id, newData.email || newData.phone);
 
     // email the code if user is signing up via email
-    if (typeof newData.email === "string") {
+    if (typeof newData.email === 'string') {
       // sendConfirmationEmail(newData.name, newData.email, code);
     }
 
     // text the code if user is signing up via phone
-    if (typeof newData.phone === "string") {
+    if (typeof newData.phone === 'string') {
       // TODO: try to find out where does the number come from, US or VN or other, and choose the best way to send the code
       // sendConfirmationText(newData.name, newData.phone, code);
       // sendConfirmationEsms(newData.name, newData.phone, code);
@@ -126,11 +118,7 @@ export const Mutation = {
     if (!user) {
       logger.debug(
         `🛑❌  CONFIRM_USER: User ${
-          newData.userId
-            ? newData.userId
-            : newData.email
-            ? newData.email
-            : newData.phone
+          newData.userId ? newData.userId : newData.email ? newData.email : newData.phone
         } not found`,
       );
       const error = i18n._(t`Unable to confirm user`);
@@ -138,12 +126,7 @@ export const Mutation = {
     }
 
     // NOTE: matched contains email or phone
-    const matched = await verifyConfirmation(
-      cache,
-      newData.code,
-      user.id,
-      i18n,
-    );
+    const matched = await verifyConfirmation(cache, newData.code, user.id, i18n);
     logger.debug(`confirmation matched: ${matched}`);
     if (!matched) {
       const error = i18n._(t`Unable to confirm user`);
@@ -162,11 +145,7 @@ export const Mutation = {
     });
 
     // for transact-log
-    logger.info(
-      `UPDATE_USER | 1 | ${user.id} | ${updateData.email || undefined} | ${
-        updateData.phone
-      }`,
-    );
+    logger.info(`UPDATE_USER | 1 | ${user.id} | ${updateData.email || undefined} | ${updateData.phone}`);
 
     return true;
   },
@@ -174,12 +153,7 @@ export const Mutation = {
   /**
    * Insert or update user's security info
    */
-  upsertSecurityInfo: async (
-    parent,
-    { securityInfo },
-    { prisma, cache, request, i18n },
-    info,
-  ) => {
+  upsertSecurityInfo: async (parent, { securityInfo }, { prisma, cache, request, i18n }, info) => {
     let newData;
     try {
       newData = validateSecurityInfo(securityInfo);
@@ -189,19 +163,20 @@ export const Mutation = {
       throw new Error(error);
     }
 
-    const userId = await getUserIDFromRequest(request, cache, i18n);
+    // NOTE: check permissions
+    const user = await gatekeeper.checkPermissions(request, 'USER', i18n);
 
-    const user = await prisma.query.user({
-      where: {
-        id: userId,
-      },
-    });
+    // const user = await prisma.query.user({
+    //   where: {
+    //     id: userId,
+    //   },
+    // });
 
-    if (!user) {
-      logger.debug(`🛑❌  CREATE_SECURITY_INFO: User ${userId} not found`);
-      const error = i18n._(t`Unable to update user`);
-      throw new Error(error); // try NOT to provide enough information so hackers can guess
-    }
+    // if (!user) {
+    //   logger.debug(`🛑❌  CREATE_SECURITY_INFO: User ${userId} not found`);
+    //   const error = i18n._(t`Unable to update user`);
+    //   throw new Error(error); // try NOT to provide enough information so hackers can guess
+    // }
 
     // NOTE: insert new question (if user enters) and create to-be-updated data
     const updateData = [];
@@ -233,7 +208,7 @@ export const Mutation = {
     // NOTE: delete old securityInfo and insert the new one
     const updatedUser = await prisma.mutation.updateUser({
       where: {
-        id: userId,
+        id: user.id,
       },
       data: {
         securityAnswers: {
@@ -257,11 +232,9 @@ export const Mutation = {
 
     // for transact-log
     logger.info(
-      `UPSERT_SECINFO | 1 | ${userId} | ${updateData[0].questionId} | ${
-        updateData[0].answer
-      } | ${updateData[1].questionId} | ${updateData[1].answer} | ${
-        updateData[2].questionId
-      } | ${updateData[2].answer}`,
+      `UPSERT_SECINFO | 1 | ${user.id} | ${updateData[0].questionId} | ${updateData[0].answer} | ${
+        updateData[1].questionId
+      } | ${updateData[1].answer} | ${updateData[2].questionId} | ${updateData[2].answer}`,
     );
 
     return updatedUser;
@@ -271,12 +244,9 @@ export const Mutation = {
    * Resend confirmation
    * using this to send a confirmation code to phone or email
    */
-  resendConfirmation: async (
-    parent,
-    { data },
-    { prisma, cache, request, i18n },
-    info,
-  ) => {
+  resendConfirmation: async (parent, { data }, { prisma, cache, request, i18n }, info) => {
+    // TODO: check ip before perform this mutation, prevent that ip sends tons of requests
+
     // NOTE: (for client) one of three: userId, email and phone is accepted only
     let newData;
     try {
@@ -287,68 +257,60 @@ export const Mutation = {
       throw new Error(error);
     }
 
-    const userId = await getUserIDFromRequest(request, cache, i18n, false);
-    const user = await prisma.query.user({
-      where: {
-        id: newData.userId || userId,
-        email: newData.email,
-        phone: newData.phone,
-      },
-    });
+    const user = await gatekeeper.checkPermissions(request, 'USER', i18n);
 
-    if (!user) {
-      const error = i18n._(t`Unable to resend confirmation`);
-      throw new Error(error); // try NOT to provide enough information so hackers can guess
-    }
+    // const user = await prisma.query.user({
+    //   where: {
+    //     id: newData.userId || userId,
+    //     email: newData.email,
+    //     phone: newData.phone,
+    //   },
+    // });
+
+    // if (!user) {
+    //   const error = i18n._(t`Unable to resend confirmation`);
+    //   throw new Error(error); // try NOT to provide enough information so hackers can guess
+    // }
 
     logger.debug(
-      `user id ${user.id}, name ${user.name}, email ${user.email}, password ${
-        user.phone
-      }, enabled ${user.enabled}`,
+      `user id ${user.id}, name ${user.name}, email ${user.email}, password ${user.phone}, enabled ${user.enabled}`,
     );
 
-    if (
-      user.enabled &&
-      (newData.email === user.email || newData.phone === user.phone)
-    ) {
+    if (user.enabled && (newData.email === user.email || newData.phone === user.phone)) {
       const error = i18n._(t`User has been confirmed`);
       throw new Error(error);
     }
 
-    const code = generateConfirmation(
-      cache,
-      user.id,
-      newData.email || newData.phone || user.email || user.phone,
-    );
+    const code = generateConfirmation(cache, user.id, newData.email || newData.phone || user.email || user.phone);
 
     // case: user updates info and confirm new info
     // case: user wants to confirm account after signed up but not confirmed yet (disconnect or ST else)
     if (user.enabled) {
-      if (typeof newData.email === "string") {
+      if (typeof newData.email === 'string') {
         // sendConfirmationEmail(user.name, newData.email, code);
-        logger.debug("Email resent");
+        logger.debug('Email resent');
       }
 
       // text the code if user is signing up via phone
-      if (typeof newData.phone === "string") {
+      if (typeof newData.phone === 'string') {
         // sendConfirmationText(user.name, newData.phone, code);
         // sendConfirmationEsms(user.name, newData.phone, code);
-        logger.debug("Phone resent");
+        logger.debug('Phone resent');
       }
       return true;
     }
 
     // email the code if user is signing up via email
-    if (typeof user.email === "string") {
+    if (typeof user.email === 'string') {
       // sendConfirmationEmail(user.name, user.email, code);
-      logger.debug("Email resent");
+      logger.debug('Email resent');
     }
 
     // text the code if user is signing up via phone
-    if (typeof user.phone === "string") {
+    if (typeof user.phone === 'string') {
       // sendConfirmationText(user.name, user.phone, code);
       // sendConfirmationEsms(user.name, user.phone, code);
-      logger.debug("Phone resent");
+      logger.debug('Phone resent');
     }
 
     return true;
@@ -365,7 +327,7 @@ export const Mutation = {
           phone: data.phone,
         },
       },
-      "{ id password enabled assignment { id retailers { id } }}",
+      '{ id password enabled assignment { id retailers { id } }}',
     );
 
     if (!user) {
@@ -390,12 +352,7 @@ export const Mutation = {
 
     return {
       userId: user.id,
-      hasRetailers:
-        user.assignment &&
-        user.assignment.retailers &&
-        user.assignment.retailers.length > 0
-          ? true
-          : false,
+      hasRetailers: user.assignment && user.assignment.retailers && user.assignment.retailers.length > 0 ? true : false,
       // hasManufacturer: user.assignment.manufacturers && user.assignment.manufacturers.length > 0 ? true : false,
       token: generateToken(user.id, request, cache),
     };
@@ -424,13 +381,9 @@ export const Mutation = {
    * update user
    * user must verify before updateing email/phone/pwd
    */
-  updateUser: async (
-    parent,
-    { data },
-    { prisma, request, cache, i18n },
-    info,
-  ) => {
-    const userId = await getUserIDFromRequest(request, cache, i18n);
+  updateUser: async (parent, { data }, { prisma, request, cache, i18n }, info) => {
+    // NOTE: check permissions
+    const user = await gatekeeper.checkPermissions(request, 'USER', i18n);
 
     let newData;
     try {
@@ -456,14 +409,14 @@ export const Mutation = {
     try {
       let canUpdate = false;
       // verify current password
-      const user = await prisma.query.user(
-        {
-          where: {
-            id: userId,
-          },
-        },
-        "{ id name email phone password }",
-      );
+      // const user = await prisma.query.user(
+      //   {
+      //     where: {
+      //       id: user.id,
+      //     },
+      //   },
+      //   "{ id name email phone password }",
+      // );
 
       if (currentPassword) {
         canUpdate = verifyPassword(currentPassword, user.password);
@@ -475,46 +428,42 @@ export const Mutation = {
       }
 
       // email is about to be changed
-      if (typeof email === "string" && canUpdate) {
-        const code = generateConfirmation(cache, userId, email);
+      if (typeof email === 'string' && canUpdate) {
+        const code = generateConfirmation(cache, user.id, email);
 
         // sendConfirmationEmail(user.name, email, code);
-        logger.debug("🔵✅  UPDATE USER: Change Email Confirmation Sent");
+        logger.debug('🔵✅  UPDATE USER: Change Email Confirmation Sent');
 
         // the update email flow is end when user confirms by enter the code
         // TODO: Archive current email somewhere else
       }
 
       // phone is about to be changed
-      if (typeof phone === "string" && canUpdate) {
-        const code = generateConfirmation(cache, userId, phone);
+      if (typeof phone === 'string' && canUpdate) {
+        const code = generateConfirmation(cache, user.id, phone);
 
         // sendConfirmationText(user.name, phone, code);
         // sendConfirmationEsms(user.name, phone, code);
-        logger.debug("🔵✅  UPDATE USER: Change Phone Confirmation Sent");
+        logger.debug('🔵✅  UPDATE USER: Change Phone Confirmation Sent');
 
         // the update email flow is end when user confirms by enter the code
         // TODO: Archive current phone somewhere else
       }
 
       // both password and currentPassword present which means password is about to be changed
-      if (
-        typeof password === "string" &&
-        typeof currentPassword === "string" &&
-        canUpdate
-      ) {
+      if (typeof password === 'string' && typeof currentPassword === 'string' && canUpdate) {
         updateData.password = hashPassword(password);
 
         // TODO: Archive current password somewhere else
       }
 
       // TODO: Clean all token after email/phone/pwd changing?
-      // deleteAllTokensInCache(cache, userId);
-      console.log(updateData);
+      // deleteAllTokensInCache(cache, user.id);
+
       const updatedUser = prisma.mutation.updateUser(
         {
           where: {
-            id: userId,
+            id: user.id,
           },
           data: updateData,
         },
@@ -523,9 +472,8 @@ export const Mutation = {
 
       // for transact-log
       logger.info(
-        `UPDATE_USER | 1 | ${userId} | ${updateData.name ||
-          undefined} | ${updateData.email || undefined} | ${updateData.phone ||
-          undefined} | ${password || undefined}`,
+        `UPDATE_USER | 1 | ${user.id} | ${updateData.name || undefined} | ${updateData.email ||
+          undefined} | ${updateData.phone || undefined} | ${password || undefined}`,
       );
 
       return updatedUser;
@@ -539,38 +487,36 @@ export const Mutation = {
   /**
    * delete user
    */
-  deleteUser: async (parent, args, { prisma, request, cache, i18n }, info) => {
-    const userId = await getUserIDFromRequest(request, cache, i18n);
+  // NOTE: moved to staff_mutations.js
+  // deleteUser: async (parent, args, { prisma, request, cache, i18n }, info) => {
+  //   // NOTE: check permissions
+  //   const user = await gatekeeper.checkPermissions(request, "USER", i18n);
 
-    await checkUserPermission(prisma, cache, request, i18n, {
-      roles: ["ROOT"],
-      permissions: ["DELETE_USER"],
-    });
+  //   await checkUserPermission(prisma, cache, request, i18n, {
+  //     roles: ["ROOT"],
+  //     permissions: ["DELETE_USER"],
+  //   });
 
-    deleteAllTokensInCache(cache, userId);
+  //   deleteAllTokensInCache(cache, user.id);
 
-    logger.info(`DELETE_USER | 1 | ${userId}`);
+  //   logger.info(`DELETE_USER | 1 | ${user.id}`);
 
-    return prisma.mutation.deleteUser(
-      {
-        where: {
-          id: userId,
-        },
-      },
-      info,
-    );
-  },
+  //   return prisma.mutation.deleteUser(
+  //     {
+  //       where: {
+  //         id: user.id,
+  //       },
+  //     },
+  //     info,
+  //   );
+  // },
 
   /**
    * request reset password
    * this will log user out of all devices
    */
-  requestResetPwd: async (
-    parent,
-    { mailOrPhone },
-    { prisma, request, cache, i18n },
-    info,
-  ) => {
+  // TODO: check ip before performing this mutations, prevent that ip sends tons of requests
+  requestResetPwd: async (parent, { mailOrPhone }, { prisma, request, cache, i18n }, info) => {
     const user = (await prisma.query.users(
       {
         where: {
@@ -619,63 +565,27 @@ export const Mutation = {
   /**
    * reset password
    */
-  resetPassword: async (
-    parent,
-    { data },
-    { prisma, request, cache, i18n },
-    info,
-  ) => {
-    let newData;
-    try {
-      newData = validateResetPwdInput(data);
-    } catch (err) {
-      logger.error(`🛑❌  Cannot create user ${err.message}`);
-      const error = i18n._(t`Invalid input`);
-      throw new Error(error);
-    }
+  resetPassword: async (parent, { data }, { prisma, request, cache, i18n }, info) => {
+    const user = await gatekeeper.checkPermissions(request, 'USER', i18n);
 
-    const userId = await getUserIDFromRequest(request, cache, i18n, false);
-
-    if (!userId) {
-      const error = i18n._(t`Unable to reset password`);
-      throw new Error(error);
-    }
-
-    const user = await prisma.query.user(
-      {
-        where: {
-          id: userId,
-        },
-      },
-      `{ id securityAnswers { securityQuestion { id question } answer } enabled}`,
-    );
-
-    if (!user) {
-      const error = i18n._(t`Unable to reset password`);
-      throw new Error(error); // try NOT to provide enough information so hackers can guess
-    }
+    const newData = validateResetPwdInput(data);
 
     if (!user.enabled) {
       const error = i18n._(t`User has not been confirmed or was disabled`);
       throw new Error(error);
     }
+    if (!user.recoverable) {
+      const error = i18n._(t`Cannot recover user`);
+      throw new Error(error);
+    }
 
-    const { securityAnswers } = user;
-    const { securityInfo } = newData;
+    const securityAnswer = user.securityInfo;
+    const { securityInfo, password } = newData;
 
     const canResetPwd =
-      securityInfo[0].answer ===
-        securityAnswers.find(
-          x => x.securityQuestion.id === securityInfo[0].questionId,
-        ).answer &&
-      securityInfo[1].answer ===
-        securityAnswers.find(
-          x => x.securityQuestion.id === securityInfo[1].questionId,
-        ).answer &&
-      securityInfo[2].answer ===
-        securityAnswers.find(
-          x => x.securityQuestion.id === securityInfo[2].questionId,
-        ).answer &&
+      securityInfo[0].answer === securityAnswers.find(x => x.questionId === securityInfo[0].questionId).answer &&
+      securityInfo[1].answer === securityAnswers.find(x => x.questionId === securityInfo[1].questionId).answer &&
+      securityInfo[2].answer === securityAnswers.find(x => x.questionId === securityInfo[2].questionId).answer &&
       securityInfo.length === 3;
 
     // TODO: after x tries, prevent user from trying to recover account in y minutes
@@ -684,25 +594,25 @@ export const Mutation = {
     // change pwd if account is verified
     if (canResetPwd) {
       const updateUser = {
-        password: hashPassword(newData.password),
+        password: hashPassword(password),
       };
 
       // remove all tokens from cache
-      deleteAllTokensInCache(cache, userId);
+      deleteAllTokensInCache(cache, user.id);
 
       // update user's new pwd
       await prisma.mutation.updateUser(
         {
           where: {
-            id: userId,
+            id: user.id,
           },
           data: updateUser,
         },
-        "{ password }",
+        '{ password }',
       );
 
       // for transact-log
-      logger.info(`RESET_PWD | 1 | ${userId} | ${newData.password}`);
+      logger.info(`RESET_PWD | 1 | ${user.id} | ${updatedUser.password}`);
 
       return true;
     }

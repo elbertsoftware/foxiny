@@ -463,7 +463,7 @@
     ]
   },
   {
-    "name": "validateUploadInput",
+    "name": "validateUploadImageInput",
     "data": [
       {
         "expected": true,

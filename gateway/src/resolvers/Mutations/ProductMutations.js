@@ -7,20 +7,35 @@ import {
   restructureProductAttributes,
   restrutureProductTemplate2FriendlyProduct,
   restructureProductRetailer2FriendlyProduct,
-} from '../../utils/productUtils/dataHelper';
-import { validateCreateNewProductInput, validateUpdateProductInput } from '../../utils/productUtils/validation';
-import { checkUserSellerOwnership } from '../../utils/permissionChecker';
-import { s3ProductMediasUploader } from '../../utils/s3Uploader';
+} from "../../utils/productUtils/dataHelper";
+import {
+  validateCreateNewProductInput,
+  validateUpdateProductInput,
+} from "../../utils/productUtils/validation";
+import { gatekeeper } from "../../utils/permissionChecker";
+import { s3ProductMediasUploader } from "../../utils/s3Uploader";
+import { getLanguage } from "../../utils/i18nHelper";
 
 // TODO:
 // log transaction
 // generate sku
 
 export const Mutation = {
-  createBrandNewProductWVariants: async (parent, { sellerId, data }, { prisma, request, cache, i18n }, info) => {
-    // try {
-    // NOTE: check permission
-    await checkUserSellerOwnership(prisma, cache, request, i18n, sellerId);
+  createBrandNewProductWVariants: async (
+    parent,
+    { sellerId, data },
+    { prisma, request, cache, i18n },
+    info,
+  ) => {
+    try {
+      // NOTE: check permission
+      const user = await gatekeeper.checkPermissions(
+        request,
+        "PRODUCT_RETAILER",
+        i18n,
+        sellerId,
+      );
+      const { language } = getLanguage(request);
 
     // NOTE: validate input
     const newData = validateCreateNewProductInput(data);
@@ -48,66 +63,47 @@ export const Mutation = {
       const newInfo = `{ id name briefDescription catalog { id name } descriptions { retailer { id } description } brand { id brandName } products { id productMedias { id uri } productRetailers { id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } retailer { id businessName } rating enabled approved createdAt updatedAt } options { id attribute { id name } value { id name} } sku } createdAt updatedAt }`;
 
       const productTemplateData = {
-        name: data.name,
-        briefDescription: data.briefDescription,
+        name: newData.name,
+        briefDescription: newData.briefDescription,
         catalog: {
-          connect: data.catalogIds.map(id => ({ id: id })),
+          connect: newData.catalogIds.map(id => ({ id: id })),
         },
-        create: {
-          name: atts[i].name,
-          values: {
-            connect: atts[i].data.map(value => ({ name: value })),
+        brand: {
+          connect: {
+            brandName: newData.brandName,
           },
         },
-        update: {
-          name: atts[i].name,
-          values: {
-            connect: atts[i].data.map(value => ({ name: value })),
-          },
-        },
-      };
-    }
-    // NOTE: 2 - create product and it's template
-    // NOTE: fragment ensure all needed-info always be returned
-    // NOTE: lacking of manufacturer!!!
-    const newInfo = `{ id name briefDescription category { id name } descriptions { retailer { id } description } brand { id brandName } products { id productMedias { id uri } productRetailers { id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } retailer { id businessName } rating enabled approved createdAt updatedAt } options { id attribute { id name } value { id name} } sku } createdAt updatedAt }`;
-
-    const productTemplateData = {
-      name: data.name,
-      briefDescription: data.briefDescription,
-      category: {
-        connect: data.categoryIds.map(id => ({ id: id })),
-      },
-      descriptions: {
-        create: {
-          description: data.detailDescription,
-          retailer: {
-            connect: {
-              id: sellerId,
+        descriptions: {
+          create: {
+            description: newData.detailDescription,
+            retailer: {
+              connect: {
+                id: sellerId,
+              },
             },
           },
         },
-      },
-      products: {
-        create: data.products.map(product => ({
-          // sku:  TODO: generate SKU code here
-          productRetailers: {
-            create: {
-              productName: product.productName,
-              listPrice: product.listPrice,
-              sellPrice: product.sellPrice,
-              stockQuantity: product.stockQuantity,
-              productMedias:
-                product.productMediaIds && product.productMediaIds.length > 0
-                  ? {
-                      connect: product.productMediaIds.map(mediaId => ({
-                        id: mediaId,
-                      })),
-                    }
-                  : undefined,
-              retailer: {
-                connect: {
-                  id: sellerId,
+        products: {
+          create: newData.products.map(product => ({
+            // sku:  TODO: generate SKU code here
+            productRetailers: {
+              create: {
+                productName: product.productName,
+                listPrice: product.listPrice,
+                sellPrice: product.sellPrice,
+                stockQuantity: product.stockQuantity,
+                productMedias:
+                  product.productMediaIds && product.productMediaIds.length > 0
+                    ? {
+                        connect: product.productMediaIds.map(mediaId => ({
+                          id: mediaId,
+                        })),
+                      }
+                    : undefined,
+                retailer: {
+                  connect: {
+                    id: sellerId,
+                  },
                 },
               },
             },
@@ -123,34 +119,72 @@ export const Mutation = {
                 connect: {
                   name: att.value,
                 },
-              },
-            })),
-          },
-        })),
-      },
-      brand: {
-        connect: {
-          brandName: data.brandName,
+              })),
+            },
+          })),
         },
-      },
-    };
+      };
 
     const productTemplate = await prisma.mutation.createProductTemplate({ data: productTemplateData }, newInfo);
 
-    // NOTE: reconstruct to-be-returned object, more friendly
-    const friendlyProduct = restrutureProductTemplate2FriendlyProduct(productTemplate);
+      // TODO: open support case
+      await prisma.mutation.createSupportCase({
+        data: {
+          subject: `Create: ${productTemplate.name}`,
+          status: {
+            connect: {
+              name: "OPEN",
+            },
+          },
+          severity: {
+            connect: {
+              name: "MEDIUM",
+            },
+          },
+          catergory: {
+            connect: {
+              name: "CREATE_PRODUCT_APPROVAL",
+            },
+          },
+          openedByUser: {
+            connect: {
+              id: user.id,
+            },
+          },
+          targetIds: productTemplate.products
+            .map(product => product.productRetailers[0].id)
+            .join(","),
+        },
+      });
 
-    return friendlyProduct;
-    // } catch (err) {
-    //   logger.error(`ERROR_CREATE_BRANDNEW_PRODUCT_WITH_VARIANTS ${err}`);
-    //   const error = i18n._(t`Cannot create product`);
-    //   throw new Error(error);
-    // }
+      // NOTE: reconstruct to-be-returned object, more friendly
+      const friendlyProduct = restrutureProductTemplate2FriendlyProduct(
+        productTemplate,
+      );
+
+      return friendlyProduct;
+    } catch (err) {
+      logger.error(
+        `ERROR_CREATE_BRANDNEW_PRODUCT_WITH_VARIANTS ${JSON.stringify(
+          err,
+          undefined,
+          2,
+        )}`,
+      );
+      const error = i18n._(t`Cannot create product`);
+      throw new Error(error);
+    }
   },
 
   updateProducts: async (parent, { sellerId, data }, { prisma, request, cache, i18n }, info) => {
     // NOTE: check permission
-    await checkUserSellerOwnership(prisma, cache, request, i18n, sellerId);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "PRODUCT_RETAILER",
+      i18n,
+      sellerId,
+    );
+    const { language } = getLanguage(request);
 
     // TODO: validate input
     const newData = validateUpdateProductInput(data);
@@ -217,8 +251,6 @@ export const Mutation = {
             },
           });
         }
-
-        // TODO: check if there is any entity in reference to this product -> cannot update but create the new one
 
         // NOTE: attributes & value of given product are unchanged: update the given product
         const existedProduct = await prisma.query.productRetailers({
@@ -329,7 +361,13 @@ export const Mutation = {
 
   toggleProductStatus: async (parent, { sellerId, productId }, { prisma, request, cache, i18n }, info) => {
     // NOTE: check permission
-    await checkUserSellerOwnership(prisma, cache, request, i18n, sellerId);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "PRODUCT_RETAILER",
+      i18n,
+      sellerId,
+    );
+    const { language } = getLanguage(request);
 
     const product = await prisma.query.productRetailer({
       where: {
@@ -360,6 +398,4 @@ export const Mutation = {
 
     return friendlyProduct;
   },
-
-  approveProduct: async (parent, { data }, { prisma, request, cache }, info) => {},
 };

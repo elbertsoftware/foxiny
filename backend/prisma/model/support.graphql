@@ -47,16 +47,15 @@ type SupportCase {
   # caseType: CaseType @relation(link: INLINE, onDelete: SET_NULL)
   status: SupportStatus @relation(link: INLINE, onDelete: SET_NULL)
   severity: SupportSeverity @relation(link: INLINE, onDelete: SET_NULL)
-  catergory: SupportCategory @relation(link: INLINE, onDelete: SET_NULL)
-  openByUser: User @relation(link: INLINE, onDelete: SET_NULL)
+  catergory: [SupportCategory] @relation(link: TABLE, onDelete: SET_NULL)
 
-  retailerId: String
-  manufacturerId: String
-  productId: String
+  openedByUser: User
+    @relation(link: INLINE, name: "SupportCaseOpenedUser", onDelete: SET_NULL)
+  updatedByUser: [User]
+    @relation(link: TABLE, name: "SupportCaseUpdatedUser", onDelete: SET_NULL)
 
-  # other targets
-
-  correspondence: [SupportCorrespondence!]
+  targetIds: String # contains retailerIds, manuIds, userIds or productIds
+  correspondences: [SupportCorrespondence!]
     @relation(link: TABLE, onDelete: CASCADE)
 
   createdAt: DateTime! @createdAt
@@ -69,6 +68,7 @@ type SupportCorrespondence {
 
   supportCase: SupportCase @relation(onDelete: SET_NULL)
   respondedBy: User @relation(link: INLINE, onDelete: SET_NULL)
+
   note: String
   data: Json
 
