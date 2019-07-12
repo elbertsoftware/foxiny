@@ -12,10 +12,3 @@ const prisma = new Prisma({
 });
 
 export default prisma;
-
-const resolversClaim = prisma.query.resolversClaims(
-  null,
-  "{ id resolverName requiredRoles { id name type permissions { id type } } requiredPermissions { id type } }",
-);
-
-export { resolversClaim };

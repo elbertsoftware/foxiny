@@ -11,7 +11,8 @@ import {
   validateUploadImageInput,
   validateUploadDocumnetInput,
 } from "../../utils/validation";
-import { checkUserPermission } from "../../utils/permissionChecker";
+import { gatekeeper } from "../../utils/permissionChecker";
+import { getUserIDFromRequest } from "../../utils/authentication";
 
 // TODO: optimize me by using promiseAll
 
@@ -26,6 +27,9 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
+    // NOTE: check permission
+    const user = await gatekeeper.checkPermissions(request, "MEDIA_USER", i18n);
+
     const uploadedFile = await file;
     try {
       validateUploadImageInput(uploadedFile);
@@ -34,11 +38,6 @@ export const Mutation = {
       const error = i18n._(t`Invalid input`);
       throw new Error(error);
     }
-
-    const user = await checkUserPermission(prisma, cache, request, i18n, {
-      roles: ["USER", "ROOT"],
-      permissions: ["UPLOAD_USER_MEDIA"],
-    });
 
     return s3ProfileMediaUploader(prisma, uploadedFile, { userId: user.id });
   },
@@ -49,10 +48,8 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    const user = await checkUserPermission(prisma, cache, request, i18n, {
-      roles: ["RETAILER", "RETAILER_ADMIN", "ROOT"],
-      permissions: ["UPLOAD_PRODUCT_MEDIA"],
-    });
+    const userId = await getUserIDFromRequest(request, cache, i18n);
+    const user = await gatekeeper.checkPermissions("SELLER_MEDIA", userId);
 
     const productMedias = await Promise.all(
       files.map(async file => {
@@ -79,6 +76,14 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
+    // NOTE: check permission
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "MEDIA_SELLER",
+      i18n,
+      sellerId,
+    );
+
     const uploadedFile = await file;
     try {
       validateUploadImageInput(uploadedFile);
@@ -87,28 +92,6 @@ export const Mutation = {
       const error = i18n._(t`Invalid input`);
       throw error;
     }
-
-    // TODO: check permission, optimized these following lines
-    // const userId = await getUserIDFromRequest(request, cache, i18n);
-
-    await checkUserPermission(prisma, cache, request, i18n, {
-      roles: ["RETAILER", "RETAILER_ADMIN", "ROOT"],
-      permissions: ["UPLOAD_RETAILER_MEDIA"],
-    });
-
-    // if (
-    //   !user ||
-    //   !user.assignment ||
-    //   !user.assignment.retailers ||
-    //   !user.assignment.retailers.length > 0 ||
-    //   !user.assignment.retailers.map(retailer => retailer.id).includes(sellerId)
-    // ) {
-    //   logger.error(
-    //     `🛑❌  UPLOAD_PROFILE_MEDIA: User ${userId} not found or Retailer ${sellerId} not found`,
-    //   );
-    //   const error = i18n._(t`Unable to upload avatar`);
-    //   throw new Error(error); // try NOT to provide enough information so hackers can guess
-    // }
 
     // NOTE: upload and save to db
     return s3ProfileMediaUploader(prisma, uploadedFile, {
@@ -127,6 +110,14 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
+    // NOTE: check permission
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "MEDIA_SELLER",
+      i18n,
+      sellerId,
+    );
+
     const uploadedFile = await file;
     try {
       validateUploadImageInput(uploadedFile);
@@ -135,14 +126,6 @@ export const Mutation = {
       const error = i18n._(t`Invalid input`);
       throw new Error(error);
     }
-
-    // TODO: check permission, optimized these following lines
-    // const userId = await getUserIDFromRequest(request, cache, i18n);
-
-    const user = await checkUserPermission(prisma, cache, request, i18n, {
-      roles: ["RETAILER", "RETAILER_ADMIN", "ROOT"],
-      permissions: ["UPLOAD_RETAILER_MEDIA"],
-    });
 
     // NOTE: upload and save to db
     return s3ProfileMediaUploader(prisma, uploadedFile, {
@@ -157,10 +140,13 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    await checkUserPermission(prisma, cache, request, i18n, {
-      roles: ["RETAILER", "RETAILER_ADMIN", "ROOT"],
-      permissions: ["UPLOAD_RETAILER_MEDIA"],
-    });
+    // NOTE: check permission
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "MEDIA_SELLER",
+      i18n,
+      sellerId,
+    );
 
     // NOTE: upload file to S3
     const medias = await Promise.all(
@@ -208,10 +194,13 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    await checkUserPermission(prisma, cache, request, i18n, {
-      roles: ["RETAILER", "RETAILER_ADMIN", "ROOT"],
-      permissions: ["UPDATE_RETAILER"],
-    });
+    // NOTE: check permission
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "MEDIA_SELLER",
+      i18n,
+      sellerId,
+    );
 
     await prisma.mutation.updateRetailer({
       where: {
@@ -235,10 +224,13 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    await checkUserPermission(prisma, cache, request, i18n, {
-      roles: ["RETAILER", "RETAILER_ADMIN", "ROOT"],
-      permissions: ["UPLOAD_RETAILER_MEDIA"],
-    });
+    // NOTE: check permission
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "MEDIA_SELLER",
+      i18n,
+      sellerId,
+    );
 
     // NOTE: Upload files to S3
     const medias = await Promise.all(
@@ -285,10 +277,13 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    await checkUserPermission(prisma, cache, request, i18n, {
-      roles: ["RETAILER", "RETAILER_ADMIN", "ROOT"],
-      permissions: ["UPDATE_RETAILER"],
-    });
+    // NOTE: check permission
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "MEDIA_SELLER",
+      i18n,
+      sellerId,
+    );
 
     await prisma.mutation.updateRetailer({
       where: {

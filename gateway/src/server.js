@@ -2,12 +2,13 @@
 
 import fs from "fs";
 
+import http from "http";
 import express from "express";
 import requestLanguage from "express-request-language";
 import helmet from "helmet";
 import bodyParser from "body-parser";
 
-import { ApolloServer, gql } from "apollo-server-express";
+import { ApolloServer, PubSub } from "apollo-server-express";
 
 // import { i18n, unpackCatalog } from "lingui-i18n"; // import i18n as something else
 import { setupI18n } from "@lingui/core";
@@ -53,6 +54,8 @@ server.use(
 //   ${fs.readFileSync(__dirname.concat('/type-defs/schema.graphql'), 'utf8')}
 // `;
 
+const pubsub = new PubSub();
+
 const graphQLServer = new ApolloServer({
   typeDefs, // link this graphql server to our implemented schema
   resolvers, // and our implemented resolvers
@@ -85,6 +88,11 @@ graphQLServer.applyMiddleware({ app: server }); // reference app to server
 // in case collocated path
 // graphQLServer.applyMiddleware({ app: server, path });
 
+// install subscription handler
+const httpServer = http.createServer(server);
+graphQLServer.installSubscriptionHandlers(httpServer);
+
 logger.info(`⚡ GraphQL endpoint: ${graphQLServer.graphqlPath}`);
+logger.info(`⚡ Subscriptions endpoint: ${graphQLServer.subscriptionsPath}`);
 
 export default server;

@@ -41,7 +41,7 @@ type Product {
 
   productTemplate: ProductTemplate @relation(onDelete: SET_NULL)
   productMedias: [Media!] @relation(link: TABLE, onDelete: CASCADE)
-  productRetailers: [ProductRetailer!] @relation(link: TABLE, onDelete: SET_NULL)
+  productRetailers: [ProductRetailer!] @relation(link: TABLE, onDelete: CASCADE)
 
   sku: String @unique
 
@@ -68,7 +68,7 @@ type ProductAttribute {
 
   name: String @unique
   values: [ProductAttributeValue] @relation(link: TABLE, name: "ProductAttributeToValue", onDelete: CASCADE)
-  productOption: [ProductOption!] @relation(link: TABLE)
+  productOption: [ProductOption!] @relation(link: TABLE, ondelete: SET_NULL)
 
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
@@ -80,7 +80,7 @@ type ProductAttributeValue {
 
   attribute: [ProductAttribute!] @relation(name: "ProductAttributeToValue", onDelete: SET_NULL)
   name: String @unique
-  productOption: [ProductOption!] @relation(link: TABLE)
+  productOption: [ProductOption!] @relation(link: TABLE, ondelete: SET_NULL)
 
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt

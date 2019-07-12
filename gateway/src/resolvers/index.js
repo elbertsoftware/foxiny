@@ -7,20 +7,22 @@ import GraphQLJSON from "graphql-type-json";
 
 import logger from "../utils/logger";
 
-import { Query as userQueries } from "./Queries/UserQueries";
-import { Mutation as userMutations } from "./Mutations/UserMutations";
-import { Query as catalogQueries } from "./Queries/CatalogQueries";
 import { Mutation as catalogMutations } from "./Mutations/CatalogMutations";
-import { Query as productQueries } from "./Queries/ProductQueries";
-import { Mutation as productMutations } from "./Mutations/ProductMutations";
-// product queries
-import { Mutation as retailerMutations } from "./Mutations/RetailerMutations";
-import { Query as retailerQueries } from "./Queries/RetailerQueries";
+import { Mutation as manufacturersMutations } from "./Mutations/ManufacturerMutations";
 import { Mutation as mediaMutations } from "./Mutations/MediaMutations";
-
+import { Mutation as productMutations } from "./Mutations/ProductMutations";
+import { Mutation as retailerMutations } from "./Mutations/RetailerMutations";
 import { Mutation as staffMutations } from "./Mutations/StaffMutations";
-import { Query as staffQueries } from "./Queries/StaffQueries";
+import { Mutation as systemMutations } from "./Mutations/SystemMutations";
+import { Mutation as userMutations } from "./Mutations/UserMutations";
+
 // media queries
+import { Query as catalogQueries } from "./Queries/CatalogQueries";
+import { Query as productQueries } from "./Queries/ProductQueries";
+import { Query as retailerQueries } from "./Queries/RetailerQueries";
+import { Query as staffQueries } from "./Queries/StaffQueries";
+import { Query as systemQueries } from "./Queries/SystemQueries";
+import { Query as userQueries } from "./Queries/UserQueries";
 
 // import Subscription from './Subscription'
 import { User } from "./Resolvers/User";
@@ -28,19 +30,21 @@ import { Media } from "./Resolvers/Media";
 
 const resolvers = {
   Query: merge(
-    userQueries,
     catalogQueries,
     productQueries,
     retailerQueries,
     staffQueries,
+    systemQueries,
+    userQueries,
   ),
   Mutation: merge(
-    userMutations,
     catalogMutations,
+    mediaMutations,
     productMutations,
     retailerMutations,
-    mediaMutations,
     staffMutations,
+    systemMutations,
+    userMutations,
   ),
   // Subscription,
   User,

@@ -26,7 +26,7 @@ import logger from "../../utils/logger";
 import { sendConfirmationEmail } from "../../utils/email";
 import { sendConfirmationText } from "../../utils/sms";
 import { sendConfirmationEsms } from "../../utils/smsVN";
-import { checkUserPermission } from "../../utils/permissionChecker";
+import { gatekeeper } from "../../utils/permissionChecker";
 
 // TODO: un-comment sendConfirmation
 // NOTE: handling errors in a frendly way: https://www.youtube.com/watch?v=fUq1iHiDniY
@@ -189,19 +189,20 @@ export const Mutation = {
       throw new Error(error);
     }
 
-    const userId = await getUserIDFromRequest(request, cache, i18n);
+    // NOTE: check permissions
+    const user = await gatekeeper.checkPermissions(request, "USER", i18n);
 
-    const user = await prisma.query.user({
-      where: {
-        id: userId,
-      },
-    });
+    // const user = await prisma.query.user({
+    //   where: {
+    //     id: userId,
+    //   },
+    // });
 
-    if (!user) {
-      logger.debug(`🛑❌  CREATE_SECURITY_INFO: User ${userId} not found`);
-      const error = i18n._(t`Unable to update user`);
-      throw new Error(error); // try NOT to provide enough information so hackers can guess
-    }
+    // if (!user) {
+    //   logger.debug(`🛑❌  CREATE_SECURITY_INFO: User ${userId} not found`);
+    //   const error = i18n._(t`Unable to update user`);
+    //   throw new Error(error); // try NOT to provide enough information so hackers can guess
+    // }
 
     // NOTE: insert new question (if user enters) and create to-be-updated data
     const updateData = [];
@@ -233,7 +234,7 @@ export const Mutation = {
     // NOTE: delete old securityInfo and insert the new one
     const updatedUser = await prisma.mutation.updateUser({
       where: {
-        id: userId,
+        id: user.id,
       },
       data: {
         securityAnswers: {
@@ -257,7 +258,7 @@ export const Mutation = {
 
     // for transact-log
     logger.info(
-      `UPSERT_SECINFO | 1 | ${userId} | ${updateData[0].questionId} | ${
+      `UPSERT_SECINFO | 1 | ${user.id} | ${updateData[0].questionId} | ${
         updateData[0].answer
       } | ${updateData[1].questionId} | ${updateData[1].answer} | ${
         updateData[2].questionId
@@ -277,6 +278,8 @@ export const Mutation = {
     { prisma, cache, request, i18n },
     info,
   ) => {
+    // TODO: check ip before perform this mutation, prevent that ip sends tons of requests
+
     // NOTE: (for client) one of three: userId, email and phone is accepted only
     let newData;
     try {
@@ -287,19 +290,20 @@ export const Mutation = {
       throw new Error(error);
     }
 
-    const userId = await getUserIDFromRequest(request, cache, i18n, false);
-    const user = await prisma.query.user({
-      where: {
-        id: newData.userId || userId,
-        email: newData.email,
-        phone: newData.phone,
-      },
-    });
+    const user = await gatekeeper.checkPermissions(request, "USER", i18n);
 
-    if (!user) {
-      const error = i18n._(t`Unable to resend confirmation`);
-      throw new Error(error); // try NOT to provide enough information so hackers can guess
-    }
+    // const user = await prisma.query.user({
+    //   where: {
+    //     id: newData.userId || userId,
+    //     email: newData.email,
+    //     phone: newData.phone,
+    //   },
+    // });
+
+    // if (!user) {
+    //   const error = i18n._(t`Unable to resend confirmation`);
+    //   throw new Error(error); // try NOT to provide enough information so hackers can guess
+    // }
 
     logger.debug(
       `user id ${user.id}, name ${user.name}, email ${user.email}, password ${
@@ -430,7 +434,8 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    const userId = await getUserIDFromRequest(request, cache, i18n);
+    // NOTE: check permissions
+    const user = await gatekeeper.checkPermissions(request, "USER", i18n);
 
     let newData;
     try {
@@ -456,14 +461,14 @@ export const Mutation = {
     try {
       let canUpdate = false;
       // verify current password
-      const user = await prisma.query.user(
-        {
-          where: {
-            id: userId,
-          },
-        },
-        "{ id name email phone password }",
-      );
+      // const user = await prisma.query.user(
+      //   {
+      //     where: {
+      //       id: user.id,
+      //     },
+      //   },
+      //   "{ id name email phone password }",
+      // );
 
       if (currentPassword) {
         canUpdate = verifyPassword(currentPassword, user.password);
@@ -476,7 +481,7 @@ export const Mutation = {
 
       // email is about to be changed
       if (typeof email === "string" && canUpdate) {
-        const code = generateConfirmation(cache, userId, email);
+        const code = generateConfirmation(cache, user.id, email);
 
         // sendConfirmationEmail(user.name, email, code);
         logger.debug("🔵✅  UPDATE USER: Change Email Confirmation Sent");
@@ -487,7 +492,7 @@ export const Mutation = {
 
       // phone is about to be changed
       if (typeof phone === "string" && canUpdate) {
-        const code = generateConfirmation(cache, userId, phone);
+        const code = generateConfirmation(cache, user.id, phone);
 
         // sendConfirmationText(user.name, phone, code);
         // sendConfirmationEsms(user.name, phone, code);
@@ -509,12 +514,12 @@ export const Mutation = {
       }
 
       // TODO: Clean all token after email/phone/pwd changing?
-      // deleteAllTokensInCache(cache, userId);
+      // deleteAllTokensInCache(cache, user.id);
 
       const updatedUser = prisma.mutation.updateUser(
         {
           where: {
-            id: userId,
+            id: user.id,
           },
           data: updateData,
         },
@@ -523,7 +528,7 @@ export const Mutation = {
 
       // for transact-log
       logger.info(
-        `UPDATE_USER | 1 | ${userId} | ${updateData.name ||
+        `UPDATE_USER | 1 | ${user.id} | ${updateData.name ||
           undefined} | ${updateData.email || undefined} | ${updateData.phone ||
           undefined} | ${password || undefined}`,
       );
@@ -539,32 +544,35 @@ export const Mutation = {
   /**
    * delete user
    */
-  deleteUser: async (parent, args, { prisma, request, cache, i18n }, info) => {
-    const userId = await getUserIDFromRequest(request, cache, i18n);
+  // NOTE: moved to staff_mutations.js
+  // deleteUser: async (parent, args, { prisma, request, cache, i18n }, info) => {
+  //   // NOTE: check permissions
+  //   const user = await gatekeeper.checkPermissions(request, "USER", i18n);
 
-    await checkUserPermission(prisma, cache, request, i18n, {
-      roles: ["ROOT"],
-      permissions: ["DELETE_USER"],
-    });
+  //   await checkUserPermission(prisma, cache, request, i18n, {
+  //     roles: ["ROOT"],
+  //     permissions: ["DELETE_USER"],
+  //   });
 
-    deleteAllTokensInCache(cache, userId);
+  //   deleteAllTokensInCache(cache, user.id);
 
-    logger.info(`DELETE_USER | 1 | ${userId}`);
+  //   logger.info(`DELETE_USER | 1 | ${user.id}`);
 
-    return prisma.mutation.deleteUser(
-      {
-        where: {
-          id: userId,
-        },
-      },
-      info,
-    );
-  },
+  //   return prisma.mutation.deleteUser(
+  //     {
+  //       where: {
+  //         id: user.id,
+  //       },
+  //     },
+  //     info,
+  //   );
+  // },
 
   /**
    * request reset password
    * this will log user out of all devices
    */
+  // TODO: check ip before performing this mutations, prevent that ip sends tons of requests
   requestResetPwd: async (
     parent,
     { mailOrPhone },
@@ -625,57 +633,32 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    let newData;
-    try {
-      newData = validateResetPwdInput(data);
-    } catch (err) {
-      logger.error(`🛑❌  Cannot create user ${err.message}`);
-      const error = i18n._(t`Invalid input`);
-      throw new Error(error);
-    }
+    const user = await gatekeeper.checkPermissions(request, "USER", i18n);
 
-    const userId = await getUserIDFromRequest(request, cache, i18n, false);
-
-    if (!userId) {
-      const error = i18n._(t`Unable to reset password`);
-      throw new Error(error);
-    }
-
-    const user = await prisma.query.user(
-      {
-        where: {
-          id: userId,
-        },
-      },
-      `{ id securityAnswers { securityQuestion { id question } answer } enabled}`,
-    );
-
-    if (!user) {
-      const error = i18n._(t`Unable to reset password`);
-      throw new Error(error); // try NOT to provide enough information so hackers can guess
-    }
+    const newData = validateResetPwdInput(data);
 
     if (!user.enabled) {
       const error = i18n._(t`User has not been confirmed or was disabled`);
       throw new Error(error);
     }
+    if (!user.recoverable) {
+      const error = i18n._(t`Cannot recover user`);
+      throw new Error(error);
+    }
 
-    const { securityAnswers } = user;
-    const { securityInfo } = newData;
+    const securityAnswer = user.securityInfo;
+    const { securityInfo, password } = newData;
 
     const canResetPwd =
       securityInfo[0].answer ===
-        securityAnswers.find(
-          x => x.securityQuestion.id === securityInfo[0].questionId,
-        ).answer &&
+        securityAnswers.find(x => x.questionId === securityInfo[0].questionId)
+          .answer &&
       securityInfo[1].answer ===
-        securityAnswers.find(
-          x => x.securityQuestion.id === securityInfo[1].questionId,
-        ).answer &&
+        securityAnswers.find(x => x.questionId === securityInfo[1].questionId)
+          .answer &&
       securityInfo[2].answer ===
-        securityAnswers.find(
-          x => x.securityQuestion.id === securityInfo[2].questionId,
-        ).answer &&
+        securityAnswers.find(x => x.questionId === securityInfo[2].questionId)
+          .answer &&
       securityInfo.length === 3;
 
     // TODO: after x tries, prevent user from trying to recover account in y minutes
@@ -684,17 +667,17 @@ export const Mutation = {
     // change pwd if account is verified
     if (canResetPwd) {
       const updateUser = {
-        password: hashPassword(newData.password),
+        password: hashPassword(password),
       };
 
       // remove all tokens from cache
-      deleteAllTokensInCache(cache, userId);
+      deleteAllTokensInCache(cache, user.id);
 
       // update user's new pwd
       await prisma.mutation.updateUser(
         {
           where: {
-            id: userId,
+            id: user.id,
           },
           data: updateUser,
         },
@@ -702,7 +685,7 @@ export const Mutation = {
       );
 
       // for transact-log
-      logger.info(`RESET_PWD | 1 | ${userId} | ${newData.password}`);
+      logger.info(`RESET_PWD | 1 | ${user.id} | ${updatedUser.password}`);
 
       return true;
     }

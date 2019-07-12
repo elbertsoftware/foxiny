@@ -15,32 +15,36 @@ export const staffSchema = gql`
 
   extend type Mutation {
     createRetailerApprovalProcess(
-      data: CreateRetailerApprovalProcessInput!
+      data: CreateApprovalProcess!
     ): SupportCorrespondence!
-    approveRetailer(data: ApproveRetailerInput!): Retailer!
-    disapproveRetailer(data: ApproveRetailerInput!): Retailer!
+    createProductApprovalProcess(
+      data: CreateApprovalProcess!
+    ): SupportCorrespondence!
+    approveRetailer(data: CreateApprovalProcess!): Int!
+    disapproveRetailer(data: CreateApprovalProcess!): Int!
     # rejectRetailer(retailerId: String!): Retailer!
     deleteRetailer(retailerId: String!): Boolean!
+
+    approveProducts(data: CreateApprovalProcess!): Int!
+    disapproveProducts(data: CreateApprovalProcess!): Int!
   }
 
-  input CreateRetailerApprovalProcessInput {
-    retailerId: String!
-    subject: String
-    note: String
-    data: JSON!
-  }
-
-  input ApproveRetailerInput {
-    retailerId: String!
+  input CreateApprovalProcess {
+    caseId: String
     note: String
     data: JSON
   }
 
   input ApprovalQueryInput {
-    retailerId: String
-    manufacturerId: String
+    skip: Int
+    first: Int
     last: Int
+
+    caseId: Int
     status: String
-    openedRespondedByUser: String
+    severity: String
+    openedByUserId: String
+    updatedByUserId: String
+    responsedByStaffUserId: String
   }
 `;

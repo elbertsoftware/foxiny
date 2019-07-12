@@ -96,7 +96,7 @@ const validateSecurityInfo = questionAnswerPairs => {
 
   const refined = questionAnswerPairs.map(pair => {
     const refinedQuestion = stringTrim(pair.question);
-    const refinedAnswer = stringTrim(pair.answer);
+    const refinedAnswer = stringTrim(pair.answer).toLowerCase();
 
     const newPair = {};
 

@@ -47,17 +47,33 @@ export const User = {
     resolve: (parent, args, { request, cache }) => {
       return {
         id: parent.profileMedia ? parent.profileMedia.id : "default",
-        _version: parent.profileMedia ? parent.profileMedia._version : "default",
+        _version: parent.profileMedia
+          ? parent.profileMedia._version
+          : "default",
 
-        name: parent.profileMedia ? parent.profileMedia.name : process.env.DEFAULT_USER_PROFILE_MEDIA_NAME,
-        ext: parent.profileMedia ? parent.profileMedia.ext : process.env.DEFAULT_USER_PROFILE_MEDIA_EXT,
-        mime: parent.profileMedia ? parent.profileMedia.mime : process.env.DEFAULT_USER_PROFILE_MEDIA_MIME,
-        size: parent.profileMedia ? parent.profileMedia.size : Number(process.env.DEFAULT_USER_PROFILE_MEDIA_SIZE), // in bytes
+        name: parent.profileMedia
+          ? parent.profileMedia.name
+          : process.env.DEFAULT_USER_PROFILE_MEDIA_NAME,
+        ext: parent.profileMedia
+          ? parent.profileMedia.ext
+          : process.env.DEFAULT_USER_PROFILE_MEDIA_EXT,
+        mime: parent.profileMedia
+          ? parent.profileMedia.mime
+          : process.env.DEFAULT_USER_PROFILE_MEDIA_MIME,
+        size: parent.profileMedia
+          ? parent.profileMedia.size
+          : Number(process.env.DEFAULT_USER_PROFILE_MEDIA_SIZE), // in bytes
         hash: parent.profileMedia ? parent.profileMedia.hash : "default",
         sha256: parent.profileMedia ? parent.profileMedia.sha256 : "default",
-        uri: parent.profileMedia ? parent.profileMedia.uri : process.env.DEFAULT_USER_PROFILE_MEDIA_URI,
-        createdAt: parent.profileMedia ? parent.profileMedia.createdAt : "default",
-        updatedAt: parent.profileMedia ? parent.profileMedia.updatedAt : "default",
+        uri: parent.profileMedia
+          ? parent.profileMedia.uri
+          : process.env.DEFAULT_USER_PROFILE_MEDIA_URI,
+        createdAt: parent.profileMedia
+          ? parent.profileMedia.createdAt
+          : "default",
+        updatedAt: parent.profileMedia
+          ? parent.profileMedia.updatedAt
+          : "default",
       };
     },
   },

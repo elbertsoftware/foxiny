@@ -279,7 +279,7 @@ describe('Tests on local-ip', () => {
           });
           break;
 
-        case 'validateUploadInput':
+        case 'validateUploadImageInput':
           describe('Validate userMediaUpload input', () => {
             for (let i = 0; i < group.data.length; i++) {
               const upload = {
@@ -290,11 +290,11 @@ describe('Tests on local-ip', () => {
               };
               if (group.data[i].expected) {
                 test(`should return a valid object`, () => {
-                  expect(() => validation.validateUploadInput(upload)).not.toThrow();
+                  expect(() => validation.validateUploadImageInput(upload)).not.toThrow();
                 });
               } else {
                 test(`should throw error as invalid object input`, () => {
-                  expect(() => validation.validateUploadInput(upload)).toThrow();
+                  expect(() => validation.validateUploadImageInput(upload)).toThrow();
                 });
               }
             }

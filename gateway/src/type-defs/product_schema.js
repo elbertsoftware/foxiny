@@ -79,8 +79,6 @@ export const productSchema = gql`
     ): [FriendlyProduct!]
 
     toggleProductStatus(sellerId: String!, productId: String!): FriendlyProduct!
-
-    approveProduct(data: [ApproveProductInput!]!): [FriendlyProduct!]!
   }
 
   input CreateProductWithTemplateInput {

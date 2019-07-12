@@ -42,8 +42,6 @@ export const userSchema = gql`
     enabled: Boolean!
     recoverable: Boolean!
 
-    assignment: Assignment
-
     createdAt: String!
     updatedAt: String!
   }

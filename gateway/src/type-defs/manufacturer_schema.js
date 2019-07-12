@@ -1,5 +1,5 @@
 // @flow
-import { gql } from 'apollo-server-express';
+import { gql } from "apollo-server-express";
 
 export const manufacturerSchema = gql`
   type Manufacturer {
@@ -31,27 +31,42 @@ export const manufacturerSchema = gql`
     manufacturers(query: String): [Manufacturer!]!
   }
 
-  extend type Mutation {
-    createManufacturer(data: CreateManufacturerInput!): Manufacturer!
-    updateManufacturer(data: UpdateManufacturerInput!): Manufacturer!
-    deleteManufacturer(manufacturerId: String!): Boolean!
-  }
+  # extend type Mutation {
+  # createManufacturer(data: CreateManufacturerInput!): Manufacturer!
+  # updateManufacturer(data: UpdateManufacturerInput!): Manufacturer!
+  # deleteManufacturer(manufacturerId: String!): Boolean!
+  # }
 
   input CreateManufacturerInput {
     assistants: [String!] # user Ids
     #profileMedia
 
     businessName: String!
-    address: UpsertAddressInput!
-    phone: String!
+    businessEmail: String!
+    emailConfirmCode: String
+    businessPhone: String!
+    phoneConfirmCode: String
+    businessAddress: CreateAddressInput!
   }
 
   input UpdateManufacturerInput {
     # assistants: [String!] # user Ids # changing assistants should be handled by a new mutation
     #profileMedia
-    oldBusinessName: String
-    newBusinessName: String
-    address: UpsertAddressInput
-    phone: String
+    businessName: String
+    businessEmail: String
+    emailConfirmCode: String
+    businessPhone: String
+    phoneConfirmCode: String
+    businessAddress: CreateAddressInput
+    businessLink: String
+    socialNumber: String
+    socialNumberImageIds: [String!]
+    businessLicense: String
+    businessLicenseImageIds: [String!]
+    bankAccNumber: String
+    bankAccName: String
+    bankName: String
+    bankBranch: String
+    swiftCode: String
   }
 `;
