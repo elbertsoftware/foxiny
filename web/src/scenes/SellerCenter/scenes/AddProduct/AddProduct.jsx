@@ -12,7 +12,7 @@ import ProductProperties from './components/ProductProperties/ProductProperties'
 import AttachmentSection from './components/Attachment/AttachmentSection';
 import AddProductImage from './components/AddProductImages/AddProductImage';
 import ProductDataContext from '../../../../utils/context/ProductDataContext';
-import FormButton from '../../../../components/Button/FormButton';
+import FormButton from '../../../../components/Button/FormButton/FormButton';
 import { CREATE_NEW_PRODUCT, UPLOAD_IMAGES } from '../../../../utils/graphql/product';
 
 const styles = theme => ({

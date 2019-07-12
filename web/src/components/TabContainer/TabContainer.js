@@ -13,6 +13,7 @@ const TabContainer = ({ children, dir, className }) => {
 TabContainer.propTypes = {
   children: PropTypes.node.isRequired,
   dir: PropTypes.string.isRequired,
+  className: PropTypes.string,
 };
 
 export default TabContainer;

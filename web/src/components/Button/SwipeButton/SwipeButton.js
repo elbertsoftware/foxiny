@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-filename-extension */
-import React, { useRef, useState, useEffect } from 'react';
-import '../../utils/style/swipebutton.css';
+import React, { useRef, useState } from 'react';
 import { Icon, Typography } from '@material-ui/core';
 import { graphql } from 'react-apollo';
-import { RESEND_RETAILER_CONFIMATION } from '../../utils/graphql/retailer';
-import useInterval from '../../utils/hooks/useInterval';
+import { RESEND_RETAILER_CONFIMATION } from '../../../utils/graphql/retailer';
+import useInterval from '../../../utils/hooks/useInterval';
+import '../../../utils/style/swipebutton.css';
 
 const SwipeButton = props => {
   const { setFieldVisible, email, phone, resendConfirmation } = props;

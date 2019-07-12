@@ -12,9 +12,9 @@ const styles = theme => ({
     backgroundRepeat: 'no-repeat',
   },
   paper: {
-    padding: `${theme.spacing.unit * 8}px ${theme.spacing.unit * 6}px`,
+    padding: `${theme.spacing(8)}px ${theme.spacing(6)}px`,
     [theme.breakpoints.up('sm')]: {
-      padding: `${theme.spacing.unit * 10}px ${theme.spacing.unit * 8}px`,
+      padding: `${theme.spacing(10)}px ${theme.spacing(8)}px`,
     },
     position: 'relative',
     borderRadius: '15px',
@@ -22,12 +22,12 @@ const styles = theme => ({
 });
 
 function AppForm(props) {
-  const { children, classes } = props;
+  const { children, classes, width, square } = props;
 
   return (
     <div className={classes.root}>
-      <LayoutBody margin marginBottom width="small">
-        <Paper className={classes.paper} square={false}>
+      <LayoutBody margin marginBottom width={width}>
+        <Paper className={classes.paper} square={square}>
           {children}
         </Paper>
       </LayoutBody>
@@ -36,8 +36,15 @@ function AppForm(props) {
 }
 
 AppForm.propTypes = {
-  children: PropTypes.node.isRequired,
+  square: PropTypes.bool,
+  width: PropTypes.oneOf(['small', 'medium', 'large', 'xlarge', 'full']),
+  children: PropTypes.node,
   classes: PropTypes.object.isRequired,
+};
+
+AppForm.defaultProps = {
+  square: false,
+  width: 'small',
 };
 
 export default withStyles(styles)(AppForm);

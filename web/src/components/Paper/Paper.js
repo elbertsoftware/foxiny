@@ -21,7 +21,7 @@ const styles = theme => ({
     marginBottom: '10px',
   },
   padding: {
-    padding: theme.spacing.unit,
+    padding: theme.spacing(1),
   },
 });
 
