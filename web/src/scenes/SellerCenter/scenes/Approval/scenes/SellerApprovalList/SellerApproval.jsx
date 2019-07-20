@@ -5,7 +5,7 @@ import { Typography, TableRow, TableCell, Link, Button, InputBase, Icon } from '
 import { graphql } from 'react-apollo';
 import { debounce } from 'debounce';
 import { Redirect } from 'react-router';
-import { ALL_RETAILERS } from '../../../../../../utils/graphql/retailer';
+import { LIST_APPROVAL_CASES } from '../../../../../../utils/graphql/approvement';
 
 import Loading from '../../../../../../components/Loading/Loading';
 import useStyles from '../../style/approvalStyles';
@@ -13,17 +13,18 @@ import ListApproval from '../../components/ListApproval';
 import { stableSort, getSorting } from '../../../../../../components/Table/TableUtils';
 
 const headRows = [
-  { id: 'businessName', numeric: false, disablePadding: false, label: 'Nhà bán' },
-  { id: 'owner', numeric: false, disablePadding: false, label: 'Người dùng tạo' },
+  { id: 'subject', numeric: false, disablePadding: false, label: 'Tiêu đề' },
+  { id: 'status.name', numeric: false, disablePadding: false, label: 'Tình trạng' },
+  { id: 'severity.name', numeric: false, disablePadding: false, label: 'Mức độ' },
+  { id: 'user.name', numeric: false, disablePadding: false, label: 'Người dùng' },
   { id: 'createdAt', numeric: false, disablePadding: false, label: 'Ngày tạo' },
-  { id: 'approved', numeric: false, disablePadding: false, label: 'Tình trạng' },
   { id: 'actions', numeric: false, disablePadding: false, label: 'Chi tiết', diabled: true },
 ];
 
 function SellerApproval(props) {
-  const { loading, sellers, history, userLoggedIn } = props;
+  const { loading, listApprovalCases, history, userLoggedIn } = props;
   const classes = useStyles();
-  const [cloneSellers, setCloneSellers] = useState([]);
+  const [cloneCases, setCloneCases] = useState([]);
   const [sellerId, setSellerId] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [isDefault, setIsDefault] = useState(true);
@@ -31,13 +32,14 @@ function SellerApproval(props) {
   // Search implementation
   // Search function
   const onSearchChangeDebounce = debounce(() => {
-    const newArraySellers = sellers.filter(
-      seller =>
-        seller.businessName.toLowerCase().includes(searchValue.toLowerCase()) ||
-        seller.businessEmail.toLowerCase().includes(searchValue.toLowerCase()) ||
-        seller.businessPhone.includes(searchValue),
+    const newArrayCases = listApprovalCases.filter(
+      approvalCase =>
+        approvalCase.subject.toLowerCase().includes(searchValue.toLowerCase()) ||
+        approvalCase.status.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        approvalCase.severity.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        approvalCase.openedByUser.name.toLowerCase().includes(searchValue.toLowerCase()),
     );
-    setCloneSellers(newArraySellers);
+    setCloneCases(newArrayCases);
   }, 500);
 
   const handleOnchange = event => {
@@ -56,21 +58,21 @@ function SellerApproval(props) {
   // Sau khi nhận được sellers từ server, clone sellers ấy
   React.useEffect(() => {
     if (!loading) {
-      setCloneSellers(sellers);
+      setCloneCases(listApprovalCases);
     }
   }, [loading]);
   // Others logic
 
-  React.useEffect(() => {
-    if (sellers && sellerId !== '') {
-      history.push({
-        pathname: `/sellers/approve-sellers/${sellerId}`,
-        state: {
-          seller: sellers.find(seller => seller.id === sellerId),
-        },
-      });
-    }
-  }, [sellerId]);
+  // React.useEffect(() => {
+  //   if (listApprovalCases && sellerId !== '') {
+  //     history.push({
+  //       pathname: `/sellers/approve-sellers/${sellerId}`,
+  //       state: {
+  //         seller: listApprovalCases.find(seller => seller.id === sellerId),
+  //       },
+  //     });
+  //   }
+  // }, [sellerId]);
 
   if (loading) return <Loading />;
   if (!userLoggedIn()) return <Redirect to="/sellers/sign" />;
@@ -93,43 +95,36 @@ function SellerApproval(props) {
           />
         </div>
       </div>
-      <ListApproval headRows={headRows} arrayLength={sellers && sellers.length}>
+      <ListApproval headRows={headRows} arrayLength={listApprovalCases && listApprovalCases.length}>
         {(page, rowsPerPage, order, orderBy) => (
           <React.Fragment>
-            {sellers &&
-              stableSort(isDefault ? sellers : cloneSellers, getSorting(order, orderBy))
+            {listApprovalCases &&
+              stableSort(isDefault ? listApprovalCases : cloneCases, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(seller => (
-                  <TableRow hover key={seller.id}>
+                .map(approvalCase => (
+                  <TableRow hover key={approvalCase.id}>
                     <TableCell component="th" scope="row">
                       <div className={classes.productCard}>
                         <img
                           className={classes.img}
                           alt="product"
-                          src={
-                            (seller.businessAvatar && seller.businessAvatar.uri) ||
-                            'https://cdn.pixabay.com/photo/2019/04/26/07/14/store-4156934_960_720.png'
-                          }
+                          src={'https://cdn.pixabay.com/photo/2019/04/26/07/14/store-4156934_960_720.png'}
                         />
                         <div>
-                          <Typography component={Link}>{seller.businessName}</Typography>
-                          <Typography variant="subtitle2">Email: {seller.businessEmail}</Typography>
-                          <Typography variant="subtitle2">Phone: {seller.businessPhone}</Typography>
+                          <Typography component={Link}>{approvalCase.id}</Typography>
+                          <Typography variant="subtitle2">Subject: {approvalCase.subject}</Typography>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Typography> {seller.owner && seller.owner[0].user.name}</Typography>
+                      <Typography> {approvalCase.status.name}</Typography>
                     </TableCell>
-                    <TableCell>{seller.createdAt}</TableCell>
-                    <TableCell>
-                      <Typography>
-                        {seller.enabled === null ? 'Đang chờ duyệt' : `${seller.enabled ? 'Đã duyệt' : 'Từ chối'}`}
-                      </Typography>
-                    </TableCell>
+                    <TableCell>{approvalCase.severity.name}</TableCell>
+                    <TableCell>{approvalCase.openedByUser.name}</TableCell>
+                    <TableCell>{approvalCase.createdAt}</TableCell>
                     <TableCell>
                       <Button
-                        onClick={() => setSellerId(seller.id)}
+                        onClick={() => history.push(`/sellers/approve-seller-cases/${approvalCase.id}`)}
                         variant="contained"
                         color="secondary"
                         className={classes.button}
@@ -139,7 +134,7 @@ function SellerApproval(props) {
                     </TableCell>
                   </TableRow>
                 ))}
-            {(sellers.length === 0 || cloneSellers.length === 0) && (
+            {(listApprovalCases.length === 0 || cloneCases.length === 0) && (
               <TableRow>
                 <Typography className={classes.emptyDataMessage}>Không tìm thấy dữ liệu</Typography>
               </TableRow>
@@ -153,9 +148,9 @@ function SellerApproval(props) {
 
 SellerApproval.propTypes = {};
 
-export default graphql(ALL_RETAILERS, {
-  props: ({ data: { loading, retailers } }) => ({
+export default graphql(LIST_APPROVAL_CASES, {
+  props: ({ data: { loading, retailerApprovals } }) => ({
     loading,
-    sellers: retailers,
+    listApprovalCases: retailerApprovals,
   }),
 })(SellerApproval);

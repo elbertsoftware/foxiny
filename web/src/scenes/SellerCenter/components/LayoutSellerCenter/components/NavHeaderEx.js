@@ -20,7 +20,6 @@ const NavHeaderEx = ({ collapsed, ...props }) => {
 
   return (
     <>
-      {console.log(sellers)}
       <div style={{ padding: collapsed ? 8 : 16, transition: '0.3s' }}>
         <Avatar
           style={{
@@ -47,7 +46,7 @@ const NavHeaderEx = ({ collapsed, ...props }) => {
 };
 
 NavHeaderEx.propTypes = {
-  collapsed: PropTypes.bool.isRequired,
+  collapsed: PropTypes.bool,
 };
 NavHeaderEx.defaultProps = {};
 

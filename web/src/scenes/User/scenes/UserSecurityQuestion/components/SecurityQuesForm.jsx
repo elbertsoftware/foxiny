@@ -18,7 +18,7 @@ import Loading from '../../../../../components/Loading/Loading';
 import RFTextField from '../../../../../components/TextField/RFTextField';
 import Paper from '../../../../../components/Paper/Paper';
 import SelectList from '../../../../../components/Select/SelectList';
-import FormButton from '../../../../../components/Button/FormButton';
+import FormButton from '../../../../../components/Button/FormButton/FormButton';
 
 import getSecurityQuestions from '../../../../../utils/graphql/getSecurityQuestions';
 import createSecurityQuestion from '../../../../../utils/graphql/createUpdateSecurityQues';

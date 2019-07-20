@@ -1,5 +1,5 @@
 // @flow
-import { gql } from "apollo-server-express";
+import { gql } from 'apollo-server-express';
 
 export const supportSchema = gql`
   # type CaseType {
@@ -51,10 +51,10 @@ export const supportSchema = gql`
     # caseType: CaseType!
     status: SupportStatus!
     severity: SupportSeverity!
-    catergory: SupportCategory!
+    catergory: [SupportCategory!]
     openedByUser: User!
 
-    data: JSON
+    targetIds: String
 
     # other targets
 

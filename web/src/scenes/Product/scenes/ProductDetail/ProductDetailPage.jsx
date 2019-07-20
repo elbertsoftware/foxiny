@@ -171,7 +171,7 @@ const optionStyles = theme => ({
 const OptionItems = withStyles(optionStyles)(
   ({ classes, option, selectedOption, handleSelectOption, handleSetProductImage }) => {
     const { attributeName, listItems } = option;
-    const [selected, setSelected] = useState('');
+    const [selected, setSelected] = useState(listItems[0]);
     const handeSetSelected = item => () => {
       setSelected(item);
       handleSelectOption(item);
@@ -401,11 +401,11 @@ const ProductDetailPage = ({ classes, theme, optionList, productImageData, textD
   const defaultSelectOption = optionList && optionList.map(option => option.listItems[0]);
   // selectedOption is an array containing: [selectedOption in option1, selectedOption in option2, ...]
   const [selectedOption, setSelectedOption] = useState(defaultSelectOption);
-  const handleSelectOption = optionKey => option => {
-    // optionKey is a cue to know which set of options is (Color, Size, ...)
+  const handleSelectOption = optionIndex => option => {
+    // optionIndex is a cue to know which set of options is (Color, Size, ...)
     // option is value receiving from OptionItem component
     const newArr = [...selectedOption];
-    newArr[optionKey] = option;
+    newArr[optionIndex] = option;
     setSelectedOption(newArr);
   };
 

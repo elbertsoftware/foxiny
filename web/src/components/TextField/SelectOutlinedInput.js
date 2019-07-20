@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -36,6 +37,19 @@ const SelectInput = ({
       {meta.error && <FormHelperText>{meta.error}</FormHelperText>}
     </FormControl>
   );
+};
+
+SelectInput.propTypes = {
+  name: PropTypes.string,
+  value: PropTypes.string,
+  showError: PropTypes.bool,
+  onChange: PropTypes.func,
+  label: PropTypes.string,
+  meta: PropTypes.shape({
+    error: PropTypes.string.isRequired,
+  }),
+  formControlProps: PropTypes.object,
+  input: PropTypes.object.isRequired,
 };
 
 export default SelectInput;

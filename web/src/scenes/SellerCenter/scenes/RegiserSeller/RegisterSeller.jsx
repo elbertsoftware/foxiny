@@ -24,11 +24,11 @@ import createDecorator from 'final-form-focus';
 import { required, email, phone, formatInternationalPhone } from '../../../../utils/processData/validation/validation';
 import { countries } from '../../../../utils/processData/rawData/callingcodes';
 import RFTextField from '../../../../components/TextField/RFTextField';
-import FormButton from '../../../../components/Button/FormButton';
+import FormButton from '../../../../components/Button/FormButton/FormButton';
 import TabContainer from '../../../../components/TabContainer/TabContainer';
 import registerSellerStyles from './style/registerSellerStyles';
 import SelectList from '../../../../components/Select/SelectList';
-import SwipeButton from '../../../../components/Button/SwipeButton';
+import SwipeButton from '../../../../components/Button/SwipeButton/SwipeButton';
 import { REGISTER_RETAILER } from '../../../../utils/graphql/retailer';
 
 const focusOnError = createDecorator();
@@ -67,8 +67,6 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
   };
 
   const onSubmit = async values => {
-    console.log(values);
-
     try {
       const phoneNumber = formatInternationalPhone(values.businessPhone, values.countryCode);
       const data = await registerRetailer({
@@ -85,7 +83,6 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
           },
         },
       });
-      console.log(data);
       toast.success('Đăng ký thành công !');
       window.location.reload();
       history.push('/sellers/seller-declaration');
@@ -174,8 +171,8 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
                                 : 'Cần có giấy phép đăng ký kinh doanh còn thời hạn.'}
                             </Typography>
                             <Typography variant="subtitle2">
-                              📝 <strong>Lưu ý:</strong> Bạn cần phải cung cấp hình ảnh cần thiết cho Foxiny sau khi
-                              hoàn tất các bước đăng ký (CMND hai mặt/Giấy phép kinh doanh)
+                              <span role="img">📝</span> <strong>Lưu ý:</strong> Bạn cần phải cung cấp hình ảnh cần
+                              thiết cho Foxiny sau khi hoàn tất các bước đăng ký (CMND hai mặt/Giấy phép kinh doanh)
                             </Typography>
                           </div>
                         </Zoom>

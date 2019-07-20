@@ -15,7 +15,7 @@ import { classifyEmailPhone } from '../../utils/productUtils/validation';
 export const Mutation = {
   registerRetailer: async (parent, { data }, { prisma, request, cache, i18n }, info) => {
     try {
-      const user = await gatekeeper.checkPermissions(request, 'RETAILER');
+      const user = await gatekeeper.checkPermissions(request, 'USER');
 
       // TODO: validate input
       // TODO: validate address
@@ -332,7 +332,7 @@ export const Mutation = {
   // TODO: no need to check existed email
   // TODO: i18n
   resendRetailerConfirmationCode: async (parent, { emailOrPhone }, { prisma, request, cache, i18n }, info) => {
-    const user = await gatekeeper.checkPermissions(request, 'RETAILER', i18n);
+    const user = await gatekeeper.checkPermissions(request, 'USER', i18n);
 
     if (!user) {
       const error = i18n._(t`Cannot register retailer`);
@@ -351,7 +351,7 @@ export const Mutation = {
         const error = i18n._(t`Confirmed`);
         throw new Error(error);
       }
-      const code = generateConfirmation(cache, userId, email);
+      const code = generateConfirmation(cache, user.id, email);
       // sendConfirmationEmail("Seller", email, code);
 
       return true;
@@ -362,7 +362,7 @@ export const Mutation = {
         const error = i18n._(t`Confirmed`);
         throw new Error(error);
       }
-      const code = generateConfirmation(cache, userId, phone);
+      const code = generateConfirmation(cache, user.id, phone);
       // sendConfirmationText("Seller", phone, code);
       // sendConfirmationEsms("Seller", phone, code);
 

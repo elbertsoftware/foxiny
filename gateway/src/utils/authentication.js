@@ -1,17 +1,17 @@
 // @flow
-import { t } from "@lingui/macro";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import ms from "ms";
-import requestId from "request-ip";
-import cryptoRandomString from "crypto-random-string";
+import { t } from '@lingui/macro';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import ms from 'ms';
+import requestId from 'request-ip';
+import cryptoRandomString from 'crypto-random-string';
 
-import logger from "./logger";
+import logger from './logger';
 
 // TODO: clean expired tokens periodically and automatically
 // TODO: more password rules will be enforced later
 
-const isValidPassword = password => password.length >= 8 && !password.toLowerCase().includes("password"); // repkace by the new one in validation.js
+const isValidPassword = password => password.length >= 8 && !password.toLowerCase().includes('password'); // repkace by the new one in validation.js
 
 const hashPassword = password => {
   // if (!isValidPassword(password)) {
@@ -32,7 +32,7 @@ const generateConfirmation = (cache, userId, emailOrPhone) => {
   cache.set(
     code,
     JSON.stringify({ userId: userId, emailOrPhone: emailOrPhone }),
-    "EX",
+    'EX',
     ms(process.env.CONFIRMATION_EXPIRATION) / 1000,
   ); // convert to seconds
   return code;
@@ -40,7 +40,7 @@ const generateConfirmation = (cache, userId, emailOrPhone) => {
 
 const verifyConfirmation = async (cache, code, userId, i18n) => {
   const data = JSON.parse(await cache.get(code));
-  
+
   if (!data) {
     const error = i18n._(t`Invalid confirmation code`);
     throw new Error(error);
@@ -103,7 +103,7 @@ const getTokenFromRequest = request => {
     : request.connection.context.Authorization; // 2.
 
   // remove ther prefix 'Bearer '
-  const token = authorization ? authorization.replace("Bearer ", "") : null;
+  const token = authorization ? authorization.replace('Bearer ', '') : null;
   logger.debug(`authorization token ${token}`);
 
   return token;

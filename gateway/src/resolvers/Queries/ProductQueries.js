@@ -7,7 +7,7 @@ import { restructureProduct2FriendlyProduct } from '../../utils/productUtils/dat
 export const Query = {
   productsWoTemplateAfterCreated: async (parent, { sellerId, approved }, { prisma, cache, request, i18n }, info) => {
     // NOTE: check permission
-    await checkUserSellerOwnership(prisma, cache, request, i18n, sellerId);
+    // await checkUserSellerOwnership(prisma, cache, request, i18n, sellerId);
 
     const newInfo = `{
       id

@@ -28,7 +28,7 @@ import {
 import validate from '../../../../../../../utils/processData/validation/validateUserExpFrm';
 import SelectList from '../../../../../../../components/Select/SelectList';
 import { countries } from '../../../../../../../utils/processData/rawData/callingcodes';
-import FormButton from '../../../../../../../components/Button/FormButton';
+import FormButton from '../../../../../../../components/Button/FormButton/FormButton';
 import { UPDATE_USER, RESEND_CONFIRMATION } from '../../../../../../../utils/graphql/user';
 import { removeAuthorizationToken, removeUserInfo } from '../../../../../../../utils/processData/localStorage';
 import Loading from '../../../../../../../components/Loading/Loading';

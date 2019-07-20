@@ -9,7 +9,7 @@ import { withStyles } from '@material-ui/core/styles';
 import green from '@material-ui/core/colors/green';
 import { toast } from 'react-toastify';
 import RFTextField from '../../../../components/TextField/RFTextField';
-import FormButton from '../../../../components/Button/FormButton';
+import FormButton from '../../../../components/Button/FormButton/FormButton';
 import AppForm from '../../../../components/AppForm/AppForm';
 import { required } from '../../../../utils/processData/validation/validation';
 import { CONFIRM_USER, RESEND_CONFIRMATION } from '../../../../utils/graphql/user';

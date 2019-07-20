@@ -7,7 +7,7 @@ import SwipeableViews from 'react-swipeable-views';
 import { Button, Typography } from '@material-ui/core';
 import { toast } from 'react-toastify';
 import RFTextField from '../../../../components/TextField/RFTextField';
-import FormButton from '../../../../components/Button/FormButton';
+import FormButton from '../../../../components/Button/FormButton/FormButton';
 import { required } from '../../../../utils/processData/validation/validation';
 import AppForm from '../../../../components/AppForm/AppForm';
 import requestResetPass from '../../../../utils/graphql/requestResetPass';

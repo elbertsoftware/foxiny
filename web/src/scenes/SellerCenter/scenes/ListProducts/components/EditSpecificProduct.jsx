@@ -12,7 +12,7 @@ import ProductProperties from '../../AddProduct/components/ProductProperties/Pro
 import AttachmentSection from '../../AddProduct/components/Attachment/AttachmentSection';
 import AddProductImage from '../../AddProduct/components/AddProductImages/AddProductImage';
 import ProductEditDataContext from '../../../../../utils/context/ProductEditDataContext';
-import FormButton from '../../../../../components/Button/FormButton';
+import FormButton from '../../../../../components/Button/FormButton/FormButton';
 import { EDIT_PRODUCT, UPLOAD_IMAGES } from '../../../../../utils/graphql/product';
 
 function getSteps() {

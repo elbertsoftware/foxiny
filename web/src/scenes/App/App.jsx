@@ -100,7 +100,7 @@ class App extends Component<Props, State> {
                 <Switch>
                   <Route path="/sellers/list-products" component={withAuthenticator(ListProduct)} />
                 </Switch>
-                <Route exact path="/sellers/approve-sellers/:id" component={ApproveSeller} />
+                <Route exact path="/sellers/approve-seller-cases/:id" component={ApproveSeller} />
                 <Route exact path="/sellers/approve-sellers" component={withAuthenticator(SellerApproval)} />
                 <Route exact path="/sellers/approve-products/:id" component={ApproveProduct} />
                 <Route exact path="/sellers/approve-products" component={withAuthenticator(ProductApproval)} />

@@ -184,10 +184,8 @@ const SellerBusinessInfo = ({ classes, theme, seller, review, ...props }) => {
                 </Typography>
                 <Typography gutterBottom>Tải ảnh CMND của bạn bao gồm mặt trước và mặt sau.</Typography>
                 <Paper elevation={0} className={classes.notify} background="main">
-                  <Typography variant="h6">
-                    Yêu cầu đối với hình ảnh:{' '}
-                    <Typography variant="subtitle2">Kích thước tối thiểu 500 x 500px</Typography>
-                  </Typography>
+                  <Typography variant="h6">Yêu cầu đối với hình ảnh: </Typography>
+                  <Typography variant="subtitle2">Kích thước tối thiểu 500 x 500px</Typography>
                 </Paper>
                 <UploadFileZone
                   style={classes.uploadZone}
@@ -229,15 +227,7 @@ const SellerBusinessInfo = ({ classes, theme, seller, review, ...props }) => {
             )}
             {activeTabId === 1 ? (
               <TabContainer className={classes.swipeContainer} dir={theme.direction}>
-                <Form onSubmit={onSubmit}>
-                  {({ handleSubmit }) => {
-                    return (
-                      <form onSubmit={handleSubmit} noValidate>
-                        <AddBankAccount />
-                      </form>
-                    );
-                  }}
-                </Form>
+                <AddBankAccount />
               </TabContainer>
             ) : (
               <Typography />

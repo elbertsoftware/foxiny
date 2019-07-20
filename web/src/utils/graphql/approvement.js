@@ -39,7 +39,7 @@ const RETAILER_APPROVAL_PROCESS = gql`
         status {
           name
         }
-        openByUser {
+        openedByUser {
           id
           name
           email
@@ -54,6 +54,33 @@ const RETAILER_APPROVAL_PROCESS = gql`
         name
       }
       data
+    }
+  }
+`;
+
+const LIST_APPROVAL_CASES = gql`
+  query {
+    retailerApprovals {
+      id
+      subject
+      status {
+        id
+        name
+      }
+      severity {
+        id
+        name
+      }
+      catergory {
+        id
+        name
+      }
+      openedByUser {
+        id
+        name
+      }
+      targetsIds
+      createdAt
     }
   }
 `;
@@ -93,4 +120,5 @@ export {
   DISAPPROVE_RETAILER_INFO,
   RETAILER_APPROVAL_PROCESS,
   LAST_APPROVAL_PROCESS,
+  LIST_APPROVAL_CASES,
 };

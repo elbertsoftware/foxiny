@@ -70,12 +70,9 @@ function Transition(props) {
 
 function ListProduct(props) {
   const { classes, loading, productsData, userLoggedIn } = props;
-  if (loading) return <Loading />;
-  if (!userLoggedIn()) {
-    return <Redirect to="/sellers/signin" />;
-  }
+
   const checkedArrayObject =
-    productsData &&
+    !loading &&
     productsData.reduce((previous, current, index) => {
       return {
         ...previous,
@@ -132,6 +129,10 @@ function ListProduct(props) {
     ),
     [openEditDialog],
   );
+  if (loading) return <Loading />;
+  if (!userLoggedIn()) {
+    return <Redirect to="/sellers/signin" />;
+  }
 
   return (
     <Paper>
@@ -237,7 +238,7 @@ function ListProduct(props) {
 }
 export default compose(
   graphql(GET_PRODUCT, {
-    options: props => ({ variables: { sellerId: 'cjx8wso1x00f30a89i06iqz0n' } }),
+    options: props => ({ variables: { sellerId: 'cjy9l0k6q000i07041axxora1' } }),
     props: ({ data: { loading, productsWoTemplateAfterCreated } }) => ({
       loading,
       productsData: productsWoTemplateAfterCreated,

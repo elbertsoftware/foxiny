@@ -13,7 +13,7 @@ import { graphql, compose } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { toast } from 'react-toastify';
 import RFTextField from '../../../../../components/TextField/RFTextField';
-import FormButton from '../../../../../components/Button/FormButton';
+import FormButton from '../../../../../components/Button/FormButton/FormButton';
 import TabContainer from '../../../../../components/TabContainer/TabContainer';
 import SelectList from '../../../../../components/Select/SelectList';
 import {

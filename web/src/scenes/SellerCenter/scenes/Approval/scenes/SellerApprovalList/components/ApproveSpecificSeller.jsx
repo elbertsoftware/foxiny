@@ -178,7 +178,7 @@ const ApproveSeller = ({ history, match, location, ...props }) => {
         query={LAST_APPROVAL_PROCESS}
         variables={{
           query: {
-            retailerId: match.params.id,
+            caseId: match.params.id,
           },
         }}
       >

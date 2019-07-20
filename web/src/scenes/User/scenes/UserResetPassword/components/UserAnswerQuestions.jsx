@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import createDecorator from 'final-form-focus';
 import RFTextField from '../../../../../components/TextField/RFTextField';
 import Paper from '../../../../../components/Paper/Paper';
-import FormButton from '../../../../../components/Button/FormButton';
+import FormButton from '../../../../../components/Button/FormButton/FormButton';
 import { required, confirm } from '../../../../../utils/processData/validation/validation';
 import RESET_PASSWORD from '../../../../../utils/graphql/resetPassword';
 

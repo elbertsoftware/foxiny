@@ -60,7 +60,8 @@
     "react-swipeable-views": "^0.13.0",
     "react-toastify": "^4.5.2",
     "slick-carousel": "^1.8.1",
-    "validator": "^10.10.0"
+    "validator": "^10.10.0",
+    "webpack": "^4.35.3"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",

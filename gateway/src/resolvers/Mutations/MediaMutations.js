@@ -31,8 +31,7 @@ export const Mutation = {
   },
 
   uploadProductMedias: async (parent, { files }, { prisma, request, cache, i18n }, info) => {
-    const userId = await getUserIDFromRequest(request, cache, i18n);
-    const user = await gatekeeper.checkPermissions('SELLER_MEDIA', userId);
+    const user = await gatekeeper.checkPermissions(request, 'MEDIA_RETAILER', i18n);
 
     const productMedias = await Promise.all(
       files.map(async file => {
@@ -99,7 +98,7 @@ export const Mutation = {
 
   uploadSocialIDMediaRetailer: async (parent, { files, sellerId }, { prisma, request, cache, i18n }, info) => {
     // NOTE: check permission
-    const user = await gatekeeper.checkPermissions(request, 'MEDIA_SELLER', i18n, sellerId);
+    // const user = await gatekeeper.checkPermissions(request, 'MEDIA_SELLER', i18n, sellerId);
 
     // NOTE: upload file to S3
     const medias = await Promise.all(

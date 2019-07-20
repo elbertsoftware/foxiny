@@ -119,6 +119,7 @@ const AddProduct = ({ classes, createNewProduct, uploadProductImgs, ...props }) 
         },
       ),
     );
+    console.log(newProducts);
     // Kiểm tra xem Sửa hay Thêm product, vì Sửa product tái sử dụng lại các component của Add product
     // Nếu Sửa, thì mỗi product trong list product sẽ có field productTemplateId, và productId được load lên và gán vào ở ListProducts component
     // Edit products
@@ -127,7 +128,7 @@ const AddProduct = ({ classes, createNewProduct, uploadProductImgs, ...props }) 
     try {
       await createNewProduct({
         variables: {
-          sellerId: 'cjx8x25h200hn0a8934r3861q',
+          sellerId: 'cjx8wso1x00f30a89i06iqz0n',
           data: {
             name: values.name,
             briefDescription: values.briefDescription,

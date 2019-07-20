@@ -16,7 +16,7 @@ import SelectList from '../../../../../../components/Select/SelectList';
 import { countries } from '../../../../../../utils/processData/rawData/callingcodes';
 import { formatInternationalPhone } from '../../../../../../utils/processData/validation/validation';
 import sellerProfileStyles from '../../styles/sellerProfileStyles';
-import FormButton from '../../../../../../components/Button/FormButton';
+import FormButton from '../../../../../../components/Button/FormButton/FormButton';
 import { UPDATE_RETAILER, RESEND_RETAILER_CONFIMATION } from '../../../../../../utils/graphql/retailer';
 import useInterval from '../../../../../../utils/hooks/useInterval';
 import UserAvatarModal from '../../../../../User/scenes/UserUploadAvatar/UserAvatarModal';
