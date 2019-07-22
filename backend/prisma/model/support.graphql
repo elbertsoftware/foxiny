@@ -47,7 +47,7 @@ type SupportCase {
   # caseType: CaseType @relation(link: INLINE, onDelete: SET_NULL)
   status: SupportStatus @relation(link: INLINE, onDelete: SET_NULL)
   severity: SupportSeverity @relation(link: INLINE, onDelete: SET_NULL)
-  catergory: [SupportCategory] @relation(link: TABLE, onDelete: SET_NULL)
+  catergory: [SupportCategory!] @relation(link: TABLE, onDelete: SET_NULL)
 
   openedByUser: User
     @relation(link: INLINE, name: "SupportCaseOpenedUser", onDelete: SET_NULL)

@@ -1,10 +1,10 @@
 // @flow
 
 import fs from "fs";
-
 import http from "http";
 import express from "express";
 import requestLanguage from "express-request-language";
+import { pick } from "accept-language-parser";
 import helmet from "helmet";
 import bodyParser from "body-parser";
 
@@ -18,6 +18,7 @@ import { schema as typeDefs } from "./type-defs";
 import prisma from "./utils/prisma";
 import cache from "./utils/cache";
 import logger from "./utils/logger";
+import { getUserIDFromRequest } from "./utils/authentication";
 
 // Express server
 const server = express();
@@ -59,19 +60,45 @@ const pubsub = new PubSub();
 const graphQLServer = new ApolloServer({
   typeDefs, // link this graphql server to our implemented schema
   resolvers, // and our implemented resolvers
-  context: ({ req: request /* , res: response */ }) => {
+  context: ({ req: request /* , res: response */, connection }) => {
     // reference req -> request, res -> response
+    let languageCode = i18n.availableLanguages.sort()[0];
 
-    i18n.activate(request.language);
-    logger.debug(`🉑  ACTIVATED LANGUAGE: ${request.language}`);
+    if (connection && connection.context["Accept-Language"]) {
+      languageCode = pick(["en", "vi"], connection.context["Accept-Language"]);
+    } else if (request && request.language) {
+      languageCode = request.language;
+    }
+
+    i18n.activate(languageCode);
+    logger.debug(`🉑  ACTIVATED LANGUAGE: ${languageCode}`);
 
     return {
       prisma,
       request,
       cache,
       i18n,
+      pubsub,
+      connection,
     };
   },
+  // subscriptions: {
+  //   onConnect: async (connection, webSocket) => {
+  // console.log(connection);
+  // const userId = await getUserIDFromRequest(connection);
+  // console.log(userId);
+  // if (connectionParams) {
+  // return validateToken(connectionParams.authToken)
+  //   .then(findUser(connectionParams.authToken))
+  //   .then(user => {
+  //     return {
+  //       currentUser: user,
+  //     };
+  //   });
+  // }
+  // throw new Error("Missing auth token!");
+  // },
+  // },
   uploads: {
     // Limits here should be stricter than config for surrounding
     // infrastructure such as Nginx so errors can be handled elegantly by
@@ -92,7 +119,9 @@ graphQLServer.applyMiddleware({ app: server }); // reference app to server
 const httpServer = http.createServer(server);
 graphQLServer.installSubscriptionHandlers(httpServer);
 
-logger.info(`⚡ GraphQL endpoint: ${graphQLServer.graphqlPath}`);
-logger.info(`⚡ Subscriptions endpoint: ${graphQLServer.subscriptionsPath}`);
+logger.info(`⚡ Server ready at endpoint: ${graphQLServer.graphqlPath}`);
+logger.info(
+  `⚡ Subscriptions ready at endpoint: ${graphQLServer.subscriptionsPath}`,
+);
 
-export default server;
+export default httpServer;

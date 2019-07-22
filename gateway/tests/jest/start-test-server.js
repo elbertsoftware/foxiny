@@ -11,16 +11,16 @@
 // while 'babel' command does not
 // @babel/polyfill import must appear before any other code started
 // /noConflict is needed to prevent circling import
-require('@babel/polyfill/noConflict');
+require("@babel/polyfill/noConflict");
 
 //  ===================================================================================================================
 // use 'babel-register' to import 'graphql-server' implemneted with ES6 import/export
 // into this file which uses Node native syntax
-require('babel-register');
+require("@babel/register");
 
 // const ngrok = require('ngrok');
 
-const graphQLServer = require('../../src/server').default;
+const graphQLServer = require("../../src/server").default;
 
 // dev server on port 4000, test server on port 5000, prod server depends on process.env.PORT
 module.exports = async () => {

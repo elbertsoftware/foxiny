@@ -1,18 +1,26 @@
 // @flow
-import { gql } from 'apollo-server-express';
+import { gql } from "apollo-server-express";
 
 export const staffSchema = gql`
   extend type Query {
     retailerApprovals(query: ApprovalQueryInput): [SupportCase!]!
-    retailerApprovalProcesses(query: ApprovalQueryInput): [SupportCorrespondence!]!
-    lastRetailerApprovalProcess(query: ApprovalQueryInput!): [SupportCorrespondence]!
+    retailerApprovalProcesses(
+      query: ApprovalQueryInput
+    ): [SupportCorrespondence!]!
+    lastRetailerApprovalProcess(
+      query: ApprovalQueryInput!
+    ): [SupportCorrespondence]!
     # manufacturerApproval(query: String): Approval!
     productApprovals(query: ApprovalQueryInput): [SupportCase!]!
   }
 
   extend type Mutation {
-    createRetailerApprovalProcess(data: CreateApprovalProcess!): SupportCorrespondence!
-    createProductApprovalProcess(data: CreateApprovalProcess!): SupportCorrespondence!
+    createRetailerApprovalProcess(
+      data: CreateApprovalProcess!
+    ): SupportCorrespondence!
+    createProductApprovalProcess(
+      data: CreateApprovalProcess!
+    ): SupportCorrespondence!
     approveRetailer(data: CreateApprovalProcess!): Int!
     disapproveRetailer(data: CreateApprovalProcess!): Int!
     # rejectRetailer(retailerId: String!): Retailer!
