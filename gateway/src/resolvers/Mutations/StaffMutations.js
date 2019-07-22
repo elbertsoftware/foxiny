@@ -14,7 +14,11 @@ export const Mutation = {
    */
   deleteUser: async (parent, args, { prisma, request, cache, i18n }, info) => {
     // NOTE: check permissions
-    const user = await gatekeeper.checkPermissions(request, "STAFF", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "DELETE_SELLER",
+      i18n,
+    );
 
     deleteAllTokensInCache(cache, user.id);
 
@@ -37,7 +41,11 @@ export const Mutation = {
     info,
   ) => {
     // TODO: check permissions
-    const user = await gatekeeper.checkPermissions(request, "STAFF", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "CREATE_RETAILER_APPROVAL_PROCESS",
+      i18n,
+    );
 
     // TODO: validate input
     const newData = data;
@@ -84,7 +92,11 @@ export const Mutation = {
     info,
   ) => {
     // TODO: check permissions
-    const user = await gatekeeper.checkPermissions(request, "STAFF", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "DAPPROVE_RETAILER_REGISTRATION",
+      i18n,
+    );
 
     // TODO: validate input
     const newData = data;
@@ -97,7 +109,7 @@ export const Mutation = {
       },
       "{ id status { name } targetIds }",
     );
-
+    console.log(approval, undefined, 2);
     if (approval.status.name === "CLOSED") {
       const error = i18n._(`Approval not found or closed`);
       throw new Error(error);
@@ -147,7 +159,11 @@ export const Mutation = {
     info,
   ) => {
     // TODO: check permission
-    const user = await gatekeeper.checkPermissions(request, "STAFF", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "DISAPPROVE_RETAILER_REGISTRATION",
+      i18n,
+    );
 
     // TODO: validate input
     const newData = data;
@@ -197,7 +213,7 @@ export const Mutation = {
     return updated.count;
   },
 
-  // FIXME:
+  // FIXME: ???
   deleteRetailer: async (
     parent,
     { sellerId },
@@ -205,7 +221,11 @@ export const Mutation = {
     info,
   ) => {
     // TODO: check permission
-    const user = await gatekeeper.checkPermissions(request, "STAFF", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "DELETE_SELLER",
+      i18n,
+    );
 
     // TODO: validate input
 
@@ -235,7 +255,11 @@ export const Mutation = {
     info,
   ) => {
     // TODO: check permissions
-    const user = await gatekeeper.checkPermissions(request, "STAFF", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "CREATE_PRODUCT_APPROVAL_PROCESS",
+      i18n,
+    );
 
     // TODO: validate input
     const newData = data;
@@ -282,7 +306,11 @@ export const Mutation = {
     info,
   ) => {
     // TODO: check permissions
-    const user = await gatekeeper.checkPermissions(request, "STAFF", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "DAPPROVE_PRODUCT_REGISTRATION",
+      i18n,
+    );
 
     // TODO: validate input
     const newData = data;
@@ -344,7 +372,11 @@ export const Mutation = {
     info,
   ) => {
     // TODO: check permission
-    const user = await gatekeeper.checkPermissions(request, "STAFF", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "DAPPROVE_PRODUCT_REGISTRATION",
+      i18n,
+    );
 
     // TODO: validate input
     const newData = data;

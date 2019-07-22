@@ -31,7 +31,7 @@ export const Mutation = {
       // NOTE: check permission
       const user = await gatekeeper.checkPermissions(
         request,
-        "PRODUCT_RETAILER",
+        "CREATE_RETAIL_PRODUCT",
         i18n,
         sellerId,
       );
@@ -41,7 +41,7 @@ export const Mutation = {
       const newData = validateCreateNewProductInput(data);
 
       // NOTE: 1 - create product attributes & it's values
-      const atts = restructureProductAttributes(data.products);
+      const atts = restructureProductAttributes(newData.products);
 
       for (let i = 0; i < atts.length; i++) {
         for (let j = 0; j < atts[i].data.length; j++) {
@@ -206,7 +206,7 @@ export const Mutation = {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "PRODUCT_RETAILER",
+      "UPDATE_RETAIL_PRODUCT",
       i18n,
       sellerId,
     );
@@ -216,7 +216,7 @@ export const Mutation = {
     const newData = validateUpdateProductInput(data);
 
     // NOTE: 1 - create product attributes & it's values
-    const atts = restructureProductAttributes(newData);
+    const atts = restructureProductAttributes(newData.products);
 
     for (let i = 0; i < atts.length; i++) {
       for (let j = 0; j < atts[i].data.length; j++) {
@@ -394,7 +394,7 @@ export const Mutation = {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "PRODUCT_RETAILER",
+      "ONOFF_SELLABLE_RETAIL_PRODUCT",
       i18n,
       sellerId,
     );

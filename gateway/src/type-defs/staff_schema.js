@@ -3,14 +3,15 @@ import { gql } from "apollo-server-express";
 
 export const staffSchema = gql`
   extend type Query {
-    retailerApprovals(query: ApprovalQueryInput!): [SupportCase!]
+    retailerApprovals(query: ApprovalQueryInput): [SupportCase!]!
     retailerApprovalProcesses(
       query: ApprovalQueryInput
     ): [SupportCorrespondence!]!
     lastRetailerApprovalProcess(
       query: ApprovalQueryInput!
-    ): [SupportCorrespondence]
+    ): [SupportCorrespondence]!
     # manufacturerApproval(query: String): Approval!
+    productApprovals(query: ApprovalQueryInput): [SupportCase!]!
   }
 
   extend type Mutation {
@@ -40,9 +41,11 @@ export const staffSchema = gql`
     first: Int
     last: Int
 
-    caseId: Int
+    caseId: String
     status: String
     severity: String
+    category: String
+    targetIds: String # each id separated by a whitespace
     openedByUserId: String
     updatedByUserId: String
     responsedByStaffUserId: String

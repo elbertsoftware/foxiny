@@ -27,6 +27,8 @@ import { sendConfirmationEmail } from "../../utils/email";
 import { sendConfirmationText } from "../../utils/sms";
 import { sendConfirmationEsms } from "../../utils/smsVN";
 import { gatekeeper } from "../../utils/permissionChecker";
+// const { Worker } = require("worker_threads");
+// var gatekeeper = new Worker("./src/utils/permissionChecker.js");
 
 // TODO: un-comment sendConfirmation
 // NOTE: handling errors in a frendly way: https://www.youtube.com/watch?v=fUq1iHiDniY
@@ -63,9 +65,14 @@ export const Mutation = {
           assignment: {
             create: {
               roles: {
-                connect: {
-                  name: "USER",
-                },
+                connect: [
+                  {
+                    name: "USER",
+                  },
+                  {
+                    name: "MEDIA",
+                  },
+                ],
               },
             },
           },
@@ -190,7 +197,11 @@ export const Mutation = {
     }
 
     // NOTE: check permissions
-    const user = await gatekeeper.checkPermissions(request, "USER", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "UPDATE_SECURITY_INFO",
+      i18n,
+    );
 
     // const user = await prisma.query.user({
     //   where: {
@@ -290,20 +301,18 @@ export const Mutation = {
       throw new Error(error);
     }
 
-    const user = await gatekeeper.checkPermissions(request, "USER", i18n);
+    const user = await prisma.query.user({
+      where: {
+        id: newData.userId || userId,
+        email: newData.email,
+        phone: newData.phone,
+      },
+    });
 
-    // const user = await prisma.query.user({
-    //   where: {
-    //     id: newData.userId || userId,
-    //     email: newData.email,
-    //     phone: newData.phone,
-    //   },
-    // });
-
-    // if (!user) {
-    //   const error = i18n._(t`Unable to resend confirmation`);
-    //   throw new Error(error); // try NOT to provide enough information so hackers can guess
-    // }
+    if (!user) {
+      const error = i18n._(t`Unable to resend confirmation`);
+      throw new Error(error); // try NOT to provide enough information so hackers can guess
+    }
 
     logger.debug(
       `user id ${user.id}, name ${user.name}, email ${user.email}, password ${
@@ -435,7 +444,11 @@ export const Mutation = {
     info,
   ) => {
     // NOTE: check permissions
-    const user = await gatekeeper.checkPermissions(request, "USER", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "UPDATE_USER_PROFILE",
+      i18n,
+    );
 
     let newData;
     try {
@@ -633,7 +646,11 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    const user = await gatekeeper.checkPermissions(request, "USER", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "RESET_USER_PWD",
+      i18n,
+    );
 
     const newData = validateResetPwdInput(data);
 

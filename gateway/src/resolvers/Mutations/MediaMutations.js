@@ -28,7 +28,11 @@ export const Mutation = {
     info,
   ) => {
     // NOTE: check permission
-    const user = await gatekeeper.checkPermissions(request, "MEDIA_USER", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "UPLOAD_USER_PROFILE_MEDIA",
+      i18n,
+    );
 
     const uploadedFile = await file;
     try {
@@ -48,8 +52,11 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    const userId = await getUserIDFromRequest(request, cache, i18n);
-    const user = await gatekeeper.checkPermissions("SELLER_MEDIA", userId);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "UPLOAD_PRODUCT_MEDIA",
+      i18n,
+    );
 
     const productMedias = await Promise.all(
       files.map(async file => {
@@ -79,7 +86,7 @@ export const Mutation = {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "MEDIA_SELLER",
+      "UPLOAD_SELLER_PROFILE_MEDIA",
       i18n,
       sellerId,
     );
@@ -113,7 +120,7 @@ export const Mutation = {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "MEDIA_SELLER",
+      "UPLOAD_SELLER_PROFILE_MEDIA",
       i18n,
       sellerId,
     );
@@ -143,7 +150,7 @@ export const Mutation = {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "MEDIA_SELLER",
+      "UPLOAD_SELLER_PROFILE_MEDIA",
       i18n,
       sellerId,
     );
@@ -197,7 +204,7 @@ export const Mutation = {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "MEDIA_SELLER",
+      "UPLOAD_SELLER_PROFILE_MEDIA",
       i18n,
       sellerId,
     );
@@ -227,7 +234,7 @@ export const Mutation = {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "MEDIA_SELLER",
+      "UPLOAD_SELLER_PROFILE_MEDIA",
       i18n,
       sellerId,
     );
@@ -280,7 +287,7 @@ export const Mutation = {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "MEDIA_SELLER",
+      "UPLOAD_SELLER_PROFILE_MEDIA",
       i18n,
       sellerId,
     );

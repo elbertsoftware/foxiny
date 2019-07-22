@@ -1,5 +1,6 @@
 // @flow
 
+import _ from "lodash";
 import logger from "../../utils/logger";
 import { getUserIDFromRequest } from "../../utils/authentication";
 import { gatekeeper } from "../../utils/permissionChecker";
@@ -13,47 +14,80 @@ export const Query = {
     info,
   ) => {
     // TODO: check permission
-    const user = await gatekeeper.checkPermissions(request, "SUPPORT", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "DAPPROVE_RETAILER_REGISTRATION",
+      i18n,
+    );
 
     // TODO: validate input
 
     const opArgs = {
       orderBy: "updatedAt_DESC",
-      skip: query.skip || undefined,
-      last: query.last || undefined,
+      skip: query && query.skip ? query.skip : undefined,
+      last: query && query.last ? query.last : undefined,
       where: {
-        OR: [
-          { id: query.caseId || undefined },
+        AND: [
           {
-            severity: {
-              name_contains: query.severity,
-            },
-          },
-          {
-            status: {
-              name_contains: query.status,
-            },
-          },
-          {
-            openedByUser: {
-              id: query.openedByUserId,
-            },
-          },
-          {
-            updatedByUser_some: {
-              id: updatedByUserId,
-            },
-          },
-          {
-            correspondences_some: {
-              respondedBy: {
-                id: query.responsedByStaffUserId,
-              },
+            catergory_some: {
+              name_contains: "RETAILER_APPROVAL",
             },
           },
         ],
       },
     };
+
+    const or = { OR: [] };
+    if (query && query.caseId) {
+      or.OR.push({ id: query.caseId });
+    }
+    if (query && query.severity) {
+      or.OR.push({
+        severity: {
+          name_contains: query.severity,
+        },
+      });
+    }
+    if (query && query.status) {
+      or.OR.push({
+        status: {
+          name_contains: query.status,
+        },
+      });
+    }
+    if (query && query.targetIds) {
+      or.OR.push(
+        _.compact(query.targetIds.split(" ")).map(id => ({
+          targetIds_contains: id,
+        })),
+      );
+    }
+    if (query && query.openedByUserId) {
+      or.OR.push({
+        openedByUser: {
+          id: query.openedByUserId,
+        },
+      });
+    }
+    if (query && query.updatedByUserId) {
+      or.OR.push({
+        updatedByUser_some: {
+          id: query.updatedByUserId,
+        },
+      });
+    }
+    if (query && query.responsedByStaffUserId) {
+      or.OR.push({
+        correspondences_some: {
+          respondedBy: {
+            id: query.responsedByStaffUserId,
+          },
+        },
+      });
+    }
+    if (or.OR.length > 0) {
+      opArgs.where.AND.push(or);
+    }
 
     return prisma.query.supportCases(opArgs, info);
   },
@@ -65,7 +99,11 @@ export const Query = {
     info,
   ) => {
     // TODO: check permission
-    const user = await gatekeeper.checkPermissions(request, "SUPPORT", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "DAPPROVE_RETAILER_REGISTRATION",
+      i18n,
+    );
 
     // TODO: validate input
 
@@ -88,12 +126,12 @@ export const Query = {
   // TODO: how 'bout wrong seller ID?
   lastRetailerApprovalProcess: async (
     parent,
-    { caseId },
+    { query },
     { prisma, cache, request, i18n },
     info,
   ) => {
     // TODO: check permission
-    const user = await gatekeeper.checkPermissions(request, "SUPPORT", i18n);
+    const user = await gatekeeper.checkPermissions(request, "STAFF", i18n);
 
     // TODO: validate input
 
@@ -112,5 +150,83 @@ export const Query = {
     };
 
     return prisma.query.supportCorrespondences(opArgs, info);
+  },
+
+  productApprovals: async (
+    parent,
+    { query },
+    { prisma, cache, request, i18n },
+    info,
+  ) => {
+    // TODO: check permission
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "DAPPROVE_PRODUCT_REGISTRATION",
+      i18n,
+    );
+
+    // TODO: validate input
+
+    const opArgs = {
+      orderBy: "updatedAt_DESC",
+      skip: query && query.skip ? query.skip : undefined,
+      last: query && query.last ? query.last : undefined,
+      where: {
+        AND: [
+          {
+            catergory_some: {
+              name_contains: "PRODUCT_APPROVAL",
+            },
+          },
+        ],
+      },
+    };
+
+    const or = { OR: [] };
+    if (query && query.caseId) {
+      or.OR.push({ id: query.caseId });
+    }
+    if (query && query.severity) {
+      or.OR.push({
+        severity: {
+          name_contains: query.severity,
+        },
+      });
+    }
+    if (query && query.status) {
+      or.OR.push({
+        status: {
+          name_contains: query.status,
+        },
+      });
+    }
+    if (query && query.status) {
+      or.OR.push({
+        openedByUser: {
+          id: query.openedByUserId,
+        },
+      });
+    }
+    if (query && query.status) {
+      or.OR.push({
+        updatedByUser_some: {
+          id: query.updatedByUserId,
+        },
+      });
+    }
+    if (query && query.status) {
+      or.OR.push({
+        correspondences_some: {
+          respondedBy: {
+            id: query.responsedByStaffUserId,
+          },
+        },
+      });
+    }
+    if (or.OR.length > 0) {
+      opArgs.where.AND.push(or);
+    }
+
+    return prisma.query.supportCases(opArgs, info);
   },
 };

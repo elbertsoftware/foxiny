@@ -51,10 +51,10 @@ export const supportSchema = gql`
     # caseType: CaseType!
     status: SupportStatus!
     severity: SupportSeverity!
-    catergory: SupportCategory!
+    catergory: [SupportCategory!]
     openedByUser: User!
 
-    data: JSON
+    targetIds: String
 
     # other targets
 

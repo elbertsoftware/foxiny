@@ -24,7 +24,10 @@ import { Query as staffQueries } from "./Queries/StaffQueries";
 import { Query as systemQueries } from "./Queries/SystemQueries";
 import { Query as userQueries } from "./Queries/UserQueries";
 
-// import Subscription from './Subscription'
+// NOTE: SUBSCRIPTIONS
+import { Subscriptions as subscriptions } from "./Subscriptions/Subscription";
+
+// NOTE: RESOLVERS
 import { User } from "./Resolvers/User";
 import { Media } from "./Resolvers/Media";
 
@@ -46,7 +49,7 @@ const resolvers = {
     systemMutations,
     userMutations,
   ),
-  // Subscription,
+  Subscription: subscriptions,
   User,
   Media,
   JSON: GraphQLJSON, // usung a custom scalar to handle JSON

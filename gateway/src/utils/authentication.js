@@ -11,7 +11,8 @@ import logger from "./logger";
 // TODO: clean expired tokens periodically and automatically
 // TODO: more password rules will be enforced later
 
-const isValidPassword = password => password.length >= 8 && !password.toLowerCase().includes("password"); // repkace by the new one in validation.js
+const isValidPassword = password =>
+  password.length >= 8 && !password.toLowerCase().includes("password"); // repkace by the new one in validation.js
 
 const hashPassword = password => {
   // if (!isValidPassword(password)) {
@@ -21,12 +22,15 @@ const hashPassword = password => {
   return bcrypt.hashSync(password, 12); // length of salt to be generated
 };
 
-const verifyPassword = (password, hashedPassword) => bcrypt.compareSync(password, hashedPassword);
+const verifyPassword = (password, hashedPassword) =>
+  bcrypt.compareSync(password, hashedPassword);
 
 const getRequestIPAddress = request => requestId.getClientIp(request);
 
 const generateConfirmation = (cache, userId, emailOrPhone) => {
-  const code = cryptoRandomString(parseInt(process.env.CONFIRMATION_LENGTH, 10));
+  const code = cryptoRandomString(
+    parseInt(process.env.CONFIRMATION_LENGTH, 10),
+  );
   logger.debug(`generated new confirmation code ${code} for userId ${userId}`);
 
   cache.set(
@@ -40,17 +44,23 @@ const generateConfirmation = (cache, userId, emailOrPhone) => {
 
 const verifyConfirmation = async (cache, code, userId, i18n) => {
   const data = JSON.parse(await cache.get(code));
-  
+
   if (!data) {
     const error = i18n._(t`Invalid confirmation code`);
     throw new Error(error);
   }
 
-  logger.debug(`verifying confirmation code ${code} for userId ${userId} upon the cached userId ${data.userId}`);
+  logger.debug(
+    `verifying confirmation code ${code} for userId ${userId} upon the cached userId ${
+      data.userId
+    }`,
+  );
 
   // delete the code after verifying
   cache.del(code);
-  logger.debug(`the confirmation code ${code} for userId ${userId} has been deleted from cache`);
+  logger.debug(
+    `the confirmation code ${code} for userId ${userId} has been deleted from cache`,
+  );
 
   return data.userId === userId && data.emailOrPhone;
 };
@@ -85,7 +95,10 @@ const generateToken = (userId, request, cache, options = null) => {
 
   // NOTE: options (object) is used for test or other reasons
   // synchronous call since no callback supplied
-  const expiresIn = options && options.expiresIn ? options.expiresIn : process.env.JWT_EXPIRATION;
+  const expiresIn =
+    options && options.expiresIn
+      ? options.expiresIn
+      : process.env.JWT_EXPIRATION;
   const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
   const ip = getRequestIPAddress(request);
 
@@ -98,9 +111,10 @@ const generateToken = (userId, request, cache, options = null) => {
 const getTokenFromRequest = request => {
   // 1. Authorization from HTTP Header: http://localhost:4466/foxiny/dev (web/playground)
   // 2. Authorization from Websocket: ws://localhost:4466/foxiny/dev (Jest unit tests)
-  const authorization = request
-    ? request.headers.authorization // 1.
-    : request.connection.context.Authorization; // 2.
+  const authorization =
+    request && request.headers
+      ? request.headers.authorization // 1.
+      : request.context.Authorization; // 2.
 
   // remove ther prefix 'Bearer '
   const token = authorization ? authorization.replace("Bearer ", "") : null;
@@ -109,12 +123,21 @@ const getTokenFromRequest = request => {
   return token;
 };
 
-const getUserIDFromRequest = async (request, cache, i18n, requireAuthentication = true, options = null) => {
+const getUserIDFromRequest = async (
+  request,
+  cache,
+  i18n,
+  requireAuthentication = true,
+  options = null,
+) => {
   const token = getTokenFromRequest(request);
   if (token) {
     // the verify() will throw Error if the token has been expired
     try {
-      const expiresIn = options && options.expiresIn ? options.expiresIn : process.env.JWT_EXPIRATION;
+      const expiresIn =
+        options && options.expiresIn
+          ? options.expiresIn
+          : process.env.JWT_EXPIRATION;
       // NOTE: add the verifyOoptions (expiresIn): same as the signOptions in generateToken (jwt needs it for checking token's lifetime)
       const payload = jwt.verify(token, process.env.JWT_SECRET, { expiresIn }); // synchronous call since no callback supplied
       let { userId } = payload;

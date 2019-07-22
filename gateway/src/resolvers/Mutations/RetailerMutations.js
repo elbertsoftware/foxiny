@@ -2,6 +2,7 @@
 
 import { t } from "@lingui/macro";
 import { addFragmentToInfo } from "graphql-binding";
+import { pubsubConfig } from "../Subscriptions/SubscriptionConfig";
 import logger from "../../utils/logger";
 import { sendConfirmationText } from "../../utils/sms";
 import { sendConfirmationEmail } from "../../utils/email";
@@ -20,11 +21,15 @@ export const Mutation = {
   registerRetailer: async (
     parent,
     { data },
-    { prisma, request, cache, i18n },
+    { prisma, request, cache, i18n, pubsub },
     info,
   ) => {
     try {
-      const user = await gatekeeper.checkPermissions(request, "RETAILER");
+      const user = await gatekeeper.checkPermissions(
+        request,
+        "REGISTER_RETAILER",
+        i18n,
+      );
 
       // TODO: validate input
       // TODO: validate address
@@ -112,9 +117,14 @@ export const Mutation = {
                 },
               },
               roles: {
-                connect: {
-                  name: "RETAILER",
-                },
+                connect: [
+                  {
+                    name: "RETAILER_OWNER",
+                  },
+                  {
+                    name: "PRODUCT_OWNER",
+                  },
+                ],
               },
             },
           },
@@ -122,7 +132,7 @@ export const Mutation = {
       });
 
       // open supportcase for approval
-      await prisma.mutation.createSupportCase({
+      const spCase = await prisma.mutation.createSupportCase({
         data: {
           subject: `Create/Update: ${retailer.businessName}`,
           status: {
@@ -148,6 +158,9 @@ export const Mutation = {
           targetIds: `${retailer.id}`,
         },
       });
+      pubsub.publish(pubsubConfig.RETAILER_CREATED, {
+        notificationFromRetailer: spCase,
+      });
 
       return {
         userId: user.id,
@@ -169,7 +182,7 @@ export const Mutation = {
     try {
       const user = await gatekeeper.checkPermissions(
         request,
-        "RETAILER",
+        "UPDATE_RETAILER",
         retailerId,
       );
 
@@ -381,7 +394,7 @@ export const Mutation = {
 
       return updatedRetailer;
     } catch (err) {
-      logger.error(`🛑❌  REGISTER_RETAILER: ${err.message}`);
+      logger.error(`🛑❌  UPDATE_RETAILER: ${err.message}`);
       const error = i18n._(t`Cannot update retailer`);
       throw new Error(error);
     }
@@ -395,7 +408,11 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    const user = await gatekeeper.checkPermissions(request, "RETAILER", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "REGISTER_RETAILER",
+      i18n,
+    );
 
     if (!user) {
       const error = i18n._(t`Cannot register retailer`);
@@ -414,7 +431,7 @@ export const Mutation = {
         const error = i18n._(t`Confirmed`);
         throw new Error(error);
       }
-      const code = generateConfirmation(cache, userId, email);
+      const code = generateConfirmation(cache, user.id, email);
       // sendConfirmationEmail("Seller", email, code);
 
       return true;
@@ -425,7 +442,7 @@ export const Mutation = {
         const error = i18n._(t`Confirmed`);
         throw new Error(error);
       }
-      const code = generateConfirmation(cache, userId, phone);
+      const code = generateConfirmation(cache, user.id, phone);
       // sendConfirmationText("Seller", phone, code);
       // sendConfirmationEsms("Seller", phone, code);
 
