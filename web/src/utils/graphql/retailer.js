@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 
 const REGISTER_RETAILER = gql`
   mutation registerRetailer($data: RegisterRetailer!) {
@@ -52,13 +52,19 @@ const UPLOAD_SOCIAL_ID_MEDIA = gql`
 `;
 
 const DELETE_SOCIAL_ID_MEDIA = gql`
-  mutation deleteSocialIDMediaRetailer($sellerId: String!, $fileIds: [String!]) {
+  mutation deleteSocialIDMediaRetailer(
+    $sellerId: String!
+    $fileIds: [String!]
+  ) {
     deleteSocialIDMediaRetailer(sellerId: $sellerId, fileIds: $fileIds)
   }
 `;
 
 const UPLOAD_BUSINESS_LICENSE = gql`
-  mutation uploadBusinessLicenseMediaRetailer($sellerId: String!, $files: [Upload!]!) {
+  mutation uploadBusinessLicenseMediaRetailer(
+    $sellerId: String!
+    $files: [Upload!]!
+  ) {
     uploadBusinessLicenseMediaRetailer(sellerId: $sellerId, files: $files) {
       id
       uri
@@ -67,7 +73,10 @@ const UPLOAD_BUSINESS_LICENSE = gql`
 `;
 
 const DELETE_BUSINESS_LICENSE = gql`
-  mutation deleteBusinessLicenseMediaRetailer($sellerId: String!, $fileIds: [String!]) {
+  mutation deleteBusinessLicenseMediaRetailer(
+    $sellerId: String!
+    $fileIds: [String!]
+  ) {
     deleteBusinessLicenseMediaRetailer(sellerId: $sellerId, fileIds: $fileIds)
   }
 `;
@@ -127,6 +136,33 @@ const ALL_RETAILERS = gql`
     }
   }
 `;
+const GET_ONE_RETAILER = gql`
+  query retailers($query: String) {
+    retailers(query: $query) {
+      id
+      owner {
+        user {
+          name
+        }
+      }
+      businessName
+      businessEmail
+      businessPhone
+      businessAvatar {
+        id
+        uri
+      }
+      businessAddress {
+        city
+      }
+      socialNumberImages {
+        id
+        uri
+      }
+      enabled
+    }
+  }
+`;
 
 export {
   RETAILERS,
@@ -139,4 +175,5 @@ export {
   UPLOAD_BUSINESS_LICENSE,
   DELETE_BUSINESS_LICENSE,
   DELETE_SOCIAL_ID_MEDIA,
+  GET_ONE_RETAILER
 };

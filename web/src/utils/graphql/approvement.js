@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 
 const APPROVE_RETAILER_INFO = gql`
   mutation approveRetailer($data: ApproveRetailerInput!) {
@@ -21,7 +21,7 @@ const DISAPPROVE_RETAILER_INFO = gql`
 `;
 
 const CREATE_RETAILER_APPROVAL_PROCESS = gql`
-  mutation createRetailerApprovalProcess($data: CreateRetailerApprovalProcessInput!) {
+  mutation createRetailerApprovalProcess($data: CreateApprovalProcess!) {
     createRetailerApprovalProcess(data: $data) {
       id
       data
@@ -79,7 +79,7 @@ const LIST_APPROVAL_CASES = gql`
         id
         name
       }
-      targetsIds
+      targetIds
       createdAt
     }
   }
@@ -95,7 +95,7 @@ const LAST_APPROVAL_PROCESS = gql`
         status {
           name
         }
-        openByUser {
+        openedByUser {
           id
           name
           email
@@ -120,5 +120,5 @@ export {
   DISAPPROVE_RETAILER_INFO,
   RETAILER_APPROVAL_PROCESS,
   LAST_APPROVAL_PROCESS,
-  LIST_APPROVAL_CASES,
+  LIST_APPROVAL_CASES
 };
