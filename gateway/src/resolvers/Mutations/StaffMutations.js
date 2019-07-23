@@ -37,7 +37,7 @@ export const Mutation = {
   createRetailerApprovalProcess: async (
     parent,
     { data },
-    { prisma, request, cache, i18n, gatekeeper },
+    { prisma, request, cache, i18n },
     info,
   ) => {
     // TODO: check permissions
@@ -251,7 +251,7 @@ export const Mutation = {
   createProductApprovalProcess: async (
     parent,
     { data },
-    { prisma, request, cache, i18n, gatekeeper },
+    { prisma, request, cache, i18n },
     info,
   ) => {
     // TODO: check permissions

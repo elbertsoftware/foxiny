@@ -131,7 +131,11 @@ export const Query = {
     info,
   ) => {
     // TODO: check permission
-    const user = await gatekeeper.checkPermissions(request, "STAFF", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      "DAPPROVE_RETAILER_REGISTRATION",
+      i18n,
+    );
 
     // TODO: validate input
 
