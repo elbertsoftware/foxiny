@@ -1,18 +1,18 @@
 // @flow
 
-import { t } from "@lingui/macro";
-import logger from "../../utils/logger";
+import { t } from '@lingui/macro';
+import logger from '../../utils/logger';
 import {
   s3ProfileMediaUploader,
   s3ProductMediasUploader,
-  s3DocumentsUploader
-} from "../../utils/s3Uploader";
+  s3DocumentsUploader,
+} from '../../utils/s3Uploader';
 import {
   validateUploadImageInput,
-  validateUploadDocumnetInput
-} from "../../utils/validation";
-import { gatekeeper } from "../../utils/permissionChecker";
-import { getUserIDFromRequest } from "../../utils/authentication";
+  validateUploadDocumnetInput,
+} from '../../utils/validation';
+import { gatekeeper } from '../../utils/permissionChecker';
+import { getUserIDFromRequest } from '../../utils/authentication';
 
 // TODO: optimize me by using promiseAll
 
@@ -24,14 +24,16 @@ export const Mutation = {
   uploadProfileMedia: async (
     parent,
     { file },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "UPLOAD_USER_PROFILE_MEDIA",
-      i18n
+      'UPLOAD_USER_PROFILE_MEDIA',
+      i18n,
     );
 
     const uploadedFile = await file;
@@ -49,23 +51,25 @@ export const Mutation = {
   uploadProductMedias: async (
     parent,
     { files },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     const user = await gatekeeper.checkPermissions(
       request,
-      "UPLOAD_PRODUCT_MEDIA",
-      i18n
+      'UPLOAD_PRODUCT_MEDIA',
+      i18n,
     );
 
     const productMedias = await Promise.all(
       files.map(async file => {
         const uploaded = await file;
         const media = await s3ProductMediasUploader(prisma, uploaded, {
-          userId: user.id
+          userId: user.id,
         });
         return media;
-      })
+      }),
     );
 
     return productMedias;
@@ -80,15 +84,17 @@ export const Mutation = {
   uploadBusinessCover: async (
     parent,
     { file, sellerId },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "UPLOAD_SELLER_PROFILE_MEDIA",
+      'UPLOAD_SELLER_PROFILE_MEDIA',
       i18n,
-      sellerId
+      sellerId,
     );
 
     const uploadedFile = await file;
@@ -102,8 +108,8 @@ export const Mutation = {
 
     // NOTE: upload and save to db
     return s3ProfileMediaUploader(prisma, uploadedFile, {
-      sellerId: sellerId,
-      isCover: true
+      sellerId,
+      isCover: true,
     });
   },
 
@@ -114,15 +120,17 @@ export const Mutation = {
   uploadBusinessAvatar: async (
     parent,
     { file, sellerId },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "UPLOAD_SELLER_PROFILE_MEDIA",
+      'UPLOAD_SELLER_PROFILE_MEDIA',
       i18n,
-      sellerId
+      sellerId,
     );
 
     const uploadedFile = await file;
@@ -136,23 +144,25 @@ export const Mutation = {
 
     // NOTE: upload and save to db
     return s3ProfileMediaUploader(prisma, uploadedFile, {
-      sellerId: sellerId,
-      isAvatar: true
+      sellerId,
+      isAvatar: true,
     });
   },
 
   uploadSocialIDMediaRetailer: async (
     parent,
     { files, sellerId },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "UPLOAD_SELLER_PROFILE_MEDIA",
+      'UPLOAD_SELLER_PROFILE_MEDIA',
       i18n,
-      sellerId
+      sellerId,
     );
 
     // NOTE: upload file to S3
@@ -170,26 +180,26 @@ export const Mutation = {
         }
 
         const media = await s3DocumentsUploader(prisma, uploaded, {
-          sellerId: sellerId,
+          sellerId,
           isDocument: true,
-          isSocialID: true
+          isSocialID: true,
         });
         return await media;
-      })
+      }),
     );
 
     // NOTE: update retailer
     const updatedRetailer = await prisma.mutation.updateRetailer({
       where: {
-        id: sellerId
+        id: sellerId,
       },
       data: {
         socialNumberImages: {
           connect: medias.map(media => ({
-            id: media.id
-          }))
-        }
-      }
+            id: media.id,
+          })),
+        },
+      },
     });
 
     return medias;
@@ -198,28 +208,30 @@ export const Mutation = {
   deleteSocialIDMediaRetailer: async (
     parent,
     { fileIds, sellerId },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "UPLOAD_SELLER_PROFILE_MEDIA",
+      'UPLOAD_SELLER_PROFILE_MEDIA',
       i18n,
-      sellerId
+      sellerId,
     );
 
     await prisma.mutation.updateRetailer({
       where: {
-        id: sellerId
+        id: sellerId,
       },
       data: {
         socialNumberImages: {
           disconnect: fileIds.map(id => ({
-            id: id
-          }))
-        }
-      }
+            id,
+          })),
+        },
+      },
     });
 
     return fileIds;
@@ -228,15 +240,17 @@ export const Mutation = {
   uploadBusinessLicenseMediaRetailer: async (
     parent,
     { files, sellerId },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "UPLOAD_SELLER_PROFILE_MEDIA",
+      'UPLOAD_SELLER_PROFILE_MEDIA',
       i18n,
-      sellerId
+      sellerId,
     );
 
     // NOTE: Upload files to S3
@@ -254,26 +268,26 @@ export const Mutation = {
         }
 
         const media = await s3DocumentsUploader(prisma, uploaded, {
-          sellerId: sellerId,
+          sellerId,
           isDocument: true,
-          isBusinessLicense: true
+          isBusinessLicense: true,
         });
         return media;
-      })
+      }),
     );
 
     // NOTE: update retailer
     const updatedRetailer = await prisma.mutation.updateRetailer({
       where: {
-        id: sellerId
+        id: sellerId,
       },
       data: {
         businessLicenseImages: {
           connect: medias.map(media => ({
-            id: media.id
-          }))
-        }
-      }
+            id: media.id,
+          })),
+        },
+      },
     });
     return medias;
   },
@@ -281,30 +295,32 @@ export const Mutation = {
   deleteBusinessLicenseMediaRetailer: async (
     parent,
     { fileIds, sellerId },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "UPLOAD_SELLER_PROFILE_MEDIA",
+      'UPLOAD_SELLER_PROFILE_MEDIA',
       i18n,
-      sellerId
+      sellerId,
     );
 
     await prisma.mutation.updateRetailer({
       where: {
-        id: sellerId
+        id: sellerId,
       },
       data: {
         businessLicenseImages: {
           disconnect: fileIds.map(id => ({
-            id: id
-          }))
-        }
-      }
+            id,
+          })),
+        },
+      },
     });
 
     return fileIds;
-  }
+  },
 };

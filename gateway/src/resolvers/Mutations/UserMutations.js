@@ -1,6 +1,6 @@
 // @flow
 
-import { t } from "@lingui/macro";
+import { t } from '@lingui/macro';
 import {
   hashPassword,
   verifyPassword,
@@ -11,8 +11,8 @@ import {
   deleteAllTokensInCache,
   getTokenFromRequest,
   getUserIDFromRequest,
-  cleanToken
-} from "../../utils/authentication";
+  cleanToken,
+} from '../../utils/authentication';
 import {
   validateCreateInput,
   validateConfirmInput,
@@ -20,13 +20,13 @@ import {
   validateResendConfirmationInput,
   validateUpdateInput,
   validateResetPwdInput,
-  classifyEmailPhone
-} from "../../utils/validation";
-import logger from "../../utils/logger";
-import { sendConfirmationEmail } from "../../utils/email";
-import { sendConfirmationText } from "../../utils/sms";
-import { sendConfirmationEsms } from "../../utils/smsVN";
-import { gatekeeper } from "../../utils/permissionChecker";
+  classifyEmailPhone,
+} from '../../utils/validation';
+import logger from '../../utils/logger';
+import { sendConfirmationEmail } from '../../utils/email';
+import { sendConfirmationText } from '../../utils/sms';
+import { sendConfirmationEsms } from '../../utils/smsVN';
+import { gatekeeper } from '../../utils/permissionChecker';
 // const { Worker } = require("worker_threads");
 // var gatekeeper = new Worker("./src/utils/permissionChecker.js");
 
@@ -43,8 +43,10 @@ export const Mutation = {
   createUser: async (
     parent,
     { data },
-    { prisma, cache, request, i18n },
-    info
+    {
+ prisma, cache, request, i18n 
+},
+    info,
   ) => {
     let newData;
     try {
@@ -67,39 +69,39 @@ export const Mutation = {
               roles: {
                 connect: [
                   {
-                    name: "USER"
+                    name: 'USER',
                   },
                   {
-                    name: "MEDIA"
-                  }
-                ]
-              }
-            }
-          }
-        }
+                    name: 'MEDIA',
+                  },
+                ],
+              },
+            },
+          },
+        },
       },
-      info
+      info,
     );
 
     // for transact-log
     logger.info(
-      `CREATE_USER | 1 | ${newData.name} | ${newData.email ||
-        undefined} | ${newData.phone || undefined} | ${newData.password}`
+      `CREATE_USER | 1 | ${newData.name} | ${newData.email
+        || undefined} | ${newData.phone || undefined} | ${newData.password}`,
     );
 
     const code = generateConfirmation(
       cache,
       user.id,
-      newData.email || newData.phone
+      newData.email || newData.phone,
     );
 
     // email the code if user is signing up via email
-    if (typeof newData.email === "string") {
+    if (typeof newData.email === 'string') {
       // sendConfirmationEmail(newData.name, newData.email, code);
     }
 
     // text the code if user is signing up via phone
-    if (typeof newData.phone === "string") {
+    if (typeof newData.phone === 'string') {
       // TODO: try to find out where does the number come from, US or VN or other, and choose the best way to send the code
       // sendConfirmationText(newData.name, newData.phone, code);
       // sendConfirmationEsms(newData.name, newData.phone, code);
@@ -126,8 +128,8 @@ export const Mutation = {
       where: {
         id: newData.userId,
         email: newData.email,
-        phone: newData.phone
-      }
+        phone: newData.phone,
+      },
     });
 
     if (!user) {
@@ -136,9 +138,9 @@ export const Mutation = {
           newData.userId
             ? newData.userId
             : newData.email
-            ? newData.email
-            : newData.phone
-        } not found`
+              ? newData.email
+              : newData.phone
+        } not found`,
       );
       const error = i18n._(t`Unable to confirm user`);
       throw new Error(error); // try NOT to provide enough information so hackers can guess
@@ -149,7 +151,7 @@ export const Mutation = {
       cache,
       newData.code,
       user.id,
-      i18n
+      i18n,
     );
     logger.debug(`confirmation matched: ${matched}`);
     if (!matched) {
@@ -163,16 +165,16 @@ export const Mutation = {
 
     await prisma.mutation.updateUser({
       where: {
-        id: user.id
+        id: user.id,
       },
-      data: updateData
+      data: updateData,
     });
 
     // for transact-log
     logger.info(
       `UPDATE_USER | 1 | ${user.id} | ${updateData.email || undefined} | ${
         updateData.phone
-      }`
+      }`,
     );
 
     return true;
@@ -184,8 +186,10 @@ export const Mutation = {
   upsertSecurityInfo: async (
     parent,
     { securityInfo },
-    { prisma, cache, request, i18n },
-    info
+    {
+ prisma, cache, request, i18n 
+},
+    info,
   ) => {
     let newData;
     try {
@@ -199,8 +203,8 @@ export const Mutation = {
     // NOTE: check permissions
     const user = await gatekeeper.checkPermissions(
       request,
-      "UPDATE_SECURITY_INFO",
-      i18n
+      'UPDATE_SECURITY_INFO',
+      i18n,
     );
 
     // const user = await prisma.query.user({
@@ -222,14 +226,14 @@ export const Mutation = {
       if (newData[i].questionId) {
         updateData.push({
           questionId: newData[i].questionId,
-          answer: newData[i].answer
+          answer: newData[i].answer,
         });
       } else {
         // else insert the new one to db and get its question id
         const question = await prisma.mutation.createSecurityQuestion({
           data: {
-            question: newData[i].question
-          }
+            question: newData[i].question,
+          },
         });
 
         // for transact-log
@@ -237,7 +241,7 @@ export const Mutation = {
 
         updateData.push({
           questionId: question.id,
-          answer: newData[i].answer
+          answer: newData[i].answer,
         });
       }
     }
@@ -245,26 +249,26 @@ export const Mutation = {
     // NOTE: delete old securityInfo and insert the new one
     const updatedUser = await prisma.mutation.updateUser({
       where: {
-        id: user.id
+        id: user.id,
       },
       data: {
         securityAnswers: {
           deleteMany: {
-            createdAt_lt: new Date()
+            createdAt_lt: new Date(),
           },
           // cast Question&AnswerPairs from input to securityAnswer before mutating
           create: updateData.map(pair => ({
             securityQuestion: {
               connect: {
-                id: pair.questionId
-              }
+                id: pair.questionId,
+              },
             },
-            answer: pair.answer
-          }))
+            answer: pair.answer,
+          })),
         },
-        recoverable: true
+        recoverable: true,
       },
-      info
+      info,
     });
 
     // for transact-log
@@ -273,7 +277,7 @@ export const Mutation = {
         updateData[0].answer
       } | ${updateData[1].questionId} | ${updateData[1].answer} | ${
         updateData[2].questionId
-      } | ${updateData[2].answer}`
+      } | ${updateData[2].answer}`,
     );
 
     return updatedUser;
@@ -286,8 +290,10 @@ export const Mutation = {
   resendConfirmation: async (
     parent,
     { data },
-    { prisma, cache, request, i18n },
-    info
+    {
+ prisma, cache, request, i18n 
+},
+    info,
   ) => {
     // TODO: check ip before perform this mutation, prevent that ip sends tons of requests
 
@@ -305,8 +311,8 @@ export const Mutation = {
       where: {
         id: newData.userId || userId,
         email: newData.email,
-        phone: newData.phone
-      }
+        phone: newData.phone,
+      },
     });
 
     if (!user) {
@@ -317,12 +323,12 @@ export const Mutation = {
     logger.debug(
       `user id ${user.id}, name ${user.name}, email ${user.email}, password ${
         user.phone
-      }, enabled ${user.enabled}`
+      }, enabled ${user.enabled}`,
     );
 
     if (
-      user.enabled &&
-      (newData.email === user.email || newData.phone === user.phone)
+      user.enabled
+      && (newData.email === user.email || newData.phone === user.phone)
     ) {
       const error = i18n._(t`User has been confirmed`);
       throw new Error(error);
@@ -331,37 +337,37 @@ export const Mutation = {
     const code = generateConfirmation(
       cache,
       user.id,
-      newData.email || newData.phone || user.email || user.phone
+      newData.email || newData.phone || user.email || user.phone,
     );
 
     // case: user updates info and confirm new info
     // case: user wants to confirm account after signed up but not confirmed yet (disconnect or ST else)
     if (user.enabled) {
-      if (typeof newData.email === "string") {
+      if (typeof newData.email === 'string') {
         // sendConfirmationEmail(user.name, newData.email, code);
-        logger.debug("Email resent");
+        logger.debug('Email resent');
       }
 
       // text the code if user is signing up via phone
-      if (typeof newData.phone === "string") {
+      if (typeof newData.phone === 'string') {
         // sendConfirmationText(user.name, newData.phone, code);
         // sendConfirmationEsms(user.name, newData.phone, code);
-        logger.debug("Phone resent");
+        logger.debug('Phone resent');
       }
       return true;
     }
 
     // email the code if user is signing up via email
-    if (typeof user.email === "string") {
+    if (typeof user.email === 'string') {
       // sendConfirmationEmail(user.name, user.email, code);
-      logger.debug("Email resent");
+      logger.debug('Email resent');
     }
 
     // text the code if user is signing up via phone
-    if (typeof user.phone === "string") {
+    if (typeof user.phone === 'string') {
       // sendConfirmationText(user.name, user.phone, code);
       // sendConfirmationEsms(user.name, user.phone, code);
-      logger.debug("Phone resent");
+      logger.debug('Phone resent');
     }
 
     return true;
@@ -370,15 +376,17 @@ export const Mutation = {
   /**
    * login
    */
-  login: async (parent, { data }, { prisma, request, cache, i18n }, info) => {
+  login: async (parent, { data }, {
+ prisma, request, cache, i18n 
+}, info) => {
     const user = await prisma.query.user(
       {
         where: {
           email: data.email,
-          phone: data.phone
-        }
+          phone: data.phone,
+        },
       },
-      "{ id password enabled assignment { id retailers { id } }}"
+      '{ id password enabled assignment { id retailers { id } }}',
     );
 
     if (!user) {
@@ -404,13 +412,11 @@ export const Mutation = {
     return {
       userId: user.id,
       hasRetailers:
-        user.assignment &&
+        !!(user.assignment &&
         user.assignment.retailers &&
-        user.assignment.retailers.length > 0
-          ? true
-          : false,
+        user.assignment.retailers.length > 0),
       // hasManufacturer: user.assignment.manufacturers && user.assignment.manufacturers.length > 0 ? true : false,
-      token: generateToken(user.id, request, cache)
+      token: generateToken(user.id, request, cache),
     };
   },
 
@@ -429,7 +435,7 @@ export const Mutation = {
 
     return {
       token,
-      userId
+      userId,
     };
   },
 
@@ -440,14 +446,16 @@ export const Mutation = {
   updateUser: async (
     parent,
     { data },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     // NOTE: check permissions
     const user = await gatekeeper.checkPermissions(
       request,
-      "UPDATE_USER_PROFILE",
-      i18n
+      'UPDATE_USER_PROFILE',
+      i18n,
     );
 
     let newData;
@@ -459,7 +467,9 @@ export const Mutation = {
       throw new Error(error);
     }
 
-    const { email, phone, password, currentPassword } = newData;
+    const {
+ email, phone, password, currentPassword 
+} = newData;
     delete newData.password;
     delete newData.currentPassword;
     delete newData.email;
@@ -493,23 +503,23 @@ export const Mutation = {
       }
 
       // email is about to be changed
-      if (typeof email === "string" && canUpdate) {
+      if (typeof email === 'string' && canUpdate) {
         const code = generateConfirmation(cache, user.id, email);
 
         // sendConfirmationEmail(user.name, email, code);
-        logger.debug("🔵✅  UPDATE USER: Change Email Confirmation Sent");
+        logger.debug('🔵✅  UPDATE USER: Change Email Confirmation Sent');
 
         // the update email flow is end when user confirms by enter the code
         // TODO: Archive current email somewhere else
       }
 
       // phone is about to be changed
-      if (typeof phone === "string" && canUpdate) {
+      if (typeof phone === 'string' && canUpdate) {
         const code = generateConfirmation(cache, user.id, phone);
 
         // sendConfirmationText(user.name, phone, code);
         // sendConfirmationEsms(user.name, phone, code);
-        logger.debug("🔵✅  UPDATE USER: Change Phone Confirmation Sent");
+        logger.debug('🔵✅  UPDATE USER: Change Phone Confirmation Sent');
 
         // the update email flow is end when user confirms by enter the code
         // TODO: Archive current phone somewhere else
@@ -517,9 +527,9 @@ export const Mutation = {
 
       // both password and currentPassword present which means password is about to be changed
       if (
-        typeof password === "string" &&
-        typeof currentPassword === "string" &&
-        canUpdate
+        typeof password === 'string'
+        && typeof currentPassword === 'string'
+        && canUpdate
       ) {
         updateData.password = hashPassword(password);
 
@@ -532,18 +542,18 @@ export const Mutation = {
       const updatedUser = prisma.mutation.updateUser(
         {
           where: {
-            id: user.id
+            id: user.id,
           },
-          data: updateData
+          data: updateData,
         },
-        info
+        info,
       );
 
       // for transact-log
       logger.info(
-        `UPDATE_USER | 1 | ${user.id} | ${updateData.name ||
-          undefined} | ${updateData.email || undefined} | ${updateData.phone ||
-          undefined} | ${password || undefined}`
+        `UPDATE_USER | 1 | ${user.id} | ${updateData.name
+          || undefined} | ${updateData.email || undefined} | ${updateData.phone
+          || undefined} | ${password || undefined}`,
       );
 
       return updatedUser;
@@ -589,23 +599,25 @@ export const Mutation = {
   requestResetPwd: async (
     parent,
     { mailOrPhone },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     const user = (await prisma.query.users(
       {
         where: {
           OR: [
             {
-              email: mailOrPhone
+              email: mailOrPhone,
             },
             {
-              phone: mailOrPhone
-            }
-          ]
-        }
+              phone: mailOrPhone,
+            },
+          ],
+        },
       },
-      `{ id securityAnswers { securityQuestion { id question } } enabled recoverable}`
+      '{ id securityAnswers { securityQuestion { id question } } enabled recoverable}',
     )).pop();
 
     if (!user) {
@@ -632,8 +644,8 @@ export const Mutation = {
       token: generateToken(user.id, request, cache),
       securityQuestions: user.securityAnswers.map(question => ({
         id: question.securityQuestion.id,
-        question: question.securityQuestion.question
-      }))
+        question: question.securityQuestion.question,
+      })),
     };
   },
 
@@ -643,13 +655,15 @@ export const Mutation = {
   resetPassword: async (
     parent,
     { data },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     const user = await gatekeeper.checkPermissions(
       request,
-      "RESET_USER_PWD",
-      i18n
+      'RESET_USER_PWD',
+      i18n,
     );
 
     const newData = validateResetPwdInput(data);
@@ -666,17 +680,16 @@ export const Mutation = {
     const securityAnswer = user.securityInfo;
     const { securityInfo, password } = newData;
 
-    const canResetPwd =
-      securityInfo[0].answer ===
-        securityAnswers.find(x => x.questionId === securityInfo[0].questionId)
-          .answer &&
-      securityInfo[1].answer ===
-        securityAnswers.find(x => x.questionId === securityInfo[1].questionId)
-          .answer &&
-      securityInfo[2].answer ===
-        securityAnswers.find(x => x.questionId === securityInfo[2].questionId)
-          .answer &&
-      securityInfo.length === 3;
+    const canResetPwd =      securityInfo[0].answer
+        === securityAnswers.find(x => x.questionId === securityInfo[0].questionId)
+          .answer
+      && securityInfo[1].answer
+        === securityAnswers.find(x => x.questionId === securityInfo[1].questionId)
+          .answer
+      && securityInfo[2].answer
+        === securityAnswers.find(x => x.questionId === securityInfo[2].questionId)
+          .answer
+      && securityInfo.length === 3;
 
     // TODO: after x tries, prevent user from trying to recover account in y minutes
     // TODO: we can add a new number field to User
@@ -684,7 +697,7 @@ export const Mutation = {
     // change pwd if account is verified
     if (canResetPwd) {
       const updateUser = {
-        password: hashPassword(password)
+        password: hashPassword(password),
       };
 
       // remove all tokens from cache
@@ -694,11 +707,11 @@ export const Mutation = {
       await prisma.mutation.updateUser(
         {
           where: {
-            id: user.id
+            id: user.id,
           },
-          data: updateUser
+          data: updateUser,
         },
-        "{ password }"
+        '{ password }',
       );
 
       // for transact-log
@@ -708,5 +721,5 @@ export const Mutation = {
     }
     const error = i18n._(t`Unable to reset password`);
     throw new Error(error);
-  }
+  },
 };

@@ -1,20 +1,20 @@
 // @flow
 
-import { t } from "@lingui/macro";
-import logger from "../../utils/logger";
-import { getUserIDFromRequest, checkRights } from "../../utils/authentication";
+import { t } from '@lingui/macro';
+import logger from '../../utils/logger';
+import { getUserIDFromRequest, checkRights } from '../../utils/authentication';
 import {
   restructureProductAttributes,
   restrutureProductTemplate2FriendlyProduct,
-  restructureProductRetailer2FriendlyProduct
-} from "../../utils/productUtils/dataHelper";
+  restructureProductRetailer2FriendlyProduct,
+} from '../../utils/productUtils/dataHelper';
 import {
   validateCreateNewProductInput,
-  validateUpdateProductInput
-} from "../../utils/productUtils/validation";
-import { gatekeeper } from "../../utils/permissionChecker";
-import { s3ProductMediasUploader } from "../../utils/s3Uploader";
-import { getLanguage } from "../../utils/i18nHelper";
+  validateUpdateProductInput,
+} from '../../utils/productUtils/validation';
+import { gatekeeper } from '../../utils/permissionChecker';
+import { s3ProductMediasUploader } from '../../utils/s3Uploader';
+import { getLanguage } from '../../utils/i18nHelper';
 
 // TODO:
 // log transaction
@@ -24,16 +24,18 @@ export const Mutation = {
   createBrandNewProductWVariants: async (
     parent,
     { sellerId, data },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     try {
       // NOTE: check permission
       const user = await gatekeeper.checkPermissions(
         request,
-        "CREATE_RETAIL_PRODUCT",
+        'CREATE_RETAIL_PRODUCT',
         i18n,
-        sellerId
+        sellerId,
       );
       const { language } = getLanguage(request);
 
@@ -47,59 +49,59 @@ export const Mutation = {
         for (let j = 0; j < atts[i].data.length; j++) {
           await prisma.mutation.upsertProductAttributeValue({
             where: {
-              name: atts[i].data[j]
+              name: atts[i].data[j],
             },
             create: {
-              name: atts[i].data[j]
+              name: atts[i].data[j],
             },
             update: {
-              name: atts[i].data[j]
-            }
+              name: atts[i].data[j],
+            },
           });
         }
         await prisma.mutation.upsertProductAttribute({
           where: {
-            name: atts[i].name
+            name: atts[i].name,
           },
           create: {
             name: atts[i].name,
             values: {
-              connect: atts[i].data.map(value => ({ name: value }))
-            }
+              connect: atts[i].data.map(value => ({ name: value })),
+            },
           },
           update: {
             name: atts[i].name,
             values: {
-              connect: atts[i].data.map(value => ({ name: value }))
-            }
-          }
+              connect: atts[i].data.map(value => ({ name: value })),
+            },
+          },
         });
       }
       // NOTE: 2 - create product and it's template
       // NOTE: fragment ensure all needed-info always be returned
       // NOTE: lacking of manufacturer!!!
-      const newInfo = `{ id name briefDescription catalog { id name } descriptions { retailer { id } description } brand { id brandName } products { id productMedias { id uri } productRetailers { id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } retailer { id businessName } rating enabled approved createdAt updatedAt } options { id attribute { id name } value { id name} } sku } createdAt updatedAt }`;
+      const newInfo = '{ id name briefDescription catalog { id name } descriptions { retailer { id } description } brand { id brandName } products { id productMedias { id uri } productRetailers { id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } retailer { id businessName } rating enabled approved createdAt updatedAt } options { id attribute { id name } value { id name} } sku } createdAt updatedAt }';
 
       const productTemplateData = {
         name: newData.name,
         briefDescription: newData.briefDescription,
         catalog: {
-          connect: newData.catalogIds.map(id => ({ id: id }))
+          connect: newData.catalogIds.map(id => ({ id })),
         },
         brand: {
           connect: {
-            brandName: newData.brandName
-          }
+            brandName: newData.brandName,
+          },
         },
         descriptions: {
           create: {
             description: newData.detailDescription,
             retailer: {
               connect: {
-                id: sellerId
-              }
-            }
-          }
+                id: sellerId,
+              },
+            },
+          },
         },
         products: {
           create: newData.products.map(product => ({
@@ -113,39 +115,39 @@ export const Mutation = {
                 productMedias:
                   product.productMediaIds && product.productMediaIds.length > 0
                     ? {
-                        connect: product.productMediaIds.map(mediaId => ({
-                          id: mediaId
-                        }))
-                      }
+                      connect: product.productMediaIds.map(mediaId => ({
+                        id: mediaId,
+                      })),
+                    }
                     : undefined,
                 retailer: {
                   connect: {
-                    id: sellerId
-                  }
-                }
-              }
+                    id: sellerId,
+                  },
+                },
+              },
             },
             options: {
               create: product.attributes.map(att => ({
                 attribute: {
                   connect: {
-                    name: att.attributeName
-                  }
+                    name: att.attributeName,
+                  },
                 },
                 value: {
                   connect: {
-                    name: att.value
-                  }
-                }
-              }))
-            }
-          }))
-        }
+                    name: att.value,
+                  },
+                },
+              })),
+            },
+          })),
+        },
       };
 
       const productTemplate = await prisma.mutation.createProductTemplate(
         { data: productTemplateData },
-        newInfo
+        newInfo,
       );
 
       // TODO: open support case
@@ -154,33 +156,33 @@ export const Mutation = {
           subject: `Create: ${productTemplate.name}`,
           status: {
             connect: {
-              name: "OPEN"
-            }
+              name: 'OPEN',
+            },
           },
           severity: {
             connect: {
-              name: "MEDIUM"
-            }
+              name: 'MEDIUM',
+            },
           },
           catergory: {
             connect: {
-              name: "CREATE_PRODUCT_APPROVAL"
-            }
+              name: 'CREATE_PRODUCT_APPROVAL',
+            },
           },
           openedByUser: {
             connect: {
-              id: user.id
-            }
+              id: user.id,
+            },
           },
           targetIds: productTemplate.products
             .map(product => product.productRetailers[0].id)
-            .join(",")
-        }
+            .join(','),
+        },
       });
 
       // NOTE: reconstruct to-be-returned object, more friendly
       const friendlyProduct = restrutureProductTemplate2FriendlyProduct(
-        productTemplate
+        productTemplate,
       );
 
       return friendlyProduct;
@@ -189,8 +191,8 @@ export const Mutation = {
         `ERROR_CREATE_BRANDNEW_PRODUCT_WITH_VARIANTS ${JSON.stringify(
           err,
           undefined,
-          2
-        )}`
+          2,
+        )}`,
       );
       const error = i18n._(t`Cannot create product`);
       throw new Error(error);
@@ -200,15 +202,17 @@ export const Mutation = {
   updateProducts: async (
     parent,
     { sellerId, data },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "UPDATE_RETAIL_PRODUCT",
+      'UPDATE_RETAIL_PRODUCT',
       i18n,
-      sellerId
+      sellerId,
     );
     const { language } = getLanguage(request);
 
@@ -222,37 +226,36 @@ export const Mutation = {
       for (let j = 0; j < atts[i].data.length; j++) {
         await prisma.mutation.upsertProductAttributeValue({
           where: {
-            name: atts[i].data[j]
+            name: atts[i].data[j],
           },
           create: {
-            name: atts[i].data[j]
+            name: atts[i].data[j],
           },
           update: {
-            name: atts[i].data[j]
-          }
+            name: atts[i].data[j],
+          },
         });
       }
       await prisma.mutation.upsertProductAttribute({
         where: {
-          name: atts[i].name
+          name: atts[i].name,
         },
         create: {
           name: atts[i].name,
           values: {
-            connect: atts[i].data.map(value => ({ name: value }))
-          }
+            connect: atts[i].data.map(value => ({ name: value })),
+          },
         },
         update: {
           name: atts[i].name,
           values: {
-            connect: atts[i].data.map(value => ({ name: value }))
-          }
-        }
+            connect: atts[i].data.map(value => ({ name: value })),
+          },
+        },
       });
     }
 
-    const newInfo =
-      "{ id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } product { productTemplate { id name briefDescription brand { id brandName } catalog { id name } descriptions { retailer { id } description } } options { attribute { name } value { name } } } rating enabled approved createdAt updatedAt }";
+    const newInfo =      '{ id productName listPrice sellPrice stockQuantity inStock productMedias { id uri } product { productTemplate { id name briefDescription brand { id brandName } catalog { id name } descriptions { retailer { id } description } } options { attribute { name } value { name } } } rating enabled approved createdAt updatedAt }';
 
     // NOTE: 2 - update
     const updatedProducts = await Promise.all(
@@ -324,7 +327,7 @@ export const Mutation = {
             },
             newInfo
           );
-        } else {
+        } 
           // NOTE: attributes of given product are changed -> delete given product and create the new one
           await prisma.mutation.deleteProductRetailer({
             where: {
@@ -378,8 +381,8 @@ export const Mutation = {
             },
             newInfo
           );
-        }
-      })
+        
+      }),
     );
 
     return restructureProductRetailer2FriendlyProduct(updatedProducts);
@@ -388,22 +391,24 @@ export const Mutation = {
   toggleProductStatus: async (
     parent,
     { sellerId, productId },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "ONOFF_SELLABLE_RETAIL_PRODUCT",
+      'ONOFF_SELLABLE_RETAIL_PRODUCT',
       i18n,
-      sellerId
+      sellerId,
     );
     const { language } = getLanguage(request);
 
     const product = await prisma.query.productRetailer({
       where: {
-        id: productId
-      }
+        id: productId,
+      },
     });
 
     if (!product) {
@@ -411,24 +416,24 @@ export const Mutation = {
       throw new Error(error);
     }
 
-    const newInfo = `{ id productName listPrice sellPrice stockQuantity product { productTemplate { id name briefDescription catalog { id name } brand { id brandName } descriptions { retailer { id } description } } options { attribute { name } value { name } } } inStock productMedias { id uri } rating enabled approved createdAt updatedAt }`;
+    const newInfo = '{ id productName listPrice sellPrice stockQuantity product { productTemplate { id name briefDescription catalog { id name } brand { id brandName } descriptions { retailer { id } description } } options { attribute { name } value { name } } } inStock productMedias { id uri } rating enabled approved createdAt updatedAt }';
 
     const updatedProduct = await prisma.mutation.updateProductRetailer(
       {
         where: {
-          id: productId
+          id: productId,
         },
         data: {
-          enabled: !product.enabled
-        }
+          enabled: !product.enabled,
+        },
       },
-      newInfo
+      newInfo,
     );
 
     const friendlyProduct = restructureProductRetailer2FriendlyProduct([
-      updatedProduct
+      updatedProduct,
     ]).pop();
 
     return friendlyProduct;
-  }
+  },
 };

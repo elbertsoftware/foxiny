@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   Typography,
   TableRow,
@@ -8,76 +8,87 @@ import {
   Link,
   Button,
   InputBase,
-  Icon
-} from "@material-ui/core";
-import { graphql } from "react-apollo";
-import { debounce } from "debounce";
-import { Redirect } from "react-router";
-import { LIST_APPROVAL_CASES } from "../../../../../../utils/graphql/approvement";
+  Icon,
+} from '@material-ui/core';
+import { graphql } from 'react-apollo';
+import { debounce } from 'debounce';
+import { Redirect } from 'react-router';
+import { LIST_APPROVAL_CASES } from '../../../../../../utils/graphql/approvement';
 
-import Loading from "../../../../../../components/Loading/Loading";
-import useStyles from "../../style/approvalStyles";
-import ListApproval from "../../components/ListApproval";
+import Loading from '../../../../../../components/Loading/Loading';
+import useStyles from '../../style/approvalStyles';
+import ListApproval from '../../components/ListApproval';
 import {
   stableSort,
-  getSorting
-} from "../../../../../../components/Table/TableUtils";
+  getSorting,
+} from '../../../../../../components/Table/TableUtils';
 
 const headRows = [
-  { id: "subject", numeric: false, disablePadding: false, label: "Tiêu đề" },
   {
-    id: "status.name",
+    id: 'subject',
     numeric: false,
     disablePadding: false,
-    label: "Tình trạng"
+    label: 'Tiêu đề',
   },
   {
-    id: "severity.name",
+    id: 'status.name',
     numeric: false,
     disablePadding: false,
-    label: "Mức độ"
+    label: 'Tình trạng',
   },
   {
-    id: "user.name",
+    id: 'severity.name',
     numeric: false,
     disablePadding: false,
-    label: "Người dùng"
+    label: 'Mức độ',
   },
-  { id: "createdAt", numeric: false, disablePadding: false, label: "Ngày tạo" },
   {
-    id: "actions",
+    id: 'user.name',
     numeric: false,
     disablePadding: false,
-    label: "Chi tiết",
-    diabled: true
-  }
+    label: 'Người dùng',
+  },
+  {
+    id: 'createdAt',
+    numeric: false,
+    disablePadding: false,
+    label: 'Ngày tạo',
+  },
+  {
+    id: 'actions',
+    numeric: false,
+    disablePadding: false,
+    label: 'Chi tiết',
+    diabled: true,
+  },
 ];
 
 function SellerApproval(props) {
-  const { loading, listApprovalCases, history, userLoggedIn } = props;
+  const {
+ loading, listApprovalCases, history, userLoggedIn 
+} = props;
   const classes = useStyles();
   const [cloneCases, setCloneCases] = useState([]);
-  const [sellerId, setSellerId] = useState("");
-  const [searchValue, setSearchValue] = useState("");
+  const [sellerId, setSellerId] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const [isDefault, setIsDefault] = useState(true);
 
   // Search implementation
   // Search function
   const onSearchChangeDebounce = debounce(() => {
     const newArrayCases = listApprovalCases.filter(
-      approvalCase =>
-        approvalCase.subject
-          .toLowerCase()
-          .includes(searchValue.toLowerCase()) ||
-        approvalCase.status.name
-          .toLowerCase()
-          .includes(searchValue.toLowerCase()) ||
-        approvalCase.severity.name
-          .toLowerCase()
-          .includes(searchValue.toLowerCase()) ||
-        approvalCase.openedByUser.name
+      approvalCase => approvalCase.subject
           .toLowerCase()
           .includes(searchValue.toLowerCase())
+        || approvalCase.status.name
+          .toLowerCase()
+          .includes(searchValue.toLowerCase())
+        || approvalCase.severity.name
+          .toLowerCase()
+          .includes(searchValue.toLowerCase())
+        || approvalCase.openedByUser.name
+          .toLowerCase()
+          .includes(searchValue.toLowerCase()),
     );
     setCloneCases(newArrayCases);
   }, 500);
@@ -88,19 +99,19 @@ function SellerApproval(props) {
   // Sau khi searchValue thay đổi, gọi hàm thực search để trả về giá trị, set IsDefault = false để map Clone Array (cloneSellers)
   // Nếu searchValue rỗng thì set IsDefault true , để chọn map Array ban đầu (sellers)
   React.useEffect(() => {
-    if (searchValue !== "") {
+    if (searchValue !== '') {
       setIsDefault(false);
       onSearchChangeDebounce();
       return;
     }
     setIsDefault(true);
-  }, [searchValue]);
+  }, [onSearchChangeDebounce, searchValue]);
   // Sau khi nhận được sellers từ server, clone sellers ấy
   React.useEffect(() => {
     if (!loading) {
       setCloneCases(listApprovalCases);
     }
-  }, [loading]);
+  }, [listApprovalCases, loading]);
   // Others logic
 
   // React.useEffect(() => {
@@ -130,7 +141,7 @@ function SellerApproval(props) {
             placeholder="Search…"
             classes={{
               root: classes.inputRoot,
-              input: classes.inputInput
+              input: classes.inputInput,
             }}
           />
         </div>
@@ -141,10 +152,10 @@ function SellerApproval(props) {
       >
         {(page, rowsPerPage, order, orderBy) => (
           <React.Fragment>
-            {listApprovalCases &&
-              stableSort(
+            {listApprovalCases
+              && stableSort(
                 isDefault ? listApprovalCases : cloneCases,
-                getSorting(order, orderBy)
+                getSorting(order, orderBy),
               )
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(approvalCase => (
@@ -154,36 +165,38 @@ function SellerApproval(props) {
                         <img
                           className={classes.img}
                           alt="product"
-                          src={
-                            "https://cdn.pixabay.com/photo/2019/04/26/07/14/store-4156934_960_720.png"
-                          }
+                          src="https://cdn.pixabay.com/photo/2019/04/26/07/14/store-4156934_960_720.png"
                         />
                         <div>
                           <Typography component={Link}>
                             {approvalCase.id}
                           </Typography>
                           <Typography variant="subtitle2">
-                            Subject: {approvalCase.subject}
+                            Subject: 
+{' '}
+{approvalCase.subject}
                           </Typography>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Typography> {approvalCase.status.name}</Typography>
+                      <Typography> 
+{' '}
+{approvalCase.status.name}
+</Typography>
                     </TableCell>
                     <TableCell>{approvalCase.severity.name}</TableCell>
                     <TableCell>{approvalCase.openedByUser.name}</TableCell>
                     <TableCell>{approvalCase.createdAt}</TableCell>
                     <TableCell>
                       <Button
-                        onClick={() =>
-                          history.push({
+                        onClick={() => history.push({
                             pathname: `/sellers/approve-seller-cases/${
                               approvalCase.id
                             }`,
                             state: {
-                              sellerId: approvalCase.targetIds
-                            }
+                              sellerId: approvalCase.targetIds,
+                            },
                           })
                         }
                         variant="contained"
@@ -212,6 +225,6 @@ SellerApproval.propTypes = {};
 export default graphql(LIST_APPROVAL_CASES, {
   props: ({ data: { loading, retailerApprovals } }) => ({
     loading,
-    listApprovalCases: retailerApprovals
-  })
+    listApprovalCases: retailerApprovals,
+  }),
 })(SellerApproval);

@@ -1,19 +1,19 @@
 // @flow
 
-import { t } from "@lingui/macro";
-import { addFragmentToInfo } from "graphql-binding";
-import { pubsubConfig } from "../Subscriptions/SubscriptionConfig";
-import logger from "../../utils/logger";
-import { sendConfirmationText } from "../../utils/sms";
-import { sendConfirmationEmail } from "../../utils/email";
-import { sendConfirmationEsms } from "../../utils/smsVN";
+import { t } from '@lingui/macro';
+import { addFragmentToInfo } from 'graphql-binding';
+import { pubsubConfig } from '../Subscriptions/SubscriptionConfig';
+import logger from '../../utils/logger';
+import { sendConfirmationText } from '../../utils/sms';
+import { sendConfirmationEmail } from '../../utils/email';
+import { sendConfirmationEsms } from '../../utils/smsVN';
 import {
   getUserIDFromRequest,
   generateConfirmation,
-  verifyConfirmation
-} from "../../utils/authentication";
-import { gatekeeper } from "../../utils/permissionChecker";
-import { classifyEmailPhone } from "../../utils/productUtils/validation";
+  verifyConfirmation,
+} from '../../utils/authentication';
+import { gatekeeper } from '../../utils/permissionChecker';
+import { classifyEmailPhone } from '../../utils/productUtils/validation';
 
 // TODO: log transactions
 
@@ -21,14 +21,16 @@ export const Mutation = {
   registerRetailer: async (
     parent,
     { data },
-    { prisma, request, cache, i18n, pubsub },
-    info
+    {
+ prisma, request, cache, i18n, pubsub 
+},
+    info,
   ) => {
     try {
       const user = await gatekeeper.checkPermissions(
         request,
-        "REGISTER_RETAILER",
-        i18n
+        'REGISTER_RETAILER',
+        i18n,
       );
 
       // TODO: validate input
@@ -41,18 +43,18 @@ export const Mutation = {
           cache,
           data.emailConfirmCode,
           user.id,
-          i18n
+          i18n,
         );
         if (matchedEmail) {
           const { email, phone } = classifyEmailPhone(matchedEmail);
           if ((email || phone) !== data.businessEmail) {
             logger.debug(
-              `email-confirmation-code matched: ${matchedEmail} but wrong email`
+              `email-confirmation-code matched: ${matchedEmail} but wrong email`,
             );
             logger.debug(
               `confirm-code ${data.emailConfirmCode} enteredEmail ${
                 data.businessEmail
-              } codedEmail ${email}`
+              } codedEmail ${email}`,
             );
             const error = i18n._(t`Unable to confirm user`);
             throw new Error(error);
@@ -68,18 +70,18 @@ export const Mutation = {
           cache,
           data.phoneConfirmCode,
           user.id,
-          i18n
+          i18n,
         );
         if (matchedPhone) {
           const { email, phone } = classifyEmailPhone(matchedPhone);
           if ((email || phone) !== data.businessPhone) {
             logger.debug(
-              `phone-confirmation-code matched: ${matchedPhone} but wrong phone`
+              `phone-confirmation-code matched: ${matchedPhone} but wrong phone`,
             );
             logger.debug(
               `confirm-code ${data.phoneConfirmCode} enteredPhone ${
                 data.businessPhone
-              } codedPhone ${phone}`
+              } codedPhone ${phone}`,
             );
             const error = i18n._(t`Unable to confirm user`);
             throw new Error(error);
@@ -95,40 +97,40 @@ export const Mutation = {
         businessPhone: data.businessPhone,
         businessEmail: data.businessEmail,
         businessAddress: {
-          create: data.businessAddress
-        }
+          create: data.businessAddress,
+        },
       };
 
       const retailer = await prisma.mutation.createRetailer({
-        data: retailerData
+        data: retailerData,
       });
 
       // add role to user
       await prisma.mutation.updateUser({
         where: {
-          id: user.id
+          id: user.id,
         },
         data: {
           assignment: {
             update: {
               retailers: {
                 connect: {
-                  id: retailer.id
-                }
+                  id: retailer.id,
+                },
               },
               roles: {
                 connect: [
                   {
-                    name: "RETAILER_OWNER"
+                    name: 'RETAILER_OWNER',
                   },
                   {
-                    name: "PRODUCT_OWNER"
-                  }
-                ]
-              }
-            }
-          }
-        }
+                    name: 'PRODUCT_OWNER',
+                  },
+                ],
+              },
+            },
+          },
+        },
       });
 
       // open supportcase for approval
@@ -137,34 +139,34 @@ export const Mutation = {
           subject: `Create/Update: ${retailer.businessName}`,
           status: {
             connect: {
-              name: "OPEN"
-            }
+              name: 'OPEN',
+            },
           },
           severity: {
             connect: {
-              name: "MEDIUM"
-            }
+              name: 'MEDIUM',
+            },
           },
           catergory: {
             connect: {
-              name: "CREATE_RETAILER_APPROVAL"
-            }
+              name: 'CREATE_RETAILER_APPROVAL',
+            },
           },
           openedByUser: {
             connect: {
-              id: user.id
-            }
+              id: user.id,
+            },
           },
-          targetIds: `${retailer.id}`
-        }
+          targetIds: `${retailer.id}`,
+        },
       });
       pubsub.publish(pubsubConfig.RETAILER_CREATED, {
-        notificationFromRetailer: spCase
+        notificationFromRetailer: spCase,
       });
 
       return {
         userId: user.id,
-        retailerId: retailer.id
+        retailerId: retailer.id,
       };
     } catch (err) {
       logger.error(`🛑❌  REGISTER_RETAILER: ${err.message}`);
@@ -176,23 +178,25 @@ export const Mutation = {
   updateRetailer: async (
     parent,
     { retailerId, data },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     try {
       const user = await gatekeeper.checkPermissions(
         request,
-        "UPDATE_RETAILER",
-        retailerId
+        'UPDATE_RETAILER',
+        retailerId,
       );
 
       const retailer = await prisma.query.retailer(
         {
           where: {
-            id: retailerId
-          }
+            id: retailerId,
+          },
         },
-        "{ id businessEmail businessPhone owner { user { id email phone }} }"
+        '{ id businessEmail businessPhone owner { user { id email phone }} }',
       );
       if (!retailer) {
         const error = i18n._(t`Retailer not found`);
@@ -208,18 +212,18 @@ export const Mutation = {
             cache,
             data.emailConfirmCode,
             user.id,
-            i18n
+            i18n,
           );
           if (matchedEmail) {
             const { email, phone } = classifyEmailPhone(matchedEmail);
             if ((email || phone) !== data.businessEmail) {
               logger.debug(
-                `email confirmation matched: ${matchedEmail} but wrong email`
+                `email confirmation matched: ${matchedEmail} but wrong email`,
               );
               logger.debug(
                 `code ${data.emailConfirmCode} enteredEmail ${
                   data.businessEmail
-                } codedEmail ${email}`
+                } codedEmail ${email}`,
               );
               const error = i18n._(t`Unable to confirm user`);
               throw new Error(error);
@@ -237,18 +241,18 @@ export const Mutation = {
             cache,
             data.phoneConfirmCode,
             user.id,
-            i18n
+            i18n,
           );
           if (matchedPhone) {
             const { email, phone } = classifyEmailPhone(matchedPhone);
             if ((email || phone) !== data.businessPhone) {
               logger.debug(
-                `email confirmation matched: ${matchedPhone} but wrong email`
+                `email confirmation matched: ${matchedPhone} but wrong email`,
               );
               logger.debug(
                 `code ${data.emailConfirmCode} enteredEmail ${
                   data.businessPhone
-                } codedEmail ${email}`
+                } codedEmail ${email}`,
               );
               const error = i18n._(t`Unable to confirm user`);
               throw new Error(error);
@@ -266,57 +270,57 @@ export const Mutation = {
         businessPhone: data.businessPhone,
         businessAddress: data.businessAddress
           ? {
-              create: data.businessAddress
-            }
+            create: data.businessAddress,
+          }
           : undefined,
         businessLink: data.businessLink,
 
         businessCover: data.businessCoverId
           ? {
-              connect: {
-                id: data.businessCoverId
-              }
-            }
+            connect: {
+              id: data.businessCoverId,
+            },
+          }
           : undefined,
         businessAvatar: data.businessAvatarId
           ? {
-              connect: {
-                id: data.businessAvatarId
-              }
-            }
+            connect: {
+              id: data.businessAvatarId,
+            },
+          }
           : undefined,
         socialNumber: data.socialNumber,
         socialNumberImages: data.socialNumberImageIds
           ? {
-              set: data.socialNumberImageIds.map(id => ({
-                id: id
-              }))
-            }
+            set: data.socialNumberImageIds.map(id => ({
+              id,
+            })),
+          }
           : undefined,
         businessLicense: data.businessLicense,
         businessLicenseImages: data.businessLicenseImageIds
           ? {
-              set: data.businessLicenseImageIds.map(id => ({
-                id: id
-              }))
-            }
+            set: data.businessLicenseImageIds.map(id => ({
+              id,
+            })),
+          }
           : undefined,
         bankAccNumber: data.bankAccNumber || undefined,
         bankAccName: data.bankAccName || undefined,
         bankName: data.bankName || undefined,
         bankBranch: data.bankBranch || undefined,
-        swiftCode: data.swiftCode || undefined
+        swiftCode: data.swiftCode || undefined,
       };
 
-      const fragment = "{ fragment retailerIdForRetailer on Retailer { id } }";
+      const fragment = '{ fragment retailerIdForRetailer on Retailer { id } }';
       const updatedRetailer = await prisma.mutation.updateRetailer(
         {
           where: {
-            id: retailerId
+            id: retailerId,
           },
-          data: updateData
+          data: updateData,
         },
-        addFragmentToInfo(info, fragment)
+        addFragmentToInfo(info, fragment),
       );
 
       // open supportcase for approval
@@ -328,40 +332,40 @@ export const Mutation = {
               category: {
                 OR: [
                   {
-                    name: "CREATE_RETAILER_APPROVAL"
+                    name: 'CREATE_RETAILER_APPROVAL',
                   },
                   {
-                    name: "UPDATE_RETAILER_APPROVAL"
-                  }
-                ]
-              }
+                    name: 'UPDATE_RETAILER_APPROVAL',
+                  },
+                ],
+              },
             },
             {
               status: {
-                name_contains: "OPEN"
-              }
-            }
-          ]
-        }
+                name_contains: 'OPEN',
+              },
+            },
+          ],
+        },
       });
 
       if (existedApproval) {
         await prisma.mutation.updateSupportCase({
           where: {
-            id: existedApproval.id
+            id: existedApproval.id,
           },
           data: {
             catergory: {
               connect: {
-                name: "UPDATE_RETAILER_APPROVAL"
-              }
+                name: 'UPDATE_RETAILER_APPROVAL',
+              },
             },
             updatedByUser: {
               connect: {
-                name: user.id
-              }
-            }
-          }
+                name: user.id,
+              },
+            },
+          },
         });
       } else {
         await prisma.mutation.createSupportCase({
@@ -369,26 +373,26 @@ export const Mutation = {
             subject: `Create/Update: ${updatedRetailer.businessName}`,
             status: {
               connect: {
-                name: "OPEN"
-              }
+                name: 'OPEN',
+              },
             },
             severity: {
               connect: {
-                name: "MEDIUM"
-              }
+                name: 'MEDIUM',
+              },
             },
             catergory: {
               connect: {
-                name: "UPDATE_RETAILER_APPROVAL"
-              }
+                name: 'UPDATE_RETAILER_APPROVAL',
+              },
             },
             openedByUser: {
               connect: {
-                id: user.id
-              }
+                id: user.id,
+              },
             },
-            targetIds: updatedRetailer.id
-          }
+            targetIds: updatedRetailer.id,
+          },
         });
       }
 
@@ -405,13 +409,15 @@ export const Mutation = {
   resendRetailerConfirmationCode: async (
     parent,
     { emailOrPhone },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     const user = await gatekeeper.checkPermissions(
       request,
-      "REGISTER_RETAILER",
-      i18n
+      'REGISTER_RETAILER',
+      i18n,
     );
 
     if (!user) {
@@ -450,5 +456,5 @@ export const Mutation = {
     }
 
     return false;
-  }
+  },
 };

@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
 const APPROVE_RETAILER_INFO = gql`
   mutation approveRetailer($data: ApproveRetailerInput!) {
@@ -120,5 +120,5 @@ export {
   DISAPPROVE_RETAILER_INFO,
   RETAILER_APPROVAL_PROCESS,
   LAST_APPROVAL_PROCESS,
-  LIST_APPROVAL_CASES
+  LIST_APPROVAL_CASES,
 };

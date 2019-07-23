@@ -1,7 +1,7 @@
 // @flow
 
-import { getUserIDFromRequest } from "../../utils/authentication";
-import logger from "../../utils/logger";
+import { getUserIDFromRequest } from '../../utils/authentication';
+import logger from '../../utils/logger';
 
 // TODO: optimize queries for pagination and searching
 
@@ -11,7 +11,7 @@ export const Query = {
 
     if (query) {
       opArgs.where = {
-        OR: [{ id: query }, { businessName: query }, { businessPhone: query }]
+        OR: [{ id: query }, { businessName: query }, { businessPhone: query }],
       };
     }
 
@@ -21,8 +21,10 @@ export const Query = {
   myRetailers: async (
     parent,
     { query },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     const userId = await getUserIDFromRequest(request, cache, i18n);
 
@@ -32,20 +34,20 @@ export const Query = {
           {
             owner_some: {
               user: {
-                id: userId
-              }
-            }
-          }
-        ]
-      }
+                id: userId,
+              },
+            },
+          },
+        ],
+      },
     };
 
     if (query) {
       opArgs.where.AND.push({
-        OR: [{ id: query }, { businessName: query }, { businessPhone: query }]
+        OR: [{ id: query }, { businessName: query }, { businessPhone: query }],
       });
     }
 
     return prisma.query.retailers(opArgs, info);
-  }
+  },
 };

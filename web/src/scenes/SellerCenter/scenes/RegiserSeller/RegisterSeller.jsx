@@ -1,6 +1,6 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   Grid,
   Typography,
@@ -13,27 +13,38 @@ import {
   MenuItem,
   InputLabel,
   Icon,
-  Zoom,
-} from '@material-ui/core';
-import { Form, Field, FormSpy } from 'react-final-form';
-import { Redirect } from 'react-router';
-import { graphql, compose } from 'react-apollo';
-import SwipeableViews from 'react-swipeable-views';
-import { toast } from 'react-toastify';
-import createDecorator from 'final-form-focus';
-import { required, email, phone, formatInternationalPhone } from '../../../../utils/processData/validation/validation';
-import { countries } from '../../../../utils/processData/rawData/callingcodes';
-import RFTextField from '../../../../components/TextField/RFTextField';
-import FormButton from '../../../../components/Button/FormButton/FormButton';
-import TabContainer from '../../../../components/TabContainer/TabContainer';
-import registerSellerStyles from './style/registerSellerStyles';
-import SelectList from '../../../../components/Select/SelectList';
-import SwipeButton from '../../../../components/Button/SwipeButton/SwipeButton';
-import { REGISTER_RETAILER } from '../../../../utils/graphql/retailer';
+  Zoom
+} from "@material-ui/core";
+import { Form, Field, FormSpy } from "react-final-form";
+import { Redirect } from "react-router";
+import { graphql, compose } from "react-apollo";
+import SwipeableViews from "react-swipeable-views";
+import { toast } from "react-toastify";
+import createDecorator from "final-form-focus";
+import {
+  required,
+  email,
+  phone,
+  formatInternationalPhone
+} from "../../../../utils/processData/validation/validation";
+import { countries } from "../../../../utils/processData/rawData/callingcodes";
+import RFTextField from "../../../../components/TextField/RFTextField";
+import FormButton from "../../../../components/Button/FormButton/FormButton";
+import TabContainer from "../../../../components/TabContainer/TabContainer";
+import registerSellerStyles from "./style/registerSellerStyles";
+import SelectList from "../../../../components/Select/SelectList";
+import SwipeButton from "../../../../components/Button/SwipeButton/SwipeButton";
+import { REGISTER_RETAILER } from "../../../../utils/graphql/retailer";
 
 const focusOnError = createDecorator();
 
-const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => {
+const RegisterSeller = ({
+  classes,
+  theme,
+  userLoggedIn,
+  history,
+  ...props
+}) => {
   // Props from graphql
   const { registerRetailer } = props;
   const [activeTabId, setActiveTabId] = useState(0);
@@ -68,26 +79,31 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
 
   const onSubmit = async values => {
     try {
-      const phoneNumber = formatInternationalPhone(values.businessPhone, values.countryCode);
+      const phoneNumber = formatInternationalPhone(
+        values.businessPhone,
+        values.countryCode
+      );
       const data = await registerRetailer({
         variables: {
           data: {
             businessName: values.businessName,
             businessEmail: values.businessEmail,
-            emailConfirmCode: values.emailCode || '',
+            emailConfirmCode: values.emailCode || "",
             businessPhone: phoneNumber,
-            phoneConfirmCode: values.phoneCode || '',
+            phoneConfirmCode: values.phoneCode || "",
             businessAddress: {
-              city: values.businessAddress,
-            },
-          },
-        },
+              city: values.businessAddress
+            }
+          }
+        }
       });
-      toast.success('Đăng ký thành công !');
+      toast.success("Đăng ký thành công !");
+      history.push("/sellers/seller-declaration");
       window.location.reload();
-      history.push('/sellers/seller-declaration');
     } catch (error) {
-      toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra!');
+      toast.error(
+        error.message.replace("GraphQL error:", "") || "Có lỗi xảy ra!"
+      );
     }
   };
   if (!userLoggedIn()) {
@@ -96,12 +112,26 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
   return (
     <Grid container className={classes.container}>
       <div className={classes.logoContainer}>
-        <img src="/assets/foxiny_logo.png" alt="logo" className={classes.logotypeImage} />
-        <Typography className={classes.logotypeText}>Foxiny Seller Center</Typography>
+        <img
+          src="/assets/foxiny_logo.png"
+          alt="logo"
+          className={classes.logotypeImage}
+        />
+        <Typography className={classes.logotypeText}>
+          Foxiny Seller Center
+        </Typography>
       </div>
       <div className={classes.formContainer}>
-        <div className={activeTabId === 0 ? classes.form : classes.formSellerInfo}>
-          <Tabs value={activeTabId} onChange={handleTabChange} indicatorColor="primary" textColor="primary" centered>
+        <div
+          className={activeTabId === 0 ? classes.form : classes.formSellerInfo}
+        >
+          <Tabs
+            value={activeTabId}
+            onChange={handleTabChange}
+            indicatorColor="primary"
+            textColor="primary"
+            centered
+          >
             <Tab label="Chọn loại hình" classes={{ root: classes.tab }} />
             <Tab label="Thông tin nhà bán" classes={{ root: classes.tab }} />
           </Tabs>
@@ -113,8 +143,15 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
             decorators={[focusOnError]}
             validate={values => {
               const errors = required(
-                ['businessType', 'businessName', 'businessEmail', 'businessPhone', 'businessAddress', 'countryCode'],
-                values,
+                [
+                  "businessType",
+                  "businessName",
+                  "businessEmail",
+                  "businessPhone",
+                  "businessAddress",
+                  "countryCode"
+                ],
+                values
               );
               if (!errors.businessEmail) {
                 const emailError = email(values.businessEmail);
@@ -123,7 +160,10 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
                 }
               }
               if (!errors.businessPhone) {
-                const phoneError = phone(values.countryCode, values.businessPhone);
+                const phoneError = phone(
+                  values.countryCode,
+                  values.businessPhone
+                );
                 if (phoneError) {
                   errors.businessPhone = phoneError;
                 }
@@ -134,7 +174,7 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
             {({ handleSubmit, submitting, values, pristine, invalid }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <SwipeableViews
-                  axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                  axis={theme.direction === "rtl" ? "x-reverse" : "x"}
                   index={activeTabId}
                   onChangeIndex={handleChangeIndex}
                 >
@@ -145,12 +185,24 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
                         alt="business-type"
                         className={classes.businessTypeImg}
                       />
-                      <Typography className={classes.greeting} gutterBottom variant="h3">
+                      <Typography
+                        className={classes.greeting}
+                        gutterBottom
+                        variant="h3"
+                      >
                         Chọn loại hình kinh doanh
                       </Typography>
                       <FormControl fullWidth margin="normal" required>
-                        <InputLabel htmlFor="businessType">Loại hình kinh doanh</InputLabel>
-                        <Field component={SelectList} disabled={submitting} name="businessType" required size="large">
+                        <InputLabel htmlFor="businessType">
+                          Loại hình kinh doanh
+                        </InputLabel>
+                        <Field
+                          component={SelectList}
+                          disabled={submitting}
+                          name="businessType"
+                          required
+                          size="large"
+                        >
                           <MenuItem key="personal" value="personal">
                             Cá nhân
                           </MenuItem>
@@ -166,19 +218,25 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
                         <Zoom in={values.businessType !== undefined}>
                           <div className={classes.messagesContainer}>
                             <Typography variant="subtitle2">
-                              {values.businessType === 'personal'
-                                ? 'Cá nhân từ 18 tuổi trở lên, có CMND còn thời hạn.'
-                                : 'Cần có giấy phép đăng ký kinh doanh còn thời hạn.'}
+                              {values.businessType === "personal"
+                                ? "Cá nhân từ 18 tuổi trở lên, có CMND còn thời hạn."
+                                : "Cần có giấy phép đăng ký kinh doanh còn thời hạn."}
                             </Typography>
                             <Typography variant="subtitle2">
-                              <span role="img">📝</span> <strong>Lưu ý:</strong> Bạn cần phải cung cấp hình ảnh cần
-                              thiết cho Foxiny sau khi hoàn tất các bước đăng ký (CMND hai mặt/Giấy phép kinh doanh)
+                              <span role="img">📝</span> <strong>Lưu ý:</strong>{" "}
+                              Bạn cần phải cung cấp hình ảnh cần thiết cho
+                              Foxiny sau khi hoàn tất các bước đăng ký (CMND hai
+                              mặt/Giấy phép kinh doanh)
                             </Typography>
                           </div>
                         </Zoom>
                       )}
                       <div className={classes.formButtons}>
-                        <Button color="primary" size="large" className={classes.forgetButton}>
+                        <Button
+                          color="primary"
+                          size="large"
+                          className={classes.forgetButton}
+                        >
                           <Icon>help_outline</Icon> Hỗ trợ
                         </Button>
                         <Button
@@ -199,10 +257,18 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
                   {activeTabId === 1 ? (
                     <TabContainer dir={theme.direction}>
                       <div className={classes.tabContent}>
-                        <Typography variant="h1" color="primary" className={classes.greeting}>
+                        <Typography
+                          variant="h1"
+                          color="primary"
+                          className={classes.greeting}
+                        >
                           Xin chào !
                         </Typography>
-                        <Typography variant="h3" color="primary" className={classes.subGreeting}>
+                        <Typography
+                          variant="h3"
+                          color="primary"
+                          className={classes.subGreeting}
+                        >
                           Đăng ký thông tin gian hàng
                         </Typography>
                         <Field
@@ -229,8 +295,15 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
                           margin="normal"
                         />
                         <div className={classes.fieldRow}>
-                          <FormControl className={classes.rightSpacing} fullWidth margin="normal" required>
-                            <InputLabel htmlFor="countryCode">Mã quốc gia</InputLabel>
+                          <FormControl
+                            className={classes.rightSpacing}
+                            fullWidth
+                            margin="normal"
+                            required
+                          >
+                            <InputLabel htmlFor="countryCode">
+                              Mã quốc gia
+                            </InputLabel>
                             <Field
                               component={SelectList}
                               disabled={submitting}
@@ -280,7 +353,11 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
                             setFieldVisible={setFieldVisible}
                             email={isEmailConfirmed && values.businessEmail}
                             phone={
-                              isPhoneConfirmed && formatInternationalPhone(values.businessPhone, values.countryCode)
+                              isPhoneConfirmed &&
+                              formatInternationalPhone(
+                                values.businessPhone,
+                                values.countryCode
+                              )
                             }
                           />
                         )}
@@ -324,7 +401,10 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
                             Quay lại
                           </Button>
                           {submitting ? (
-                            <CircularProgress size={26} className={classes.loader} />
+                            <CircularProgress
+                              size={26}
+                              className={classes.loader}
+                            />
                           ) : (
                             <FormButton
                               disabled={pristine || invalid}
@@ -346,8 +426,12 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
                   subscription={{ values: true, touched: true }}
                   onChange={state => {
                     const { values, touched } = state;
-                    if (touched['businessEmail'] || touched['businessPhone']) {
-                      checkEmailPhone(values.businessEmail, values.businessPhone, values.countryCode);
+                    if (touched["businessEmail"] || touched["businessPhone"]) {
+                      checkEmailPhone(
+                        values.businessEmail,
+                        values.businessPhone,
+                        values.countryCode
+                      );
                     }
                   }}
                 />
@@ -361,6 +445,6 @@ const RegisterSeller = ({ classes, theme, userLoggedIn, history, ...props }) => 
 };
 
 export default compose(
-  graphql(REGISTER_RETAILER, { name: 'registerRetailer' }),
-  withStyles(registerSellerStyles, { withTheme: true }),
+  graphql(REGISTER_RETAILER, { name: "registerRetailer" }),
+  withStyles(registerSellerStyles, { withTheme: true })
 )(RegisterSeller);

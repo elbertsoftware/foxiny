@@ -1,10 +1,10 @@
 // @flow
 
-import { t } from "@lingui/macro";
-import { addFragmentToInfo } from "graphql-binding";
-import logger from "../../utils/logger";
-import { sendCorrespondence } from "../../utils/email";
-import { gatekeeper } from "../../utils/permissionChecker";
+import { t } from '@lingui/macro';
+import { addFragmentToInfo } from 'graphql-binding';
+import logger from '../../utils/logger';
+import { sendCorrespondence } from '../../utils/email';
+import { gatekeeper } from '../../utils/permissionChecker';
 
 // TODO: log transactions
 
@@ -12,12 +12,14 @@ export const Mutation = {
   /**
    * delete user
    */
-  deleteUser: async (parent, args, { prisma, request, cache, i18n }, info) => {
+  deleteUser: async (parent, args, {
+ prisma, request, cache, i18n 
+}, info) => {
     // NOTE: check permissions
     const user = await gatekeeper.checkPermissions(
       request,
-      "DELETE_SELLER",
-      i18n
+      'DELETE_SELLER',
+      i18n,
     );
 
     deleteAllTokensInCache(cache, user.id);
@@ -27,24 +29,26 @@ export const Mutation = {
     return prisma.mutation.deleteUser(
       {
         where: {
-          id: user.id
-        }
+          id: user.id,
+        },
       },
-      info
+      info,
     );
   },
 
   createRetailerApprovalProcess: async (
     parent,
     { data },
-    { prisma, request, cache, i18n, gatekeeper },
-    info
+    {
+ prisma, request, cache, i18n, gatekeeper 
+},
+    info,
   ) => {
     // TODO: check permissions
     const user = await gatekeeper.checkPermissions(
       request,
-      "CREATE_RETAILER_APPROVAL_PROCESS",
-      i18n
+      'CREATE_RETAILER_APPROVAL_PROCESS',
+      i18n,
     );
 
     // TODO: validate input
@@ -53,14 +57,14 @@ export const Mutation = {
     const approval = await prisma.query.supportCase(
       {
         where: {
-          id: newData.caseId
-        }
+          id: newData.caseId,
+        },
       },
-      "{ id status { name } }"
+      '{ id status { name } }',
     );
 
-    if (!approval.status.name === "CLOSED") {
-      const error = i18n._(`Approval not found or closed`);
+    if (!approval.status.name === 'CLOSED') {
+      const error = i18n._('Approval not found or closed');
       throw new Error(error);
     }
 
@@ -71,31 +75,33 @@ export const Mutation = {
           data: newData.data,
           supportCase: {
             connect: {
-              id: approval.id
-            }
+              id: approval.id,
+            },
           },
           respondedBy: {
             connect: {
-              id: user.id
-            }
-          }
-        }
+              id: user.id,
+            },
+          },
+        },
       },
-      info
+      info,
     );
   },
 
   approveRetailer: async (
     parent,
     { data },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     // TODO: check permissions
     const user = await gatekeeper.checkPermissions(
       request,
-      "DAPPROVE_RETAILER_REGISTRATION",
-      i18n
+      'DAPPROVE_RETAILER_REGISTRATION',
+      i18n,
     );
 
     // TODO: validate input
@@ -104,27 +110,27 @@ export const Mutation = {
     const approval = await prisma.query.supportCase(
       {
         where: {
-          id: newData.caseId
-        }
+          id: newData.caseId,
+        },
       },
-      "{ id status { name } targetIds }"
+      '{ id status { name } targetIds }',
     );
     console.log(approval, undefined, 2);
-    if (approval.status.name === "CLOSED") {
-      const error = i18n._(`Approval not found or closed`);
+    if (approval.status.name === 'CLOSED') {
+      const error = i18n._('Approval not found or closed');
       throw new Error(error);
     }
 
     // save last record, close support case
     await prisma.mutation.updateSupportCase({
       where: {
-        id: approval.id
+        id: approval.id,
       },
       data: {
         status: {
           connect: {
-            name: "CLOSED"
-          }
+            name: 'CLOSED',
+          },
         },
         correspondences: {
           create: {
@@ -132,21 +138,21 @@ export const Mutation = {
             note: newData.note,
             respondedBy: {
               connect: {
-                id: user.id
-              }
-            }
-          }
-        }
-      }
+                id: user.id,
+              },
+            },
+          },
+        },
+      },
     });
 
     const updated = await prisma.mutation.updateManyRetailers({
       where: {
-        id_in: approval.targetIds.split(",")
+        id_in: approval.targetIds.split(','),
       },
       data: {
-        enabled: true
-      }
+        enabled: true,
+      },
     });
 
     return updated.count;
@@ -155,14 +161,16 @@ export const Mutation = {
   disapproveRetailer: async (
     parent,
     { data },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     // TODO: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "DISAPPROVE_RETAILER_REGISTRATION",
-      i18n
+      'DISAPPROVE_RETAILER_REGISTRATION',
+      i18n,
     );
 
     // TODO: validate input
@@ -171,21 +179,21 @@ export const Mutation = {
     const approval = await prisma.query.supportCase(
       {
         where: {
-          id: newData.caseId
-        }
+          id: newData.caseId,
+        },
       },
-      "{ id status { name } targetIds }"
+      '{ id status { name } targetIds }',
     );
 
-    if (!approval.status.name === "CLOSED") {
-      const error = i18n._(`Approval not found or closed`);
+    if (!approval.status.name === 'CLOSED') {
+      const error = i18n._('Approval not found or closed');
       throw new Error(error);
     }
 
     // save last record, close support case
     const supportCase = await prisma.mutation.updateSupportCase({
       where: {
-        id: approval.id
+        id: approval.id,
       },
       data: {
         correspondences: {
@@ -194,21 +202,21 @@ export const Mutation = {
             note: newData.note,
             respondedBy: {
               connect: {
-                id: user.id
-              }
-            }
-          }
-        }
-      }
+                id: user.id,
+              },
+            },
+          },
+        },
+      },
     });
 
     const updated = await prisma.mutation.updateManyRetailers({
       where: {
-        id: approval.targetIds.split(",")
+        id: approval.targetIds.split(','),
       },
       data: {
-        enabled: false
-      }
+        enabled: false,
+      },
     });
     return updated.count;
   },
@@ -217,22 +225,24 @@ export const Mutation = {
   deleteRetailer: async (
     parent,
     { sellerId },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     // TODO: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "DELETE_SELLER",
-      i18n
+      'DELETE_SELLER',
+      i18n,
     );
 
     // TODO: validate input
 
     const retailer = await prisma.query.retailer({
       where: {
-        id: sellerId
-      }
+        id: sellerId,
+      },
     });
 
     // TODO: if retailer sells any goods, deletion is denied
@@ -243,22 +253,24 @@ export const Mutation = {
 
     return prisma.mutation.deleteRetailer({
       where: {
-        id: sellerId
-      }
+        id: sellerId,
+      },
     });
   },
 
   createProductApprovalProcess: async (
     parent,
     { data },
-    { prisma, request, cache, i18n, gatekeeper },
-    info
+    {
+ prisma, request, cache, i18n, gatekeeper 
+},
+    info,
   ) => {
     // TODO: check permissions
     const user = await gatekeeper.checkPermissions(
       request,
-      "CREATE_PRODUCT_APPROVAL_PROCESS",
-      i18n
+      'CREATE_PRODUCT_APPROVAL_PROCESS',
+      i18n,
     );
 
     // TODO: validate input
@@ -267,14 +279,14 @@ export const Mutation = {
     const approval = await prisma.query.supportCase(
       {
         where: {
-          id: newData.caseId
-        }
+          id: newData.caseId,
+        },
       },
-      "{ id status { name } }"
+      '{ id status { name } }',
     );
 
-    if (!approval.status.name === "CLOSED") {
-      const error = i18n._(`Approval not found or closed`);
+    if (!approval.status.name === 'CLOSED') {
+      const error = i18n._('Approval not found or closed');
       throw new Error(error);
     }
 
@@ -285,31 +297,33 @@ export const Mutation = {
           data: newData.data,
           supportCase: {
             connect: {
-              id: approval.id
-            }
+              id: approval.id,
+            },
           },
           respondedBy: {
             connect: {
-              id: user.id
-            }
-          }
-        }
+              id: user.id,
+            },
+          },
+        },
       },
-      info
+      info,
     );
   },
 
   approveProducts: async (
     parent,
     { data },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     // TODO: check permissions
     const user = await gatekeeper.checkPermissions(
       request,
-      "DAPPROVE_PRODUCT_REGISTRATION",
-      i18n
+      'DAPPROVE_PRODUCT_REGISTRATION',
+      i18n,
     );
 
     // TODO: validate input
@@ -318,27 +332,27 @@ export const Mutation = {
     const approval = await prisma.query.supportCase(
       {
         where: {
-          id: newData.caseId
-        }
+          id: newData.caseId,
+        },
       },
-      "{ id status { name } targetIds }"
+      '{ id status { name } targetIds }',
     );
 
-    if (!approval.status.name === "CLOSED") {
-      const error = i18n._(`Approval not found or closed`);
+    if (!approval.status.name === 'CLOSED') {
+      const error = i18n._('Approval not found or closed');
       throw new Error(error);
     }
 
     // save last record, close support case
     await prisma.mutation.updateSupportCase({
       where: {
-        id: approval.id
+        id: approval.id,
       },
       data: {
         status: {
           connect: {
-            name: "CLOSED"
-          }
+            name: 'CLOSED',
+          },
         },
         correspondences: {
           create: {
@@ -346,21 +360,21 @@ export const Mutation = {
             note: newData.note,
             respondedBy: {
               connect: {
-                id: user.id
-              }
-            }
-          }
-        }
-      }
+                id: user.id,
+              },
+            },
+          },
+        },
+      },
     });
 
     const updated = await prisma.mutation.updateManyProductRetailers({
       where: {
-        id_in: approval.targetIds.split(",")
+        id_in: approval.targetIds.split(','),
       },
       data: {
-        enabled: true
-      }
+        enabled: true,
+      },
     });
     return updated.count;
   },
@@ -368,14 +382,16 @@ export const Mutation = {
   disapproveProducts: async (
     parent,
     { data },
-    { prisma, request, cache, i18n },
-    info
+    {
+ prisma, request, cache, i18n 
+},
+    info,
   ) => {
     // TODO: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "DAPPROVE_PRODUCT_REGISTRATION",
-      i18n
+      'DAPPROVE_PRODUCT_REGISTRATION',
+      i18n,
     );
 
     // TODO: validate input
@@ -384,21 +400,21 @@ export const Mutation = {
     const approval = await prisma.query.supportCase(
       {
         where: {
-          id: newData.caseId
-        }
+          id: newData.caseId,
+        },
       },
-      "{ id status { name } targetIds }"
+      '{ id status { name } targetIds }',
     );
 
-    if (!approval.status.name === "CLOSED") {
-      const error = i18n._(`Approval not found or closed`);
+    if (!approval.status.name === 'CLOSED') {
+      const error = i18n._('Approval not found or closed');
       throw new Error(error);
     }
 
     // save last record, close support case
     const supportCase = await prisma.mutation.updateSupportCase({
       where: {
-        id: approval.id
+        id: approval.id,
       },
       data: {
         correspondences: {
@@ -407,22 +423,22 @@ export const Mutation = {
             note: newData.note,
             respondedBy: {
               connect: {
-                id: user.id
-              }
-            }
-          }
-        }
-      }
+                id: user.id,
+              },
+            },
+          },
+        },
+      },
     });
 
     const updated = await prisma.mutation.updateManyProductRetailers({
       where: {
-        id: approval.targetIds.split(",")
+        id: approval.targetIds.split(','),
       },
       data: {
-        enabled: false
-      }
+        enabled: false,
+      },
     });
     return updated.count;
-  }
+  },
 };
