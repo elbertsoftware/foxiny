@@ -83,6 +83,7 @@ const resendConfirmation = gql`
     resendConfirmation(data: $data)
   }
 `;
+
 const updateUser = gql`
   mutation($data: UpdateUserInput!) {
     updateUser(data: $data) {

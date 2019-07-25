@@ -309,7 +309,7 @@ export const Mutation = {
 
     const user = await prisma.query.user({
       where: {
-        id: newData.userId || userId,
+        id: newData.userId,
         email: newData.email,
         phone: newData.phone,
       },
@@ -411,10 +411,11 @@ export const Mutation = {
 
     return {
       userId: user.id,
-      hasRetailers:
-        !!(user.assignment &&
-        user.assignment.retailers &&
-        user.assignment.retailers.length > 0),
+      hasRetailers: !!(
+        user.assignment
+        && user.assignment.retailers
+        && user.assignment.retailers.length > 0
+      ),
       // hasManufacturer: user.assignment.manufacturers && user.assignment.manufacturers.length > 0 ? true : false,
       token: generateToken(user.id, request, cache),
     };
@@ -677,17 +678,16 @@ export const Mutation = {
       throw new Error(error);
     }
 
-    const securityAnswer = user.securityInfo;
     const { securityInfo, password } = newData;
 
     const canResetPwd =      securityInfo[0].answer
-        === securityAnswers.find(x => x.questionId === securityInfo[0].questionId)
+        === user.securityInfo.find(x => x.questionId === securityInfo[0].questionId)
           .answer
       && securityInfo[1].answer
-        === securityAnswers.find(x => x.questionId === securityInfo[1].questionId)
+        === user.securityInfo.find(x => x.questionId === securityInfo[1].questionId)
           .answer
       && securityInfo[2].answer
-        === securityAnswers.find(x => x.questionId === securityInfo[2].questionId)
+        === user.securityInfo.find(x => x.questionId === securityInfo[2].questionId)
           .answer
       && securityInfo.length === 3;
 
@@ -704,7 +704,7 @@ export const Mutation = {
       deleteAllTokensInCache(cache, user.id);
 
       // update user's new pwd
-      await prisma.mutation.updateUser(
+      const updatedUser = await prisma.mutation.updateUser(
         {
           where: {
             id: user.id,
@@ -715,7 +715,9 @@ export const Mutation = {
       );
 
       // for transact-log
-      logger.info(`RESET_PWD | 1 | ${user.id} | ${updatedUser.password}`);
+      logger.info(
+        `RESET_PWD | 1 | ${updatedUser.id} | ${updatedUser.password}`,
+      );
 
       return true;
     }

@@ -1,0 +1,453 @@
+{
+  "policies": [
+    {
+      "resolver": "UPDATE_SECURITY_INFO",
+      "requiredPermissions": [
+        {
+          "type": "READ_USER",
+          "priority": 1
+        },
+        {
+          "type": "UPDATE_USER",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "UPDATE_USER_PROFILE",
+      "requiredPermissions": [
+        {
+          "type": "READ_USER",
+          "priority": 1
+        },
+        {
+          "type": "UPDATE_USER",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "RESET_USER_PWD",
+      "requiredPermissions": [
+        {
+          "type": "READ_USER",
+          "priority": 1
+        },
+        {
+          "type": "UPDATE_USER",
+          "priority": 1
+        },
+        {
+          "type": "RESET_USER_PWD",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "UPLOAD_USER_PROFILE_MEDIA",
+      "requiredPermissions": [
+        {
+          "type": "READ_USER",
+          "priority": 1
+        },
+        {
+          "type": "UPDATE_USER",
+          "priority": 1
+        },
+        {
+          "type": "UPLOAD_MEDIA",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "UPLOAD_PRODUCT_MEDIA",
+      "requiredPermissions": [
+        {
+          "type": "READ_PRODUCT",
+          "priority": 1
+        },
+        {
+          "type": "UPDATE_PRODUCT",
+          "priority": 1
+        },
+        {
+          "type": "UPLOAD_MEDIA",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "UPLOAD_SELLER_PROFILE_MEDIA",
+      "requiredPermissions": [
+        {
+          "type": "OWNER",
+          "priority": 1
+        },
+        {
+          "type": "UPLOAD_MEDIA",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "DELETE_RETAILER",
+      "requiredPermissions": [
+        {
+          "type": "READ_RETAILER",
+          "priority": 1
+        },
+        {
+          "type": "DELETE_RETAILER",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "DELETE_MANUFACTURER",
+      "requiredPermissions": [
+        {
+          "type": "READ_MANUFACTURER",
+          "priority": 1
+        },
+        {
+          "type": "DELETE_MANUFACTURER",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "CREATE_RETAILER_APPROVAL_PROCESS",
+      "requiredPermissions": [
+        {
+          "type": "READ_RETAILER",
+          "priority": 1
+        },
+        {
+          "type": "READ_SPCASE",
+          "priority": 1
+        },
+        {
+          "type": "UPDATE_SPCASE",
+          "priority": 1
+        },
+        {
+          "type": "CREATE_CORESPONSEDENCE",
+          "priority": 1
+        },
+        {
+          "type": "DAPPROVE_RETAILER",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "CREATE_MANUFACTURER_APPROVAL_PROCESS",
+      "requiredPermissions": [
+        {
+          "type": "READ_MANUFACTURER",
+          "priority": 1
+        },
+        {
+          "type": "READ_SPCASE",
+          "priority": 1
+        },
+        {
+          "type": "UPDATE_SPCASE",
+          "priority": 1
+        },
+        {
+          "type": "CREATE_CORESPONSEDENCE",
+          "priority": 1
+        },
+        {
+          "type": "DAPPROVE_MANUFACTURER",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "CREATE_PRODUCT_APPROVAL_PROCESS",
+      "requiredPermissions": [
+        {
+          "type": "READ_PRODUCT",
+          "priority": 1
+        },
+        {
+          "type": "READ_SPCASE",
+          "priority": 1
+        },
+        {
+          "type": "UPDATE_SPCASE",
+          "priority": 1
+        },
+        {
+          "type": "CREATE_CORESPONSEDENCE",
+          "priority": 1
+        },
+        {
+          "type": "DAPPROVE_PRODUCT",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "DAPPROVE_RETAILER_REGISTRATION",
+      "requiredPermissions": [
+        {
+          "type": "READ_RETAILER",
+          "priority": 1
+        },
+        {
+          "type": "READ_SPCASE",
+          "priority": 1
+        },
+        {
+          "type": "UPDATE_SPCASE",
+          "priority": 1
+        },
+        {
+          "type": "CREATE_CORESPONSEDENCE",
+          "priority": 1
+        },
+        {
+          "type": "DAPPROVE_RETAILER",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "DIAPPROVE_MANUFACTURER_REGISTRATION",
+      "requiredPermissions": [
+        {
+          "type": "READ_MANUFACTURER",
+          "priority": 1
+        },
+        {
+          "type": "READ_SPCASE",
+          "priority": 1
+        },
+        {
+          "type": "UPDATE_SPCASE",
+          "priority": 1
+        },
+        {
+          "type": "CREATE_CORESPONSEDENCE",
+          "priority": 1
+        },
+        {
+          "type": "DAPPROVE_MANUFACTURER",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "DAPPROVE_PRODUCT_REGISTRATION",
+      "requiredPermissions": [
+        {
+          "type": "READ_PRODUCT",
+          "priority": 1
+        },
+        {
+          "type": "READ_SPCASE",
+          "priority": 1
+        },
+        {
+          "type": "UPDATE_SPCASE",
+          "priority": 1
+        },
+        {
+          "type": "CREATE_CORESPONSEDENCE",
+          "priority": 1
+        },
+        {
+          "type": "DAPPROVE_PRODUCT",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "REGISTER_RETAILER",
+      "requiredPermissions": [
+        {
+          "type": "CREATE_RETAILER",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "UPDATE_RETAILER",
+      "requiredPermissions": [
+        {
+          "type": "OWNER",
+          "priority": 1
+        },
+        {
+          "type": "RETAILER_OWNER",
+          "priority": 1
+        },
+        {
+          "type": "READ_RETAILER",
+          "priority": 1
+        },
+        {
+          "type": "UPDATE_RETAILER",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "CREATE_RETAIL_PRODUCT",
+      "requiredPermissions": [
+        {
+          "type": "OWNER",
+          "priority": 1
+        },
+        {
+          "type": "RETAILER_OWNER",
+          "priority": 1
+        },
+        {
+          "type": "PRODUCT_OWNER",
+          "priority": 1
+        },
+        {
+          "type": "READ_PRODUCT",
+          "priority": 1
+        },
+        {
+          "type": "CREATE_PRODUCT",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "UPDATE_RETAIL_PRODUCT",
+      "requiredPermissions": [
+        {
+          "type": "OWNER",
+          "priority": 1
+        },
+        {
+          "type": "RETAILER_OWNER",
+          "priority": 1
+        },
+        {
+          "type": "PRODUCT_OWNER",
+          "priority": 1
+        },
+        {
+          "type": "READ_PRODUCT",
+          "priority": 1
+        },
+        {
+          "type": "UPDATE_PRODUCT",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "resolver": "ONOFF_SELLABLE_RETAIL_PRODUCT",
+      "requiredPermissions": [
+        {
+          "type": "OWNER",
+          "priority": 1
+        },
+        {
+          "type": "RETAILER_OWNER",
+          "priority": 1
+        },
+        {
+          "type": "PRODUCT_OWNER",
+          "priority": 1
+        },
+        {
+          "type": "READ_PRODUCT",
+          "priority": 1
+        },
+        {
+          "type": "UPDATE_PRODUCT",
+          "priority": 1
+        },
+        {
+          "type": "ONOFF_PRODUCT",
+          "priority": 1
+        }
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "name": "registerRetailer",
+      "data": [
+        {
+          "expected": false,
+          "description": "should not register retailer since user does not meet policies",
+          "seed": "seedUser0"
+        },
+        {
+          "expected": true,
+          "description": "should register retailer",
+          "seed": "seedUser1"
+        },
+        {
+          "expected": true,
+          "description": "should register one more retailer",
+          "seed": "seedUser2"
+        }
+      ]
+    },
+    {
+      "name": "updateRetailer",
+      "data": [
+        {
+          "expected": false,
+          "description": "should not update retailer since user does not meet policies",
+          "sellerId": "seedUser0",
+          "seed": "seedUser0"
+        },
+        {
+          "expected": true,
+          "description": "should not update retailer since wrong sellerID",
+          "sellerId": "seedUser0",
+          "seed": "seedUser2"
+        },
+        {
+          "expected": true,
+          "description": "should update retailer",
+          "sellerId": "seedUser2",
+          "seed": "seedUser2"
+        }
+      ]
+    },
+    {
+      "name": "createProduct",
+      "data": [
+        {
+          "expected": false,
+          "description": "should not create product since user does not meet policies",
+          "sellerId": "seedUser0",
+          "seed": "seedUser0"
+        },
+        {
+          "expected": false,
+          "description": "should not create product since user does not meet policies",
+          "sellerId": "seedUser1",
+          "seed": "seedUser1"
+        },
+        {
+          "expected": false,
+          "description": "should not create product since wrong sellerId",
+          "sellerId": "seedUser2",
+          "seed": "seedUser1"
+        },
+        {
+          "expected": true,
+          "description": "should create product",
+          "sellerId": "seedUser2",
+          "seed": "seedUser2"
+        }
+      ]
+    }
+  ]
+}

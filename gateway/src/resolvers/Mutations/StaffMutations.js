@@ -285,7 +285,7 @@ export const Mutation = {
       '{ id status { name } }',
     );
 
-    if (!approval.status.name === 'CLOSED') {
+    if (!approval || !approval.status.name === 'CLOSED') {
       const error = i18n._('Approval not found or closed');
       throw new Error(error);
     }
