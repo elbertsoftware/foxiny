@@ -1,18 +1,27 @@
 //@flow
-import _ from 'lodash';
+import _ from "lodash";
 
 /**
  * Get all attributes and its values from all variants
  * @param {Object} contains or not contains attributes
  */
 const restructureProductAttributes = products => {
-  const grouped = products.map(x =>
-    x.attributes.reduce((acc, curr) => {
-      acc[curr.attributeName] = acc[curr.attributeName] || [];
-      acc[curr.attributeName].push(curr.value);
-      return acc;
-    }, {}),
+  const grouped = _.compact(
+    products.map(x => {
+      if (!x.attributes || x.attributes.length === 0) {
+        return;
+      }
+      return x.attributes.reduce((acc, curr) => {
+        acc[curr.attributeName] = acc[curr.attributeName] || [];
+        acc[curr.attributeName].push(curr.value);
+        return acc;
+      }, {});
+    }),
   );
+
+  if (grouped.length === 0) {
+    return;
+  }
 
   let regrouped = Object.keys(grouped[0]).map(a => ({
     name: a,
@@ -55,7 +64,9 @@ const restrutureProductTemplate2FriendlyProduct = productTemplate => {
 
     descriptions: {
       // fromManufacture
-      fromRetailers: productTemplate.descriptions.filter(desc => desc.retailer).map(desc => desc.description),
+      fromRetailers: productTemplate.descriptions
+        .filter(desc => desc.retailer)
+        .map(desc => desc.description),
     },
     sku: product.sku,
     listPrice: product.productRetailers[0].listPrice,
@@ -148,7 +159,7 @@ const restructureProduct2FriendlyProduct = products => {
     createdAt: product.createdAt,
     updatedAt: product.updatedAt,
   }));
-  
+
   return friendlyProducts;
 };
 

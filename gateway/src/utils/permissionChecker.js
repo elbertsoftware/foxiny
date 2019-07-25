@@ -331,6 +331,7 @@ class Gatekeeper {
       id: user.id,
       email: user.email,
       phone: user.phone,
+      password: user.password,
       securityInfo: user.securityAnswers.map(pair => ({
         questionId: pair.securityQuestion.id,
         question: pair.securityQuestion.question,

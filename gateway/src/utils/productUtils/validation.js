@@ -89,14 +89,26 @@ const validateUpdateOneProductInput = product => {
 
   newData.productTemplateId = product.productTemplateId;
   newData.productId = product.productId;
-  newData.productName = validateIsEmpty(product.productName).toLowerCase();
-  newData.listPrice = validateIsSmallerThanX(product.listPrice);
-  newData.sellPrice = validateIsSmallerThanX(product.sellPrice);
-  newData.stockQuantity = validateIsSmallerThanX(product.stockQuantity);
-  newData.productMediaIds = product.productMediaIds;
-  newData.attributes = product.attributes.map(attribute =>
-    validateProductAttribute(attribute),
-  );
+  newData.productName = product.productName
+    ? validateIsEmpty(product.productName).toLowerCase()
+    : undefined;
+  newData.listPrice = product.listPrice
+    ? validateIsSmallerThanX(product.listPrice)
+    : undefined;
+  newData.sellPrice = product.sellPrice
+    ? validateIsSmallerThanX(product.sellPrice)
+    : undefined;
+  newData.stockQuantity = product.stockQuantity
+    ? validateIsSmallerThanX(product.stockQuantity)
+    : undefined;
+  newData.productMediaIds =
+    product.productMediaIds && product.productMediaIds.length > 0
+      ? product.productMediaIds
+      : undefined;
+  newData.attributes =
+    product.attributes && product.attributes.length > 0
+      ? product.attributes.map(attribute => validateProductAttribute(attribute))
+      : undefined;
 
   return newData;
 };

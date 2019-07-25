@@ -140,7 +140,7 @@ export const Query = {
     // TODO: validate input
 
     const opArgs = {
-      orderBy: "updatedAt_DESC",
+      orderBy: "createdAt_ASC",
       last: 1,
       where: {
         OR: [

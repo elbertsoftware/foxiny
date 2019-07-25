@@ -161,7 +161,7 @@ export const Mutation = {
     // TODO: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "DISAPPROVE_RETAILER_REGISTRATION",
+      "DAPPROVE_RETAILER_REGISTRATION",
       i18n,
     );
 
@@ -204,7 +204,7 @@ export const Mutation = {
 
     const updated = await prisma.mutation.updateManyRetailers({
       where: {
-        id: approval.targetIds.split(","),
+        id_in: approval.targetIds.split(","),
       },
       data: {
         enabled: false,
@@ -273,7 +273,7 @@ export const Mutation = {
       "{ id status { name } }",
     );
 
-    if (!approval.status.name === "CLOSED") {
+    if (!approval || !approval.status.name === "CLOSED") {
       const error = i18n._(`Approval not found or closed`);
       throw new Error(error);
     }

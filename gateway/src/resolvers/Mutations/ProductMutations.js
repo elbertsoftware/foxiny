@@ -216,39 +216,41 @@ export const Mutation = {
     const newData = validateUpdateProductInput(data);
 
     // NOTE: 1 - create product attributes & it's values
-    const atts = restructureProductAttributes(newData.products);
+    const atts = restructureProductAttributes(newData);
 
-    for (let i = 0; i < atts.length; i++) {
-      for (let j = 0; j < atts[i].data.length; j++) {
-        await prisma.mutation.upsertProductAttributeValue({
+    if (atts && atts.length > 0) {
+      for (let i = 0; i < atts.length; i++) {
+        for (let j = 0; j < atts[i].data.length; j++) {
+          await prisma.mutation.upsertProductAttributeValue({
+            where: {
+              name: atts[i].data[j],
+            },
+            create: {
+              name: atts[i].data[j],
+            },
+            update: {
+              name: atts[i].data[j],
+            },
+          });
+        }
+        await prisma.mutation.upsertProductAttribute({
           where: {
-            name: atts[i].data[j],
+            name: atts[i].name,
           },
           create: {
-            name: atts[i].data[j],
+            name: atts[i].name,
+            values: {
+              connect: atts[i].data.map(value => ({ name: value })),
+            },
           },
           update: {
-            name: atts[i].data[j],
+            name: atts[i].name,
+            values: {
+              connect: atts[i].data.map(value => ({ name: value })),
+            },
           },
         });
       }
-      await prisma.mutation.upsertProductAttribute({
-        where: {
-          name: atts[i].name,
-        },
-        create: {
-          name: atts[i].name,
-          values: {
-            connect: atts[i].data.map(value => ({ name: value })),
-          },
-        },
-        update: {
-          name: atts[i].name,
-          values: {
-            connect: atts[i].data.map(value => ({ name: value })),
-          },
-        },
-      });
     }
 
     const newInfo =
@@ -282,22 +284,24 @@ export const Mutation = {
         const existedProduct = await prisma.query.productRetailers({
           where: {
             id: product.productId,
-            product: {
-              AND: product.attributes.map(pair => ({
-                options_some: {
-                  AND: [
-                    {
-                      attribute: {
-                        name: pair.attributeName,
-                      },
-                      value: {
-                        name: pair.value,
-                      },
+            product: product.attributes
+              ? {
+                  AND: product.attributes.map(pair => ({
+                    options_some: {
+                      AND: [
+                        {
+                          attribute: {
+                            name: pair.attributeName,
+                          },
+                          value: {
+                            name: pair.value,
+                          },
+                        },
+                      ],
                     },
-                  ],
-                },
-              })),
-            },
+                  })),
+                }
+              : undefined,
           },
         });
 

@@ -115,11 +115,11 @@ export const productSchema = gql`
     productTemplateId: String!
     productId: String!
 
-    productName: String!
+    productName: String
 
-    listPrice: Int!
-    sellPrice: Int!
-    stockQuantity: Int!
+    listPrice: Int
+    sellPrice: Int
+    stockQuantity: Int
 
     # sku: String
     productMediaIds: [String!]
