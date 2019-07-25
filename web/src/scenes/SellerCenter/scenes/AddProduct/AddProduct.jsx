@@ -1,6 +1,14 @@
 /* eslint-disable implicit-arrow-linebreak */
 import React, { useState } from 'react';
-import { Paper, Typography, withStyles, Stepper, Step, StepLabel, Button } from '@material-ui/core';
+import {
+  Paper,
+  Typography,
+  withStyles,
+  Stepper,
+  Step,
+  StepLabel,
+  Button,
+} from '@material-ui/core';
 import { Form } from 'react-final-form';
 import { graphql, compose } from 'react-apollo';
 import { toast } from 'react-toastify';
@@ -13,7 +21,11 @@ import AttachmentSection from './components/Attachment/AttachmentSection';
 import AddProductImage from './components/AddProductImages/AddProductImage';
 import ProductDataContext from '../../../../utils/context/ProductDataContext';
 import FormButton from '../../../../components/Button/FormButton/FormButton';
-import { CREATE_NEW_PRODUCT, UPLOAD_IMAGES } from '../../../../utils/graphql/product';
+import {
+  CREATE_NEW_PRODUCT,
+  UPLOAD_IMAGES,
+} from '../../../../utils/graphql/product';
+import { getSellerId } from '../../../../utils/processData/localStorage';
 
 const styles = theme => ({
   paper: {
@@ -40,7 +52,13 @@ const styles = theme => ({
 });
 
 function getSteps() {
-  return ['Danh mục', 'Thông tin cơ bản', 'Lựa chọn sản phẩm đăng bán', 'Hình ảnh', 'Tài liệu đính kèm'];
+  return [
+    'Danh mục',
+    'Thông tin cơ bản',
+    'Lựa chọn sản phẩm đăng bán',
+    'Hình ảnh',
+    'Tài liệu đính kèm',
+  ];
 }
 
 function getStepContent(step) {
@@ -57,15 +75,20 @@ function getStepContent(step) {
       return (
         <Paper square elevation={0}>
           <Typography>
-            Các bước thêm sản phẩm đã hoàn tất, nhấn Tạo mới để tạo sản phẩm, chúng tôi sẽ kiểm duyệt yêu cầu của bạn
-            trong vòng 24h.
+            Các bước thêm sản phẩm đã hoàn tất, nhấn Tạo mới để tạo sản phẩm,
+            chúng tôi sẽ kiểm duyệt yêu cầu của bạn trong vòng 24h.
           </Typography>
         </Paper>
       );
   }
 }
 
-const AddProduct = ({ classes, createNewProduct, uploadProductImgs, ...props }) => {
+const AddProduct = ({
+  classes,
+  createNewProduct,
+  uploadProductImgs,
+  ...props
+}) => {
   const { userLoggedIn } = props;
   const [activeStep, setActiveStep] = useState(0);
   const handleNext = () => {
@@ -86,9 +109,13 @@ const AddProduct = ({ classes, createNewProduct, uploadProductImgs, ...props }) 
             files: images[index],
           },
         });
-        productImagesIDAllProduct.push(media.data.uploadProductMedias.map(img => img.id)); // Just need the id of image been uploaded
+        productImagesIDAllProduct.push(
+          media.data.uploadProductMedias.map(img => img.id),
+        ); // Just need the id of image been uploaded
       } catch (error) {
-        toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !');
+        toast.error(
+          error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !',
+        );
         return;
       }
     }
@@ -117,8 +144,7 @@ const AddProduct = ({ classes, createNewProduct, uploadProductImgs, ...props }) 
           productMediaIds: productImagesIDAllProduct[index],
           attributes: attributeArrOfAllProduct[index],
         },
-      ),
-    );
+      ),);
     console.log(newProducts);
     // Kiểm tra xem Sửa hay Thêm product, vì Sửa product tái sử dụng lại các component của Add product
     // Nếu Sửa, thì mỗi product trong list product sẽ có field productTemplateId, và productId được load lên và gán vào ở ListProducts component
@@ -128,7 +154,7 @@ const AddProduct = ({ classes, createNewProduct, uploadProductImgs, ...props }) 
     try {
       await createNewProduct({
         variables: {
-          sellerId: 'cjx8wso1x00f30a89i06iqz0n',
+          sellerId: getSellerId(),
           data: {
             name: values.name,
             briefDescription: values.briefDescription,
@@ -141,7 +167,9 @@ const AddProduct = ({ classes, createNewProduct, uploadProductImgs, ...props }) 
       });
       toast.success('Tạo sản phẩm thành công !');
     } catch (error) {
-      toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !');
+      toast.error(
+        error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !',
+      );
     }
   };
   if (!userLoggedIn()) return <Redirect to="/sellers/sign" />;
@@ -171,33 +199,60 @@ const AddProduct = ({ classes, createNewProduct, uploadProductImgs, ...props }) 
               handleSubmit,
               submitting,
               form: {
-                mutators: { setValue, push, pop, remove },
+                mutators: {
+ setValue, push, pop, remove 
+},
               },
               values,
             }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <ProductDataContext.Provider value={{ data: values, setValue }}>
                   {activeStep === 2 ? (
-                    <ProductProperties setValue={setValue} push={push} pop={pop} remove={remove} />
+                    <ProductProperties
+                      setValue={setValue}
+                      push={push}
+                      pop={pop}
+                      remove={remove}
+                    />
                   ) : (
                     <React.Fragment>
-                      {activeStep === 3 ? <AddProductImage setValue={setValue} /> : getStepContent(activeStep)}
+                      {activeStep === 3 ? (
+                        <AddProductImage setValue={setValue} />
+                      ) : (
+                        getStepContent(activeStep)
+                      )}
                     </React.Fragment>
                   )}
                 </ProductDataContext.Provider>
                 <div className={classes.actionsContainer}>
                   <div className={classes.grow} />
                   <div>
-                    <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
+                    <Button
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                      className={classes.button}
+                    >
                       Quay lại
                     </Button>
                     {activeStep === steps.length ? (
-                      <FormButton className={classes.button} disabled={submitting} color="secondary" fullWidth>
+                      <FormButton
+                        className={classes.button}
+                        disabled={submitting}
+                        color="secondary"
+                        fullWidth
+                      >
                         {submitting ? 'Thực hiện...' : 'Tạo mới'}
                       </FormButton>
                     ) : (
-                      <Button variant="contained" color="secondary" onClick={handleNext} className={classes.button}>
-                        {activeStep === steps.length - 1 ? 'Hoàn thành' : 'Tiếp'}
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={handleNext}
+                        className={classes.button}
+                      >
+                        {activeStep === steps.length - 1
+                          ? 'Hoàn thành'
+                          : 'Tiếp'}
                       </Button>
                     )}
                   </div>

@@ -40,7 +40,7 @@ export const Mutation = {
     parent,
     { data },
     {
- prisma, request, cache, i18n, gatekeeper 
+ prisma, request, cache, i18n 
 },
     info,
   ) => {
@@ -169,7 +169,7 @@ export const Mutation = {
     // TODO: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      'DISAPPROVE_RETAILER_REGISTRATION',
+      'DAPPROVE_RETAILER_REGISTRATION',
       i18n,
     );
 
@@ -212,7 +212,7 @@ export const Mutation = {
 
     const updated = await prisma.mutation.updateManyRetailers({
       where: {
-        id: approval.targetIds.split(','),
+        id_in: approval.targetIds.split(','),
       },
       data: {
         enabled: false,
@@ -262,7 +262,7 @@ export const Mutation = {
     parent,
     { data },
     {
- prisma, request, cache, i18n, gatekeeper 
+ prisma, request, cache, i18n 
 },
     info,
   ) => {

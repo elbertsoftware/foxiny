@@ -8,9 +8,17 @@ import Divider from '@material-ui/core/Divider';
 import { Collapse, makeStyles } from '@material-ui/core';
 import { Mutation } from 'react-apollo';
 import { LOGOUT } from '../../../../../utils/graphql/user';
-import { removeAuthorizationToken } from '../../../../../utils/processData/localStorage';
+import {
+  removeAuthorizationToken,
+  removeSellerId,
+} from '../../../../../utils/processData/localStorage';
 
 const list = [
+  {
+    primaryText: 'Đăng ký gian hàng',
+    icon: 'assignment_ind',
+    href: '/sellers/register-seller',
+  },
   {
     primaryText: 'Thêm sản phẩm',
     icon: 'add_box',
@@ -45,6 +53,7 @@ const NavContentEx = () => {
   const classes = useStyles();
   const handleAfterLogout = () => {
     removeAuthorizationToken();
+    removeSellerId();
     window.location.href = '/';
   };
   return (
@@ -52,11 +61,20 @@ const NavContentEx = () => {
       {logout => (
         <List>
           {list.map(({ primaryText, icon, href }, i) => (
-            <ListItem key={href} component="a" href={href} selected={i === 0} button>
+            <ListItem
+              key={href}
+              component="a"
+              href={href}
+              selected={i === 0}
+              button
+            >
               <ListItemIcon>
                 <Icon>{icon}</Icon>
               </ListItemIcon>
-              <ListItemText primary={primaryText} primaryTypographyProps={{ noWrap: true }} />
+              <ListItemText
+                primary={primaryText}
+                primaryTypographyProps={{ noWrap: true }}
+              />
             </ListItem>
           ))}
           <Divider style={{ margin: '12px 0' }} />
@@ -64,14 +82,16 @@ const NavContentEx = () => {
             <ListItemIcon>
               <Icon>settings</Icon>
             </ListItemIcon>
-            <ListItemText primary={'Cài đặt và Tài khoản'} primaryTypographyProps={{ noWrap: true }} />
+            <ListItemText
+              primary="Cài đặt và Tài khoản"
+              primaryTypographyProps={{ noWrap: true }}
+            />
             {open ? <Icon>expand_less</Icon> : <Icon>expand_more</Icon>}
           </ListItem>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <ListItem
               button
-              onClick={() =>
-                logout().then(({ data }) => {
+              onClick={() => logout().then(({ data }) => {
                   if (data.logout.token) {
                     handleAfterLogout();
                   }
@@ -86,8 +106,7 @@ const NavContentEx = () => {
             </ListItem>
             <ListItem
               button
-              onClick={() =>
-                logout({
+              onClick={() => logout({
                   variables: {
                     all: true,
                   },

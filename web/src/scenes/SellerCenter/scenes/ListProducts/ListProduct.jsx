@@ -28,6 +28,7 @@ import { Redirect } from 'react-router';
 import Loading from '../../../../components/Loading/Loading';
 import EditProduct from './components/EditSpecificProduct';
 import { GET_PRODUCT } from '../../../../utils/graphql/product';
+import { getSellerId } from '../../../../utils/processData/localStorage';
 
 const styles = {
   bar: {
@@ -69,16 +70,15 @@ function Transition(props) {
 }
 
 function ListProduct(props) {
-  const { classes, loading, productsData, userLoggedIn } = props;
+  const {
+ classes, loading, productsData, userLoggedIn 
+} = props;
 
-  const checkedArrayObject =
-    !loading &&
-    productsData.reduce((previous, current, index) => {
-      return {
+  const checkedArrayObject =    !loading
+    && productsData.reduce((previous, current, index) => ({
         ...previous,
-        [`checked${index}`]: false,
-      };
-    }, {});
+        [`checked${index}`]: false
+      }), {});
   const [checked, setChecked] = useState(checkedArrayObject);
   // Bật tắt bán hàng
   const handleChange = name => event => {
@@ -86,7 +86,9 @@ function ListProduct(props) {
     newObject[name] = event.target.checked;
     setChecked(newObject);
   };
-  const [open, setOpen] = useState(Array(productsData && productsData.length).fill(false));
+  const [open, setOpen] = useState(
+    Array(productsData && productsData.length).fill(false),
+  );
   const anchorElArr = Array(productsData && productsData.length).fill(null);
   const handleClick = index => () => {
     if (anchorElArr[index] !== null) {
@@ -113,7 +115,12 @@ function ListProduct(props) {
 
   const editComponent = useMemo(
     () => (
-      <Dialog fullScreen open={openEditDialog} onClose={handleCloseDialog} TransitionComponent={Transition}>
+      <Dialog
+        fullScreen
+        open={openEditDialog}
+        onClose={handleCloseDialog}
+        TransitionComponent={Transition}
+      >
         <AppBar className={classes.appBar}>
           <Toolbar>
             <Typography variant="h6" color="inherit" className={classes.flex}>
@@ -127,7 +134,7 @@ function ListProduct(props) {
         <EditProduct dataEdit={productsData && productsData} />
       </Dialog>
     ),
-    [openEditDialog],
+    [classes.appBar, classes.flex, openEditDialog, productsData],
   );
   if (loading) return <Loading />;
   if (!userLoggedIn()) {
@@ -136,7 +143,12 @@ function ListProduct(props) {
 
   return (
     <Paper>
-      <AppBar className={classes.bar} position="static" color="default" elevation={0}>
+      <AppBar
+        className={classes.bar}
+        position="static"
+        color="default"
+        elevation={0}
+      >
         <Toolbar>
           <Typography variant="h5">Danh sách sản phẩm</Typography>
         </Toolbar>
@@ -153,29 +165,39 @@ function ListProduct(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {productsData &&
-            productsData.map((product, index) => {
-              return (
+          {productsData
+            && productsData.map((product, index) => (
                 <TableRow key={product.productId}>
                   <TableCell>
                     <Paper className={classes.productCard} elevation={0} square>
                       <img
                         className={classes.img}
                         alt="product"
-                        src={product.productMedias[0] && product.productMedias[0].uri}
+                        src={
+                          product.productMedias[0] &&
+                          product.productMedias[0].uri
+                        }
                       />
                       <Paper elevation={0} square>
-                        <Typography component={Link}>{product.productName}</Typography>
-                        <Typography variant="subtitle2">ID: {product.productId}</Typography>
+                        <Typography component={Link}>
+                          {product.productName}
+                        </Typography>
+                        <Typography variant="subtitle2">
+                          ID: {product.productId}
+                        </Typography>
                       </Paper>
                     </Paper>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body1">{product.sellPrice * 1000}</Typography>
+                    <Typography variant="body1">
+                      {product.sellPrice * 1000}
+                    </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body1">Foxiny: 0</Typography>
-                    <Typography variant="body1">Nhà bán hàng: {product.stockQuantity}</Typography>
+                    <Typography variant="body1">
+                      Nhà bán hàng: {product.stockQuantity}
+                    </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body1">{product.createdAt}</Typography>
@@ -189,7 +211,7 @@ function ListProduct(props) {
                           value="checkedA"
                         />
                       }
-                      label={checked[`checked${index}`] ? 'Bật' : 'Tắt'}
+                      label={checked[`checked${index}`] ? "Bật" : "Tắt"}
                     />
                   </TableCell>
                   <TableCell>
@@ -207,12 +229,22 @@ function ListProduct(props) {
                     >
                       Thao tác
                     </Button>
-                    <Popper open={open[index]} anchorEl={anchorElArr[index]} transition disablePortal>
+                    <Popper
+                      open={open[index]}
+                      anchorEl={anchorElArr[index]}
+                      transition
+                      disablePortal
+                    >
                       {({ TransitionProps, placement }) => (
                         <Grow
                           {...TransitionProps}
                           id={`manipulation${index}`}
-                          style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                          style={{
+                            transformOrigin:
+                              placement === "bottom"
+                                ? "center top"
+                                : "center bottom"
+                          }}
                         >
                           <Paper>
                             <ClickAwayListener onClickAway={handleClose(index)}>
@@ -228,8 +260,7 @@ function ListProduct(props) {
                     </Popper>
                   </TableCell>
                 </TableRow>
-              );
-            })}
+              ))}
         </TableBody>
       </Table>
       {editComponent}
@@ -238,7 +269,7 @@ function ListProduct(props) {
 }
 export default compose(
   graphql(GET_PRODUCT, {
-    options: props => ({ variables: { sellerId: 'cjy9l0k6q000i07041axxora1' } }),
+    options: props => ({ variables: { sellerId: getSellerId() } }),
     props: ({ data: { loading, productsWoTemplateAfterCreated } }) => ({
       loading,
       productsData: productsWoTemplateAfterCreated,

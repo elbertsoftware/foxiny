@@ -2,6 +2,7 @@
 
 const AUTHORIZATION_TOKEN_KEY = 'authorizationToken';
 const USERID = 'userID';
+const SELLERID = 'sellerId';
 
 // retrieve authencation token from browser localStorage/session
 const getAuthorizationToken = () => {
@@ -40,6 +41,23 @@ const removeUserInfo = () => {
   localStorage.removeItem(USERID);
 };
 
+const setSellerId = sellerId => {
+  if (localStorage) {
+    localStorage.setItem(SELLERID, sellerId);
+  }
+};
+
+const getSellerId = () => {
+  if (localStorage) {
+    return localStorage.getItem(SELLERID);
+  }
+  return '';
+};
+
+const removeSellerId = () => {
+  localStorage.removeItem(SELLERID);
+};
+
 export {
   getAuthorizationToken,
   setAuthorizationToken,
@@ -47,4 +65,7 @@ export {
   setUserInfo,
   getUserInfo,
   removeUserInfo,
+  setSellerId,
+  getSellerId,
+  removeSellerId,
 };

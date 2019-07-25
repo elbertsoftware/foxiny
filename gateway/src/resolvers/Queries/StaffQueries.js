@@ -1,40 +1,42 @@
 // @flow
 
-import _ from "lodash";
-import logger from "../../utils/logger";
-import { getUserIDFromRequest } from "../../utils/authentication";
-import { gatekeeper } from "../../utils/permissionChecker";
+import _ from 'lodash';
+import logger from '../../utils/logger';
+import { getUserIDFromRequest } from '../../utils/authentication';
+import { gatekeeper } from '../../utils/permissionChecker';
 
 // TODO: something wrong in these queries
 export const Query = {
   retailerApprovals: async (
     parent,
     { query },
-    { prisma, cache, request, i18n },
-    info
+    {
+ prisma, cache, request, i18n 
+},
+    info,
   ) => {
     // TODO: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "DAPPROVE_RETAILER_REGISTRATION",
-      i18n
+      'DAPPROVE_RETAILER_REGISTRATION',
+      i18n,
     );
 
     // TODO: validate input
 
     const opArgs = {
-      orderBy: "updatedAt_DESC",
+      orderBy: 'updatedAt_DESC',
       skip: query && query.skip ? query.skip : undefined,
       last: query && query.last ? query.last : undefined,
       where: {
         AND: [
           {
             catergory_some: {
-              name_contains: "RETAILER_APPROVAL"
-            }
-          }
-        ]
-      }
+              name_contains: 'RETAILER_APPROVAL',
+            },
+          },
+        ],
+      },
     };
 
     const or = { OR: [] };
@@ -44,45 +46,45 @@ export const Query = {
     if (query && query.severity) {
       or.OR.push({
         severity: {
-          name_contains: query.severity
-        }
+          name_contains: query.severity,
+        },
       });
     }
     if (query && query.status) {
       or.OR.push({
         status: {
-          name_contains: query.status
-        }
+          name_contains: query.status,
+        },
       });
     }
     if (query && query.targetIds) {
       or.OR.push(
-        _.compact(query.targetIds.split(" ")).map(id => ({
-          targetIds_contains: id
-        }))
+        _.compact(query.targetIds.split(' ')).map(id => ({
+          targetIds_contains: id,
+        })),
       );
     }
     if (query && query.openedByUserId) {
       or.OR.push({
         openedByUser: {
-          id: query.openedByUserId
-        }
+          id: query.openedByUserId,
+        },
       });
     }
     if (query && query.updatedByUserId) {
       or.OR.push({
         updatedByUser_some: {
-          id: query.updatedByUserId
-        }
+          id: query.updatedByUserId,
+        },
       });
     }
     if (query && query.responsedByStaffUserId) {
       or.OR.push({
         correspondences_some: {
           respondedBy: {
-            id: query.responsedByStaffUserId
-          }
-        }
+            id: query.responsedByStaffUserId,
+          },
+        },
       });
     }
     if (or.OR.length > 0) {
@@ -95,29 +97,31 @@ export const Query = {
   retailerApprovalProcesses: async (
     parent,
     { query },
-    { prisma, cache, request, i18n },
-    info
+    {
+ prisma, cache, request, i18n 
+},
+    info,
   ) => {
     // TODO: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "DAPPROVE_RETAILER_REGISTRATION",
-      i18n
+      'DAPPROVE_RETAILER_REGISTRATION',
+      i18n,
     );
 
     // TODO: validate input
 
     const opArgs = {
-      orderBy: "updatedAt_DESC",
+      orderBy: 'updatedAt_DESC',
       where: {
         OR: [
           {
             supportCase: {
-              id: query.caseId
-            }
-          }
-        ]
-      }
+              id: query.caseId,
+            },
+          },
+        ],
+      },
     };
 
     return prisma.query.supportCorrespondences(opArgs, info);
@@ -127,26 +131,32 @@ export const Query = {
   lastRetailerApprovalProcess: async (
     parent,
     { query },
-    { prisma, cache, request, i18n },
-    info
+    {
+ prisma, cache, request, i18n 
+},
+    info,
   ) => {
     // TODO: check permission
-    const user = await gatekeeper.checkPermissions(request, "STAFF", i18n);
+    const user = await gatekeeper.checkPermissions(
+      request,
+      'DAPPROVE_RETAILER_REGISTRATION',
+      i18n,
+    );
 
     // TODO: validate input
 
     const opArgs = {
-      orderBy: "updatedAt_DESC",
+      orderBy: 'createdAt_ASC',
       last: 1,
       where: {
         OR: [
           {
             supportCase: {
-              id: query.caseId
-            }
-          }
-        ]
-      }
+              id: query.caseId,
+            },
+          },
+        ],
+      },
     };
 
     return prisma.query.supportCorrespondences(opArgs, info);
@@ -155,31 +165,33 @@ export const Query = {
   productApprovals: async (
     parent,
     { query },
-    { prisma, cache, request, i18n },
-    info
+    {
+ prisma, cache, request, i18n 
+},
+    info,
   ) => {
     // TODO: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      "DAPPROVE_PRODUCT_REGISTRATION",
-      i18n
+      'DAPPROVE_PRODUCT_REGISTRATION',
+      i18n,
     );
 
     // TODO: validate input
 
     const opArgs = {
-      orderBy: "updatedAt_DESC",
+      orderBy: 'updatedAt_DESC',
       skip: query && query.skip ? query.skip : undefined,
       last: query && query.last ? query.last : undefined,
       where: {
         AND: [
           {
             catergory_some: {
-              name_contains: "PRODUCT_APPROVAL"
-            }
-          }
-        ]
-      }
+              name_contains: 'PRODUCT_APPROVAL',
+            },
+          },
+        ],
+      },
     };
 
     const or = { OR: [] };
@@ -189,38 +201,38 @@ export const Query = {
     if (query && query.severity) {
       or.OR.push({
         severity: {
-          name_contains: query.severity
-        }
+          name_contains: query.severity,
+        },
       });
     }
     if (query && query.status) {
       or.OR.push({
         status: {
-          name_contains: query.status
-        }
+          name_contains: query.status,
+        },
       });
     }
     if (query && query.status) {
       or.OR.push({
         openedByUser: {
-          id: query.openedByUserId
-        }
+          id: query.openedByUserId,
+        },
       });
     }
     if (query && query.status) {
       or.OR.push({
         updatedByUser_some: {
-          id: query.updatedByUserId
-        }
+          id: query.updatedByUserId,
+        },
       });
     }
     if (query && query.status) {
       or.OR.push({
         correspondences_some: {
           respondedBy: {
-            id: query.responsedByStaffUserId
-          }
-        }
+            id: query.responsedByStaffUserId,
+          },
+        },
       });
     }
     if (or.OR.length > 0) {
@@ -228,5 +240,5 @@ export const Query = {
     }
 
     return prisma.query.supportCases(opArgs, info);
-  }
+  },
 };

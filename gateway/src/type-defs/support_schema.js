@@ -58,7 +58,7 @@ export const supportSchema = gql`
 
     # other targets
 
-    correspondence: [SupportCorrespondence!]
+    correspondences: [SupportCorrespondence!]
 
     createdAt: String
     updatedAt: String

@@ -1,22 +1,14 @@
 import gql from 'graphql-tag';
 
 const APPROVE_RETAILER_INFO = gql`
-  mutation approveRetailer($data: ApproveRetailerInput!) {
-    approveRetailer(data: $data) {
-      id
-      businessName
-      enabled
-    }
+  mutation approveRetailer($data: CreateApprovalProcess!) {
+    approveRetailer(data: $data)
   }
 `;
 
 const DISAPPROVE_RETAILER_INFO = gql`
-  mutation disapproveRetailer($data: ApproveRetailerInput!) {
-    disapproveRetailer(data: $data) {
-      id
-      businessName
-      enabled
-    }
+  mutation disapproveRetailer($data: CreateApprovalProcess!) {
+    disapproveRetailer(data: $data)
   }
 `;
 

@@ -1,6 +1,13 @@
 /* eslint-disable implicit-arrow-linebreak */
 import React, { useState, useEffect } from 'react';
-import { Paper, Step, Stepper, StepLabel, Button, withStyles } from '@material-ui/core';
+import {
+  Paper,
+  Step,
+  Stepper,
+  StepLabel,
+  Button,
+  withStyles,
+} from '@material-ui/core';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import { graphql, compose } from 'react-apollo';
@@ -13,10 +20,20 @@ import AttachmentSection from '../../AddProduct/components/Attachment/Attachment
 import AddProductImage from '../../AddProduct/components/AddProductImages/AddProductImage';
 import ProductEditDataContext from '../../../../../utils/context/ProductEditDataContext';
 import FormButton from '../../../../../components/Button/FormButton/FormButton';
-import { EDIT_PRODUCT, UPLOAD_IMAGES } from '../../../../../utils/graphql/product';
+import {
+  EDIT_PRODUCT,
+  UPLOAD_IMAGES,
+} from '../../../../../utils/graphql/product';
+import { getSellerId } from '../../../../../utils/processData/localStorage';
 
 function getSteps() {
-  return ['Danh mục', 'Thông tin cơ bản', 'Lựa chọn sản phẩm đăng bán', 'Hình ảnh', 'Tài liệu đính kèm'];
+  return [
+    'Danh mục',
+    'Thông tin cơ bản',
+    'Lựa chọn sản phẩm đăng bán',
+    'Hình ảnh',
+    'Tài liệu đính kèm',
+  ];
 }
 const styles = theme => ({
   bar: {
@@ -66,7 +83,13 @@ const styles = theme => ({
     padding: theme.spacing.unit * 3,
   },
 });
-const EditProduct = ({ classes, dataEdit, uploadProductImgs, editProducts, review }) => {
+const EditProduct = ({
+  classes,
+  dataEdit,
+  uploadProductImgs,
+  editProducts,
+  review,
+}) => {
   const [activeStep, setActiveStep] = useState(0);
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -91,21 +114,22 @@ const EditProduct = ({ classes, dataEdit, uploadProductImgs, editProducts, revie
           acc[curr.attributeName] = acc[curr.attributeName] || [];
           acc[curr.attributeName].push(curr.value);
           return acc;
-        }, {}),
-      );
+        }, {}),);
       const regroupedOption = Object.keys(groupedOption[0]).map(a => ({
         attributeName: a,
         listItems: [],
       }));
       groupedOption.forEach(a => {
         Object.keys(groupedOption[0]).forEach((k, i) => {
-          regroupedOption[i].listItems = regroupedOption[i].listItems.concat(a[k]);
+          regroupedOption[i].listItems = regroupedOption[i].listItems.concat(
+            a[k],
+          );
         });
       });
 
       regroupedOption.forEach(a => {
         a.listItems = a.listItems
-          .filter(function(item, pos) {
+          .filter((item, pos) => {
             return a.listItems.indexOf(item) === pos;
           })
           .map(item => Object.assign({}, { optionValue: item }));
@@ -113,12 +137,10 @@ const EditProduct = ({ classes, dataEdit, uploadProductImgs, editProducts, revie
       newData.options = regroupedOption;
       // For products list
       const newProducts = dataEdit.map(oldData => {
-        const attributes = oldData.attributes.reduce((pre, cur, index) => {
-          return {
+        const attributes = oldData.attributes.reduce((pre, cur, index) => ({
             ...pre,
-            [`option${index}`]: cur.value,
-          };
-        }, {});
+            [`option${index}`]: cur.value
+          }), {});
         return Object.assign(attributes, {
           productTemplateId: oldData.productTemplateId,
           productId: oldData.productId,
@@ -130,20 +152,21 @@ const EditProduct = ({ classes, dataEdit, uploadProductImgs, editProducts, revie
       });
       newData.products = newProducts;
       // For images list
-      const newImages = dataEdit.map(oldData => {
-        return oldData.productMedias.map(media =>
-          Object.assign({}, { id: media.id, name: media.name, preview: media.uri }),
-        );
-      });
+      const newImages = dataEdit.map(oldData => oldData.productMedias.map(media =>
+          Object.assign(
+            {},
+            { id: media.id, name: media.name, preview: media.uri }
+          )
+        ));
       newData.images = newImages;
     }
     setInitData(newData);
-  }, [dataEdit]);
+  }, [dataEdit, review]);
   useEffect(() => {
     if (!review) {
       setActiveStep(2);
     }
-  }, []);
+  }, [review]);
 
   const onSubmit = async values => {
     const { products, options, images } = values;
@@ -171,7 +194,9 @@ const EditProduct = ({ classes, dataEdit, uploadProductImgs, editProducts, revie
               files: imageUpdate,
             },
           });
-          const idAfterUpload = media.data.uploadProductMedias.map(img => img.id);
+          const idAfterUpload = media.data.uploadProductMedias.map(
+            img => img.id,
+          );
           finalId = imageIdEachProduct.concat(idAfterUpload);
         } else {
           // Ngược lại không có ảnh nào mới cần upload, finalId = list id ảnh cũ
@@ -181,7 +206,9 @@ const EditProduct = ({ classes, dataEdit, uploadProductImgs, editProducts, revie
         productImagesIDAllProduct.push(finalId);
         // Just need the id of image been uploaded
       } catch (error) {
-        toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !');
+        toast.error(
+          error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !',
+        );
       }
     }
     // console.log(productImagesIDAllProduct);
@@ -211,18 +238,19 @@ const EditProduct = ({ classes, dataEdit, uploadProductImgs, editProducts, revie
           productMediaIds: productImagesIDAllProduct[index],
           attributes: attributeArrOfAllProduct[index],
         },
-      ),
-    );
+      ),);
     try {
       await editProducts({
         variables: {
-          sellerId: 'cjx8x25h200hn0a8934r3861q',
+          sellerId: getSellerId(),
           data: newProducts,
         },
       });
       toast.success('Cập nhật thành công thông tin các sản phẩm.');
     } catch (error) {
-      toast.error(error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !');
+      toast.error(
+        error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra !',
+      );
     }
   };
   return (
@@ -249,28 +277,52 @@ const EditProduct = ({ classes, dataEdit, uploadProductImgs, editProducts, revie
               handleSubmit,
               submitting,
               form: {
-                mutators: { setValue, push, pop, remove },
+                mutators: {
+ setValue, push, pop, remove 
+},
               },
               values,
             }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <ProductEditDataContext.Provider value={{ data: values }}>
-                  {activeStep === 0 && <CascadingMenuCategory review={review} />}
+                  {activeStep === 0 && (
+                    <CascadingMenuCategory review={review} />
+                  )}
                   {activeStep === 1 && <BasicInfo review={review} />}
                   {activeStep === 2 && (
-                    <ProductProperties edit setValue={setValue} push={push} pop={pop} remove={remove} review={review} />
+                    <ProductProperties
+                      edit
+                      setValue={setValue}
+                      push={push}
+                      pop={pop}
+                      remove={remove}
+                      review={review}
+                    />
                   )}
-                  {activeStep === 3 && <AddProductImage edit setValue={setValue} review={review} />}
-                  {activeStep === 4 && <AttachmentSection edit review={review} />}
+                  {activeStep === 3 && (
+                    <AddProductImage edit setValue={setValue} review={review} />
+                  )}
+                  {activeStep === 4 && (
+                    <AttachmentSection edit review={review} />
+                  )}
                 </ProductEditDataContext.Provider>
                 <div className={classes.actionsContainer}>
                   <div className={classes.grow} />
                   <div>
-                    <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
+                    <Button
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                      className={classes.button}
+                    >
                       Quay lại
                     </Button>
                     {activeStep === steps.length ? (
-                      <FormButton className={classes.buttonAction} disabled={submitting} color="secondary" fullWidth>
+                      <FormButton
+                        className={classes.buttonAction}
+                        disabled={submitting}
+                        color="secondary"
+                        fullWidth
+                      >
                         {submitting ? 'Thực hiện...' : 'Chỉnh sửa'}
                       </FormButton>
                     ) : (
@@ -280,12 +332,14 @@ const EditProduct = ({ classes, dataEdit, uploadProductImgs, editProducts, revie
                         onClick={handleNext}
                         className={classes.buttonAction}
                       >
-                        {activeStep === steps.length - 1 ? 'Hoàn thành' : 'Tiếp'}
+                        {activeStep === steps.length - 1
+                          ? 'Hoàn thành'
+                          : 'Tiếp'}
                       </Button>
                     )}
                   </div>
                 </div>
-                {/*<pre>{JSON.stringify(values, 0, 2)}</pre>*/}
+                {/* <pre>{JSON.stringify(values, 0, 2)}</pre>*/}
               </form>
             )}
           />

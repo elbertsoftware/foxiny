@@ -72,7 +72,7 @@ export const Query = {
       // fragment,
       addFragmentToInfo(info, fragment),
     );
-    console.log(JSON.stringify(brands, undefined, 2));
+
     const friendlyBrand = resturectureBrand(brands, language);
 
     return friendlyBrand;

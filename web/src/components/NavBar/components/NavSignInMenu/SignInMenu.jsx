@@ -1,9 +1,19 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Button, Typography, Badge, Grid, Avatar, IconButton } from '@material-ui/core';
+import {
+  Button,
+  Typography,
+  Badge,
+  Grid,
+  Avatar,
+  IconButton,
+} from '@material-ui/core';
 import { Mutation } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
-import { removeAuthorizationToken } from '../../../../utils/processData/localStorage';
+import {
+  removeAuthorizationToken,
+  removeSellerId,
+} from '../../../../utils/processData/localStorage';
 import PopperAccount from '../../../Popper/PopperAccount';
 import PopperNotification from '../../../Popper/PopperNotification';
 import { LOGOUT } from '../../../../utils/graphql/user';
@@ -20,7 +30,9 @@ const styles = theme => ({
       height: '1em',
       '&::before': {
         borderWidth: '0 1em 1em 1em',
-        borderColor: `transparent transparent ${theme.palette.common.white} transparent`,
+        borderColor: `transparent transparent ${
+          theme.palette.common.white
+        } transparent`,
       },
     },
   },
@@ -35,7 +47,9 @@ const styles = theme => ({
       height: '1em',
       '&::before': {
         borderWidth: '0 1em 1em 1em',
-        borderColor: `transparent transparent ${theme.palette.common.white} transparent`,
+        borderColor: `transparent transparent ${
+          theme.palette.common.white
+        } transparent`,
       },
     },
   },
@@ -155,7 +169,11 @@ class SignInMenu extends React.Component {
     if (anchorElNoti.contains(event.target)) {
       return;
     }
-    this.setState(state => ({ anchorElNoti: null, openNoti: false, invisible: !state.invisible }));
+    this.setState(state => ({
+      anchorElNoti: null,
+      openNoti: false,
+      invisible: !state.invisible,
+    }));
   };
 
   handleArrowRef = node => {
@@ -172,11 +190,21 @@ class SignInMenu extends React.Component {
 
   handleAfterLogout = () => {
     removeAuthorizationToken();
+    removeSellerId();
     window.location.href = '/';
   };
 
   render() {
-    const { anchorEl, open, arrowRef, openNoti, anchorElNoti, arrowRefNoti, invisible, userExpired } = this.state;
+    const {
+      anchorEl,
+      open,
+      arrowRef,
+      openNoti,
+      anchorElNoti,
+      arrowRefNoti,
+      invisible,
+      userExpired,
+    } = this.state;
     const { classes, user } = this.props;
     if (userExpired) return <Redirect to="/signin" />;
     return (
@@ -184,14 +212,32 @@ class SignInMenu extends React.Component {
         <Mutation mutation={LOGOUT}>
           {logout => (
             <Grid container alignItems="center" justify="space-around">
-              <Badge color="error" badgeContent={1} className={classes.badge} invisible={invisible}>
-                <IconButton onClick={user.recoverable ? () => {} : this.handleOpenNoti} className={classes.iconButton}>
-                  <Avatar alt="user-avatar" src={user.profileMedia.uri} className={classes.avatar} />
+              <Badge
+                color="error"
+                badgeContent={1}
+                className={classes.badge}
+                invisible={invisible}
+              >
+                <IconButton
+                  onClick={user.recoverable ? () => {} : this.handleOpenNoti}
+                  className={classes.iconButton}
+                >
+                  <Avatar
+                    alt="user-avatar"
+                    src={user.profileMedia.uri}
+                    className={classes.avatar}
+                  />
                 </IconButton>
               </Badge>
 
               <div>
-                <Typography variant="body2" className={classes.greeting}>{`Hi, ${user.name.split(' ')[0]}`}</Typography>
+                <Typography
+                  variant="body2"
+                  className={classes.greeting}
+                >
+{`Hi, ${user.name.split(" ")[0]}`}
+
+                </Typography>
 
                 <Button
                   className={classes.button}
