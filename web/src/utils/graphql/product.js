@@ -9,7 +9,10 @@ const UPLOAD_IMAGES = gql`
 `;
 
 const CREATE_NEW_PRODUCT = gql`
-  mutation createBrandNewProductWVariants($sellerId: String!, $data: CreateProductWithTemplateInput!) {
+  mutation createBrandNewProductWVariants(
+    $sellerId: String!
+    $data: CreateProductWithTemplateInput!
+  ) {
     createBrandNewProductWVariants(sellerId: $sellerId, data: $data) {
       productTemplateId
       productId
@@ -117,4 +120,10 @@ const GET_CATEGORIES = gql`
   }
 `;
 
-export { GET_PRODUCT, GET_CATEGORIES, CREATE_NEW_PRODUCT, UPLOAD_IMAGES, EDIT_PRODUCT };
+export {
+  GET_PRODUCT,
+  GET_CATEGORIES,
+  CREATE_NEW_PRODUCT,
+  UPLOAD_IMAGES,
+  EDIT_PRODUCT,
+};

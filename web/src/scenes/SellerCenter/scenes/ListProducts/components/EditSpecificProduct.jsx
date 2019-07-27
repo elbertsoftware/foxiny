@@ -88,7 +88,6 @@ const EditProduct = ({
   dataEdit,
   uploadProductImgs,
   editProducts,
-  review,
 }) => {
   const [activeStep, setActiveStep] = useState(0);
   const handleNext = () => {
@@ -102,12 +101,6 @@ const EditProduct = ({
   useEffect(() => {
     const newData = {};
     if (dataEdit.length > 0) {
-      // Product template info (using when approving products)
-      if (review) {
-        newData.name = dataEdit[0].name;
-        newData.brandName = dataEdit[0].brand;
-        newData.briefDescription = dataEdit[0].briefDescription;
-      }
       // For options list
       const groupedOption = dataEdit.map(x =>
         x.attributes.reduce((acc, curr) => {
@@ -129,18 +122,19 @@ const EditProduct = ({
 
       regroupedOption.forEach(a => {
         a.listItems = a.listItems
-          .filter((item, pos) => {
-            return a.listItems.indexOf(item) === pos;
-          })
+          .filter((item, pos) => a.listItems.indexOf(item) === pos)
           .map(item => Object.assign({}, { optionValue: item }));
       });
       newData.options = regroupedOption;
       // For products list
       const newProducts = dataEdit.map(oldData => {
-        const attributes = oldData.attributes.reduce((pre, cur, index) => ({
+        const attributes = oldData.attributes.reduce(
+          (pre, cur, index) => ({
             ...pre,
-            [`option${index}`]: cur.value
-          }), {});
+            [`option${index}`]: cur.value,
+          }),
+          {},
+        );
         return Object.assign(attributes, {
           productTemplateId: oldData.productTemplateId,
           productId: oldData.productId,
@@ -152,21 +146,16 @@ const EditProduct = ({
       });
       newData.products = newProducts;
       // For images list
-      const newImages = dataEdit.map(oldData => oldData.productMedias.map(media =>
+      const newImages = dataEdit.map(oldData =>
+        oldData.productMedias.map(media =>
           Object.assign(
             {},
-            { id: media.id, name: media.name, preview: media.uri }
-          )
-        ));
+            { id: media.id, name: media.name, preview: media.uri },
+          ),),);
       newData.images = newImages;
     }
     setInitData(newData);
-  }, [dataEdit, review]);
-  useEffect(() => {
-    if (!review) {
-      setActiveStep(2);
-    }
-  }, [review]);
+  }, [dataEdit]);
 
   const onSubmit = async values => {
     const { products, options, images } = values;
@@ -285,10 +274,8 @@ const EditProduct = ({
             }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <ProductEditDataContext.Provider value={{ data: values }}>
-                  {activeStep === 0 && (
-                    <CascadingMenuCategory review={review} />
-                  )}
-                  {activeStep === 1 && <BasicInfo review={review} />}
+                  {activeStep === 0 && <CascadingMenuCategory />}
+                  {activeStep === 1 && <BasicInfo />}
                   {activeStep === 2 && (
                     <ProductProperties
                       edit
@@ -296,15 +283,12 @@ const EditProduct = ({
                       push={push}
                       pop={pop}
                       remove={remove}
-                      review={review}
                     />
                   )}
                   {activeStep === 3 && (
-                    <AddProductImage edit setValue={setValue} review={review} />
+                    <AddProductImage edit setValue={setValue} />
                   )}
-                  {activeStep === 4 && (
-                    <AttachmentSection edit review={review} />
-                  )}
+                  {activeStep === 4 && <AttachmentSection edit />}
                 </ProductEditDataContext.Provider>
                 <div className={classes.actionsContainer}>
                   <div className={classes.grow} />
@@ -339,7 +323,7 @@ const EditProduct = ({
                     )}
                   </div>
                 </div>
-                {/* <pre>{JSON.stringify(values, 0, 2)}</pre>*/}
+                {/* <pre>{JSON.stringify(values, 0, 2)}</pre> */}
               </form>
             )}
           />
@@ -356,7 +340,6 @@ EditProduct.propTypes = {
 
 EditProduct.defaultProps = {
   dataEdit: [],
-  review: false,
 };
 
 export default compose(

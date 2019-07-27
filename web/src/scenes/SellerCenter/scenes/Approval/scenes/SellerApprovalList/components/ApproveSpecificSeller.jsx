@@ -14,6 +14,7 @@ import {
 } from '../../../../../../../utils/graphql/approvement';
 import { GET_ONE_RETAILER } from '../../../../../../../utils/graphql/retailer';
 import Loading from '../../../../../../../components/Loading/Loading';
+import { checkAllValuesIsNull } from '../../../utils/processData';
 
 const useStyles = makeStyles({
   root: {
@@ -63,17 +64,6 @@ const ApproveSeller = ({
   } = props;
 
   const [isSubmited, setIsSubmited] = useState(0); // 0:default, 1: Close&Save 2:Approve
-
-  const checkAllValuesIsNull = object => {
-    let result = true;
-    const arrayValues = Object.values(object);
-    arrayValues.forEach(value => {
-      if (value != null || value != undefined) {
-        result = false;
-      }
-    });
-    return result;
-  };
 
   const onSubmit = async values => {
     const data = {

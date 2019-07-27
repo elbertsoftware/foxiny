@@ -21,6 +21,27 @@ const CREATE_RETAILER_APPROVAL_PROCESS = gql`
   }
 `;
 
+const APPROVE_PRODUCT_INFO = gql`
+  mutation approveProducts($data: CreateApprovalProcess!) {
+    approveProducts(data: $data)
+  }
+`;
+
+const DISAPPROVE_PRODUCT_INFO = gql`
+  mutation disapproveProducts($data: CreateApprovalProcess!) {
+    disapproveProducts(data: $data)
+  }
+`;
+
+const CREATE_PRODUCT_APPROVAL_PROCESS = gql`
+  mutation createProductApprovalProcess($data: CreateApprovalProcess!) {
+    createProductApprovalProcess(data: $data) {
+      id
+      data
+    }
+  }
+`;
+
 const RETAILER_APPROVAL_PROCESS = gql`
   query retailerApprovalProcesses($query: ApprovalQueryInput!) {
     retailerApprovalProcesses(query: $query) {
@@ -110,6 +131,9 @@ export {
   CREATE_RETAILER_APPROVAL_PROCESS,
   APPROVE_RETAILER_INFO,
   DISAPPROVE_RETAILER_INFO,
+  CREATE_PRODUCT_APPROVAL_PROCESS,
+  APPROVE_PRODUCT_INFO,
+  DISAPPROVE_PRODUCT_INFO,
   RETAILER_APPROVAL_PROCESS,
   LAST_APPROVAL_PROCESS,
   LIST_APPROVAL_CASES,

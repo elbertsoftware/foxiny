@@ -64,15 +64,15 @@ const SelectSellerModal = ({ handleClose, open, ...props }) => {
       {({ data, loading }) => {
         if (loading) return <Loading />;
         return (
-          <Dialog maxWidth="md" open={open} onClose={handleClose}>
+          <Dialog maxWidth="md" fullWidth open={open} onClose={handleClose}>
             <DialogTitle onClose={handleClose}>
               Lựa chọn gian hàng của bạn
             </DialogTitle>
             <DialogContent>
               <Paper elevation={0}>
-                <Grid container spacing={2}>
+                <Grid container spacing={1}>
                   {data.myRetailers.map(retailer => (
-                    <Grid key={retailer.id} item xs={4}>
+                    <Grid key={retailer.id} item>
                       <SellerCard
                         businessName={retailer.businessName}
                         image="https://cdn.pixabay.com/photo/2019/04/26/07/14/store-4156934_960_720.png"
