@@ -12,6 +12,9 @@ export const staffSchema = gql`
     ): [SupportCorrespondence]!
     # manufacturerApproval(query: String): Approval!
     productApprovals(query: ApprovalQueryInput): [SupportCase!]!
+    lastProductApprovalProcess(
+      query: ApprovalQueryInput!
+    ): [SupportCorrespondence]!
   }
 
   extend type Mutation {
