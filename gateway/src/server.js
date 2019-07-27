@@ -10,8 +10,7 @@ import bodyParser from "body-parser";
 
 import { ApolloServer, PubSub } from "apollo-server-express";
 
-// import { i18n, unpackCatalog } from "lingui-i18n"; // import i18n as something else
-import { setupI18n } from "@lingui/core";
+import i18n from "./utils/i18nHelper";
 
 import { resolvers, fragmentReplacements } from "./resolvers";
 import { schema as typeDefs } from "./type-defs";
@@ -29,13 +28,6 @@ server.use(helmet());
 
 // body parser middleware to parse application/json based body: authorization token
 server.use(bodyParser.json());
-
-const i18n = setupI18n({
-  catalogs: {
-    en: require("../locale/en/messages"),
-    vi: require("../locale/vi/messages"),
-  },
-});
 
 server.use(
   requestLanguage({
@@ -64,12 +56,17 @@ const graphQLServer = new ApolloServer({
     // reference req -> request, res -> response
     let languageCode = i18n.availableLanguages.sort()[0];
 
+    // extract language code from http request or socket connection
     if (connection && connection.context["Accept-Language"]) {
-      languageCode = pick(["en", "vi"], connection.context["Accept-Language"]);
+      languageCode = pick(
+        i18n.availableLanguages.sort(),
+        connection.context["Accept-Language"],
+      );
     } else if (request && request.language) {
       languageCode = request.language;
     }
 
+    // activate language before performing action
     i18n.activate(languageCode);
     logger.debug(`🉑  ACTIVATED LANGUAGE: ${languageCode}`);
 
@@ -82,6 +79,8 @@ const graphQLServer = new ApolloServer({
       connection,
     };
   },
+  // subscription authentication
+  //
   // subscriptions: {
   //   onConnect: async (connection, webSocket) => {
   // console.log(connection);
@@ -104,8 +103,8 @@ const graphQLServer = new ApolloServer({
     // infrastructure such as Nginx so errors can be handled elegantly by
     // graphql-upload:
     // https://github.com/jaydenseric/graphql-upload#type-uploadoptions
-    maxFileSize: 2097152, // 2MB
-    maxFiles: 5, // at the same time
+    maxFileSize: 2097152, // 2 MB
+    maxFiles: 5, // upload to 5 files at same time
   },
   fragmentReplacements, // send fragment definitions to this graphql server
 });

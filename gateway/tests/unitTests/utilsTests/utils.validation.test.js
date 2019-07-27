@@ -355,6 +355,60 @@ describe("Validation functions tests", () => {
         });
         break;
 
+      case "validateDocumentFileType":
+        describe("Validate resetPwd input", () => {
+          for (let i = 0; i < group.data.length; i++) {
+            if (group.data[i].expected) {
+              test(`should return a valid object`, () => {
+                expect(() =>
+                  validation.validateDocumentFileType(group.data[i].mimetype),
+                ).not.toThrow();
+              });
+            } else {
+              test(`should throw error as invalid object input`, () => {
+                expect(() =>
+                  validation.validateDocumentFileType(group.data[i].mimetype),
+                ).toThrow();
+              });
+            }
+          }
+        });
+        break;
+
+      case "validateUploadDocumnetInput":
+        describe("Validate userMediaUpload input", () => {
+          for (let i = 0; i < group.data.length; i++) {
+            const upload = {
+              createReadStream: group.data[i].upload.createReadStream
+                ? _SAMPLE_IMG_FILE
+                : undefined,
+              filename: group.data[i].upload.filename
+                ? group.data[i].upload.filename
+                : undefined,
+              mimetype: group.data[i].upload.mimetype
+                ? group.data[i].upload.mimetype
+                : undefined,
+              encoding: group.data[i].upload.encoding
+                ? group.data[i].upload.encoding
+                : undefined,
+            };
+            if (group.data[i].expected) {
+              test(`should return a valid object`, () => {
+                expect(() =>
+                  validation.validateUploadDocumnetInput(upload),
+                ).not.toThrow();
+              });
+            } else {
+              test(`should throw error as invalid object input`, () => {
+                expect(() =>
+                  validation.validateUploadDocumnetInput(upload),
+                ).toThrow();
+              });
+            }
+          }
+        });
+        break;
+
       default:
         break;
     }

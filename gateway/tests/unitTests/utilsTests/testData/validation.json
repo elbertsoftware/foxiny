@@ -29,13 +29,41 @@
   {
     "name": "validateEmail",
     "data": [
-      { "expected": true, "email": "elbertsoftware.tester@gmail.com", "output": "elbertsoftware.tester@gmail.com" },
-      { "expected": true, "email": "elbertsoftware.tester@Gmail.com", "output": "elbertsoftware.tester@gmail.com" },
-      { "expected": true, "email": "elbertsoftware.tester@gmail.Com", "output": "elbertsoftware.tester@gmail.com" },
-      { "expected": true, "email": "elbertsoftware.tester@gmail.io", "output": "elbertsoftware.tester@gmail.io" },
-      { "expected": true, "email": "elbertsoftware@gmail.com", "output": "elbertsoftware@gmail.com" },
-      { "expected": true, "email": "elbertsoftware123@gmail.com", "output": "elbertsoftware123@gmail.com" },
-      { "expected": true, "email": "123elbertsoftware@gmail.com", "output": "123elbertsoftware@gmail.com" },
+      {
+        "expected": true,
+        "email": "elbertsoftware.tester@gmail.com",
+        "output": "elbertsoftware.tester@gmail.com"
+      },
+      {
+        "expected": true,
+        "email": "elbertsoftware.tester@Gmail.com",
+        "output": "elbertsoftware.tester@gmail.com"
+      },
+      {
+        "expected": true,
+        "email": "elbertsoftware.tester@gmail.Com",
+        "output": "elbertsoftware.tester@gmail.com"
+      },
+      {
+        "expected": true,
+        "email": "elbertsoftware.tester@gmail.io",
+        "output": "elbertsoftware.tester@gmail.io"
+      },
+      {
+        "expected": true,
+        "email": "elbertsoftware@gmail.com",
+        "output": "elbertsoftware@gmail.com"
+      },
+      {
+        "expected": true,
+        "email": "elbertsoftware123@gmail.com",
+        "output": "elbertsoftware123@gmail.com"
+      },
+      {
+        "expected": true,
+        "email": "123elbertsoftware@gmail.com",
+        "output": "123elbertsoftware@gmail.com"
+      },
       { "expected": true, "email": "123@gmail.com", "output": "123@gmail.com" },
       { "expected": false, "email": "elbertsoftware.tester@gmail" },
       { "expected": false, "email": "elbertsoftware.tester@" },
@@ -51,7 +79,10 @@
       { "expected": false, "email": "elbertsoftware&tester@gmail.com" },
       { "expected": false, "email": "elbertsoftware tester@gmail.com" },
       { "expected": false, "email": "elbertsoftware.tester@gmail com" },
-      { "expected": false, "email": "1234567890123456789012345678901234567890123456789012345678901234+x@gmail.com" },
+      {
+        "expected": false,
+        "email": "1234567890123456789012345678901234567890123456789012345678901234+x@gmail.com"
+      },
       { "expected": false, "email": "" }
     ]
   },
@@ -477,6 +508,125 @@
       {
         "expected": false,
         "upload": {}
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc",
+          "mimetype": "image/jpeg",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": false,
+          "filename": "abc.jpg",
+          "mimetype": "image/jpeg",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": true,
+          "mimetype": "image/jpeg",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc.jpg",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc.jpg",
+          "mimetype": "image/jpeg"
+        }
+      }
+    ]
+  },
+  {
+    "name": "validateDocumentFileType",
+    "data": [
+      {
+        "expected": true,
+        "mimetype": "image/jpeg"
+      },
+      {
+        "expected": true,
+        "mimetype": "image/png"
+      },
+      {
+        "expected": true,
+        "mimetype": "image/svg+xml"
+      },
+      {
+        "expected": true,
+        "mimetype": "application/pdf"
+      },
+      {
+        "expected": true,
+        "mimetype": "application/zip"
+      },
+      {
+        "expected": true,
+        "mimetype": "application/msword"
+      },
+      {
+        "expected": true,
+        "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      },
+      {
+        "expected": false,
+        "mimetype": null
+      },
+      {
+        "expected": false,
+        "mimetype": "text"
+      }
+    ]
+  },
+  {
+    "name": "validateUploadDocumnetInput",
+    "data": [
+      {
+        "expected": true,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc.jpg",
+          "mimetype": "image/jpeg",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": true,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc.pdf",
+          "mimetype": "application/pdf",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {}
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc.txt",
+          "mimetype": "text",
+          "encoding": "8 bit"
+        }
       },
       {
         "expected": false,
