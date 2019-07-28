@@ -180,7 +180,7 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    // try {
+    try {
     // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
@@ -397,11 +397,11 @@ export const Mutation = {
     }
 
     return updatedRetailer;
-    // } catch (err) {
-    //   logger.error(`🛑❌  UPDATE_RETAILER: ${err.message}`);
-    //   const error = i18n._(t`Cannot update retailer`);
-    //   throw new Error(error);
-    // }
+    } catch (err) {
+      logger.error(`🛑❌  UPDATE_RETAILER: ${err.message}`);
+      const error = i18n._(t`Cannot update retailer`);
+      throw new Error(error);
+    }
   },
 
   // TODO: no need to check existed email
