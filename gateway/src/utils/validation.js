@@ -283,7 +283,7 @@ const validateUploadDocumnetInput = upload => {
   if (!mimetype) throw new Error("Invalid input");
   if (!encoding) throw new Error("Invalid input");
 
-  validateImageFileType(mimetype);
+  validateDocumentFileType(mimetype);
 };
 
 export {

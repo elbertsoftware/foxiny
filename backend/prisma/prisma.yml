@@ -1,4 +1,6 @@
 endpoint: ${env:PRISMA_ENDPOINT}
+
+# read schema from multiple files
 datamodel:
   - model/user.graphql
   - model/role_permission_assignment.graphql
@@ -13,5 +15,6 @@ datamodel:
   - model/language.graphql
 secret: ${env:PRISMA_SECRET}
 
+# seed data
 seed:
   import: seed_data.zip

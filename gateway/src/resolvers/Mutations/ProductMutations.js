@@ -143,12 +143,13 @@ export const Mutation = {
         },
       };
 
+      // NOTE: create product template
       const productTemplate = await prisma.mutation.createProductTemplate(
         { data: productTemplateData },
         newInfo,
       );
 
-      // TODO: open support case
+      // TODO: open support case for approval
       await prisma.mutation.createSupportCase({
         data: {
           subject: `Create: ${productTemplate.name}`,
@@ -197,6 +198,8 @@ export const Mutation = {
     }
   },
 
+  // FIXME: a big misstake in this: update many products
+  // TODO: open a support case for approval
   updateProducts: async (
     parent,
     { sellerId, data },

@@ -1,4 +1,4 @@
-//@flow
+// @flow
 
 import { setupI18n } from "@lingui/core";
 import logger from "./logger";

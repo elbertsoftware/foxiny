@@ -1,4 +1,4 @@
-//@flow
+// @flow
 
 import { gql } from "apollo-server-express";
 

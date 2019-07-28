@@ -25,6 +25,7 @@ export const Mutation = {
     info,
   ) => {
     try {
+      // NOTE: check permission
       const user = await gatekeeper.checkPermissions(
         request,
         "REGISTER_RETAILER",
@@ -99,11 +100,12 @@ export const Mutation = {
         },
       };
 
+      // NOTE: create retailer
       const retailer = await prisma.mutation.createRetailer({
         data: retailerData,
       });
 
-      // add role to user
+      // NOTE: add role to user
       await prisma.mutation.updateUser({
         where: {
           id: user.id,
@@ -131,7 +133,7 @@ export const Mutation = {
         },
       });
 
-      // open supportcase for approval
+      // NOTE: open supportcase for approval
       const spCase = await prisma.mutation.createSupportCase({
         data: {
           subject: `Create/Update: ${retailer.businessName}`,
@@ -180,6 +182,7 @@ export const Mutation = {
     info,
   ) => {
     try {
+      // NOTE: check permission
       const user = await gatekeeper.checkPermissions(
         request,
         "UPDATE_RETAILER",
@@ -308,6 +311,7 @@ export const Mutation = {
         swiftCode: data.swiftCode || undefined,
       };
 
+      // NOTE: update retailer
       const fragment = "{ fragment retailerIdForRetailer on Retailer { id } }";
       const updatedRetailer = await prisma.mutation.updateRetailer(
         {
@@ -319,7 +323,7 @@ export const Mutation = {
         addFragmentToInfo(info, fragment),
       );
 
-      // open supportcase for approval
+      // NOTE: open supportcase for approval
       const existedApproval = await prisma.query.supportCases({
         where: {
           AND: [
@@ -408,6 +412,7 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
+    // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
       "REGISTER_RETAILER",

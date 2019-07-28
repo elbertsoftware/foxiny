@@ -1,14 +1,25 @@
-// @floww
+// @flow
 
 import { stringTrim, validateIsEmpty } from "../validation";
 import logger from "../logger";
 
-const validateIsSmallerThanX = (price, x = 0) => {
-  if (price <= x) {
-    logger.error("Invalid price");
+const validateNotSmallerThanX = (value, x = 0) => {
+  if (!Number.isInteger(value) || !Number.isInteger(x)) {
+    logger.error("Not integer");
     throw new Error("Invalid input");
   }
-  return price;
+
+  if (!Number.isSafeInteger(value) || !Number.isSafeInteger(x)) {
+    logger.error("Precision may be lost!");
+    throw new Error("Invalid input");
+  }
+
+  if (value <= x) {
+    logger.error("Invalid value");
+    throw new Error("Invalid input");
+  }
+
+  return value;
 };
 
 const validateProductAttribute = attribute => {
@@ -25,14 +36,18 @@ const validateProductAttribute = attribute => {
 const validateProduct = product => {
   const newData = {};
 
-  // if (!product.productMediaIds || product.productMediaIds.length === 0) {
-  //   throw new Error("Invalid input");
-  // }
+  if (!product) {
+    throw new Error("Invalid input");
+  }
+
+  if (!product.attributes || product.attributes.length === 0) {
+    throw new Error("Invalid input");
+  }
 
   newData.productName = validateIsEmpty(product.productName).toLowerCase();
-  newData.listPrice = validateIsSmallerThanX(product.listPrice);
-  newData.sellPrice = validateIsSmallerThanX(product.sellPrice);
-  newData.stockQuantity = validateIsSmallerThanX(product.stockQuantity, 1);
+  newData.listPrice = validateNotSmallerThanX(product.listPrice);
+  newData.sellPrice = validateNotSmallerThanX(product.sellPrice);
+  newData.stockQuantity = validateNotSmallerThanX(product.stockQuantity, 1);
   newData.attributes = product.attributes.map(attribute =>
     validateProductAttribute(attribute),
   );
@@ -63,7 +78,7 @@ const validateCreateNewProductInput = data => {
   newData.briefDescription = validateIsEmpty(data.briefDescription);
   newData.catalogIds = data.catalogIds;
   newData.brandName = validateIsEmpty(data.brandName);
-  newData.detailDescription = data.detailDescription;
+  newData.detailDescription = validateIsEmpty(data.detailDescription);
   newData.products = data.products.map(product => validateProduct(product));
 
   return newData;
@@ -93,13 +108,13 @@ const validateUpdateOneProductInput = product => {
     ? validateIsEmpty(product.productName).toLowerCase()
     : undefined;
   newData.listPrice = product.listPrice
-    ? validateIsSmallerThanX(product.listPrice)
+    ? validateNotSmallerThanX(product.listPrice)
     : undefined;
   newData.sellPrice = product.sellPrice
-    ? validateIsSmallerThanX(product.sellPrice)
+    ? validateNotSmallerThanX(product.sellPrice)
     : undefined;
   newData.stockQuantity = product.stockQuantity
-    ? validateIsSmallerThanX(product.stockQuantity)
+    ? validateNotSmallerThanX(product.stockQuantity)
     : undefined;
   newData.productMediaIds =
     product.productMediaIds && product.productMediaIds.length > 0
@@ -114,12 +129,15 @@ const validateUpdateOneProductInput = product => {
 };
 
 const validateUpdateProductInput = data => {
+  if (!data || data.length === 0) {
+    logger.error("Invalid productId");
+    throw new Error("Invalid input");
+  }
+
   const newData = data.map(product => validateUpdateOneProductInput(product));
 
   return newData;
 };
-
-export { validateCreateNewProductInput, validateUpdateProductInput };
 
 const classifyEmailPhone = emailOrPhone => {
   // email pattern: mailbox @ domain
@@ -137,7 +155,16 @@ const classifyEmailPhone = emailOrPhone => {
 
   if (phoneRegex.test(emailOrPhone)) return { phone: emailOrPhone };
 
-  return null;
+  logger.error("Not recognize neither email nor phone");
+  throw new Error("Invalid input");
 };
 
-export { classifyEmailPhone };
+export {
+  validateNotSmallerThanX,
+  validateProductAttribute,
+  validateProduct,
+  validateCreateNewProductInput,
+  validateUpdateOneProductInput,
+  validateUpdateProductInput,
+  classifyEmailPhone,
+};

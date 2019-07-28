@@ -1,4 +1,4 @@
-//@flow
+// @flow
 
 import "cross-fetch/polyfill";
 
@@ -376,7 +376,7 @@ describe("Validation functions tests", () => {
         break;
 
       case "validateUploadDocumnetInput":
-        describe("Validate userMediaUpload input", () => {
+        describe("Validate mediaUpload input", () => {
           for (let i = 0; i < group.data.length; i++) {
             const upload = {
               createReadStream: group.data[i].upload.createReadStream

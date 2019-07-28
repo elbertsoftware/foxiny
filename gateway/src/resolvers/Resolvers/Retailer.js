@@ -1,3 +1,5 @@
+// @flow
+
 import { getUserIDFromRequest } from "../../utils/authentication";
 import { gatekeeper } from "../../utils/permissionChecker";
 import logger from "../../utils/logger";
@@ -18,7 +20,7 @@ const resolveField = async (parent, request, cache, i18n, value) => {
 
 // fragment is needed to be sure User.id included no matter what the clients ask for it in the selection
 export const Retailer = {
-  businessCover: profileMedia: {
+  businessCover: {
     resolve: (parent, args, { request, cache }) => {
       return {
         id: parent.profileMedia ? parent.profileMedia.id : "default",
@@ -52,7 +54,8 @@ export const Retailer = {
       };
     },
   },
-  businessAvatar: profileMedia: {
+
+  businessAvatar: {
     resolve: (parent, args, { request, cache }) => {
       return {
         id: parent.profileMedia ? parent.profileMedia.id : "default",

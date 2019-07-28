@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   foxiny_db:
@@ -8,7 +8,7 @@ services:
     image: foxiny/postgres
     restart: always
     ports:
-      - '5432:5432'
+      - "5432:5432"
     networks:
       - backend
     volumes:
@@ -25,7 +25,7 @@ services:
     image: foxiny/prisma
     restart: always
     ports:
-      - '4466:4466'
+      - "4466:4466"
     networks:
       - backend
     environment:
@@ -43,7 +43,8 @@ services:
             password: Foxiny@5432
             ssl: false
             migrations: true
-            rawAccess: true
+            # uncomment the following line will disable the endpoint /_admin of prisma
+            # rawAccess: true
     depends_on:
       - foxiny_db
 
@@ -54,7 +55,7 @@ services:
     image: foxiny/redis
     restart: always
     ports:
-      - '6379:6379'
+      - "6379:6379"
     networks:
       - backend
     command: redis-server --appendonly yes --requirepass Foxiny@6379

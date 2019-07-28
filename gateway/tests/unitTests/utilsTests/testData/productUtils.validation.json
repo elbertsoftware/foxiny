@@ -1,0 +1,1134 @@
+[
+  {
+    "name": "validateNotSmallerThanX",
+    "data": [
+      {
+        "expected": false,
+        "data": {}
+      },
+      {
+        "expected": false,
+        "data": {
+          "value": -1
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "value": "NEGATIVE"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "value": 0,
+          "x": 1
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "value": 1.1
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "value": 1,
+          "x": 0.1
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "value": "NEGATIVE-1"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "value": "POSITIVE+1"
+        }
+      },
+      {
+        "expected": true,
+        "data": {
+          "value": 3,
+          "x": 2
+        }
+      },
+      {
+        "expected": true,
+        "data": {
+          "value": 1
+        }
+      },
+      {
+        "expected": true,
+        "data": {
+          "value": "POSITIVE"
+        }
+      }
+    ]
+  },
+  {
+    "name": "validateProductAttribute",
+    "data": [
+      {
+        "expected": true,
+        "expectedAttName": "color",
+        "expectedValue": "red",
+        "data": {
+          "attributeName": "Color",
+          "value": "Red"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "value": "Red"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "attributeName": "",
+          "value": "Red"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "attributeName": "Color"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "attributeName": "Color",
+          "value": ""
+        }
+      },
+      {
+        "expected": false,
+        "data": {}
+      }
+    ]
+  },
+  {
+    "name": "validateProduct",
+    "data": [
+      {
+        "expected": true,
+        "data": {
+          "productName": "test",
+          "listPrice": 10,
+          "sellPrice": 10,
+          "stockQuantity": 10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "S"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productName": "test",
+          "listPrice": 9007199254740992,
+          "sellPrice": 10,
+          "stockQuantity": 10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "S"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productName": "test",
+          "listPrice": 10,
+          "sellPrice": 9007199254740992,
+          "stockQuantity": 10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "S"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productName": "test",
+          "listPrice": 10,
+          "sellPrice": 10,
+          "stockQuantity": -10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "S"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "listPrice": 10,
+          "sellPrice": 10,
+          "stockQuantity": 10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "S"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productName": "",
+          "listPrice": 10,
+          "sellPrice": 10,
+          "stockQuantity": 10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "S"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productName": "test",
+          "sellPrice": 10,
+          "stockQuantity": 10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "S"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productName": "test",
+          "listPrice": 10,
+          "stockQuantity": 10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "S"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productName": "test",
+          "listPrice": 10,
+          "sellPrice": 10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "S"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productName": "test",
+          "listPrice": 10,
+          "sellPrice": 10,
+          "stockQuantity": 0,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "S"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productName": "test",
+          "listPrice": 10,
+          "sellPrice": 10,
+          "stockQuantity": 10,
+          "attributes": [
+            {
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "S"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productName": "test",
+          "listPrice": 10,
+          "sellPrice": 10,
+          "stockQuantity": 10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productName": "test",
+          "listPrice": 10,
+          "sellPrice": 10,
+          "stockQuantity": 10,
+          "attributes": []
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productName": "test",
+          "listPrice": 10,
+          "sellPrice": 10,
+          "stockQuantity": 10
+        }
+      },
+      {
+        "expected": false,
+        "data": {}
+      }
+    ]
+  },
+  {
+    "name": "validateCreateNewProductInput",
+    "data": [
+      {
+        "expected": true,
+        "data": {
+          "name": "test product",
+          "briefDescription": "test product",
+          "catalogIds": ["", ""],
+          "brandName": "OEM",
+          "detailDescription": "test product",
+          "products": [
+            {
+              "productName": "test A",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Red"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "S"
+                }
+              ]
+            },
+            {
+              "productName": "test B",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Yellow"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "M"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "briefDescription": "test product",
+          "catalogIds": ["", ""],
+          "brandName": "OEM",
+          "detailDescription": "test product",
+          "products": [
+            {
+              "productName": "test A",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Red"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "S"
+                }
+              ]
+            },
+            {
+              "productName": "test B",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Yellow"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "M"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "",
+          "briefDescription": "test product",
+          "catalogIds": ["", ""],
+          "brandName": "OEM",
+          "detailDescription": "test product",
+          "products": [
+            {
+              "productName": "test A",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Red"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "S"
+                }
+              ]
+            },
+            {
+              "productName": "test B",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Yellow"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "M"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "test product",
+          "catalogIds": ["", ""],
+          "brandName": "OEM",
+          "detailDescription": "test product",
+          "products": [
+            {
+              "productName": "test A",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Red"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "S"
+                }
+              ]
+            },
+            {
+              "productName": "test B",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Yellow"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "M"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "test product",
+          "briefDescription": "",
+          "catalogIds": ["", ""],
+          "brandName": "OEM",
+          "detailDescription": "test product",
+          "products": [
+            {
+              "productName": "test A",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Red"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "S"
+                }
+              ]
+            },
+            {
+              "productName": "test B",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Yellow"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "M"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "test product",
+          "briefDescription": "test product",
+          "brandName": "OEM",
+          "detailDescription": "test product",
+          "products": [
+            {
+              "productName": "test A",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Red"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "S"
+                }
+              ]
+            },
+            {
+              "productName": "test B",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Yellow"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "M"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "test product",
+          "briefDescription": "test product",
+          "catalogIds": [],
+          "brandName": "OEM",
+          "detailDescription": "test product",
+          "products": [
+            {
+              "productName": "test A",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Red"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "S"
+                }
+              ]
+            },
+            {
+              "productName": "test B",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Yellow"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "M"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "test product",
+          "briefDescription": "test product",
+          "catalogIds": ["", ""],
+          "detailDescription": "test product",
+          "products": [
+            {
+              "productName": "test A",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Red"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "S"
+                }
+              ]
+            },
+            {
+              "productName": "test B",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Yellow"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "M"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "test product",
+          "briefDescription": "test product",
+          "catalogIds": ["", ""],
+          "brandName": "",
+          "detailDescription": "test product",
+          "products": [
+            {
+              "productName": "test A",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Red"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "S"
+                }
+              ]
+            },
+            {
+              "productName": "test B",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Yellow"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "M"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "test product",
+          "briefDescription": "test product",
+          "catalogIds": ["", ""],
+          "brandName": "OEM",
+          "products": [
+            {
+              "productName": "test A",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Red"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "S"
+                }
+              ]
+            },
+            {
+              "productName": "test B",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Yellow"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "M"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "test product",
+          "briefDescription": "test product",
+          "catalogIds": ["", ""],
+          "brandName": "OEM",
+          "detailDescription": "",
+          "products": [
+            {
+              "productName": "test A",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Red"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "S"
+                }
+              ]
+            },
+            {
+              "productName": "test B",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Yellow"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "M"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "test product",
+          "briefDescription": "test product",
+          "catalogIds": ["", ""],
+          "brandName": "OEM",
+          "detailDescription": "test product"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "test product",
+          "briefDescription": "test product",
+          "catalogIds": ["", ""],
+          "brandName": "OEM",
+          "detailDescription": "test product",
+          "products": []
+        }
+      },
+      {
+        "expected": false,
+        "data": {}
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "test product",
+          "briefDescription": "test product",
+          "catalogIds": ["", ""],
+          "brandName": "OEM",
+          "detailDescription": "test product",
+          "products": [
+            {
+              "productName": "test A",
+              "listPrice": -1,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Red"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "S"
+                }
+              ]
+            },
+            {
+              "productName": "test B",
+              "listPrice": 10,
+              "sellPrice": 10,
+              "stockQuantity": 10,
+              "attributes": [
+                {
+                  "attributeName": "Color",
+                  "value": "Yellow"
+                },
+                {
+                  "attributeName": "Size",
+                  "value": "M"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "validateUpdateOneProductInput",
+    "data": [
+      {
+        "expected": true,
+        "data": {
+          "productTemplateId": "test",
+          "productId": "test",
+          "productName": "test",
+          "listPrice": 10,
+          "sellPrice": 10,
+          "stockQuantity": 10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "M"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productId": "test",
+          "productName": "test",
+          "listPrice": 10,
+          "sellPrice": 10,
+          "stockQuantity": 10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "M"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productTemplateId": "",
+          "productId": "test",
+          "productName": "test",
+          "listPrice": 10,
+          "sellPrice": 10,
+          "stockQuantity": 10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "M"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productTemplateId": "test",
+          "productName": "test",
+          "listPrice": 10,
+          "sellPrice": 10,
+          "stockQuantity": 10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "M"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productTemplateId": "test",
+          "productId": "",
+          "productName": "test",
+          "listPrice": 10,
+          "sellPrice": 10,
+          "stockQuantity": 10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "M"
+            }
+          ]
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "productTemplateId": "test",
+          "productId": "test",
+          "productName": "test",
+          "listPrice": -10,
+          "sellPrice": 10,
+          "stockQuantity": 10,
+          "attributes": [
+            {
+              "attributeName": "Color",
+              "value": "Red"
+            },
+            {
+              "attributeName": "Size",
+              "value": "M"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "validateUpdateProductInput",
+    "data": [
+      {
+        "expected": true,
+        "data": [
+          {
+            "productTemplateId": "test",
+            "productId": "test",
+            "productName": "test",
+            "listPrice": 10,
+            "sellPrice": 10,
+            "stockQuantity": 10,
+            "attributes": [
+              {
+                "attributeName": "Color",
+                "value": "Red"
+              },
+              {
+                "attributeName": "Size",
+                "value": "M"
+              }
+            ]
+          },
+          {
+            "productTemplateId": "test",
+            "productId": "test",
+            "productName": "test",
+            "listPrice": 10,
+            "sellPrice": 10,
+            "stockQuantity": 10,
+            "attributes": [
+              {
+                "attributeName": "Color",
+                "value": "Red"
+              },
+              {
+                "attributeName": "Size",
+                "value": "M"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "expected": false,
+        "data": []
+      }
+    ]
+  },
+  {
+    "name": "classifyEmailPhone",
+    "data": [
+      {
+        "expected": true,
+        "returned": "phone",
+        "data": "0123456789",
+        "expectedData": "0123456789"
+      },
+      {
+        "expected": true,
+        "returned": "email",
+        "data": "test@test.com",
+        "expectedData": "test@test.com"
+      },
+      {
+        "expected": true,
+        "returned": "email",
+        "data": "test@TEST.com",
+        "expectedData": "test@test.com"
+      },
+      {
+        "expected": false,
+        "data": "test@test"
+      },
+      {
+        "expected": false,
+        "data": "abc123456"
+      },
+      {
+        "expected": false
+      }
+    ]
+  }
+]

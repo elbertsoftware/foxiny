@@ -1,0 +1,22 @@
+{
+  "catalog is existed": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/CatalogMutations.js",
+        16
+      ]
+    ]
+  },
+  "catalog is not found": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/CatalogMutations.js",
+        35
+      ],
+      [
+        "src/resolvers/Mutations/CatalogMutations.js",
+        53
+      ]
+    ]
+  }
+}

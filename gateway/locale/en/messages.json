@@ -3,12 +3,16 @@
     "translation": "Access is denied",
     "origin": [
       [
-        "src/resolvers/Mutations/ManufacturerMutations.js",
-        14
+        "src/utils/permissionChecker.js",
+        267
       ],
       [
-        "src/resolvers/Mutations/RoleMutations.js",
-        14
+        "src/utils/permissionChecker.js",
+        317
+      ],
+      [
+        "src/utils/permissionChecker.js",
+        326
       ]
     ]
   },
@@ -17,15 +21,15 @@
     "origin": [
       [
         "src/utils/authentication.js",
-        141
+        164
       ],
       [
         "src/utils/authentication.js",
-        150
+        173
       ],
       [
         "src/utils/authentication.js",
-        157
+        180
       ]
     ]
   },
@@ -34,7 +38,7 @@
     "origin": [
       [
         "src/resolvers/Mutations/ProductMutations.js",
-        139
+        195
       ]
     ]
   },
@@ -43,7 +47,33 @@
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        550
+        622
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        662
+      ]
+    ]
+  },
+  "Cannot register retailer": {
+    "translation": "Cannot register retailer",
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        171
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        418
+      ]
+    ]
+  },
+  "Cannot update retailer": {
+    "translation": "Cannot update retailer",
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        398
       ]
     ]
   },
@@ -54,7 +84,8 @@
         "src/resolvers/Mutations/CategoryMutations.js",
         16
       ]
-    ]
+    ],
+    "obsolete": true
   },
   "Category is not found": {
     "translation": "Category is not found",
@@ -67,6 +98,20 @@
         "src/resolvers/Mutations/CategoryMutations.js",
         53
       ]
+    ],
+    "obsolete": true
+  },
+  "Confirmed": {
+    "translation": "Confirmed",
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        431
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        442
+      ]
     ]
   },
   "Invalid confirmation code": {
@@ -74,7 +119,7 @@
     "origin": [
       [
         "src/utils/authentication.js",
-        45
+        49
       ]
     ]
   },
@@ -82,32 +127,56 @@
     "translation": "Invalid input",
     "origin": [
       [
-        "src/resolvers/Mutations/UserMutations.js",
-        47
+        "src/resolvers/Mutations/MediaMutations.js",
+        42
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        99
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        133
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        168
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        168
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        252
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        252
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        423
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        96
+        54
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        151
+        121
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        241
+        195
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        312
+        300
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        405
-      ],
-      [
-        "src/resolvers/Mutations/UserMutations.js",
-        577
+        458
       ]
     ]
   },
@@ -116,7 +185,16 @@
     "origin": [
       [
         "src/resolvers/Mutations/ProductMutations.js",
-        334
+        414
+      ]
+    ]
+  },
+  "Retailer not found": {
+    "translation": "Retailer not found",
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        198
       ]
     ]
   },
@@ -124,12 +202,44 @@
     "translation": "Unable to confirm user",
     "origin": [
       [
-        "src/resolvers/Mutations/UserMutations.js",
-        113
+        "src/resolvers/Mutations/RetailerMutations.js",
+        57
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        61
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        84
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        88
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        224
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        228
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        253
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        257
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        121
+        143
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        156
       ]
     ]
   },
@@ -138,11 +248,11 @@
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        347
+        385
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        358
+        396
       ]
     ]
   },
@@ -151,7 +261,7 @@
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        254
+        313
       ]
     ]
   },
@@ -160,15 +270,7 @@
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        583
-      ],
-      [
-        "src/resolvers/Mutations/UserMutations.js",
-        597
-      ],
-      [
-        "src/resolvers/Mutations/UserMutations.js",
-        646
+        710
       ]
     ]
   },
@@ -179,18 +281,19 @@
         "src/resolvers/Mutations/UserMutations.js",
         164
       ]
-    ]
+    ],
+    "obsolete": true
   },
   "Unable to update user profile": {
     "translation": "Unable to update user profile",
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        436
+        490
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        493
+        552
       ]
     ]
   },
@@ -201,14 +304,15 @@
         "src/resolvers/Mutations/UserMutations.js",
         325
       ]
-    ]
+    ],
+    "obsolete": true
   },
   "User has been confirmed": {
     "translation": "User has been confirmed",
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        263
+        327
       ]
     ]
   },
@@ -217,15 +321,15 @@
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        352
+        390
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        545
+        617
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        602
+        658
       ]
     ]
   },
@@ -233,13 +337,30 @@
     "translation": "User not found",
     "origin": [
       [
-        "/src/utils/",
-        "src/resolvers/Mutations/RetailerMutations.js",
-        18
+        "src/resolvers/Mutations/UserMutations.js",
+        612
+      ]
+    ]
+  },
+  "Catalog is existed": {
+    "translation": "Catalog is existed",
+    "origin": [
+      [
+        "src/resolvers/Mutations/CatalogMutations.js",
+        16
+      ]
+    ]
+  },
+  "Catalog is not found": {
+    "translation": "Catalog is not found",
+    "origin": [
+      [
+        "src/resolvers/Mutations/CatalogMutations.js",
+        35
       ],
       [
-        "src/resolvers/Mutations/UserMutations.js",
-        540
+        "src/resolvers/Mutations/CatalogMutations.js",
+        53
       ]
     ]
   }

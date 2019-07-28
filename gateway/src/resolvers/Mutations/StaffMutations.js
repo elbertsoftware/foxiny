@@ -40,7 +40,7 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    // TODO: check permissions
+    // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
       "CREATE_RETAILER_APPROVAL_PROCESS",
@@ -91,7 +91,7 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    // TODO: check permissions
+    // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
       "DAPPROVE_RETAILER_REGISTRATION",
@@ -158,7 +158,7 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    // TODO: check permission
+    // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
       "DAPPROVE_RETAILER_REGISTRATION",
@@ -220,7 +220,7 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    // TODO: check permission
+    // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
       "DELETE_SELLER",
@@ -254,7 +254,7 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    // TODO: check permissions
+    // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
       "CREATE_PRODUCT_APPROVAL_PROCESS",
@@ -305,7 +305,7 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    // TODO: check permissions
+    // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
       "DAPPROVE_PRODUCT_REGISTRATION",
@@ -371,7 +371,7 @@ export const Mutation = {
     { prisma, request, cache, i18n },
     info,
   ) => {
-    // TODO: check permission
+    // NOTE: check permission
     const user = await gatekeeper.checkPermissions(
       request,
       "DAPPROVE_PRODUCT_REGISTRATION",
