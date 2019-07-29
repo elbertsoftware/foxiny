@@ -417,7 +417,7 @@ export const Mutation = {
 
     const updated = await prisma.mutation.updateManyProductRetailers({
       where: {
-        id: approval.targetIds.split(","),
+        id_in: approval.targetIds.split(","),
       },
       data: {
         enabled: false,
