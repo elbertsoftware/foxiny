@@ -1,0 +1,18 @@
+{
+  "Access is denied": {
+    "origin": [
+      [
+        "src/utils/permissionChecker.js",
+        267
+      ],
+      [
+        "src/utils/permissionChecker.js",
+        317
+      ],
+      [
+        "src/utils/permissionChecker.js",
+        326
+      ]
+    ]
+  }
+}

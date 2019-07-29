@@ -1,0 +1,134 @@
+type ProductTemplate {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  name: String
+  briefDescription: String
+  catalog: [Catalog!] @relation(link: TABLE, onDelete: SET_NULL)
+  # unit: Unit
+
+  products: [Product!] @relation(link: TABLE, onDelete: CASCADE)
+
+  # other properties
+
+  brand: Brand @relation(link: INLINE, onDelete: SET_NULL)
+
+  descriptions: [Description!] @relation(link: TABLE, onDelete: CASCADE)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Description {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  # manufactuter: Manufacturer @relation(link: TABLE, onDelete: SET_NULL)
+  retailer: Retailer @relation(link: TABLE, onDelete: SET_NULL)
+  product: Product @relation(onDelete: SET_NULL)
+
+  description: String
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Product {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  # name
+
+  productTemplate: ProductTemplate @relation(onDelete: SET_NULL)
+  productMedias: [Media!] @relation(link: TABLE, onDelete: CASCADE)
+  productRetailers: [ProductRetailer!] @relation(link: TABLE, onDelete: CASCADE)
+
+  sku: String @unique
+
+  options: [ProductOption!] @relation(link: TABLE, ondelete: CASCADE)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type ProductOption {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  attribute: ProductAttribute! @relation(ondelete: SET_NULL)
+  value: ProductAttributeValue! @relation(ondelete: SET_NULL)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type ProductAttribute {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  name: String @unique
+  values: [ProductAttributeValue] @relation(link: TABLE, name: "ProductAttributeToValue", onDelete: CASCADE)
+  productOption: [ProductOption!] @relation(link: TABLE, ondelete: SET_NULL)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type ProductAttributeValue {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  attribute: [ProductAttribute!] @relation(name: "ProductAttributeToValue", onDelete: SET_NULL)
+  name: String @unique
+  productOption: [ProductOption!] @relation(link: TABLE, ondelete: SET_NULL)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+# type ProductManufacturer {
+#   id: ID! @unique
+#   _version: Int! @default(value: "1")
+
+#   price: Int # base thousand
+#   stockQuantity: Int
+#   inStock: Boolean @default(value: false)
+#   productMedias: [Media!] @relation(name: "ProductManufacturerToMedia", onDelete: CASCADE)
+
+#   product: Product @relation(name: "ProductToProductManufacturer", onDelete: SET_NULL)
+#   manufacturer: Manufacturer @relation(name: "ManufacturerToProductManufacturer", onDelete: SET_NULL)
+
+#   rating: Int @default(value: "0")
+
+#   #warehouse
+
+#   enabled: Boolean
+
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+# }
+
+type ProductRetailer {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  productName: String @unique
+  listPrice: Int # base thousand
+  sellPrice: Int # base thousand
+  stockQuantity: Int
+  inStock: Boolean @default(value: false)
+  productMedias: [Media!] @relation(link: TABLE, onDelete: CASCADE)
+
+  product: Product @relation(onDelete: SET_NULL)
+  retailer: Retailer @relation(onDelete: SET_NULL)
+
+  rating: Int @default(value: 0)
+
+  #warehouse
+
+  enabled: Boolean @default(value: false)
+  approved: Boolean
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}

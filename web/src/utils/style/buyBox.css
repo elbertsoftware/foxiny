@@ -1,0 +1,68 @@
+.well {
+  padding: 20px;
+}
+.product-options h5 {
+  display: inline-block;
+  margin-top: 0;
+}
+.product-options .flex {
+  display: flex;
+  justify-content: space-between;
+}
+.flex h4 {
+  font-weight: 400;
+}
+#colors ul,
+#items ul {
+  margin: 0;
+  padding: 0;
+}
+#colors li {
+  display: inline-block;
+  margin: 0.25em;
+  height: 2em;
+  width: 2em;
+  border-radius: 1em;
+}
+#colors li span {
+  top: 0.375em;
+  left: 0.5em;
+}
+#items li {
+  display: inline-block;
+  margin: 0.25em;
+  height: 2em;
+  padding: 0 0.3rem 0 0.25rem;
+  min-width: 2em;
+  border: 2px solid #314657;
+  border-radius: 0.5em;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  line-height: 175%;
+  cursor: pointer;
+}
+#colors li:hover {
+  cursor: pointer;
+}
+.plus-minus-button {
+  background: #ddd;
+  border: solid 1px #ddd;
+  font-weight: 600;
+  font-size: 16px;
+  width: 32px;
+  height: 32px;
+}
+.plus-minus-button:hover {
+  cursor: pointer;
+}
+.quantity-input {
+  font-weight: 600;
+  background: #fff;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-left: none;
+  border-right: none;
+  width: 70px;
+  height: 32px;
+}

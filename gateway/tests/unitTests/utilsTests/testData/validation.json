@@ -1,0 +1,675 @@
+[
+  {
+    "name": "stringTrim",
+    "data": [{ "expected": true, "text": "  he  ll o   " }]
+  },
+  {
+    "name": "classifyEmailPhone",
+    "data": [
+      {
+        "expected": true,
+        "emailOrPhone": "elbertsoftware.tester@gmail.com",
+        "email": "elbertsoftware.tester@gmail.com"
+      },
+      { "expected": true, "emailOrPhone": "0123456789", "phone": "0123456789" }
+    ]
+  },
+  {
+    "name": "validateName",
+    "data": [
+      { "expected": true, "name": "Foxiny" },
+      { "expected": false, "name": "" },
+      { "expected": false, "name": "   " },
+      {
+        "expected": false,
+        "name": "1234567890123456789012345678901234567890123456789012345678901234+x Foxiny 1234567890123456789012345678901234567890123456789012345678901234+x Foxiny"
+      }
+    ]
+  },
+  {
+    "name": "validateEmail",
+    "data": [
+      {
+        "expected": true,
+        "email": "elbertsoftware.tester@gmail.com",
+        "output": "elbertsoftware.tester@gmail.com"
+      },
+      {
+        "expected": true,
+        "email": "elbertsoftware.tester@Gmail.com",
+        "output": "elbertsoftware.tester@gmail.com"
+      },
+      {
+        "expected": true,
+        "email": "elbertsoftware.tester@gmail.Com",
+        "output": "elbertsoftware.tester@gmail.com"
+      },
+      {
+        "expected": true,
+        "email": "elbertsoftware.tester@gmail.io",
+        "output": "elbertsoftware.tester@gmail.io"
+      },
+      {
+        "expected": true,
+        "email": "elbertsoftware@gmail.com",
+        "output": "elbertsoftware@gmail.com"
+      },
+      {
+        "expected": true,
+        "email": "elbertsoftware123@gmail.com",
+        "output": "elbertsoftware123@gmail.com"
+      },
+      {
+        "expected": true,
+        "email": "123elbertsoftware@gmail.com",
+        "output": "123elbertsoftware@gmail.com"
+      },
+      { "expected": true, "email": "123@gmail.com", "output": "123@gmail.com" },
+      { "expected": false, "email": "elbertsoftware.tester@gmail" },
+      { "expected": false, "email": "elbertsoftware.tester@" },
+      { "expected": false, "email": "elbertsoftware.tester" },
+      { "expected": false, "email": "elbertsoftware" },
+      { "expected": false, "email": "@gmail.com.io" },
+      { "expected": false, "email": "@gmail.com" },
+      { "expected": false, "email": "@gmail" },
+      { "expected": false, "email": "@" },
+      { "expected": false, "email": "elbertsoftware@tester@gmail.com" },
+      { "expected": false, "email": "elbertsoftware.tester@gmail@com" },
+      { "expected": false, "email": "~!#$%@gmail.com" },
+      { "expected": false, "email": "elbertsoftware&tester@gmail.com" },
+      { "expected": false, "email": "elbertsoftware tester@gmail.com" },
+      { "expected": false, "email": "elbertsoftware.tester@gmail com" },
+      {
+        "expected": false,
+        "email": "1234567890123456789012345678901234567890123456789012345678901234+x@gmail.com"
+      },
+      { "expected": false, "email": "" }
+    ]
+  },
+  {
+    "name": "validatePhone",
+    "data": [
+      { "expected": true, "phone": "0123456789", "output": "0123456789" },
+      { "expected": true, "phone": "0123 456 789", "output": "0123456789" },
+      { "expected": true, "phone": "0123-456-789", "output": "0123456789" },
+      { "expected": true, "phone": "0123.456.789", "output": "0123456789" },
+      { "expected": true, "phone": "0123/456/789", "output": "0123456789" },
+      { "expected": true, "phone": "+0123456789", "output": "+0123456789" },
+      { "expected": false, "phone": "a0123456789" },
+      { "expected": false, "phone": "a 0123456789" },
+      { "expected": false, "phone": "a-0123456789" },
+      { "expected": false, "phone": "+a0123456789" },
+      { "expected": false, "phone": "a.0123456789" },
+      { "expected": false, "phone": "" }
+    ]
+  },
+  {
+    "name": "validatePwd",
+    "data": [
+      { "expected": true, "password": "@abc1234" },
+      { "expected": false, "password": "@abc123" },
+      { "expected": false, "password": "abcdabcd" },
+      { "expected": false, "password": "12341234" },
+      { "expected": false, "password": "~!@#~!@#" },
+      { "expected": false, "password": "abcd1234" },
+      { "expected": false, "password": "abcd~!@#" },
+      { "expected": false, "password": "1234~!@#" },
+      { "expected": false, "password": "" }
+    ]
+  },
+  {
+    "name": "validateIsEmpty",
+    "data": [
+      { "expected": true, "value": "  abc  ", "output": "abc" },
+      { "expected": true, "value": "  a  bc  ", "output": "a bc" },
+      { "expected": false, "value": "    " },
+      { "expected": false, "value": "" }
+    ]
+  },
+  {
+    "name": "validateSecurityInfo",
+    "data": [
+      {
+        "expected": true,
+        "questionAnswerPairs": [
+          { "questionId": "abc123", "answer": "abc123" },
+          { "questionId": "abc123", "answer": "abc123" },
+          { "questionId": "abc123", "answer": "abc123" }
+        ]
+      },
+      {
+        "expected": true,
+        "questionAnswerPairs": [
+          { "question": "abc123", "answer": "abc123" },
+          { "question": "abc123", "answer": "abc123" },
+          { "question": "abc123", "answer": "abc123" }
+        ]
+      },
+      {
+        "expected": true,
+        "questionAnswerPairs": [
+          { "question": "abc123", "answer": "abc123" },
+          { "questionId": "abc123", "answer": "abc123" },
+          { "question": "abc123", "answer": "abc123" }
+        ]
+      },
+      {
+        "expected": false,
+        "questionAnswerPairs": [
+          { "question": "", "answer": "abc123" },
+          { "questionId": "abc123", "answer": "abc123" },
+          { "question": "abc123", "answer": "abc123" }
+        ]
+      },
+      {
+        "expected": false,
+        "questionAnswerPairs": [
+          { "question": "abc123", "answer": "abc123" },
+          { "questionId": "", "answer": "abc123" },
+          { "question": "abc123", "answer": "abc123" }
+        ]
+      },
+      {
+        "expected": false,
+        "questionAnswerPairs": [
+          { "question": "abc123", "answer": "abc123" },
+          { "questionId": "abc123", "answer": "" },
+          { "question": "abc123", "answer": "abc123" }
+        ]
+      },
+      {
+        "expected": false,
+        "questionAnswerPairs": [
+          { "question": "abc123", "answer": "abc123" },
+          { "questionId": "abc123", "answer": "abc123" }
+        ]
+      },
+      {
+        "expected": false,
+        "questionAnswerPairs": []
+      }
+    ]
+  },
+  {
+    "name": "validateCreateInput",
+    "data": [
+      {
+        "expected": true,
+        "data": {
+          "name": "Foxiny",
+          "email": "elbertsoftware.tester@gmail.com",
+          "password": "@abc1234"
+        }
+      },
+      {
+        "expected": true,
+        "data": {
+          "name": "Foxiny",
+          "phone": "0123456789",
+          "password": "@abc1234"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "Foxiny",
+          "email": "elbertsoftware.tester@gmail.com"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "Foxiny",
+          "phone": "0123456789"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "Foxiny",
+          "password": "@abc1234"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "name": "Foxiny",
+          "email": "elbertsoftware.tester@gmail.com",
+          "phone": "0123456789",
+          "password": "@abc1234"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "email": "elbertsoftware.tester@gmail.com",
+          "password": "@abc1234"
+        }
+      },
+      {
+        "expected": false,
+        "data": {}
+      }
+    ]
+  },
+  {
+    "name": "validateConfirmInput",
+    "data": [
+      {
+        "expected": true,
+        "data": {
+          "code": "a1b2c3",
+          "userId": "abc123"
+        }
+      },
+      {
+        "expected": true,
+        "data": {
+          "code": "a1b2c3",
+          "email": "elbertsoftware.tester@gmail.com"
+        }
+      },
+      {
+        "expected": true,
+        "data": {
+          "code": "a1b2c3",
+          "phone": "0123456789"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "code": "a1b2c3",
+          "userId": "abc123",
+          "email": "elbertsoftware.tester@gmail.com"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "code": "a1b2c3",
+          "userId": "abc123",
+          "phone": "0123456789"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "code": "a1b2c3",
+          "email": "elbertsoftware.tester@gmail.com",
+          "phone": "0123456789"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "code": "a1b2c3",
+          "userId": "abc123",
+          "email": "elbertsoftware.tester@gmail.com",
+          "phone": "0123456789"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "code": "",
+          "userId": "abc123"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "code": "a1b2c3",
+          "userId": ""
+        }
+      },
+      {
+        "expected": false,
+        "data": {}
+      }
+    ]
+  },
+  {
+    "name": "validateResendConfirmationInput",
+    "data": [
+      {
+        "expected": true,
+        "data": {
+          "userId": "abc123"
+        }
+      },
+      {
+        "expected": true,
+        "data": {
+          "email": "elbertsoftware.tester@gmail.com"
+        }
+      },
+      {
+        "expected": true,
+        "data": {
+          "phone": "0123456789"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "userId": "abc123",
+          "email": "elbertsoftware.tester@gmail.com"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "userId": "abc123",
+          "phone": "0123456789"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "email": "elbertsoftware.tester@gmail.com",
+          "phone": "0123456789"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "userId": "abc123",
+          "email": "elbertsoftware.tester@gmail.com",
+          "phone": "0123456789"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "userId": ""
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "email": ""
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "phone": ""
+        }
+      },
+      {
+        "expected": false,
+        "data": {}
+      }
+    ]
+  },
+  {
+    "name": "validateUpdateInput",
+    "data": [
+      {
+        "expected": true,
+        "data": {
+          "userId": "abc123",
+          "name": "Foxiny",
+          "email": "elbertsoftware.tester@gmail.com",
+          "phone": "0123456789",
+          "password": "@abc1234",
+          "currentPassword": "@abc1234"
+        }
+      }
+    ]
+  },
+  {
+    "name": "validateResetPwdInput",
+    "data": [
+      {
+        "expected": true,
+        "data": {
+          "securityInfo": [
+            { "questionId": "abc123", "answer": "abc123" },
+            { "question": "ABC?", "answer": "abc123" },
+            { "questionId": "abc123", "answer": "abc123" }
+          ],
+          "password": "@abc1234"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "securityInfo": [
+            { "questionId": "", "answer": "abc123" },
+            { "question": "ABC?", "answer": "abc123" },
+            { "questionId": "abc123", "answer": "abc123" }
+          ],
+          "password": "@abc1234"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "securityInfo": [
+            { "questionId": "abc123", "answer": "abc123" },
+            { "question": "ABC?", "answer": "abc123" },
+            { "questionId": "abc123", "answer": "abc123" }
+          ],
+          "password": "@abc123"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "securityInfo": [],
+          "password": "@abc123"
+        }
+      }
+    ]
+  },
+  {
+    "name": "validateImageFileType",
+    "data": [
+      {
+        "expected": true,
+        "mimetype": "image/jpeg"
+      },
+      {
+        "expected": true,
+        "mimetype": "image/gif"
+      },
+      {
+        "expected": true,
+        "mimetype": "image/png"
+      },
+      {
+        "expected": true,
+        "mimetype": "image/svg+xml"
+      },
+      {
+        "expected": false,
+        "mimetype": "text/plain"
+      },
+      {
+        "expected": false,
+        "mimetype": ""
+      }
+    ]
+  },
+  {
+    "name": "validateUploadImageInput",
+    "data": [
+      {
+        "expected": true,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc.jpg",
+          "mimetype": "image/jpeg",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {}
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc",
+          "mimetype": "image/jpeg",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": false,
+          "filename": "abc.jpg",
+          "mimetype": "image/jpeg",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": true,
+          "mimetype": "image/jpeg",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc.jpg",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc.jpg",
+          "mimetype": "image/jpeg"
+        }
+      }
+    ]
+  },
+  {
+    "name": "validateDocumentFileType",
+    "data": [
+      {
+        "expected": true,
+        "mimetype": "image/jpeg"
+      },
+      {
+        "expected": true,
+        "mimetype": "image/png"
+      },
+      {
+        "expected": true,
+        "mimetype": "image/svg+xml"
+      },
+      {
+        "expected": true,
+        "mimetype": "application/pdf"
+      },
+      {
+        "expected": true,
+        "mimetype": "application/zip"
+      },
+      {
+        "expected": true,
+        "mimetype": "application/msword"
+      },
+      {
+        "expected": true,
+        "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      },
+      {
+        "expected": false,
+        "mimetype": null
+      },
+      {
+        "expected": false,
+        "mimetype": "text"
+      }
+    ]
+  },
+  {
+    "name": "validateUploadDocumnetInput",
+    "data": [
+      {
+        "expected": true,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc.jpg",
+          "mimetype": "image/jpeg",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": true,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc.pdf",
+          "mimetype": "application/pdf",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {}
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc.txt",
+          "mimetype": "text",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc",
+          "mimetype": "image/jpeg",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": false,
+          "filename": "abc.jpg",
+          "mimetype": "image/jpeg",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": true,
+          "mimetype": "image/jpeg",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc.jpg",
+          "encoding": "8 bit"
+        }
+      },
+      {
+        "expected": false,
+        "upload": {
+          "createReadStream": true,
+          "filename": "abc.jpg",
+          "mimetype": "image/jpeg"
+        }
+      }
+    ]
+  }
+]

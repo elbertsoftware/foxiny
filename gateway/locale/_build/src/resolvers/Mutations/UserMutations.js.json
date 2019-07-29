@@ -1,0 +1,122 @@
+{
+  "Invalid input": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        54
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        121
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        195
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        300
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        458
+      ]
+    ]
+  },
+  "Unable to confirm user": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        143
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        156
+      ]
+    ]
+  },
+  "Unable to resend confirmation": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        313
+      ]
+    ]
+  },
+  "User has been confirmed": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        327
+      ]
+    ]
+  },
+  "Unable to login": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        385
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        396
+      ]
+    ]
+  },
+  "User has not been confirmed or was disabled": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        390
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        617
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        658
+      ]
+    ]
+  },
+  "Unable to update user profile": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        490
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        552
+      ]
+    ]
+  },
+  "User not found": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        612
+      ]
+    ]
+  },
+  "Cannot recover user": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        622
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        662
+      ]
+    ]
+  },
+  "Unable to reset password": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        710
+      ]
+    ]
+  }
+}

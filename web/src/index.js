@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-filename-extension */
 // @flow
 
 import React from 'react';
@@ -5,7 +6,6 @@ import ReactDOM from 'react-dom';
 import env from 'dotenv';
 
 import './index.css';
-
 import ApolloApp from './ApolloApp';
 import * as serviceWorker from './serviceWorker';
 

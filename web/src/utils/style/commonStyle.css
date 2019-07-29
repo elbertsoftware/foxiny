@@ -1,0 +1,41 @@
+.a-color-link {
+  color: #0066c0 !important;
+}
+.a-text-center {
+  text-align: center !important;
+}
+.a-color-success {
+  color: #008a00 !important;
+}
+.a-text-separator {
+  display: inline-block;
+  margin: -2px 0.67375em 0;
+  width: 1px;
+  background-color: rgb(114, 113, 113);
+  line-height: 0;
+  height: 14px;
+  vertical-align: middle;
+}
+.maintain-height {
+  height: 100%;
+}
+.inline-block {
+  display: inline-block;
+}
+.fit-img-div {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+.grow {
+  flex-grow: 1;
+}
+.spacing-left {
+  margin-left: 8px !important;
+}
+.spacing-top {
+  margin-top: 16px !important;
+}
+.spacing-top-bottom {
+  margin: 8px 0 !important;
+}

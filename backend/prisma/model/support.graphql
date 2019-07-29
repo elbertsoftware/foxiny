@@ -1,0 +1,77 @@
+# type CaseType {
+#   id: ID! @id
+#   _version: Int! @default(value: 1)
+
+#   name: String @unique
+
+#   createdAt: DateTime! @createdAt
+#   updatedAt: DateTime! @updatedAt
+# }
+
+type SupportStatus {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  name: String @unique
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type SupportCategory {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  name: String @unique
+  parentId: String
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type SupportSeverity {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  name: String @unique
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type SupportCase {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  subject: String
+  # caseType: CaseType @relation(link: INLINE, onDelete: SET_NULL)
+  status: SupportStatus @relation(link: INLINE, onDelete: SET_NULL)
+  severity: SupportSeverity @relation(link: INLINE, onDelete: SET_NULL)
+  catergory: [SupportCategory!] @relation(link: TABLE, onDelete: SET_NULL)
+
+  openedByUser: User
+    @relation(link: INLINE, name: "SupportCaseOpenedUser", onDelete: SET_NULL)
+  updatedByUser: [User]
+    @relation(link: TABLE, name: "SupportCaseUpdatedUser", onDelete: SET_NULL)
+
+  targetIds: String # contains retailerIds, manuIds, userIds or productIds
+  correspondences: [SupportCorrespondence!]
+    @relation(link: TABLE, onDelete: CASCADE)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type SupportCorrespondence {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  supportCase: SupportCase @relation(onDelete: SET_NULL)
+  respondedBy: User @relation(link: INLINE, onDelete: SET_NULL)
+
+  note: String
+  data: Json
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}

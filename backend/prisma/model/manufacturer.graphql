@@ -1,0 +1,56 @@
+type Manufacturer {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  owner: [Assignment!] @relation(onDelete: SET_NULL)
+
+  # seller info
+  businessCover: Media
+    @relation(link: INLINE, name: "ManufacturerCoverToMedia", onDelete: CASCADE) # Avatar
+  businessAvatar: Media
+    @relation(
+      link: INLINE
+      name: "ManufacturerAvatarToMedia"
+      onDelete: CASCADE
+    ) # Avatar
+  businessName: String @unique #  displayed on Manufacturer profile and foxiny listings
+  businessAddress: Address @relation(link: INLINE, onDelete: CASCADE) # one to one
+  businessPhone: String # maybe different to user's phone
+  businessEmail: String # maybe different to user's phone
+  businessLink: String @unique # contains the route of store/shop
+  # personal info
+  # socialNumber: String
+  # socialNumberImages: [Media!]
+  #   @relation(
+  #     link: TABLE
+  #     name: "ManufacturerSocialNumberImgToMedia"
+  #     onDelete: CASCADE
+  #   )
+  businessLicense: String # contains a link to file: image, pdf of license
+  businessLicenseImages: [Media!]
+    @relation(
+      link: TABLE
+      name: "ManufacturerBusinessLicenseImgToMedia"
+      onDelete: CASCADE
+    )
+
+  # Tax
+  # Billing
+  # Warehouse
+
+  # Products
+  # products: [ProductManufacturer!] @relation(link: TABLE, onDelete: CASCADE)
+
+  # Reviews, reminder to use interface/union in yoga to resolve reviews
+  #reviews: [ID!]! # list of reviews this vendor received from another members
+
+  # Rewards
+
+  # Orders
+
+  # null: waiting for approvement, false: denied/disabled, true: approved/enabled
+  enabled: Boolean
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}

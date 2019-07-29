@@ -1,0 +1,1 @@
+/* eslint-disable */module.exports={languageData:{"plurals":function(n,ord){if(ord)return n==1?"one":"other";return"other"}},messages:{"signin":"\u0110\u0103ng nh\u1EADp"}};

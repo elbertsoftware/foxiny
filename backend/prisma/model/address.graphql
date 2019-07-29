@@ -1,0 +1,30 @@
+enum Region {
+  VI # Vietnam
+  ZH # China
+  JA # Japan
+  KO # Korea
+}
+
+type Address {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  # Address description: Home, Office, Mom, Dad, Headquarter, Branch, etc.
+  description: String
+
+  # vi: Vietnam, zh: China, ja: Japan, ko: Korea (enum will be defined in graphql-yoga)
+  region: Region
+
+  # For US address now, more research on other country address
+  name: String
+  phone: String
+  street: String
+  unit: String
+  district: String
+  city: String
+  state: String
+  zip: String
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}

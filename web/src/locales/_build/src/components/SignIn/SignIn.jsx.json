@@ -1,0 +1,11 @@
+{
+  "signin": {
+    "defaults": "Đăng nhập",
+    "origin": [
+      [
+        "src/components/SignIn/SignIn.jsx",
+        64
+      ]
+    ]
+  }
+}

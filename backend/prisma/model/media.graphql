@@ -1,0 +1,15 @@
+type Media {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  name: String
+  ext: String
+  mime: String
+  size: Int # in byte
+  hash: String # hashed binary content for legitimation
+  sha256: String
+  uri: String
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}

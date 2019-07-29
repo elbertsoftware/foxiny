@@ -1,0 +1,30 @@
+type Catalog {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  name: String @unique
+  parentId: [Catalog!] @relation(link: TABLE, name: "CatalogParent")
+  children: [Catalog!]  @relation(link: TABLE, name: "CatalogChildren")
+  productTemplates: [ProductTemplate!] @relation(onDelete: SET_NULL)
+
+  trans_name: [Trans_Catalog] @relation(link: TABLE, onDelete: CASCADE)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Brand {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  brandName: String @unique
+  productTemplates: [ProductTemplate!] @relation(onDelete: SET_NULL)
+  # manufacturer: Manufacturer @relation(name: "ManufacturerToBrand", onDelete: SET_NULL)
+
+  # brandOrigin: Region # takes the region enum (from address schema)
+
+  trans_brandName: [Trans_Brand] @relation(link: TABLE, onDelete: CASCADE)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}

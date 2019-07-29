@@ -1,0 +1,72 @@
+type Permission {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  type: String @unique
+  priority: Int @default(value: 1)
+  # controller: String
+  # action: String
+  # policy: String
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Role {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  name: String @unique # Administrator, Product-Staff, Retailer-Staff, Assistant, Owner
+  description: String
+  type: String # root, assistant, authenticated, public
+  permissions: [Permission!]
+    @relation(link: TABLE, name: "RoleToPermission", onDelete: SET_NULL)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Assignment {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  user: User @relation(link: INLINE, onDelete: SET_NULL)
+  retailers: [Retailer!] @relation(link: TABLE, onDelete: SET_NULL)
+  manufacturers: [Manufacturer!] @relation(link: TABLE, onDelete: SET_NULL)
+
+  roles: [Role!] @relation(onDelete: SET_NULL)
+  permissions: [Permission!] @relation(link: TABLE, onDelete: SET_NULL)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+# TODO: mispelling
+type Policy {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  resolver: String
+
+  requiredPermissions: [Permission!]
+    @relation(link: TABLE, name: "PolicyRequirePermissions", onDelete: SET_NULL)
+  # requiredPermissions: [Permission!]
+  #   @relation(
+  #     link: TABLE
+  #     name: "RequiredResolversClaimPermission"
+  #     onDelete: SET_NULL
+  #   )
+  # exceptRoles: [Role!]
+  #   @relation(link: TABLE, name: "ExceptResolversClaimRole", onDelete: SET_NULL)
+  # exceptioPermissions: [Permission!]
+  #   @relation(
+  #     link: TABLE
+  #     name: "ExceptResolversClaimPermission"
+  #     onDelete: SET_NULL
+  #   )
+
+  description: String
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}

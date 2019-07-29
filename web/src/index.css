@@ -1,14 +1,58 @@
+@import url('https://fonts.googleapis.com/css?family=Patrick+Hand');
+
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: 'Patrick Hand';
+  font-weight: 300;
+  font-size: 20px;
+  text-rendering: optimizeLegibility;
+  overflow-x: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-width: 1000px;
+}
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+a:link,
+a:visited {
+  text-decoration: none;
+}
+
+.Toastify__toast-body {
+  font-family: 'Patrick Hand';
+}
+.Toastify__toast {
+  border-radius: 8px !important;
+}
+.Toastify__toast--error {
+  background: #d9534f !important;
+}
+.Toastify__toast--success {
+  background: #5cb85c !important;
+}
+/* Override Gliderjs to meet our needs*/
+.glider-dot.active {
+  background: #f9aa33 !important;
+}
+.glider-prev {
+  left: 23px !important;
+}
+.glider-slide {
+  padding-bottom: 10px;
+}
+.glider-next {
+  right: 23px !important;
+  border-radius: 3px 0 0 3px;
+}
+.glider-prev,
+.glider-next {
+  top: 40% !important;
+  color: white !important;
+}
+.glider-prev:hover,
+.glider-next:hover {
+  color: #c17b00 !important;
 }

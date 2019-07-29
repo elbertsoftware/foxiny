@@ -1,0 +1,18 @@
+{
+  "Cannot create product": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/ProductMutations.js",
+        195
+      ]
+    ]
+  },
+  "Product not found": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/ProductMutations.js",
+        414
+      ]
+    ]
+  }
+}

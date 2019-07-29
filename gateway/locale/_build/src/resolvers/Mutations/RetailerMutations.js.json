@@ -1,0 +1,86 @@
+{
+  "Unable to confirm user": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        57
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        61
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        84
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        88
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        224
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        228
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        253
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        257
+      ]
+    ]
+  },
+  "Cannot register retailer": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        171
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        418
+      ]
+    ]
+  },
+  "Retailer not found": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        198
+      ]
+    ]
+  },
+  "Cannot update retailer": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        398
+      ]
+    ]
+  },
+  "Invalid input": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        423
+      ]
+    ]
+  },
+  "Confirmed": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        431
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        442
+      ]
+    ]
+  }
+}

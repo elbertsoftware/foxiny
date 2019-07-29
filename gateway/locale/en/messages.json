@@ -1,0 +1,367 @@
+{
+  "Access is denied": {
+    "translation": "Access is denied",
+    "origin": [
+      [
+        "src/utils/permissionChecker.js",
+        267
+      ],
+      [
+        "src/utils/permissionChecker.js",
+        317
+      ],
+      [
+        "src/utils/permissionChecker.js",
+        326
+      ]
+    ]
+  },
+  "Authentication required": {
+    "translation": "Authentication required",
+    "origin": [
+      [
+        "src/utils/authentication.js",
+        164
+      ],
+      [
+        "src/utils/authentication.js",
+        173
+      ],
+      [
+        "src/utils/authentication.js",
+        180
+      ]
+    ]
+  },
+  "Cannot create product": {
+    "translation": "Cannot create product",
+    "origin": [
+      [
+        "src/resolvers/Mutations/ProductMutations.js",
+        195
+      ]
+    ]
+  },
+  "Cannot recover user": {
+    "translation": "Cannot recover user",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        622
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        662
+      ]
+    ]
+  },
+  "Cannot register retailer": {
+    "translation": "Cannot register retailer",
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        171
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        418
+      ]
+    ]
+  },
+  "Cannot update retailer": {
+    "translation": "Cannot update retailer",
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        398
+      ]
+    ]
+  },
+  "Category is existed": {
+    "translation": "Category is existed",
+    "origin": [
+      [
+        "src/resolvers/Mutations/CategoryMutations.js",
+        16
+      ]
+    ],
+    "obsolete": true
+  },
+  "Category is not found": {
+    "translation": "Category is not found",
+    "origin": [
+      [
+        "src/resolvers/Mutations/CategoryMutations.js",
+        35
+      ],
+      [
+        "src/resolvers/Mutations/CategoryMutations.js",
+        53
+      ]
+    ],
+    "obsolete": true
+  },
+  "Confirmed": {
+    "translation": "Confirmed",
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        431
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        442
+      ]
+    ]
+  },
+  "Invalid confirmation code": {
+    "translation": "Invalid confirmation code",
+    "origin": [
+      [
+        "src/utils/authentication.js",
+        49
+      ]
+    ]
+  },
+  "Invalid input": {
+    "translation": "Invalid input",
+    "origin": [
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        42
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        99
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        133
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        168
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        168
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        252
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        252
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        423
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        54
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        121
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        195
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        300
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        458
+      ]
+    ]
+  },
+  "Product not found": {
+    "translation": "Product not found",
+    "origin": [
+      [
+        "src/resolvers/Mutations/ProductMutations.js",
+        414
+      ]
+    ]
+  },
+  "Retailer not found": {
+    "translation": "Retailer not found",
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        198
+      ]
+    ]
+  },
+  "Unable to confirm user": {
+    "translation": "Unable to confirm user",
+    "origin": [
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        57
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        61
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        84
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        88
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        224
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        228
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        253
+      ],
+      [
+        "src/resolvers/Mutations/RetailerMutations.js",
+        257
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        143
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        156
+      ]
+    ]
+  },
+  "Unable to login": {
+    "translation": "Unable to login",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        385
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        396
+      ]
+    ]
+  },
+  "Unable to resend confirmation": {
+    "translation": "Unable to resend confirmation",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        313
+      ]
+    ]
+  },
+  "Unable to reset password": {
+    "translation": "Unable to reset password",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        710
+      ]
+    ]
+  },
+  "Unable to update user": {
+    "translation": "Unable to update user",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        164
+      ]
+    ],
+    "obsolete": true
+  },
+  "Unable to update user profile": {
+    "translation": "Unable to update user profile",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        490
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        552
+      ]
+    ]
+  },
+  "Unable to upload avatar": {
+    "translation": "Unable to upload avatar",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        325
+      ]
+    ],
+    "obsolete": true
+  },
+  "User has been confirmed": {
+    "translation": "User has been confirmed",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        327
+      ]
+    ]
+  },
+  "User has not been confirmed or was disabled": {
+    "translation": "User has not been confirmed or was disabled",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        390
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        617
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        658
+      ]
+    ]
+  },
+  "User not found": {
+    "translation": "User not found",
+    "origin": [
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        612
+      ]
+    ]
+  },
+  "Catalog is existed": {
+    "translation": "Catalog is existed",
+    "origin": [
+      [
+        "src/resolvers/Mutations/CatalogMutations.js",
+        16
+      ]
+    ]
+  },
+  "Catalog is not found": {
+    "translation": "Catalog is not found",
+    "origin": [
+      [
+        "src/resolvers/Mutations/CatalogMutations.js",
+        35
+      ],
+      [
+        "src/resolvers/Mutations/CatalogMutations.js",
+        53
+      ]
+    ]
+  }
+}

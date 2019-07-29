@@ -1,0 +1,54 @@
+type User {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  # Generic data"1")
+  name: String! # required will be handled in foxiny-gateway
+  profile: String #
+  profileMedia: Media @relation(link: INLINE, name: "UserProfileToMedia", onDelete: CASCADE)
+  badgeMedias: [Media] @relation(link: TABLE, name: "UserBadgesToMedia", onDelete: SET_NULL) # badge images are predefined, do not remove them when deleting member
+  addresses: [Address!] @relation(link: TABLE, name: "UserToAddress", onDelete: CASCADE)
+  # payments: [Payment!]!
+
+  # Fields needed for email or phone authentication
+  email: String @unique # required and uniqueness will be handled in foxiny-gateway
+  phone: String @unique # required and uniqueness will be handled in foxiny-gateway
+  password: String # required will be handled in foxiny-gateway
+  # security info
+  securityAnswers: [SecurityAnswer] @relation(link: TABLE, onDelete: CASCADE)
+
+  # account state
+  enabled: Boolean @default(value: false) # required will be handled in foxiny-gateway
+  recoverable: Boolean @default(value: false)
+  #blocked: Boolean! @default(value: "false")
+
+  # Permissions are combined from roles and individual permissions for managing the app
+  assignment: Assignment @relation(onDelete: CASCADE)
+  reviews: [Review!] @relation(link: TABLE, onDelete: CASCADE)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type SecurityQuestion {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  question: String # required and uniqueness will be handled in foxiny-gateway
+  securityAnswers: [SecurityAnswer!] @relation(link: TABLE, onDelete: CASCADE)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type SecurityAnswer {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  answer: String # required and uniqueness will be handled in foxiny-gateway
+  user: User @relation(onDelete: SET_NULL)
+  securityQuestion: SecurityQuestion @relation(onDelete: SET_NULL)
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}

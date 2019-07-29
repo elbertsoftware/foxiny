@@ -1,0 +1,34 @@
+type Language {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  languageCode: String @unique
+  trans_catalog: [Trans_Catalog!] @relation(link: TABLE, onDelete: CASCADE)
+  trans_brand: [Trans_Brand!] @relation(link: TABLE, onDelete: CASCADE)
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Trans_Catalog {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  language: Language @relation(onDelete: SET_NULL)
+  catalog: Catalog @relation(onDelete: SET_NULL)
+  name: String
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Trans_Brand {
+  id: ID! @id
+  _version: Int! @default(value: 1)
+
+  language: Language @relation(onDelete: SET_NULL)
+  brand: Brand @relation(onDelete: SET_NULL)
+  brandName: String
+
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
