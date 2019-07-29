@@ -1,0 +1,2246 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/resolvers/Mutations/UserMutations.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">All files</a> / <a href="index.html">src/resolvers/Mutations</a> UserMutations.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0.62% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>1/162</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/95</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/14</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0.62% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>1/162</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721
+722
+723
+724
+725
+726
+727
+728</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// @flow
+&nbsp;
+import { t } from '@lingui/macro';
+import {
+  hashPassword,
+  verifyPassword,
+  generateConfirmation,
+  verifyConfirmation,
+  generateToken,
+  deleteTokenInCache,
+  deleteAllTokensInCache,
+  getTokenFromRequest,
+  getUserIDFromRequest,
+  cleanToken,
+} from '../../utils/authentication';
+import {
+  validateCreateInput,
+  validateConfirmInput,
+  validateSecurityInfo,
+  validateResendConfirmationInput,
+  validateUpdateInput,
+  validateResetPwdInput,
+  classifyEmailPhone,
+} from '../../utils/validation';
+import logger from '../../utils/logger';
+import { sendConfirmationEmail } from '../../utils/email';
+import { sendConfirmationText } from '../../utils/sms';
+import { sendConfirmationEsms } from '../../utils/smsVN';
+import { gatekeeper } from '../../utils/permissionChecker';
+// const { Worker } = require("worker_threads");
+// var gatekeeper = new Worker("./src/utils/permissionChecker.js");
+&nbsp;
+// TODO: un-comment sendConfirmation
+// NOTE: handling errors in a frendly way: https://www.youtube.com/watch?v=fUq1iHiDniY
+// NOTE: almost of data input will be validated, trimmed and normalized
+// TODO: check and assign roles/permissions
+&nbsp;
+export const Mutation = {
+  /**
+   * Create user
+   * user must enter: name, email or phone and pwd
+   */
+  createUser: <span class="fstat-no" title="function not covered" >as</span>ync (
+    parent,
+    { data },
+    {
+ prisma, cache, request, i18n 
+},
+    info,
+  ) =&gt; {
+    let newData;
+<span class="cstat-no" title="statement not covered" >    try {</span>
+<span class="cstat-no" title="statement not covered" >      newData = validateCreateInput(data, i18n);</span>
+    } catch (err) {
+<span class="cstat-no" title="statement not covered" >      logger.error(`🛑❌  Cannot create user ${err.message}`);</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Invalid input`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error);</span>
+    }
+&nbsp;
+    const password = <span class="cstat-no" title="statement not covered" >hashPassword(newData.password);</span>
+    const user = <span class="cstat-no" title="statement not covered" >await prisma.mutation.createUser(</span>
+      {
+        data: {
+          ...newData,
+          password, // replace plain text password with the hashed one
+          enabled: false, // user needs to confirm before the account become enabled
+          assignment: {
+            create: {
+              roles: {
+                connect: [
+                  {
+                    name: 'USER',
+                  },
+                  {
+                    name: 'MEDIA',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+      info,
+    );
+&nbsp;
+    // for transact-log
+<span class="cstat-no" title="statement not covered" >    logger.info(</span>
+      `CREATE_USER | 1 | ${newData.name} | ${newData.email
+        || undefined} | ${newData.phone || undefined} | ${newData.password}`,
+    );
+&nbsp;
+    const code = <span class="cstat-no" title="statement not covered" >generateConfirmation(</span>
+      cache,
+      user.id,
+      newData.email || newData.phone,
+    );
+&nbsp;
+    // email the code if user is signing up via email
+<span class="cstat-no" title="statement not covered" >    if (typeof newData.email === 'string') {</span>
+      // sendConfirmationEmail(newData.name, newData.email, code);
+    }
+&nbsp;
+    // text the code if user is signing up via phone
+<span class="cstat-no" title="statement not covered" >    if (typeof newData.phone === 'string') {</span>
+      // TODO: try to find out where does the number come from, US or VN or other, and choose the best way to send the code
+      // sendConfirmationText(newData.name, newData.phone, code);
+      // sendConfirmationEsms(newData.name, newData.phone, code);
+    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    return user;</span>
+  },
+&nbsp;
+  /**
+   * Confirm user
+   * Confirm email or phone
+   */
+  confirmUser: <span class="fstat-no" title="function not covered" >as</span>ync (parent, { data }, { prisma, cache, i18n }, info) =&gt; {
+    let newData;
+<span class="cstat-no" title="statement not covered" >    try {</span>
+<span class="cstat-no" title="statement not covered" >      newData = validateConfirmInput(data);</span>
+    } catch (err) {
+<span class="cstat-no" title="statement not covered" >      logger.error(`🛑❌  Cannot create user ${err.message}`);</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Invalid input`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error);</span>
+    }
+&nbsp;
+    const user = <span class="cstat-no" title="statement not covered" >await prisma.query.user({</span>
+      where: {
+        id: newData.userId,
+        email: newData.email,
+        phone: newData.phone,
+      },
+    });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (!user) {</span>
+<span class="cstat-no" title="statement not covered" >      logger.debug(</span>
+        `🛑❌  CONFIRM_USER: User ${
+          newData.userId
+            ? newData.userId
+            : newData.email
+              ? newData.email
+              : newData.phone
+        } not found`,
+      );
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Unable to confirm user`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error); </span>// try NOT to provide enough information so hackers can guess
+    }
+&nbsp;
+    // NOTE: matched contains email or phone
+    const matched = <span class="cstat-no" title="statement not covered" >await verifyConfirmation(</span>
+      cache,
+      newData.code,
+      user.id,
+      i18n,
+    );
+<span class="cstat-no" title="statement not covered" >    logger.debug(`confirmation matched: ${matched}`);</span>
+<span class="cstat-no" title="statement not covered" >    if (!matched) {</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Unable to confirm user`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error);</span>
+    }
+&nbsp;
+    // change enabled to true when matched is true
+    const updateData = <span class="cstat-no" title="statement not covered" >classifyEmailPhone(matched);</span>
+<span class="cstat-no" title="statement not covered" >    updateData.enabled = true;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    await prisma.mutation.updateUser({</span>
+      where: {
+        id: user.id,
+      },
+      data: updateData,
+    });
+&nbsp;
+    // for transact-log
+<span class="cstat-no" title="statement not covered" >    logger.info(</span>
+      `UPDATE_USER | 1 | ${user.id} | ${updateData.email || undefined} | ${
+        updateData.phone
+      }`,
+    );
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    return true;</span>
+  },
+&nbsp;
+  /**
+   * Insert or update user's security info
+   */
+  upsertSecurityInfo: <span class="fstat-no" title="function not covered" >as</span>ync (
+    parent,
+    { securityInfo },
+    {
+ prisma, cache, request, i18n 
+},
+    info,
+  ) =&gt; {
+    let newData;
+<span class="cstat-no" title="statement not covered" >    try {</span>
+<span class="cstat-no" title="statement not covered" >      newData = validateSecurityInfo(securityInfo);</span>
+    } catch (err) {
+<span class="cstat-no" title="statement not covered" >      logger.error(`🛑❌  Cannot create user ${err.message}`);</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Invalid input`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error);</span>
+    }
+&nbsp;
+    // NOTE: check permissions
+    const user = <span class="cstat-no" title="statement not covered" >await gatekeeper.checkPermissions(</span>
+      request,
+      'UPDATE_SECURITY_INFO',
+      i18n,
+    );
+&nbsp;
+    // const user = await prisma.query.user({
+    //   where: {
+    //     id: userId,
+    //   },
+    // });
+&nbsp;
+    // if (!user) {
+    //   logger.debug(`🛑❌  CREATE_SECURITY_INFO: User ${userId} not found`);
+    //   const error = i18n._(t`Unable to update user`);
+    //   throw new Error(error); // try NOT to provide enough information so hackers can guess
+    // }
+&nbsp;
+    // NOTE: insert new question (if user enters) and create to-be-updated data
+    const updateData = <span class="cstat-no" title="statement not covered" >[];</span>
+<span class="cstat-no" title="statement not covered" >    for (let i = 0; i &lt; 3; i++) {</span>
+      // if question is existed in db, just re-use the question id
+<span class="cstat-no" title="statement not covered" >      if (newData[i].questionId) {</span>
+<span class="cstat-no" title="statement not covered" >        updateData.push({</span>
+          questionId: newData[i].questionId,
+          answer: newData[i].answer,
+        });
+      } else {
+        // else insert the new one to db and get its question id
+        const question = <span class="cstat-no" title="statement not covered" >await prisma.mutation.createSecurityQuestion({</span>
+          data: {
+            question: newData[i].question,
+          },
+        });
+&nbsp;
+        // for transact-log
+<span class="cstat-no" title="statement not covered" >        logger.info(`CREATE_SECQUES | 1 | ${newData[i].question}`);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        updateData.push({</span>
+          questionId: question.id,
+          answer: newData[i].answer,
+        });
+      }
+    }
+&nbsp;
+    // NOTE: delete old securityInfo and insert the new one
+    const updatedUser = <span class="cstat-no" title="statement not covered" >await prisma.mutation.updateUser({</span>
+      where: {
+        id: user.id,
+      },
+      data: {
+        securityAnswers: {
+          deleteMany: {
+            createdAt_lt: new Date(),
+          },
+          // cast Question&amp;AnswerPairs from input to securityAnswer before mutating
+          create: updateData.map(<span class="fstat-no" title="function not covered" >pa</span>ir =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+            securityQuestion: {
+              connect: {
+                id: pair.questionId,
+              },
+            },
+            answer: pair.answer,
+          })),
+        },
+        recoverable: true,
+      },
+      info,
+    });
+&nbsp;
+    // for transact-log
+<span class="cstat-no" title="statement not covered" >    logger.info(</span>
+      `UPSERT_SECINFO | 1 | ${user.id} | ${updateData[0].questionId} | ${
+        updateData[0].answer
+      } | ${updateData[1].questionId} | ${updateData[1].answer} | ${
+        updateData[2].questionId
+      } | ${updateData[2].answer}`,
+    );
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    return updatedUser;</span>
+  },
+&nbsp;
+  /**
+   * Resend confirmation
+   * using this to send a confirmation code to phone or email
+   */
+  resendConfirmation: <span class="fstat-no" title="function not covered" >as</span>ync (
+    parent,
+    { data },
+    {
+ prisma, cache, request, i18n 
+},
+    info,
+  ) =&gt; {
+    // TODO: check ip before perform this mutation, prevent that ip sends tons of requests
+&nbsp;
+    // NOTE: (for client) one of three: userId, email and phone is accepted only
+    let newData;
+<span class="cstat-no" title="statement not covered" >    try {</span>
+<span class="cstat-no" title="statement not covered" >      newData = validateResendConfirmationInput(data);</span>
+    } catch (err) {
+<span class="cstat-no" title="statement not covered" >      logger.error(`🛑❌  Cannot create user ${err.message}`);</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Invalid input`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error);</span>
+    }
+&nbsp;
+    const user = <span class="cstat-no" title="statement not covered" >await prisma.query.user({</span>
+      where: {
+        id: newData.userId,
+        email: newData.email,
+        phone: newData.phone,
+      },
+    });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (!user) {</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Unable to resend confirmation`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error); </span>// try NOT to provide enough information so hackers can guess
+    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    logger.debug(</span>
+      `user id ${user.id}, name ${user.name}, email ${user.email}, password ${
+        user.phone
+      }, enabled ${user.enabled}`,
+    );
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (</span>
+      user.enabled
+      &amp;&amp; (newData.email === user.email || newData.phone === user.phone)
+    ) {
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`User has been confirmed`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error);</span>
+    }
+&nbsp;
+    const code = <span class="cstat-no" title="statement not covered" >generateConfirmation(</span>
+      cache,
+      user.id,
+      newData.email || newData.phone || user.email || user.phone,
+    );
+&nbsp;
+    // case: user updates info and confirm new info
+    // case: user wants to confirm account after signed up but not confirmed yet (disconnect or ST else)
+<span class="cstat-no" title="statement not covered" >    if (user.enabled) {</span>
+<span class="cstat-no" title="statement not covered" >      if (typeof newData.email === 'string') {</span>
+        // sendConfirmationEmail(user.name, newData.email, code);
+<span class="cstat-no" title="statement not covered" >        logger.debug('Email resent');</span>
+      }
+&nbsp;
+      // text the code if user is signing up via phone
+<span class="cstat-no" title="statement not covered" >      if (typeof newData.phone === 'string') {</span>
+        // sendConfirmationText(user.name, newData.phone, code);
+        // sendConfirmationEsms(user.name, newData.phone, code);
+<span class="cstat-no" title="statement not covered" >        logger.debug('Phone resent');</span>
+      }
+<span class="cstat-no" title="statement not covered" >      return true;</span>
+    }
+&nbsp;
+    // email the code if user is signing up via email
+<span class="cstat-no" title="statement not covered" >    if (typeof user.email === 'string') {</span>
+      // sendConfirmationEmail(user.name, user.email, code);
+<span class="cstat-no" title="statement not covered" >      logger.debug('Email resent');</span>
+    }
+&nbsp;
+    // text the code if user is signing up via phone
+<span class="cstat-no" title="statement not covered" >    if (typeof user.phone === 'string') {</span>
+      // sendConfirmationText(user.name, user.phone, code);
+      // sendConfirmationEsms(user.name, user.phone, code);
+<span class="cstat-no" title="statement not covered" >      logger.debug('Phone resent');</span>
+    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    return true;</span>
+  },
+&nbsp;
+  /**
+   * login
+   */
+  login: <span class="fstat-no" title="function not covered" >as</span>ync (parent, { data }, {
+ prisma, request, cache, i18n 
+}, info) =&gt; {
+    const user = <span class="cstat-no" title="statement not covered" >await prisma.query.user(</span>
+      {
+        where: {
+          email: data.email,
+          phone: data.phone,
+        },
+      },
+      '{ id password enabled assignment { id retailers { id } }}',
+    );
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (!user) {</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Unable to login`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error); </span>// try NOT to provide enough information so hackers can guess
+    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (!user.enabled) {</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`User has not been confirmed or was disabled`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error);</span>
+    }
+&nbsp;
+    const matched = <span class="cstat-no" title="statement not covered" >verifyPassword(data.password, user.password);</span>
+<span class="cstat-no" title="statement not covered" >    if (!matched) {</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Unable to login`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error); </span>// try NOT to provide enough information so hackers can guess
+    }
+&nbsp;
+    // remove expired tokens
+    // every time user login, scan user hashed-set to find which token is expired and remove it
+<span class="cstat-no" title="statement not covered" >    await cleanToken(user.id, cache);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    return {</span>
+      userId: user.id,
+      hasRetailers: !!(
+        user.assignment
+        &amp;&amp; user.assignment.retailers
+        &amp;&amp; user.assignment.retailers.length &gt; 0
+      ),
+      // hasManufacturer: user.assignment.manufacturers &amp;&amp; user.assignment.manufacturers.length &gt; 0 ? true : false,
+      token: generateToken(user.id, request, cache),
+    };
+  },
+&nbsp;
+  /**
+   * log out
+   */
+  logout: <span class="fstat-no" title="function not covered" >as</span>ync (parent, { all }, { request, cache, i18n }) =&gt; {
+    const token = <span class="cstat-no" title="statement not covered" >getTokenFromRequest(request);</span>
+    const userId = <span class="cstat-no" title="statement not covered" >await getUserIDFromRequest(request, cache, i18n);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (all) {</span>
+<span class="cstat-no" title="statement not covered" >      deleteAllTokensInCache(cache, userId);</span>
+    } else {
+<span class="cstat-no" title="statement not covered" >      deleteTokenInCache(cache, userId, token);</span>
+    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    return {</span>
+      token,
+      userId,
+    };
+  },
+&nbsp;
+  /**
+   * update user
+   * user must verify before updateing email/phone/pwd
+   */
+  updateUser: <span class="fstat-no" title="function not covered" >as</span>ync (
+    parent,
+    { data },
+    {
+ prisma, request, cache, i18n 
+},
+    info,
+  ) =&gt; {
+    // NOTE: check permissions
+    const user = <span class="cstat-no" title="statement not covered" >await gatekeeper.checkPermissions(</span>
+      request,
+      'UPDATE_USER_PROFILE',
+      i18n,
+    );
+&nbsp;
+    let newData;
+<span class="cstat-no" title="statement not covered" >    try {</span>
+<span class="cstat-no" title="statement not covered" >      newData = validateUpdateInput(data);</span>
+    } catch (err) {
+<span class="cstat-no" title="statement not covered" >      logger.error(`🛑❌  Cannot create user ${err.message}`);</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Invalid input`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error);</span>
+    }
+&nbsp;
+    const {
+ email, phone, password, currentPassword 
+} = <span class="cstat-no" title="statement not covered" >newData;</span>
+<span class="cstat-no" title="statement not covered" >    delete newData.password;</span>
+<span class="cstat-no" title="statement not covered" >    delete newData.currentPassword;</span>
+<span class="cstat-no" title="statement not covered" >    delete newData.email;</span>
+<span class="cstat-no" title="statement not covered" >    delete newData.phone;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    logger.debug(phone);</span>
+&nbsp;
+    const updateData = <span class="cstat-no" title="statement not covered" >{ ...newData };</span>
+&nbsp;
+    // TODO: For user account recovery purpose, sensitive info like email, phone, password, etc. need to be archived
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    try {</span>
+      let canUpdate = <span class="cstat-no" title="statement not covered" >false;</span>
+      // verify current password
+      // const user = await prisma.query.user(
+      //   {
+      //     where: {
+      //       id: user.id,
+      //     },
+      //   },
+      //   "{ id name email phone password }",
+      // );
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      if (currentPassword) {</span>
+<span class="cstat-no" title="statement not covered" >        canUpdate = verifyPassword(currentPassword, user.password);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        if (!canUpdate) {</span>
+          const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Unable to update user profile`);</span>
+<span class="cstat-no" title="statement not covered" >          throw new Error(error);</span>
+        }
+      }
+&nbsp;
+      // email is about to be changed
+<span class="cstat-no" title="statement not covered" >      if (typeof email === 'string' &amp;&amp; canUpdate) {</span>
+        const code = <span class="cstat-no" title="statement not covered" >generateConfirmation(cache, user.id, email);</span>
+&nbsp;
+        // sendConfirmationEmail(user.name, email, code);
+<span class="cstat-no" title="statement not covered" >        logger.debug('🔵✅  UPDATE USER: Change Email Confirmation Sent');</span>
+&nbsp;
+        // the update email flow is end when user confirms by enter the code
+        // TODO: Archive current email somewhere else
+      }
+&nbsp;
+      // phone is about to be changed
+<span class="cstat-no" title="statement not covered" >      if (typeof phone === 'string' &amp;&amp; canUpdate) {</span>
+        const code = <span class="cstat-no" title="statement not covered" >generateConfirmation(cache, user.id, phone);</span>
+&nbsp;
+        // sendConfirmationText(user.name, phone, code);
+        // sendConfirmationEsms(user.name, phone, code);
+<span class="cstat-no" title="statement not covered" >        logger.debug('🔵✅  UPDATE USER: Change Phone Confirmation Sent');</span>
+&nbsp;
+        // the update email flow is end when user confirms by enter the code
+        // TODO: Archive current phone somewhere else
+      }
+&nbsp;
+      // both password and currentPassword present which means password is about to be changed
+<span class="cstat-no" title="statement not covered" >      if (</span>
+        typeof password === 'string'
+        &amp;&amp; typeof currentPassword === 'string'
+        &amp;&amp; canUpdate
+      ) {
+<span class="cstat-no" title="statement not covered" >        updateData.password = hashPassword(password);</span>
+&nbsp;
+        // TODO: Archive current password somewhere else
+      }
+&nbsp;
+      // TODO: Clean all token after email/phone/pwd changing?
+      // deleteAllTokensInCache(cache, user.id);
+&nbsp;
+      const updatedUser = <span class="cstat-no" title="statement not covered" >prisma.mutation.updateUser(</span>
+        {
+          where: {
+            id: user.id,
+          },
+          data: updateData,
+        },
+        info,
+      );
+&nbsp;
+      // for transact-log
+<span class="cstat-no" title="statement not covered" >      logger.info(</span>
+        `UPDATE_USER | 1 | ${user.id} | ${updateData.name
+          || undefined} | ${updateData.email || undefined} | ${updateData.phone
+          || undefined} | ${password || undefined}`,
+      );
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      return updatedUser;</span>
+    } catch (err) {
+<span class="cstat-no" title="statement not covered" >      logger.debug(`🛑❌  UPDATE_USER ${err}`);</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Unable to update user profile`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error); </span>// try NOT to provide enough information so hackers can guess
+    }
+  },
+&nbsp;
+  /**
+   * delete user
+   */
+  // NOTE: moved to staff_mutations.js
+  // deleteUser: async (parent, args, { prisma, request, cache, i18n }, info) =&gt; {
+  //   // NOTE: check permissions
+  //   const user = await gatekeeper.checkPermissions(request, "USER", i18n);
+&nbsp;
+  //   await checkUserPermission(prisma, cache, request, i18n, {
+  //     roles: ["ROOT"],
+  //     permissions: ["DELETE_USER"],
+  //   });
+&nbsp;
+  //   deleteAllTokensInCache(cache, user.id);
+&nbsp;
+  //   logger.info(`DELETE_USER | 1 | ${user.id}`);
+&nbsp;
+  //   return prisma.mutation.deleteUser(
+  //     {
+  //       where: {
+  //         id: user.id,
+  //       },
+  //     },
+  //     info,
+  //   );
+  // },
+&nbsp;
+  /**
+   * request reset password
+   * this will log user out of all devices
+   */
+  // TODO: check ip before performing this mutations, prevent that ip sends tons of requests
+  requestResetPwd: <span class="fstat-no" title="function not covered" >as</span>ync (
+    parent,
+    { mailOrPhone },
+    {
+ prisma, request, cache, i18n 
+},
+    info,
+  ) =&gt; {
+    const user = <span class="cstat-no" title="statement not covered" >(await prisma.query.users(</span>
+      {
+        where: {
+          OR: [
+            {
+              email: mailOrPhone,
+            },
+            {
+              phone: mailOrPhone,
+            },
+          ],
+        },
+      },
+      '{ id securityAnswers { securityQuestion { id question } } enabled recoverable}',
+    )).pop();
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (!user) {</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`User not found`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error); </span>// try NOT to provide enough information so hackers can guess
+    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (!user.enabled) {</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`User has not been confirmed or was disabled`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error);</span>
+    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (!user.recoverable) {</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Cannot recover user`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error);</span>
+    }
+&nbsp;
+    // NOTE: log out of all devices
+<span class="cstat-no" title="statement not covered" >    deleteAllTokensInCache(cache, user.id);</span>
+&nbsp;
+    // TODO: should we disable this account?
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    return {</span>
+      token: generateToken(user.id, request, cache),
+      securityQuestions: user.securityAnswers.map(<span class="fstat-no" title="function not covered" >qu</span>estion =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+        id: question.securityQuestion.id,
+        question: question.securityQuestion.question,
+      })),
+    };
+  },
+&nbsp;
+  /**
+   * reset password
+   */
+  resetPassword: <span class="fstat-no" title="function not covered" >as</span>ync (
+    parent,
+    { data },
+    {
+ prisma, request, cache, i18n 
+},
+    info,
+  ) =&gt; {
+    const user = <span class="cstat-no" title="statement not covered" >await gatekeeper.checkPermissions(</span>
+      request,
+      'RESET_USER_PWD',
+      i18n,
+    );
+&nbsp;
+    const newData = <span class="cstat-no" title="statement not covered" >validateResetPwdInput(data);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (!user.enabled) {</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`User has not been confirmed or was disabled`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error);</span>
+    }
+<span class="cstat-no" title="statement not covered" >    if (!user.recoverable) {</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Cannot recover user`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error);</span>
+    }
+&nbsp;
+    const { securityInfo, password } = <span class="cstat-no" title="statement not covered" >newData;</span>
+&nbsp;
+    const canResetPwd =      <span class="cstat-no" title="statement not covered" >securityInfo[0].answer</span>
+        === user.securityInfo.find(<span class="fstat-no" title="function not covered" >x </span>=&gt; <span class="cstat-no" title="statement not covered" >x.questionId === securityInfo[0].questionId)</span>
+          .answer
+      &amp;&amp; securityInfo[1].answer
+        === user.securityInfo.find(<span class="fstat-no" title="function not covered" >x </span>=&gt; <span class="cstat-no" title="statement not covered" >x.questionId === securityInfo[1].questionId)</span>
+          .answer
+      &amp;&amp; securityInfo[2].answer
+        === user.securityInfo.find(<span class="fstat-no" title="function not covered" >x </span>=&gt; <span class="cstat-no" title="statement not covered" >x.questionId === securityInfo[2].questionId)</span>
+          .answer
+      &amp;&amp; securityInfo.length === 3;
+&nbsp;
+    // TODO: after x tries, prevent user from trying to recover account in y minutes
+    // TODO: we can add a new number field to User
+&nbsp;
+    // change pwd if account is verified
+<span class="cstat-no" title="statement not covered" >    if (canResetPwd) {</span>
+      const updateUser = <span class="cstat-no" title="statement not covered" >{</span>
+        password: hashPassword(password),
+      };
+&nbsp;
+      // remove all tokens from cache
+<span class="cstat-no" title="statement not covered" >      deleteAllTokensInCache(cache, user.id);</span>
+&nbsp;
+      // update user's new pwd
+      const updatedUser = <span class="cstat-no" title="statement not covered" >await prisma.mutation.updateUser(</span>
+        {
+          where: {
+            id: user.id,
+          },
+          data: updateUser,
+        },
+        '{ password }',
+      );
+&nbsp;
+      // for transact-log
+<span class="cstat-no" title="statement not covered" >      logger.info(</span>
+        `RESET_PWD | 1 | ${updatedUser.id} | ${updatedUser.password}`,
+      );
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      return true;</span>
+    }
+    const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Unable to reset password`);</span>
+<span class="cstat-no" title="statement not covered" >    throw new Error(error);</span>
+  },
+};
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Mon Jul 29 2019 01:37:25 GMT-0700 (Pacific Daylight Time)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/utils/s3Uploader.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">All files</a> / <a href="index.html">src/utils</a> s3Uploader.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">16.87% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>14/83</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">18% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>9/50</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">16.67% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>1/6</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">16.25% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>13/80</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// @flow
+&nbsp;
+import AWS from 'aws-sdk';
+import cuid from 'cuid';
+import { getFileInfo } from './fsHelper';
+import logger from './logger';
+&nbsp;
+// TODO: subfolder is no-need
+// TODO: keep only filename
+&nbsp;
+// NOTE: AWS S3 declaration
+AWS.config.update({
+  accessKeyId: process.env.S3_ACCESS_KEY,
+  secretAccessKey: process.env.S3_SECRET_KEY,
+  region: process.env.S3_REGION,
+});
+&nbsp;
+const s3 = new AWS.S3({
+  apiVersion: '2006-03-01',
+  params: {
+    Bucket: process.env.S3_IMAGES_BUCKET,
+  },
+});
+&nbsp;
+/**
+ * rename uploaded filed
+ * @param {String} id userId or selleId
+ * @param {String} filename raw file name
+ * @param {String} ext file extension
+ */
+const renameFile = <span class="fstat-no" title="function not covered" >(i</span>d, filename, ext) =&gt; {
+  const newFilename = <span class="cstat-no" title="statement not covered" >`${id}_${filename}.${ext}`;</span>
+<span class="cstat-no" title="statement not covered" >  return newFilename;</span>
+};
+&nbsp;
+const saveToUser = <span class="fstat-no" title="function not covered" >as</span>ync (prisma, userId, data) =&gt; {
+  const updatedUser = <span class="cstat-no" title="statement not covered" >await prisma.mutation.updateUser(</span>
+    {
+      where: {
+        id: userId,
+      },
+      data: {
+        profileMedia: {
+          create: data,
+        },
+      },
+    },
+    `{ id profileMedia { id name ext mime size hash sha256 uri createdAt updatedAt } }`,
+  );
+&nbsp;
+  // for transact-log
+<span class="cstat-no" title="statement not covered" >  logger.info(</span>
+    `UPLOAD_AVATAR | ${userId} | ${data.uri} | ${data.name} | ${data.ext} | ${data.mime} | ${data.hash} | ${
+      data.sha256
+    } | ${data.size}`,
+  );
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return updatedUser.profileMedia;</span>
+};
+&nbsp;
+const saveToRetailer = <span class="fstat-no" title="function not covered" >as</span>ync (prisma, retailerId, data, args) =&gt; {
+<span class="cstat-no" title="statement not covered" >  if (args.isAvatar) {</span>
+    const updatedRetailer = <span class="cstat-no" title="statement not covered" >await prisma.mutation.updateRetailer(</span>
+      {
+        where: {
+          id: retailerId,
+        },
+        data: {
+          businessAvatar: {
+            create: data,
+          },
+        },
+      },
+      `{ id businessAvatar { id name ext mime size hash sha256 uri createdAt updatedAt } }`,
+    );
+    // for transact-log
+<span class="cstat-no" title="statement not covered" >    logger.info(</span>
+      `UPLOAD_BUSINESS_AVATAR | ${retailerId} | ${data.uri} | ${data.name} | ${data.ext} | ${data.mime} | ${
+        data.hash
+      } | ${data.sha256} | ${data.size}`,
+    );
+<span class="cstat-no" title="statement not covered" >    return updatedRetailer.businessAvatar;</span>
+  }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  if (args.isCover) {</span>
+    const updatedRetailer = <span class="cstat-no" title="statement not covered" >await prisma.mutation.updateRetailer(</span>
+      {
+        where: {
+          id: retailerId,
+        },
+        data: {
+          businessCover: {
+            create: data,
+          },
+        },
+      },
+      `{ id businessCover { id name ext mime size hash sha256 uri createdAt updatedAt } }`,
+    );
+    // for transact-log
+<span class="cstat-no" title="statement not covered" >    logger.info(</span>
+      `UPLOAD_BUSINESS_COVER | ${retailerId} | ${data.uri} | ${data.name} | ${data.ext} | ${data.mime} | ${
+        data.hash
+      } | ${data.sha256} | ${data.size}`,
+    );
+<span class="cstat-no" title="statement not covered" >    return updatedRetailer.businessCover;</span>
+  }
+};
+&nbsp;
+// TODO: save-to-Manufacturer is the same as save-to-Retailer
+&nbsp;
+/**
+ * Upload business profile media to aws s3
+ * @param {Object} prisma prisma server
+ * @param {Object} upload upload stream
+ * @param {Object} args includes sellerId or manufacturerId
+ */
+const s3ProfileMediaUploader = async (prisma, upload, args) =&gt; {
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!upload || args === undefined || (args.userId &amp;&amp; <span class="branch-3 cbranch-no" title="branch not covered" >args.sellerId === false)</span>) {
+<span class="cstat-no" title="statement not covered" >    throw new Error('🛑❌  S3PROFILEMEDIAUPLOADER: NO FILE OR DIRECTORIY');</span>
+  }
+  try {
+    const { createReadStream, filename, mimetype, encoding } = upload;
+&nbsp;
+    let readStream;
+&nbsp;
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (process.env.NODE_ENV &amp;&amp; process.env.NODE_ENV === 'testing') readStream = createReadStream;
+    else <span class="cstat-no" title="statement not covered" >readStream = createReadStream();</span>
+&nbsp;
+    const data = await getFileInfo(filename, args.userId || args.sellerId, createReadStream);
+&nbsp;
+    const key = <span class="cstat-no" title="statement not covered" >renameFile(args.userId || args.sellerId, data.name, data.ext);</span> // pattern: userID_tick.extention
+<span class="cstat-no" title="statement not covered" >    logger.debug(`🔵✅  READ FILE: done. UPLOADING ${key} TO S3...`);</span>
+    // Upload to S3
+    const response = <span class="cstat-no" title="statement not covered" >await s3</span>
+      .upload({
+        Key: `${args.userId ? 'users' : args.sellerId ? 'seller' : 'unknown'}/${args.userId || args.sellerId}/${key}`,
+        ACL: `public-read`,
+        Body: readStream,
+      })
+      .promise();
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    data.uri = response.Location;</span>
+<span class="cstat-no" title="statement not covered" >    data.mime = mimetype;</span>
+<span class="cstat-no" title="statement not covered" >    logger.debug(`🔵✅  UPLOADED: file location ${data.uri}`);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (args.userId) {</span>
+<span class="cstat-no" title="statement not covered" >      return saveToUser(prisma, args.userId, data);</span>
+    }
+    const belongToRetailer = <span class="cstat-no" title="statement not covered" >await prisma.query.retailer({</span>
+      where: {
+        id: args.sellerId,
+      },
+    });
+<span class="cstat-no" title="statement not covered" >    if (belongToRetailer) {</span>
+<span class="cstat-no" title="statement not covered" >      return saveToRetailer(prisma, args.sellerId, data, args);</span>
+    }
+    // else {
+    //   return saveToManufacturer(args.manufacturerId, data, args);
+    // }
+  } catch (error) {
+<span class="cstat-no" title="statement not covered" >    logger.error(`🔴❌  [foxiny-gateway] s3ProfileMediaUploader error`);</span>
+<span class="cstat-no" title="statement not covered" >    logger.error(JSON.stringify(error, undefined, 2));</span>
+<span class="cstat-no" title="statement not covered" >    throw new Error(`Cannot upload file`);</span>
+  }
+};
+&nbsp;
+const s3ProductMediasUploader = <span class="fstat-no" title="function not covered" >as</span>ync (prisma, upload, userId) =&gt; {
+<span class="cstat-no" title="statement not covered" >  if (!upload) {</span>
+<span class="cstat-no" title="statement not covered" >    throw new Error('🛑❌  S3PRODUCTMEDIASUPLOADER: NO FILE');</span>
+  }
+<span class="cstat-no" title="statement not covered" >  try {</span>
+    const { createReadStream, filename, mimetype, encoding } = <span class="cstat-no" title="statement not covered" >upload;</span>
+&nbsp;
+    let readStream;
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (process.env.NODE_ENV &amp;&amp; process.env.NODE_ENV === 'testing') <span class="cstat-no" title="statement not covered" >readStream = createReadStream;</span></span>
+    else <span class="cstat-no" title="statement not covered" >readStream = createReadStream();</span>
+&nbsp;
+    const data = <span class="cstat-no" title="statement not covered" >await getFileInfo(filename, userId, createReadStream);</span>
+&nbsp;
+    const key = <span class="cstat-no" title="statement not covered" >renameFile(userId, data.name, data.ext);</span> // pattern: userId_tick.extention
+<span class="cstat-no" title="statement not covered" >    logger.debug(`🔵✅  READ FILE: done. UPLOADING ${key} TO S3...`);</span>
+    // Upload to S3
+    const response = <span class="cstat-no" title="statement not covered" >await s3</span>
+      .upload({
+        Key: `products/${key}`,
+        ACL: `public-read`,
+        Body: readStream,
+      })
+      .promise();
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    data.uri = response.Location;</span>
+<span class="cstat-no" title="statement not covered" >    data.mime = mimetype;</span>
+<span class="cstat-no" title="statement not covered" >    logger.debug(`🔵✅  UPLOADED: file location ${data.uri}`);</span>
+&nbsp;
+    const media = <span class="cstat-no" title="statement not covered" >await prisma.mutation.createMedia({</span>
+      data,
+    });
+&nbsp;
+    // for transact-log
+<span class="cstat-no" title="statement not covered" >    logger.info(</span>
+      `UPLOAD_PRODUCT_MEDIA | ${userId} | ${data.uri} | ${data.name} | ${data.ext} | ${data.mime} | ${data.hash} | ${
+        data.sha256
+      } | ${data.size}`,
+    );
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    return media;</span>
+  } catch (error) {
+<span class="cstat-no" title="statement not covered" >    logger.error(`🔴❌  [foxiny-gateway] s3ProductMediasUploader error`);</span>
+<span class="cstat-no" title="statement not covered" >    logger.error(JSON.stringify(error, undefined, 2));</span>
+<span class="cstat-no" title="statement not covered" >    throw new Error(`Cannot upload file`);</span>
+  }
+};
+&nbsp;
+/**
+ * Upload business profile media to aws s3
+ * @param {Object} prisma prisma server
+ * @param {Object} upload upload stream
+ * @param {Object} args includes sellerId or manufacturerId
+ */
+const s3DocumentsUploader = <span class="fstat-no" title="function not covered" >as</span>ync (prisma, upload, args) =&gt; {
+<span class="cstat-no" title="statement not covered" >  if (!upload || args === undefined || !args.sellerId || (args.isBusinessLicense || args.isSocialID) === false) {</span>
+<span class="cstat-no" title="statement not covered" >    throw new Error('🛑❌  S3DOCUMENTSUPLOADER: NO FILE OR DIRECTORIY');</span>
+  }
+<span class="cstat-no" title="statement not covered" >  try {</span>
+    const { createReadStream, filename, mimetype, encoding } = <span class="cstat-no" title="statement not covered" >upload;</span>
+&nbsp;
+    let readStream;
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (process.env.NODE_ENV &amp;&amp; process.env.NODE_ENV === 'testing') <span class="cstat-no" title="statement not covered" >readStream = createReadStream;</span></span>
+    else <span class="cstat-no" title="statement not covered" >readStream = createReadStream();</span>
+&nbsp;
+    const data = <span class="cstat-no" title="statement not covered" >await getFileInfo(filename, args.sellerId, createReadStream);</span>
+&nbsp;
+    const key = <span class="cstat-no" title="statement not covered" >renameFile(args.sellerId, data.name, data.ext);</span> // pattern: userID_tick.extention
+<span class="cstat-no" title="statement not covered" >    logger.debug(`🔵✅  READ FILE: done. FILE ${key} IS UPLOADING TO S3...`);</span>
+    // Upload to S3
+    const response = <span class="cstat-no" title="statement not covered" >await s3</span>
+      .upload({
+        Key: `seller/${args.sellerId}/${
+          args.isBusinessLicense ? 'businessLicense' : args.isSocialID ? 'socialID' : 'otherDoc'
+        }/${key}`,
+        ACL: `public-read`,
+        Body: readStream,
+      })
+      .promise();
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    data.uri = response.Location;</span>
+<span class="cstat-no" title="statement not covered" >    data.mime = mimetype;</span>
+<span class="cstat-no" title="statement not covered" >    logger.debug(`🔵✅  UPLOADED: file location ${data.uri}`);</span>
+&nbsp;
+    const media = <span class="cstat-no" title="statement not covered" >await prisma.mutation.createMedia({</span>
+      data,
+    });
+&nbsp;
+    // for transact-log
+<span class="cstat-no" title="statement not covered" >    logger.info(</span>
+      `UPLOAD_DOCUMENT_MEDIA | ${args.sellerId} | ${data.uri} | ${data.name} | ${data.ext} | ${data.mime} | ${
+        data.hash
+      } | ${data.sha256} | ${data.size}`,
+    );
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    return media;</span>
+  } catch (error) {
+<span class="cstat-no" title="statement not covered" >    logger.error(`🔴❌  [foxiny-gateway] s3DocumentUploader error`);</span>
+<span class="cstat-no" title="statement not covered" >    logger.error(JSON.stringify(error, undefined, 2));</span>
+<span class="cstat-no" title="statement not covered" >    throw new Error(`Cannot upload file`);</span>
+  }
+};
+&nbsp;
+export { s3ProfileMediaUploader, s3ProductMediasUploader, s3DocumentsUploader };
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Mon Jul 29 2019 01:37:25 GMT-0700 (Pacific Daylight Time)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/utils/permissionChecker.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">All files</a> / <a href="index.html">src/utils</a> permissionChecker.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">64% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>32/50</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">79.41% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>27/34</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">57.14% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>12/21</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">65.96% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>31/47</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">57x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">210x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">161x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">79x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// @flow
+&nbsp;
+import _ from "lodash";
+import prisma from "./prisma";
+import cache from "./cache";
+import { getUserIDFromRequest } from "./authentication";
+import logger from "./logger";
+import loadPolicy from "./policy";
+&nbsp;
+const dataParser = data =&gt; {
+  return data
+    ? data.map(resolver =&gt; ({
+        resolver: resolver.resolver,
+        requiredPermissions: resolver.requiredPermissions.map(p =&gt; p.type)
+      }))
+    : <span class="branch-1 cbranch-no" title="branch not covered" >{ resolver: [], requiredPermissions: [] };</span>
+};
+&nbsp;
+class Gatekeeper {
+  #data;
+&nbsp;
+  constructor(data) {
+    this.#data = dataParser(data);
+    logger.debug("🆙 GATEKEEPER INITIALIZED");
+  }
+&nbsp;
+  init = <span class="fstat-no" title="function not covered" >da</span>ta =&gt; {
+<span class="cstat-no" title="statement not covered" >    this.#data = data;</span>
+<span class="cstat-no" title="statement not covered" >    logger.debug("🆙 GATEKEEPER INITIALIZED");</span>
+  };
+&nbsp;
+  getAllPolicies = () =&gt; {
+    return this.#data;
+  };
+&nbsp;
+  getRolesByResolver = <span class="fstat-no" title="function not covered" >re</span>solver =&gt; {
+<span class="cstat-no" title="statement not covered" >    return this.#data.find(<span class="fstat-no" title="function not covered" >x </span>=&gt; <span class="cstat-no" title="statement not covered" >x.resolver === resolver)</span>.requiredRoles;</span>
+  };
+&nbsp;
+  getPermissionsByResolver = <span class="fstat-no" title="function not covered" >re</span>solver =&gt; {
+<span class="cstat-no" title="statement not covered" >    return this.#data.find(<span class="fstat-no" title="function not covered" >x </span>=&gt; <span class="cstat-no" title="statement not covered" >x.resolver === resolver)</span>.requiredPermissions;</span>
+  };
+&nbsp;
+  async checkPermissions(requestOrUserId, resolver, i18n, sellerId = null) {
+    let userId;
+&nbsp;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (typeof requestOrUserId === "object") {
+<span class="cstat-no" title="statement not covered" >      userId = await getUserIDFromRequest(requestOrUserId, cache, i18n);</span>
+    } else {
+      userId = requestOrUserId;
+    }
+&nbsp;
+    const user = await prisma.query.user(
+      {
+        where: { id: userId }
+      },
+      "{ id email phone password enabled recoverable securityAnswers { id answer securityQuestion { id question } } assignment { id retailers { id } manufacturers { id } roles { id type permissions { id type }} permissions { id type } } }"
+    );
+    const r = this.#data.find(x =&gt; x.resolver === resolver);
+&nbsp;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!user || !r) {
+<span class="cstat-no" title="statement not covered" >      logger.error(`🔴❌  User not found or Resolver not found`);</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._("Access is denied");</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error);</span>
+    }
+&nbsp;
+    // NOTE: reconstruct data
+    const allRoles =
+      user.assignment.roles &amp;&amp; user.assignment.roles.length &gt; 0
+        ? user.assignment.roles.map(role =&gt; role.type)
+        : [];
+&nbsp;
+    let allRights =
+      user.assignment.permissions &amp;&amp; user.assignment.permissions.length &gt; 0
+        ? <span class="branch-0 cbranch-no" title="branch not covered" >user.assignment.permissions.map(<span class="fstat-no" title="function not covered" >pe</span>rmission =&gt; <span class="cstat-no" title="statement not covered" >permission.type)</span></span>
+        : [];
+&nbsp;
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (user.assignment.roles) {
+      user.assignment.roles.forEach(role =&gt; {
+        allRights = [
+          ...allRights,
+          ...role.permissions.map(right =&gt; right.type)
+        ];
+      });
+    }
+&nbsp;
+    const allRetailers =
+      user.assignment.retailers &amp;&amp; user.assignment.retailers.length &gt; 0
+        ? user.assignment.retailers
+            // .filter(retailer =&gt; retailer.enabled)
+            .map(retailer =&gt; ({
+              id: retailer.id,
+              enabled: retailer.enabled
+            }))
+        : [];
+&nbsp;
+    const allManufacturers =
+      user.assignment.manufacturers &amp;&amp; user.assignment.manufacturers.length &gt; 0
+        ? <span class="branch-0 cbranch-no" title="branch not covered" >user.assignment.manufacturers</span>
+            // .filter(manu =&gt; manu.enabled)
+            .map(<span class="fstat-no" title="function not covered" >ma</span>nu =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+              id: manu.id,
+              enabled: manu.enabled
+            }))
+        : [];
+&nbsp;
+    // NOTE: check conditions
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (
+      sellerId &amp;&amp;
+      (allRetailers.includes(sellerId) || allManufacturers.includes(sellerId))
+    ) {
+<span class="cstat-no" title="statement not covered" >      logger.error(`🔴❌  User hasn't got retailer or manufacturer`);</span>
+      const error = <span class="cstat-no" title="statement not covered" >i18n._("Access is denied");</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(error);</span>
+    }
+&nbsp;
+    if (
+      _.intersection(r.requiredPermissions, allRights).length !==
+      r.requiredPermissions.length
+    ) {
+      logger.error(`🔴❌  User does not meet policies`);
+      const error = i18n._("Access is denied");
+      throw new Error(error);
+    }
+&nbsp;
+    const userData = {
+      id: user.id,
+      email: user.email,
+      phone: user.phone,
+      password: user.password,
+      securityInfo: user.securityAnswers.map(<span class="fstat-no" title="function not covered" >pa</span>ir =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+        questionId: pair.securityQuestion.id,
+        question: pair.securityQuestion.question,
+        answerId: pair.id,
+        answer: pair.answer
+      })),
+      roles: allRoles,
+      permissions: allRights,
+      retailers: allRetailers,
+      manufacturers: allManufacturers,
+      enabled: user.enabled,
+      recoverable: user.recoverable
+    };
+&nbsp;
+    return userData;
+  }
+}
+export { Gatekeeper };
+&nbsp;
+loadPolicy()
+  .then(<span class="fstat-no" title="function not covered" >da</span>ta =&gt; {
+    const gatekeeper = <span class="cstat-no" title="statement not covered" >new Gatekeeper(data);</span>
+<span class="cstat-no" title="statement not covered" >    exports.gatekeeper = gatekeeper;</span>
+  })
+  .catch(error =&gt; {
+    logger.error(JSON.stringify(error, undefined, 2));
+  });
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Mon Jul 29 2019 01:37:25 GMT-0700 (Pacific Daylight Time)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

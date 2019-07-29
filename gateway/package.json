@@ -112,6 +112,7 @@
     "jest": "^23.6.0",
     "lingui-cli": "^1.4.5",
     "lodash": "^4.17.11",
+    "ngrok": "^3.2.4",
     "nodemon": "^1.19.1",
     "subscriptions-transport-ws": "^0.9.16"
   }

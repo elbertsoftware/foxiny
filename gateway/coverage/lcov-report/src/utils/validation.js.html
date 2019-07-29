@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/utils/validation.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">All files</a> / <a href="index.html">src/utils</a> validation.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">96.77% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>150/155</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">90.91% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>100/110</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>19/19</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">99.16% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>118/119</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">393x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">310x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">310x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">262x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// @flow
+&nbsp;
+import path from "path";
+&nbsp;
+const stringTrim = text =&gt; text &amp;&amp; text.replace(/\s\s+/g, " ").trim();
+&nbsp;
+const validateIsEmpty = value =&gt; {
+  const refined = stringTrim(value);
+  // Throw error if input is empty/null/undefined or white spaces
+  if (!refined) throw new Error("Invalid input");
+&nbsp;
+  return refined;
+};
+&nbsp;
+const classifyEmailPhone = emailOrPhone =&gt; {
+  // email pattern: mailbox @ domain
+  // email address is no longer than 63 character
+  const emailRegex = /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+-+)|([A-Za-z0-9]+\.+))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/;
+&nbsp;
+  if (emailRegex.test(emailOrPhone)) {
+    // make sure domain contains only lowercase characters
+    const [name, domain] = stringTrim(emailOrPhone).split("@");
+    const refined = `${name}@${domain.toLowerCase()}`;
+    return { email: refined };
+  }
+&nbsp;
+  const phoneRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
+&nbsp;
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (phoneRegex.test(emailOrPhone)) return { phone: emailOrPhone };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return null;</span>
+};
+&nbsp;
+export { stringTrim, validateIsEmpty, classifyEmailPhone };
+&nbsp;
+const validateEmail = email =&gt; {
+  // email pattern: mailbox @ domain
+  // email address is no longer than 63 character
+  const emailRegex = /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+-+)|([A-Za-z0-9]+\.+))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/;
+&nbsp;
+  if (!emailRegex.test(email)) throw new Error("Invalid input");
+&nbsp;
+  // make sure domain contains only lowercase characters
+  const [name, domain] = stringTrim(email).split("@");
+  const refined = `${name}@${domain.toLowerCase()}`;
+&nbsp;
+  return refined;
+};
+&nbsp;
+const validatePhone = phone =&gt; {
+  // Phone is only numbers, can be splitted into groups by dash, dot, space or splash
+  // Phone can contains plus sign at the beginning
+  const phoneRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
+&nbsp;
+  if (!phoneRegex.test(phone)) throw new Error("Invalid input");
+&nbsp;
+  // remove all special character except plus sign
+  const refined = stringTrim(phone).replace(/-|_|\s|\.|\//g, "");
+&nbsp;
+  // Phone number digits cannot greater than 15
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (refined.length &gt; 15) <span class="cstat-no" title="statement not covered" >throw new Error("Invalid input");</span>
+&nbsp;
+  return refined;
+};
+&nbsp;
+const validatePwd = password =&gt; {
+  // Pwd must containts uppercase &amp; lowercase letters, &amp; numbers &amp; special characters
+  // Pwd must be at lease 8 and not over 63 letters
+  const pwdRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&amp;])[A-Za-z\d@$!%*#?&amp;]{8,}$/;
+  if (!password || !pwdRegex.test(password)) throw new Error("Invalid input");
+&nbsp;
+  return password;
+};
+&nbsp;
+const validateName = name =&gt; {
+  const refined = validateIsEmpty(name);
+&nbsp;
+  if (refined.length &gt; 127) throw new Error("Invalid input");
+&nbsp;
+  return refined;
+};
+&nbsp;
+/**
+ * validate input before creating security questions
+ * @param {Object} questionAnswerPairs is array of object, each object has two properties: question or questionId and answer
+ */
+const validateSecurityInfo = questionAnswerPairs =&gt; {
+  if (questionAnswerPairs.length &lt; 3) throw new Error("Invalid input");
+  questionAnswerPairs.forEach(pair =&gt; {
+    if (!pair.questionId &amp;&amp; !stringTrim(pair.question))
+      throw new Error("Invalid input");
+    if (pair.questionId) validateIsEmpty(pair.questionId);
+    if (pair.question) validateIsEmpty(pair.question);
+    validateIsEmpty(pair.answer);
+  });
+&nbsp;
+  const refined = questionAnswerPairs.map(pair =&gt; {
+    const refinedQuestion = stringTrim(pair.question);
+    const refinedAnswer = stringTrim(pair.answer).toLowerCase();
+&nbsp;
+    const newPair = {};
+&nbsp;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!pair.questionId &amp;&amp; !refinedQuestion) <span class="cstat-no" title="statement not covered" >throw new Error("Invalid input");</span>
+    if (pair.questionId) newPair.questionId = validateIsEmpty(pair.questionId);
+    if (pair.question) newPair.question = validateIsEmpty(refinedQuestion);
+    newPair.answer = validateIsEmpty(refinedAnswer).toLowerCase();
+&nbsp;
+    return newPair;
+  });
+&nbsp;
+  return refined;
+};
+&nbsp;
+/**
+ * validate inputs before creating a user
+ * @param {Object} data
+ */
+const validateCreateInput = data =&gt; {
+  // To create a user, either email or phone is required
+  if ((!data.email &amp;&amp; !data.phone) || (data.email &amp;&amp; data.phone))
+    throw new Error("Invalid input");
+&nbsp;
+  const refined = {};
+&nbsp;
+  if (data.email) {
+    refined.email = validateEmail(data.email);
+  } else {
+    refined.phone = validatePhone(data.phone);
+  }
+  refined.name = validateName(data.name);
+  refined.password = validatePwd(data.password);
+&nbsp;
+  return refined;
+};
+&nbsp;
+/**
+ * validate inputs before activating user account
+ * @param {Object} data contains userId or email or phone and the code
+ */
+const validateConfirmInput = data =&gt; {
+  if (
+    !(
+      !data.userId ^
+      !data.email ^
+      !data.phone ^
+      !(data.userId &amp;&amp; data.email &amp;&amp; data.phone)
+    )
+  ) {
+    throw new Error("Invalid input");
+  }
+&nbsp;
+  const refined = {};
+&nbsp;
+  refined.code = validateIsEmpty(data.code);
+  if (data.userId) refined.userId = validateIsEmpty(data.userId);
+  if (data.email) refined.email = validateEmail(data.email);
+  if (data.phone) refined.phone = validatePhone(data.phone);
+&nbsp;
+  return refined;
+};
+&nbsp;
+/**
+ * validate inputs before resending new confirmation code
+ * only one of three values is accepted
+ * @param {Object} data contains userId or email or phone
+ */
+const validateResendConfirmationInput = data =&gt; {
+  if (
+    !(
+      !data.userId ^
+      !data.email ^
+      !data.phone ^
+      !(data.userId &amp;&amp; data.email &amp;&amp; data.phone)
+    )
+  ) {
+    throw new Error("Invalid input");
+  }
+&nbsp;
+  const refined = {};
+&nbsp;
+  if (data.email) refined.email = validateEmail(data.email);
+  if (data.phone) refined.phone = validatePhone(data.phone);
+  if (data.userId) refined.userId = validateIsEmpty(data.userId);
+&nbsp;
+  return refined;
+};
+&nbsp;
+/**
+ * validate inputs before updating a user
+ * @param {Object} data
+ */
+const validateUpdateInput = data =&gt; {
+  const refined = {};
+&nbsp;
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (data.name) refined.name = validateName(data.name);
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (data.email) refined.email = validateEmail(data.email);
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (data.phone) refined.phone = validatePhone(data.phone);
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (data.password) refined.password = validatePwd(data.password);
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (data.currentPassword)
+    refined.currentPassword = validatePwd(data.currentPassword);
+&nbsp;
+  return refined;
+};
+&nbsp;
+/**
+ * validate inputs
+ * @param {Object} data
+ */
+const validateResetPwdInput = data =&gt; {
+  const refined = {};
+&nbsp;
+  refined.securityInfo = validateSecurityInfo(data.securityInfo);
+  refined.password = validatePwd(data.password);
+&nbsp;
+  return refined;
+};
+&nbsp;
+export {
+  validateCreateInput,
+  validateSecurityInfo,
+  validateConfirmInput,
+  validateResendConfirmationInput,
+  validateUpdateInput,
+  validateResetPwdInput,
+  validateName,
+  validateEmail,
+  validatePhone,
+  validatePwd,
+};
+&nbsp;
+const IMAGE_TYPES = ["image/jpeg", "image/gif", "image/png", "image/svg+xml"];
+&nbsp;
+/**
+ * validate type of file by checking the mime type from header
+ * @param {String} mimetype MIME type
+ */
+const validateImageFileType = mimetype =&gt; {
+  if (!mimetype) throw new Error("Invalid input");
+  if (!IMAGE_TYPES.includes(mimetype))
+    throw new Error("File type is not allowed");
+};
+&nbsp;
+const validateUploadImageInput = upload =&gt; {
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!upload) <span class="cstat-no" title="statement not covered" >throw new Error("Invalid Input");</span>
+&nbsp;
+  const { createReadStream, filename, mimetype, encoding } = upload;
+&nbsp;
+  if (!createReadStream) throw new Error("Invalid input");
+  if (!filename || !path.extname(filename)) throw new Error("Invalid input");
+  if (!mimetype) throw new Error("Invalid input");
+  if (!encoding) throw new Error("Invalid input");
+&nbsp;
+  validateImageFileType(mimetype);
+};
+&nbsp;
+const DOCUMENT_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/svg+xml",
+  "application/pdf",
+  "application/zip",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
+&nbsp;
+/**
+ * validate type of file by checking the mime type from header
+ * @param {String} mimetype MIME type
+ */
+const validateDocumentFileType = mimetype =&gt; {
+  if (!mimetype) throw new Error("Invalid input");
+  if (!DOCUMENT_TYPES.includes(mimetype))
+    throw new Error("File type is not allowed");
+};
+&nbsp;
+const validateUploadDocumnetInput = upload =&gt; {
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!upload) <span class="cstat-no" title="statement not covered" >throw new Error("Invalid Input");</span>
+&nbsp;
+  const { createReadStream, filename, mimetype, encoding } = upload;
+&nbsp;
+  if (!createReadStream) throw new Error("Invalid input");
+  if (!filename || !path.extname(filename)) throw new Error("Invalid input");
+  if (!mimetype) throw new Error("Invalid input");
+  if (!encoding) throw new Error("Invalid input");
+&nbsp;
+  validateDocumentFileType(mimetype);
+};
+&nbsp;
+export {
+  validateImageFileType,
+  validateUploadImageInput,
+  validateDocumentFileType,
+  validateUploadDocumnetInput,
+};
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Mon Jul 29 2019 01:37:25 GMT-0700 (Pacific Daylight Time)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

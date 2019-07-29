@@ -1,5 +1,5 @@
 # source: http://localhost:4466/foxiny/dev
-# timestamp: Sat Jul 13 2019 09:34:23 GMT+0700 (Indochina Time)
+# timestamp: Mon Jul 29 2019 00:50:44 GMT-0700 (Pacific Daylight Time)
 
 type Address implements Node {
   id: ID!
@@ -5606,7 +5606,6 @@ type Mutation {
   deleteManyRoles(where: RoleWhereInput): BatchPayload!
   deleteManyDescriptions(where: DescriptionWhereInput): BatchPayload!
   deleteManySupportSeverities(where: SupportSeverityWhereInput): BatchPayload!
-  executeRaw(database: PrismaDatabase, query: String!): Json!
 }
 
 enum MutationType {
@@ -6465,10 +6464,6 @@ input PolicyWhereInput {
 
 input PolicyWhereUniqueInput {
   id: ID
-}
-
-enum PrismaDatabase {
-  default
 }
 
 type Product implements Node {

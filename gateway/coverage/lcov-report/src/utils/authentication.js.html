@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/utils/authentication.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">All files</a> / <a href="index.html">src/utils</a> authentication.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">71.79% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>56/78</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">56.76% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>21/37</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">71.43% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>10/14</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">71.43% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>55/77</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">107x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">107x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">107x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">107x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// @flow
+import { t } from "@lingui/macro";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import ms from "ms";
+import requestId from "request-ip";
+import cryptoRandomString from "crypto-random-string";
+&nbsp;
+import logger from "./logger";
+&nbsp;
+// TODO: clean expired tokens periodically and automatically
+// TODO: more password rules will be enforced later
+&nbsp;
+const isValidPassword = <span class="fstat-no" title="function not covered" >pa</span>ssword =&gt;
+<span class="cstat-no" title="statement not covered" >  password.length &gt;= 8 &amp;&amp; !password.toLowerCase().includes("password");</span> // repkace by the new one in validation.js
+&nbsp;
+const hashPassword = password =&gt; {
+  // if (!isValidPassword(password)) {
+  //   throw new Error('Invalid password pattern'); // try NOT to provide enough information so hackers can guess
+  // }
+&nbsp;
+  return bcrypt.hashSync(password, 12); // length of salt to be generated
+};
+&nbsp;
+const verifyPassword = (password, hashedPassword) =&gt;
+  bcrypt.compareSync(password, hashedPassword);
+&nbsp;
+const getRequestIPAddress = request =&gt; requestId.getClientIp(request);
+&nbsp;
+const generateConfirmation = (cache, userId, emailOrPhone) =&gt; {
+  const code = cryptoRandomString(
+    parseInt(process.env.CONFIRMATION_LENGTH, 10)
+  );
+  logger.debug(`generated new confirmation code ${code} for userId ${userId}`);
+&nbsp;
+  cache.set(
+    code,
+    JSON.stringify({ userId: userId, emailOrPhone: emailOrPhone }),
+    "EX",
+    ms(process.env.CONFIRMATION_EXPIRATION) / 1000
+  ); // convert to seconds
+  return code;
+};
+&nbsp;
+const verifyConfirmation = <span class="fstat-no" title="function not covered" >as</span>ync (cache, code, userId, i18n) =&gt; {
+  const data = <span class="cstat-no" title="statement not covered" >JSON.parse(await cache.get(code));</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  if (!data) {</span>
+    const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Invalid confirmation code`);</span>
+<span class="cstat-no" title="statement not covered" >    throw new Error(error);</span>
+  }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  logger.debug(</span>
+    `verifying confirmation code ${code} for userId ${userId} upon the cached userId ${
+      data.userId
+    }`
+  );
+&nbsp;
+  // delete the code after verifying
+<span class="cstat-no" title="statement not covered" >  cache.del(code);</span>
+<span class="cstat-no" title="statement not covered" >  logger.debug(</span>
+    `the confirmation code ${code} for userId ${userId} has been deleted from cache`
+  );
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return data.userId === userId &amp;&amp; data.emailOrPhone;</span>
+};
+&nbsp;
+const saveTokenToCache = (cache, userId, token, data, exp) =&gt; {
+  // NOTE: the line below doesnt set lifetime for token (each key-value pair in one hashset) so I replace with the second one, we will save an object of only ip
+  // cache.hset(userId, token, JSON.stringify(data), 'EX', exp);
+&nbsp;
+  cache.hset(userId, token, JSON.stringify({ ip: data }));
+};
+&nbsp;
+const loadTokenFromCache = async (cache, userId, token) =&gt; {
+  const data = await cache.hget(userId, token);
+  return JSON.parse(data);
+};
+&nbsp;
+const deleteTokenInCache = <span class="fstat-no" title="function not covered" >(c</span>ache, userId, token) =&gt; {
+<span class="cstat-no" title="statement not covered" >  logger.debug(`removing token ${token} on userId ${userId}`);</span>
+<span class="cstat-no" title="statement not covered" >  cache.hdel(userId, token);</span>
+};
+&nbsp;
+const deleteAllTokensInCache = (cache, userId) =&gt; {
+  logger.debug(`removing all tokens on userId ${userId}`);
+  cache.del(userId);
+};
+&nbsp;
+const generateToken = (userId, request, cache, options = null) =&gt; {
+  const payload = {
+    userId
+    // iat: Date.now(), // NOTE: claimed by default
+  };
+&nbsp;
+  // NOTE: options (object) is used for test or other reasons
+  // synchronous call since no callback supplied
+  const expiresIn =
+    options &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >options.expiresIn</span>
+      ? <span class="branch-0 cbranch-no" title="branch not covered" >options.expiresIn</span>
+      : process.env.JWT_EXPIRATION;
+  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
+  const ip = getRequestIPAddress(request);
+&nbsp;
+  // save token to redis cache
+  saveTokenToCache(cache, userId, token, ip, ms(expiresIn) / 1000); // convert to seconds
+&nbsp;
+  return token;
+};
+&nbsp;
+const getTokenFromRequest = request =&gt; {
+  // 1. Authorization from HTTP Header: http://localhost:4466/foxiny/dev (web/playground)
+  // 2. Authorization from Websocket: ws://localhost:4466/foxiny/dev (Jest unit tests)
+  const authorization =
+    request &amp;&amp; request.headers
+      ? request.headers.authorization // 1.
+      : <span class="branch-1 cbranch-no" title="branch not covered" >request.context.Authorization;</span> // 2.
+&nbsp;
+  // remove ther prefix 'Bearer '
+  const token = authorization ? authorization.replace("Bearer ", "") : null;
+  logger.debug(`authorization token ${token}`);
+&nbsp;
+  return token;
+};
+&nbsp;
+const getUserIDFromRequest = async (
+  request,
+  cache,
+  i18n,
+  requireAuthentication = true,
+  options = null
+) =&gt; {
+  const token = getTokenFromRequest(request);
+  if (token) {
+    // the verify() will throw Error if the token has been expired
+    try {
+      const expiresIn =
+        options &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >options.expiresIn</span>
+          ? <span class="branch-0 cbranch-no" title="branch not covered" >options.expiresIn</span>
+          : process.env.JWT_EXPIRATION;
+      // NOTE: add the verifyOoptions (expiresIn): same as the signOptions in generateToken (jwt needs it for checking token's lifetime)
+      const payload = jwt.verify(token, process.env.JWT_SECRET, { expiresIn }); // synchronous call since no callback supplied
+      let { userId } = payload;
+&nbsp;
+      const ip = getRequestIPAddress(request);
+      const data = await loadTokenFromCache(cache, userId, token);
+      logger.debug(`userId ${userId}, ip ${ip}, cacheIp ${data.ip}`);
+&nbsp;
+      let validated = true;
+&nbsp;
+      // check IP address and token lifetime
+      if (ip !== data.ip) {
+        validated = false;
+      }
+&nbsp;
+      // more validation goes here
+      // ...
+&nbsp;
+      if (!validated) {
+        userId = null; // clear the userId since the token is actually invalid
+&nbsp;
+        // suppress error if authentication is not required
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (requireAuthentication) {
+          const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Authentication required`);</span>
+<span class="cstat-no" title="statement not covered" >          throw new Error(error); </span>// invalid token
+        }
+      }
+&nbsp;
+      return userId;
+    } catch (error) {
+      // suppress error if authentication is not required
+<span class="cstat-no" title="statement not covered" >      if (requireAuthentication) {</span>
+        const error = <span class="cstat-no" title="statement not covered" >i18n._(t`Authentication required`);</span>
+<span class="cstat-no" title="statement not covered" >        throw new Error(error); </span>// invalid token or token expired
+      }
+    }
+  }
+&nbsp;
+  if (requireAuthentication) {
+    const error = i18n._(t`Authentication required`);
+    throw new Error(error); // custom return error message
+  }
+&nbsp;
+  return null;
+};
+&nbsp;
+// use this function in each time user login, this will scan all key in user's hashed-set, remove the expired tokens
+/**
+ * Scan and remove expired tokens of one user
+ * @param {String} userId id of user
+ * @param {Object} cache redis instance
+ */
+const cleanToken = <span class="fstat-no" title="function not covered" >as</span>ync (userId, cache) =&gt; {
+  // get all token from userId hset
+  const allTokens = <span class="cstat-no" title="statement not covered" >await cache.hgetall(userId);</span>
+&nbsp;
+  // check each token and delete if expired
+<span class="cstat-no" title="statement not covered" >  for (let token in allTokens) {</span>
+    const payload = <span class="cstat-no" title="statement not covered" >jwt.decode(token);</span>
+    // NOTE: jwt token iat takes the unix timestamp in second, convert it to ms before compare to now
+<span class="cstat-no" title="statement not covered" >    if (payload.exp * 1000 &lt; Date.now()) {</span>
+<span class="cstat-no" title="statement not covered" >      logger.debug(`Token ${token} is expired. This will be removed.`);</span>
+<span class="cstat-no" title="statement not covered" >      deleteTokenInCache(cache, userId, token);</span>
+    }
+  }
+};
+&nbsp;
+export {
+  hashPassword,
+  verifyPassword,
+  generateConfirmation,
+  verifyConfirmation,
+  generateToken,
+  deleteTokenInCache,
+  deleteAllTokensInCache,
+  getTokenFromRequest,
+  getUserIDFromRequest,
+  cleanToken
+};
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Mon Jul 29 2019 01:37:25 GMT-0700 (Pacific Daylight Time)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>
