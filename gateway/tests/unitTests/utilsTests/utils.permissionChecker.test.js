@@ -1,4 +1,4 @@
-//@flow
+// @flow
 
 // 'cross-fetch' is Fetch API polyfill which is needed by Apollo Boost to work in Node
 import "cross-fetch/polyfill";

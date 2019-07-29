@@ -1,4 +1,4 @@
-//@flow
+// @flow
 
 import "cross-fetch/polyfill";
 import jwt from "jsonwebtoken";

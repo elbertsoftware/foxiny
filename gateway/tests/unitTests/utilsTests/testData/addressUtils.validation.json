@@ -1,0 +1,277 @@
+[
+  {
+    "expected": true,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "name": "test",
+      "phone": "test",
+      "street": "test",
+      "unit": "test",
+      "city": "test",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "description": "test",
+      "name": "test",
+      "phone": "test",
+      "street": "test",
+      "unit": "test",
+      "city": "test",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "name": "test",
+      "phone": "test",
+      "street": "test",
+      "unit": "test",
+      "city": "test",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "phone": "test",
+      "street": "test",
+      "unit": "test",
+      "city": "test",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "name": "test",
+      "street": "test",
+      "unit": "test",
+      "city": "test",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "name": "test",
+      "phone": "test",
+      "unit": "test",
+      "city": "test",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "name": "test",
+      "phone": "test",
+      "street": "test",
+      "city": "test",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "name": "test",
+      "phone": "test",
+      "street": "test",
+      "unit": "test",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "name": "test",
+      "phone": "test",
+      "street": "test",
+      "unit": "test",
+      "city": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "name": "test",
+      "phone": "test",
+      "street": "test",
+      "unit": "test",
+      "city": "test",
+      "state": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "",
+      "description": "test",
+      "name": "test",
+      "phone": "test",
+      "street": "test",
+      "unit": "test",
+      "city": "test",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "",
+      "name": "test",
+      "phone": "test",
+      "street": "test",
+      "unit": "test",
+      "city": "test",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "name": "",
+      "phone": "test",
+      "street": "test",
+      "unit": "test",
+      "city": "test",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "name": "test",
+      "phone": "",
+      "street": "test",
+      "unit": "test",
+      "city": "test",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "name": "test",
+      "phone": "test",
+      "street": "",
+      "unit": "test",
+      "city": "test",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "name": "test",
+      "phone": "test",
+      "street": "test",
+      "unit": "",
+      "city": "test",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "name": "test",
+      "phone": "test",
+      "street": "test",
+      "unit": "test",
+      "city": "",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "name": "test",
+      "phone": "test",
+      "street": "test",
+      "unit": "test",
+      "city": "",
+      "state": "test",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "name": "test",
+      "phone": "test",
+      "street": "test",
+      "unit": "test",
+      "city": "test",
+      "state": "",
+      "zip": "test"
+    }
+  },
+  {
+    "expected": false,
+    "data": {
+      "region": "VI",
+      "description": "test",
+      "name": "test",
+      "phone": "test",
+      "street": "test",
+      "unit": "test",
+      "city": "test",
+      "state": "test",
+      "zip": ""
+    }
+  },
+  {
+    "expected": false,
+    "data": {}
+  }
+]

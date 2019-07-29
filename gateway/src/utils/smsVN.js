@@ -1,9 +1,11 @@
-import axios from 'axios';
-import logger from './logger';
+// @flow
+
+import axios from "axios";
+import logger from "./logger";
 
 // instance of axios
 const instance = axios.create({
-  baseURL: 'http://rest.esms.vn/MainService.svc/json',
+  baseURL: "http://rest.esms.vn/MainService.svc/json",
 });
 
 /**
@@ -24,7 +26,7 @@ const sendConfirmationEsms = (name, to, code) =>
     };
 
     instance
-      .get('/SendMultipleMessage_V4_get', {
+      .get("/SendMultipleMessage_V4_get", {
         params: data,
       })
       .then(response => {

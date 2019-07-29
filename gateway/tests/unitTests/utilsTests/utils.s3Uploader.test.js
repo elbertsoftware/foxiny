@@ -1,4 +1,4 @@
-//@flow
+// @flow
 
 import stream from "stream";
 import prisma from "../../../src/utils/prisma";

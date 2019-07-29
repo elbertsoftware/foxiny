@@ -1,9 +1,11 @@
+// @flow
+
 import { validateIsEmpty } from "../validation";
 
 const validateAddressInput = data => {
   const newData = {};
 
-  newData.region = data.region;
+  newData.region = validateIsEmpty(data.region);
   newData.description = validateIsEmpty(data.description);
   newData.name = validateIsEmpty(data.name);
   newData.phone = validateIsEmpty(data.phone);

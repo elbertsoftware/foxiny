@@ -1,5 +1,9 @@
 {
-  "presets": ["@babel/preset-env", "@babel/preset-flow"],
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-flow",
+    "@lingui/babel-preset-js"
+  ],
   "plugins": [
     ["@babel/plugin-proposal-object-rest-spread"],
     "macros",

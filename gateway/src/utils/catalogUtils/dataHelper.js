@@ -1,4 +1,4 @@
-//@flow
+// @flow
 
 const restructureCatalog = (catalog, languageCode) => {
   const friendlyCatalog = catalog.map(item => ({

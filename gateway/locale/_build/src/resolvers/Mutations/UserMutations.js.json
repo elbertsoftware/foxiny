@@ -3,31 +3,23 @@
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        47
+        54
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        96
+        121
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        151
+        195
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        241
+        300
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        312
-      ],
-      [
-        "src/resolvers/Mutations/UserMutations.js",
-        405
-      ],
-      [
-        "src/resolvers/Mutations/UserMutations.js",
-        577
+        458
       ]
     ]
   },
@@ -35,19 +27,11 @@
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        113
+        143
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        121
-      ]
-    ]
-  },
-  "Unable to update user": {
-    "origin": [
-      [
-        "src/resolvers/Mutations/UserMutations.js",
-        164
+        156
       ]
     ]
   },
@@ -55,7 +39,7 @@
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        254
+        313
       ]
     ]
   },
@@ -63,15 +47,7 @@
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        263
-      ]
-    ]
-  },
-  "Unable to upload avatar": {
-    "origin": [
-      [
-        "src/resolvers/Mutations/UserMutations.js",
-        325
+        327
       ]
     ]
   },
@@ -79,11 +55,11 @@
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        347
+        385
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        358
+        396
       ]
     ]
   },
@@ -91,15 +67,15 @@
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        352
+        390
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        545
+        617
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        602
+        658
       ]
     ]
   },
@@ -107,11 +83,11 @@
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        436
+        490
       ],
       [
         "src/resolvers/Mutations/UserMutations.js",
-        493
+        552
       ]
     ]
   },
@@ -119,7 +95,7 @@
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        540
+        612
       ]
     ]
   },
@@ -127,7 +103,11 @@
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        550
+        622
+      ],
+      [
+        "src/resolvers/Mutations/UserMutations.js",
+        662
       ]
     ]
   },
@@ -135,15 +115,7 @@
     "origin": [
       [
         "src/resolvers/Mutations/UserMutations.js",
-        583
-      ],
-      [
-        "src/resolvers/Mutations/UserMutations.js",
-        597
-      ],
-      [
-        "src/resolvers/Mutations/UserMutations.js",
-        646
+        710
       ]
     ]
   }

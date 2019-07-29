@@ -1,0 +1,218 @@
+[
+  {
+    "name": "validateCreateRetailerInput",
+    "data": [
+      {
+        "expected": false
+      },
+      {
+        "expected": false,
+        "data": {
+          "businessEmail": "test@test.com",
+          "businessPhone": "0123456789",
+          "businessAddress": {
+            "region": "VI",
+            "description": "test",
+            "name": "test",
+            "phone": "0123456789",
+            "street": "test",
+            "unit": "test",
+            "city": "test",
+            "state": "test",
+            "zip": "0123456789"
+          }
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "businessName": "",
+          "businessEmail": "test@test.com",
+          "businessPhone": "0123456789",
+          "businessAddress": {
+            "region": "VI",
+            "description": "test",
+            "name": "test",
+            "phone": "0123456789",
+            "street": "test",
+            "unit": "test",
+            "city": "test",
+            "state": "test",
+            "zip": "0123456789"
+          }
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "businessName": "test",
+          "businessPhone": "0123456789",
+          "businessAddress": {
+            "region": "VI",
+            "description": "test",
+            "name": "test",
+            "phone": "0123456789",
+            "street": "test",
+            "unit": "test",
+            "city": "test",
+            "state": "test",
+            "zip": "0123456789"
+          }
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "businessName": "test",
+          "businessEmail": "",
+          "businessPhone": "0123456789",
+          "businessAddress": {
+            "region": "VI",
+            "description": "test",
+            "name": "test",
+            "phone": "0123456789",
+            "street": "test",
+            "unit": "test",
+            "city": "test",
+            "state": "test",
+            "zip": "0123456789"
+          }
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "businessName": "test",
+          "businessEmail": "test@test.com",
+          "businessAddress": {
+            "region": "VI",
+            "description": "test",
+            "name": "test",
+            "phone": "0123456789",
+            "street": "test",
+            "unit": "test",
+            "city": "test",
+            "state": "test",
+            "zip": "0123456789"
+          }
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "businessName": "test",
+          "businessEmail": "test@test.com",
+          "businessPhone": "",
+          "businessAddress": {
+            "region": "VI",
+            "description": "test",
+            "name": "test",
+            "phone": "0123456789",
+            "street": "test",
+            "unit": "test",
+            "city": "test",
+            "state": "test",
+            "zip": "0123456789"
+          }
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "businessName": "test",
+          "businessEmail": "test@test.com",
+          "businessPhone": "0123456789",
+          "businessAddress": {}
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "businessName": "test",
+          "businessEmail": "test@test.com",
+          "businessPhone": "0123456789"
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "businessName": "test",
+          "businessEmail": "test@test.com",
+          "businessPhone": "0123456789",
+          "businessAddress": {
+            "description": "test",
+            "name": "test",
+            "phone": "0123456789",
+            "street": "test",
+            "unit": "test",
+            "city": "test",
+            "state": "test",
+            "zip": "0123456789"
+          }
+        }
+      },
+      {
+        "expected": false,
+        "data": {
+          "businessName": "test",
+          "businessEmail": "test",
+          "businessPhone": "0123456789",
+          "businessAddress": {
+            "region": "VI",
+            "description": "test",
+            "name": "test",
+            "phone": "0123456789",
+            "street": "test",
+            "unit": "test",
+            "city": "test",
+            "state": "test",
+            "zip": "0123456789"
+          }
+        }
+      },
+      {
+        "expected": true,
+        "data": {
+          "businessName": "test",
+          "businessEmail": "test@test.com",
+          "businessPhone": "0123456789",
+          "businessAddress": {
+            "region": "VI",
+            "description": "test",
+            "name": "test",
+            "phone": "0123456789",
+            "street": "test",
+            "unit": "test",
+            "city": "test",
+            "state": "test",
+            "zip": "0123456789"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "validateUpdateRetailerInput",
+    "data": [
+      {
+        "expected": true,
+        "data": {
+          "businessName": "test",
+          "businessEmail": "test@test.com",
+          "businessPhone": "0123456789",
+          "businessAddress": {
+            "region": "VI",
+            "description": "test",
+            "name": "test",
+            "phone": "0123456789",
+            "street": "test",
+            "unit": "test",
+            "city": "test",
+            "state": "test",
+            "zip": "0123456789"
+          }
+        }
+      }
+    ]
+  }
+]

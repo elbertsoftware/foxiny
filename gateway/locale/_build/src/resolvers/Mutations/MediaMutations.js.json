@@ -1,0 +1,34 @@
+{
+  "Invalid input": {
+    "origin": [
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        42
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        99
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        133
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        168
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        168
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        252
+      ],
+      [
+        "src/resolvers/Mutations/MediaMutations.js",
+        252
+      ]
+    ]
+  }
+}

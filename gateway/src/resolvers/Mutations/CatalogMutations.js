@@ -13,7 +13,7 @@ export const Mutation = {
       },
     });
     if (catalog) {
-      const error = i18n._(t`catalog is existed`);
+      const error = i18n._(t`Catalog is existed`);
       throw new Error(error);
     }
 
@@ -32,7 +32,7 @@ export const Mutation = {
       },
     });
     if (!catalog) {
-      const error = i18n._(t`catalog is not found`);
+      const error = i18n._(t`Catalog is not found`);
       throw new Error(error);
     }
 
@@ -50,8 +50,8 @@ export const Mutation = {
       },
     });
     if (!catalog) {
-      const error = i18n._(t`catalog is not found`);
-      throw new Error(`catalog is not found`);
+      const error = i18n._(t`Catalog is not found`);
+      throw new Error(`Catalog is not found`);
     }
   },
 };
