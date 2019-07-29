@@ -93,6 +93,17 @@ const NavContentEx = () => {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <ListItem
               button
+              component="a"
+              href="/sellers/seller-declaration"
+              className={classes.nested}
+            >
+              <ListItemIcon>
+                <Icon>person</Icon>
+              </ListItemIcon>
+              <ListItemText primary="Thông tin nhà bán" />
+            </ListItem>
+            <ListItem
+              button
               onClick={() => logout().then(({ data }) => {
                   if (data.logout.token) {
                     handleAfterLogout();

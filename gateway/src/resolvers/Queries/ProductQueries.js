@@ -16,7 +16,7 @@ export const Query = {
     // TODO: check permission
     const user = await gatekeeper.checkPermissions(
       request,
-      'CREATE_RETAILER_PRODUCT',
+      'CREATE_RETAIL_PRODUCT',
       i18n,
     );
 

@@ -231,22 +231,23 @@ function ListProduct(props) {
     setIsDefault(true);
   }, [onSearchChangeDebounce, searchValue]);
   // Sau khi nhận được sellers từ server, clone sellers ấy
+  const [checked, setChecked] = useState({});
   React.useEffect(() => {
     if (productsData) {
       setCloneProductData(productsData);
+      // Init component
+      const checkedArrayObject =        productsData
+        && productsData.reduce(
+          (previous, current, index) => ({
+            ...previous,
+            [`checked${index}`]: false,
+          }),
+          {},
+        );
+      setChecked(checkedArrayObject);
     }
   }, [loading, productsData]);
 
-  // Init component
-  const checkedArrayObject =    productsData
-    && productsData.reduce(
-      (previous, current, index) => ({
-        ...previous,
-        [`checked${index}`]: false,
-      }),
-      {},
-    );
-  const [checked, setChecked] = useState(checkedArrayObject);
   // Bật tắt bán hàng
   const handleChange = name => event => {
     const newObject = { ...checked };
@@ -298,6 +299,7 @@ function ListProduct(props) {
             </Button>
           </Toolbar>
         </AppBar>
+        {console.log(activeProductTemplateId, productsData)}
         <EditProduct
           dataEdit={
             productsData
@@ -616,7 +618,10 @@ function ListProduct(props) {
 }
 export default compose(
   graphql(GET_PRODUCT, {
-    options: props => ({ variables: { sellerId: getSellerId() } }),
+    options: props => ({
+      variables: { sellerId: getSellerId() },
+      notifyOnNetworkStatusChange: true,
+    }),
     props: ({ data: { loading, productsWoTemplateAfterCreated } }) => ({
       loading,
       productsData: productsWoTemplateAfterCreated,

@@ -159,7 +159,7 @@ const CaseDetailPage = ({ match, ...props }) => {
                         Category
                       </Typography>
                       <Typography className={classes.content}>
-                        Account
+                        {supportCaseInfo.catergory[0].name}
                       </Typography>
                     </div>
                   </div>
@@ -169,6 +169,7 @@ const CaseDetailPage = ({ match, ...props }) => {
             {lastRetailerApprovalProcess
               && lastRetailerApprovalProcess.map(processData => (
                 <CorrespondenceCard
+                  categoryName={supportCaseInfo.catergory[0].name}
                   processData={processData.data}
                   note={processData.note}
                   className={classes.correspondence}

@@ -100,8 +100,8 @@ const RegisterSeller = ({
         },
       });
       toast.success('Đăng ký thành công !');
+      history.push('/');
       window.location.reload();
-      history.push('/sellers/seller-declaration');
     } catch (error) {
       toast.error(
         error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra!',

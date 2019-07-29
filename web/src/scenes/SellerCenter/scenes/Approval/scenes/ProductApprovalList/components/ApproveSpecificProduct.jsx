@@ -219,7 +219,7 @@ const ApproveProduct = ({
           },
         });
         toast.success('Lưu tiến trình xét duyệt thành công.');
-        // window.location.reload();
+        window.location.reload();
       } catch (error) {
         toast.error(
           error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra!',
@@ -252,10 +252,10 @@ const ApproveProduct = ({
             },
           },
         });
-        if (resultAfterDisapproval.data.disapproveRetailer) {
+        if (resultAfterDisapproval.data.disapproveProducts) {
           setTimeout(() => {
-            window.location.reload();
             history.push(`/sellers/support/case-detail/${match.params.id}`);
+            window.location.reload();
           }, 10);
         }
       } catch (error) {
@@ -264,11 +264,12 @@ const ApproveProduct = ({
         );
       }
     }
-    // In case of surely approving the seller info
+    // In case of surely approving the product info
     if (isSubmited === 3) {
-      // Kiểm tra đã đủ số field cần duyệt chưa. Ở đây xét duyệt 2 tấm ảnh (2 field) và giá trị của các field === null (Quy ước = null nghĩa là đã verified)
+      // Kiểm tra đã đủ số field cần duyệt chưa. Ở đây xét duyệt 8 fields
+      // liên quan đến sản phẩm và giá trị của các field === null (Quy ước = null nghĩa là đã verified)
       if (
-        arrayKeyOfValues.length === 2
+        arrayKeyOfValues.length === 8
         && checkAllValuesIsNull(values.reviewValues)
       ) {
         // Approve cho seller
@@ -280,7 +281,7 @@ const ApproveProduct = ({
             },
           },
         });
-        if (resultAfterApproval.data.approveRetailer) {
+        if (resultAfterApproval.data.approveProducts) {
           toast.success('Duyệt thành công sản phẩm.');
           history.push(`/sellers/support/case-detail/${match.params.id}`);
           window.location.reload();

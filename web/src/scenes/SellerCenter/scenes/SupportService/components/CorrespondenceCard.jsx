@@ -1,6 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Paper, AppBar, Toolbar, Typography, Grid, Avatar, Link } from '@material-ui/core';
+import {
+  Paper,
+  AppBar,
+  Toolbar,
+  Typography,
+  Grid,
+  Avatar,
+  Link,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { GenerateInformMessages } from '../utils/generateInformMessage';
 
@@ -29,11 +37,22 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   },
 }));
 
-const CorrespondenceCard = ({ note, processData, className, ...props }) => {
+const CorrespondenceCard = ({
+  note,
+  processData,
+  className,
+  categoryName,
+  ...props
+}) => {
   const classes = useStyles();
   return (
     <Paper className={className}>
-      <AppBar className={classes.bar} position="static" color="inherit" elevation={0}>
+      <AppBar
+        className={classes.bar}
+        position="static"
+        color="inherit"
+        elevation={0}
+      >
         <Toolbar>
           <Typography variant="h5">Correspondence</Typography>
         </Toolbar>
@@ -45,15 +64,23 @@ const CorrespondenceCard = ({ note, processData, className, ...props }) => {
             src="https://cdn.pixabay.com/photo/2019/04/26/07/14/store-4156934_960_720.png"
           />
           <Typography className={classes.name}>Foxiny Web Services</Typography>
-          <Typography variant="subtitle2">Sat Jun 08 2019 T8:23:48:48 GMT</Typography>
+          <Typography variant="subtitle2">
+            Sat Jun 08 2019 T8:23:48:48 GMT
+          </Typography>
         </Grid>
         <Grid className={classes.content} item xs={10}>
           <div className={classes.verticalDivider} />
           <div>
-            <GenerateInformMessages note={note} processData={processData} />
+            <GenerateInformMessages
+              categoryName={categoryName}
+              note={note}
+              processData={processData}
+            />
             <Link href="https://mobbin.design/">https://foxiny.com/</Link>
             <br />
-            <Link href="https://www.producthunt.com/">https://www.support.foxiny.com//</Link>
+            <Link href="https://www.producthunt.com/">
+              https://www.support.foxiny.com//
+            </Link>
           </div>
         </Grid>
       </Grid>

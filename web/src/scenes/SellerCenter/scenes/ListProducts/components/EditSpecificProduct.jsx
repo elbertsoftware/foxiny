@@ -27,13 +27,7 @@ import {
 import { getSellerId } from '../../../../../utils/processData/localStorage';
 
 function getSteps() {
-  return [
-    'Danh mục',
-    'Thông tin cơ bản',
-    'Lựa chọn sản phẩm đăng bán',
-    'Hình ảnh',
-    'Tài liệu đính kèm',
-  ];
+  return ['Lựa chọn sản phẩm đăng bán', 'Hình ảnh', 'Tài liệu đính kèm'];
 }
 const styles = theme => ({
   bar: {
@@ -154,6 +148,7 @@ const EditProduct = ({
           ),),);
       newData.images = newImages;
     }
+    console.log(newData);
     setInitData(newData);
   }, [dataEdit]);
 
@@ -274,9 +269,7 @@ const EditProduct = ({
             }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <ProductEditDataContext.Provider value={{ data: values }}>
-                  {activeStep === 0 && <CascadingMenuCategory />}
-                  {activeStep === 1 && <BasicInfo />}
-                  {activeStep === 2 && (
+                  {activeStep === 0 && (
                     <ProductProperties
                       edit
                       setValue={setValue}
@@ -285,10 +278,10 @@ const EditProduct = ({
                       remove={remove}
                     />
                   )}
-                  {activeStep === 3 && (
+                  {activeStep === 1 && (
                     <AddProductImage edit setValue={setValue} />
                   )}
-                  {activeStep === 4 && <AttachmentSection edit />}
+                  {activeStep === 2 && <AttachmentSection edit />}
                 </ProductEditDataContext.Provider>
                 <div className={classes.actionsContainer}>
                   <div className={classes.grow} />
