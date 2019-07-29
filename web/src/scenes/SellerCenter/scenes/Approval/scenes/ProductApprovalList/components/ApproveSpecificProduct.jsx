@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { graphql, compose } from 'react-apollo';
+import { graphql, compose, Query } from 'react-apollo';
 import {
   Paper,
   Stepper,
@@ -16,7 +16,7 @@ import { Form } from 'react-final-form';
 import { toast } from 'react-toastify';
 import Loading from '../../../../../../../components/Loading/Loading';
 
-import { GET_PRODUCT } from '../../../../../../../utils/graphql/product';
+import { GET_MANY_PRODUCTS } from '../../../../../../../utils/graphql/product';
 import BasicInfo from '../../../../AddProduct/components/BasicInfo/BasicInfo';
 import ProductProperties from '../../../../AddProduct/components/ProductProperties/ProductProperties';
 import AddProductImage from '../../../../AddProduct/components/AddProductImages/AddProductImage';
@@ -27,8 +27,10 @@ import {
   CREATE_PRODUCT_APPROVAL_PROCESS,
   APPROVE_PRODUCT_INFO,
   DISAPPROVE_PRODUCT_INFO,
+  LAST_APPROVAL_PRODUCT_PROCESS,
 } from '../../../../../../../utils/graphql/approvement';
 import { checkAllValuesIsNull } from '../../../utils/processData';
+import { getProductIds } from '../../../../../../../utils/processData/localStorage';
 
 function getSteps() {
   return [
@@ -94,7 +96,9 @@ const messages = {
   checkAttachedFile: 'Tài liệu đính kèm',
 };
 
-const ApproveProduct = ({ history, match, ...props }) => {
+const ApproveProduct = ({
+ history, match, location, ...props 
+}) => {
   const {
     loading,
     productsData,
@@ -103,17 +107,17 @@ const ApproveProduct = ({ history, match, ...props }) => {
     disapproveProductInfo,
   } = props;
   const classes = styles();
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const [isSubmited, setIsSubmited] = useState(0); // 0:default, 1: Close&Save 2:Approve
 
-  useEffect(() => {
-    if (!loading) {
-      const dataByProductTemplateId = productsData.filter(
-        product => product.productTemplateId === match.params.id,
-      );
-      setData(dataByProductTemplateId);
-    }
-  }, [loading, match.params.id, productsData]);
+  // useEffect(() => {
+  //   if (!loading) {
+  //     const dataByProductTemplateId = productsData.filter(
+  //       product => product.productTemplateId === match.params.id,
+  //     );
+  //     setData(dataByProductTemplateId);
+  //   }
+  // }, [loading, match.params.id, productsData]);
 
   const [activeStep, setActiveStep] = useState(0);
   const handleNext = () => {
@@ -126,14 +130,14 @@ const ApproveProduct = ({ history, match, ...props }) => {
   const [initData, setInitData] = useState({});
   useEffect(() => {
     const newData = {};
-    if (data.length > 0) {
+    if (productsData && productsData.length > 0) {
       // Product template info (using when approving products)
-      newData.name = data[0].name;
-      newData.brandName = data[0].brand;
-      newData.briefDescription = data[0].briefDescription;
+      newData.name = productsData[0].name;
+      newData.brandName = productsData[0].brand;
+      newData.briefDescription = productsData[0].briefDescription;
 
       // For options list
-      const groupedOption = data.map(x => x.attributes.reduce((acc, curr) => {
+      const groupedOption = productsData.map(x => x.attributes.reduce((acc, curr) => {
           acc[curr.attributeName] = acc[curr.attributeName] || [];
           acc[curr.attributeName].push(curr.value);
           return acc;
@@ -157,7 +161,7 @@ const ApproveProduct = ({ history, match, ...props }) => {
       });
       newData.options = regroupedOption;
       // For products list
-      const newProducts = data.map(oldData => {
+      const newProducts = productsData.map(oldData => {
         const attributes = oldData.attributes.reduce(
           (pre, cur, index) => ({
             ...pre,
@@ -176,14 +180,15 @@ const ApproveProduct = ({ history, match, ...props }) => {
       });
       newData.products = newProducts;
       // For images list
-      const newImages = data.map(oldData => oldData.productMedias.map(media => Object.assign(
+      const newImages = productsData.map(oldData => oldData.productMedias.map(media => Object.assign(
             {},
             { id: media.id, name: media.name, preview: media.uri },
           ),),);
       newData.images = newImages;
     }
+    console.log(newData);
     setInitData(newData);
-  }, [data]);
+  }, [productsData, loading]);
 
   useEffect(() => {
     if (isSubmited !== 0) {
@@ -214,7 +219,7 @@ const ApproveProduct = ({ history, match, ...props }) => {
           },
         });
         toast.success('Lưu tiến trình xét duyệt thành công.');
-        window.location.reload();
+        // window.location.reload();
       } catch (error) {
         toast.error(
           error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra!',
@@ -276,7 +281,7 @@ const ApproveProduct = ({ history, match, ...props }) => {
           },
         });
         if (resultAfterApproval.data.approveRetailer) {
-          toast.success('Duyệt thành công tài khoản bán hàng.');
+          toast.success('Duyệt thành công sản phẩm.');
           history.push(`/sellers/support/case-detail/${match.params.id}`);
           window.location.reload();
         }
@@ -301,112 +306,134 @@ const ApproveProduct = ({ history, match, ...props }) => {
       </Stepper>
       <div>
         <Paper square elevation={0} className={classes.finishedContainer}>
-          <Form
-            onSubmit={onSubmit}
-            initialValues={initData}
-            mutators={{
-              setValue: ([field, value], state, { changeValue }) => {
-                changeValue(state, field, () => value);
+          <Query
+            query={LAST_APPROVAL_PRODUCT_PROCESS}
+            variables={{
+              query: {
+                caseId: match.params.id,
               },
-              ...arrayMutators,
             }}
-            render={({
-              handleSubmit,
-              submitting,
-              form: {
-                mutators: {
+          >
+            {({ data, loading }) => {
+              if (loading) return <Loading />;
+              const processData =                data.lastProductApprovalProcess.length > 0
+                && data.lastProductApprovalProcess[0].data.reviewValues;
+              oldData = processData;
+              return (
+                <Form
+                  onSubmit={onSubmit}
+                  initialValues={{ ...initData, reviewValues: processData }}
+                  mutators={{
+                    setValue: ([field, value], state, { changeValue }) => {
+                      changeValue(state, field, () => value);
+                    },
+                    ...arrayMutators,
+                  }}
+                  render={({
+                    handleSubmit,
+                    submitting,
+                    form: {
+                      mutators: {
  setValue, push, pop, remove 
 },
-              },
-              values,
-            }) => (
-              <form id="productApprovalForm" onSubmit={handleSubmit} noValidate>
-                <ProductEditDataContext.Provider value={{ data: values }}>
-                  <SetValueFunction.Provider value={{ setValue, values }}>
-                    {activeStep === 0 && <BasicInfo edit review />}
-                    {activeStep === 1 && (
-                      <ProductProperties
-                        edit
-                        review
-                        setValue={setValue}
-                        push={push}
-                        pop={pop}
-                        remove={remove}
-                      />
-                    )}
-                    {activeStep === 2 && (
-                      <AddProductImage edit review setValue={setValue} />
-                    )}
-                    {activeStep === 3 ? (
-                      <AttachmentSection edit review />
-                    ) : (
-                      <Paper square elevation={0}>
-                        <Typography variant="h5">
-                          Các bước kiểm duyệt sản phẩm đã hoàn tất. Kiểm duyệt
-                          hoặc có thể lưu lại quá trình kiểm duyệt.
-                        </Typography>
-                      </Paper>
-                    )}
-                  </SetValueFunction.Provider>
-                </ProductEditDataContext.Provider>
-                <div className={classes.actionsContainer}>
-                  <div className={classes.grow} />
-                  <Box display="flex">
-                    <Button
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      className={classes.button}
+                    },
+                    values,
+                  }) => (
+                    <form
+                      id="productApprovalForm"
+                      onSubmit={handleSubmit}
+                      noValidate
                     >
-                      Quay lại
-                    </Button>
-                    {activeStep === steps.length ? (
-                      <div className={classes.actions}>
-                        <Paper
-                          elevation={0}
-                          className={classes.actionContainer}
-                        >
-                          <div className={classes.decoration}>
+                      <ProductEditDataContext.Provider value={{ data: values }}>
+                        <SetValueFunction.Provider value={{ setValue, values }}>
+                          {activeStep === 0 && <BasicInfo edit review />}
+                          {activeStep === 1 && (
+                            <ProductProperties
+                              edit
+                              review
+                              setValue={setValue}
+                              push={push}
+                              pop={pop}
+                              remove={remove}
+                            />
+                          )}
+                          {activeStep === 2 && (
+                            <AddProductImage edit review setValue={setValue} />
+                          )}
+                          {activeStep === 3 && (
+                            <AttachmentSection edit review />
+                          )}
+                          {activeStep === 4 && (
+                            <Paper square elevation={0}>
+                              <Typography variant="h5">
+                                Các bước kiểm duyệt sản phẩm đã hoàn tất. Kiểm
+                                duyệt hoặc có thể lưu lại quá trình kiểm duyệt.
+                              </Typography>
+                            </Paper>
+                          )}
+                        </SetValueFunction.Provider>
+                      </ProductEditDataContext.Provider>
+                      <div className={classes.actionsContainer}>
+                        <div className={classes.grow} />
+                        <Box display="flex">
+                          <Button
+                            disabled={activeStep === 0}
+                            onClick={handleBack}
+                            className={classes.button}
+                          >
+                            Quay lại
+                          </Button>
+                          {activeStep === steps.length ? (
+                            <div className={classes.actions}>
+                              <Paper
+                                elevation={0}
+                                className={classes.actionContainer}
+                              >
+                                <div className={classes.decoration}>
+                                  <Button
+                                    className={classes.closeSave}
+                                    onClick={() => setIsSubmited(1)}
+                                    color="primary"
+                                  >
+                                    Đóng và Lưu
+                                  </Button>
+                                  <Button
+                                    onClick={() => setIsSubmited(2)}
+                                    color="primary"
+                                  >
+                                    Từ chối
+                                  </Button>
+                                  <Button
+                                    onClick={() => setIsSubmited(3)}
+                                    variant="contained"
+                                    color="secondary"
+                                  >
+                                    Duyệt
+                                  </Button>
+                                </div>
+                              </Paper>
+                            </div>
+                          ) : (
                             <Button
-                              className={classes.closeSave}
-                              onClick={() => setIsSubmited(1)}
-                              color="primary"
-                            >
-                              Đóng và Lưu
-                            </Button>
-                            <Button
-                              onClick={() => setIsSubmited(2)}
-                              color="primary"
-                            >
-                              Từ chối
-                            </Button>
-                            <Button
-                              onClick={() => setIsSubmited(3)}
                               variant="contained"
                               color="secondary"
+                              onClick={handleNext}
+                              className={classes.buttonAction}
                             >
-                              Duyệt
+                              {activeStep === steps.length - 1
+                                ? 'Hoàn thành'
+                                : 'Tiếp'}
                             </Button>
-                          </div>
-                        </Paper>
+                          )}
+                        </Box>
                       </div>
-                    ) : (
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={handleNext}
-                        className={classes.buttonAction}
-                      >
-                        {activeStep === steps.length - 1
-                          ? 'Hoàn thành'
-                          : 'Tiếp'}
-                      </Button>
-                    )}
-                  </Box>
-                </div>
-                {<pre>{JSON.stringify(values, 0, 2)}</pre>}
-              </form>
-            )}
-          />
+                      {<pre>{JSON.stringify(values, 0, 2)}</pre>}
+                    </form>
+                  )}
+                />
+              );
+            }}
+          </Query>
         </Paper>
       </div>
     </Paper>
@@ -416,11 +443,13 @@ const ApproveProduct = ({ history, match, ...props }) => {
 ApproveProduct.propTypes = {};
 
 export default compose(
-  graphql(GET_PRODUCT, {
-    options: props => ({ variables: { sellerId: '' } }),
-    props: ({ data: { loading, productsWoTemplateAfterCreated } }) => ({
+  graphql(GET_MANY_PRODUCTS, {
+    options: props => ({
+      variables: { query: { productIds: getProductIds } },
+    }),
+    props: ({ data: { loading, getProducts } }) => ({
       loading,
-      productsData: productsWoTemplateAfterCreated,
+      productsData: getProducts,
     }),
   }),
   graphql(CREATE_PRODUCT_APPROVAL_PROCESS, {

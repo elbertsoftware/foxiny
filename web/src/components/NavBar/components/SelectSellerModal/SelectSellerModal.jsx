@@ -16,6 +16,7 @@ import {
   Icon,
 } from '@material-ui/core';
 import { Query } from 'react-apollo';
+import { Redirect } from 'react-router-dom';
 import {
   DialogTitle,
   DialogContent,
@@ -63,6 +64,7 @@ const SelectSellerModal = ({ handleClose, open, ...props }) => {
     <Query query={RETAILERS}>
       {({ data, loading }) => {
         if (loading) return <Loading />;
+        if (data.myRetailers.length === 0 && open) {return <Redirect to="/sellers/register-seller" />;}
         return (
           <Dialog maxWidth="md" fullWidth open={open} onClose={handleClose}>
             <DialogTitle onClose={handleClose}>

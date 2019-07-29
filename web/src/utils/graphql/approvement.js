@@ -97,10 +97,65 @@ const LIST_APPROVAL_CASES = gql`
     }
   }
 `;
+const LIST_PRODUCT_APPROVAL_CASES = gql`
+  query {
+    productApprovals {
+      id
+      subject
+      status {
+        id
+        name
+      }
+      severity {
+        id
+        name
+      }
+      catergory {
+        id
+        name
+      }
+      openedByUser {
+        id
+        name
+      }
+      targetIds
+      createdAt
+    }
+  }
+`;
 
 const LAST_APPROVAL_PROCESS = gql`
   query lastRetailerApprovalProcess($query: ApprovalQueryInput!) {
     lastRetailerApprovalProcess(query: $query) {
+      id
+      supportCase {
+        id
+        subject
+        status {
+          name
+        }
+        openedByUser {
+          id
+          name
+          email
+        }
+        catergory {
+          name
+        }
+        severity {
+          name
+        }
+        createdAt
+      }
+      data
+      note
+    }
+  }
+`;
+
+const LAST_APPROVAL_PRODUCT_PROCESS = gql`
+  query lastProductApprovalProcess($query: ApprovalQueryInput!) {
+    lastProductApprovalProcess(query: $query) {
       id
       supportCase {
         id
@@ -136,5 +191,7 @@ export {
   DISAPPROVE_PRODUCT_INFO,
   RETAILER_APPROVAL_PROCESS,
   LAST_APPROVAL_PROCESS,
+  LAST_APPROVAL_PRODUCT_PROCESS,
   LIST_APPROVAL_CASES,
+  LIST_PRODUCT_APPROVAL_CASES,
 };

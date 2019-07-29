@@ -11,6 +11,7 @@ import { LOGOUT } from '../../../../../utils/graphql/user';
 import {
   removeAuthorizationToken,
   removeSellerId,
+  removeProductIds,
 } from '../../../../../utils/processData/localStorage';
 
 const list = [
@@ -54,6 +55,7 @@ const NavContentEx = () => {
   const handleAfterLogout = () => {
     removeAuthorizationToken();
     removeSellerId();
+    removeProductIds();
     window.location.href = '/';
   };
   return (

@@ -2,19 +2,19 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Paper,
   Typography,
   TableRow,
   TableCell,
   Link,
   Button,
-  Icon,
   InputBase,
+  Icon,
 } from '@material-ui/core';
-import { Redirect } from 'react-router';
-import { graphql, compose } from 'react-apollo';
+import { graphql } from 'react-apollo';
 import { debounce } from 'debounce';
-import { GET_PRODUCT } from '../../../../../../utils/graphql/product';
+import { Redirect } from 'react-router';
+import { LIST_PRODUCT_APPROVAL_CASES } from '../../../../../../utils/graphql/approvement';
+import { setProductIds } from '../../../../../../utils/processData/localStorage';
 
 import Loading from '../../../../../../components/Loading/Loading';
 import useStyles from '../../style/approvalStyles';
@@ -26,22 +26,28 @@ import {
 
 const headRows = [
   {
-    id: 'name',
+    id: 'subject',
     numeric: false,
     disablePadding: false,
-    label: 'Sản phẩm',
+    label: 'Tiêu đề',
   },
   {
-    id: 'sellPrice',
+    id: 'status.name',
     numeric: false,
     disablePadding: false,
-    label: 'Giá bán',
+    label: 'Tình trạng',
   },
   {
-    id: 'stockQuantity',
+    id: 'severity.name',
     numeric: false,
     disablePadding: false,
-    label: 'Tồn kho',
+    label: 'Mức độ',
+  },
+  {
+    id: 'user.name',
+    numeric: false,
+    disablePadding: false,
+    label: 'Người dùng',
   },
   {
     id: 'createdAt',
@@ -59,27 +65,32 @@ const headRows = [
 ];
 
 function ProductApproval(props) {
-  // Data from server
-  const { loading, productsData } = props;
-  // Props of route
-  const { history } = props;
-  // Auth
-  const { userLoggedIn } = props;
+  const {
+ loading, listApprovalCases, history, userLoggedIn 
+} = props;
   const classes = useStyles();
-  const [cloneProductData, setCloneProductData] = useState([]);
-  const [isDefault, setIsDefault] = useState(true);
+  const [cloneCases, setCloneCases] = useState([]);
   const [searchValue, setSearchValue] = useState('');
+  const [isDefault, setIsDefault] = useState(true);
 
-  let productTemplateId;
   // Search implementation
   // Search function
   const onSearchChangeDebounce = debounce(() => {
-    const newArrayProducts = productsData.filter(
-      product => product.productName.toLowerCase().includes(searchValue.toLowerCase())
-        || product.sellPrice.toString().includes(searchValue)
-        || product.stockQuantity.toString().includes(searchValue),
+    const newArrayCases = listApprovalCases.filter(
+      approvalCase => approvalCase.subject
+          .toLowerCase()
+          .includes(searchValue.toLowerCase())
+        || approvalCase.status.name
+          .toLowerCase()
+          .includes(searchValue.toLowerCase())
+        || approvalCase.severity.name
+          .toLowerCase()
+          .includes(searchValue.toLowerCase())
+        || approvalCase.openedByUser.name
+          .toLowerCase()
+          .includes(searchValue.toLowerCase()),
     );
-    setCloneProductData(newArrayProducts);
+    setCloneCases(newArrayCases);
   }, 500);
 
   const handleOnchange = event => {
@@ -95,21 +106,26 @@ function ProductApproval(props) {
     }
     setIsDefault(true);
   }, [onSearchChangeDebounce, searchValue]);
-  // Clone the data of products when have recieved it
+  // Sau khi nhận được sellers từ server, clone sellers ấy
   React.useEffect(() => {
     if (!loading) {
-      setCloneProductData(productsData);
+      setCloneCases(listApprovalCases);
     }
-  }, [loading, productsData]);
+  }, [listApprovalCases, loading]);
+  // Others logic
 
-  // Other logics
-
-  const detailAction = productTemplateId => () => {
-    history.push(`/sellers/approve-products/${productTemplateId}`);
-  };
+  // React.useEffect(() => {
+  //   if (listApprovalCases && sellerId !== '') {
+  //     history.push({
+  //       pathname: `/sellers/approve-sellers/${sellerId}`,
+  //       state: {
+  //         seller: listApprovalCases.find(seller => seller.id === sellerId),
+  //       },
+  //     });
+  //   }
+  // }, [sellerId]);
 
   if (loading) return <Loading />;
-
   if (!userLoggedIn()) return <Redirect to="/sellers/sign" />;
 
   return (
@@ -132,151 +148,66 @@ function ProductApproval(props) {
       </div>
       <ListApproval
         headRows={headRows}
-        arrayLength={productsData && productsData.length}
+        arrayLength={listApprovalCases && listApprovalCases.length}
       >
         {(page, rowsPerPage, order, orderBy) => (
           <React.Fragment>
-            {productsData
+            {listApprovalCases
               && stableSort(
-                isDefault ? productsData : cloneProductData,
+                isDefault ? listApprovalCases : cloneCases,
                 getSorting(order, orderBy),
               )
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((product, index) => {
-                  if (productTemplateId !== product.productTemplateId) {
-                    productTemplateId = product.productTemplateId;
-                    return (
-                      <React.Fragment>
-                        <TableRow>
-                          <TableCell>
-                            <Typography>
-                              <strong>Name: </strong> 
+                .map(approvalCase => (
+                  <TableRow hover key={approvalCase.id}>
+                    <TableCell component="th" scope="row">
+                      <div className={classes.productCard}>
+                        <img
+                          className={classes.img}
+                          alt="product"
+                          src="https://cdn.pixabay.com/photo/2019/04/26/07/14/store-4156934_960_720.png"
+                        />
+                        <div>
+                          <Typography component={Link}>
+                            {approvalCase.id}
+                          </Typography>
+                          <Typography variant="subtitle2">
+                            Subject: 
 {' '}
-{product.name}
-                            </Typography>
-                            <Typography>
-                              <strong>Product Template ID: </strong>
-{" "}
-                              {product.productTemplateId}
-                            </Typography>
-                          </TableCell>
-                          <TableCell />
-                          <TableCell />
-                          <TableCell />
-                          <TableCell>
-                            <Button
-                              onClick={detailAction(product.productTemplateId)}
-                              variant="contained"
-                              color="secondary"
-                              className={classes.button}
-                            >
-                              Chi tiết
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-
-                        <TableRow key={product.productId}>
-                          <TableCell component="th" scope="row">
-                            <Paper
-                              className={classes.productCard}
-                              elevation={0}
-                              square
-                            >
-                              <img
-                                className={classes.img}
-                                alt="product"
-                                src={
-                                  (product.productMedias[0]
-                                    && product.productMedias[0].uri)
-                                  || 'https://cdn.pixabay.com/photo/2019/04/26/07/14/store-4156934_960_720.png'
-                                }
-                              />
-                              <Paper elevation={0} square>
-                                <Typography component={Link}>
-                                  {product.productName}
-                                </Typography>
-                                <Typography variant="subtitle2">
-                                  ID: 
+{approvalCase.subject}
+                          </Typography>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Typography> 
 {' '}
-{product.productId}
-                                </Typography>
-                              </Paper>
-                            </Paper>
-                          </TableCell>
-                          <TableCell>
-                            <Typography>{product.sellPrice * 1000}</Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography variant="body1">Foxiny: 0</Typography>
-                            <Typography variant="body1">
-                              Nhà bán hàng: 
-{' '}
-{product.stockQuantity}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography variant="body1">
-                              {product.createdAt}
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                      </React.Fragment>
-                    );
-                  }
-                  if (index === productsData.length - 1) {
-                    productTemplateId = '';
-                  }
-                  return (
-                    <TableRow key={product.productId}>
-                      <TableCell component="th" scope="row">
-                        <Paper
-                          className={classes.productCard}
-                          elevation={0}
-                          square
-                        >
-                          <img
-                            className={classes.img}
-                            alt="product"
-                            src={
-                              (product.productMedias[0]
-                                && product.productMedias[0].uri)
-                              || 'https://cdn.pixabay.com/photo/2019/04/26/07/14/store-4156934_960_720.png'
-                            }
-                          />
-                          <Paper elevation={0} square>
-                            <Typography component={Link}>
-                              {product.productName}
-                            </Typography>
-                            <Typography variant="subtitle2">
-                              ID: 
-{' '}
-{product.productId}
-                            </Typography>
-                          </Paper>
-                        </Paper>
-                      </TableCell>
-                      <TableCell>
-                        <Typography>{product.sellPrice * 1000}</Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body1">Foxiny: 0</Typography>
-                        <Typography variant="body1">
-                          Nhà bán hàng: 
-{' '}
-{product.stockQuantity}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body1">
-                          {product.createdAt}
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            {((productsData && productsData.length === 0)
-              || (cloneProductData && cloneProductData.length === 0)) && (
-              <TableRow>
+{approvalCase.status.name}
+</Typography>
+                    </TableCell>
+                    <TableCell>{approvalCase.severity.name}</TableCell>
+                    <TableCell>{approvalCase.openedByUser.name}</TableCell>
+                    <TableCell>{approvalCase.createdAt}</TableCell>
+                    <TableCell>
+                      <Button
+                        onClick={() => {
+                          history.push(
+                            `/sellers/approve-products-cases/${approvalCase.id}`,
+                          );
+                          setProductIds(approvalCase.targetIds);
+                          window.location.reload();
+                        }}
+                        variant="contained"
+                        color="secondary"
+                        className={classes.button}
+                      >
+                        Chi tiết
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            {(listApprovalCases.length === 0 || cloneCases.length === 0) && (
+              <TableRow className={classes.emptyDataMessage}>
                 <td>Không tìm thấy dữ liệu</td>
               </TableRow>
             )}
@@ -289,12 +220,9 @@ function ProductApproval(props) {
 
 ProductApproval.propTypes = {};
 
-export default compose(
-  graphql(GET_PRODUCT, {
-    options: props => ({ variables: { sellerId: '' } }),
-    props: ({ data: { loading, productsWoTemplateAfterCreated } }) => ({
-      loading,
-      productsData: productsWoTemplateAfterCreated,
-    }),
+export default graphql(LIST_PRODUCT_APPROVAL_CASES, {
+  props: ({ data: { loading, productApprovals } }) => ({
+    loading,
+    listApprovalCases: productApprovals,
   }),
-)(ProductApproval);
+})(ProductApproval);

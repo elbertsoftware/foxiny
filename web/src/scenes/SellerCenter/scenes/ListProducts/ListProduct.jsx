@@ -48,6 +48,7 @@ const styles = ({
     borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
   },
   table: {
+    position: 'relative',
     marginTop: 16,
   },
   appBar: {
@@ -126,6 +127,11 @@ const styles = ({
         width: 320,
       },
     },
+  },
+  emptyDataMessage: {
+    position: 'absolute',
+    top: '43%',
+    left: '50%',
   },
 });
 
@@ -226,13 +232,13 @@ function ListProduct(props) {
   }, [onSearchChangeDebounce, searchValue]);
   // Sau khi nhận được sellers từ server, clone sellers ấy
   React.useEffect(() => {
-    if (!loading) {
+    if (productsData) {
       setCloneProductData(productsData);
     }
   }, [loading, productsData]);
 
   // Init component
-  const checkedArrayObject =    !loading
+  const checkedArrayObject =    productsData
     && productsData.reduce(
       (previous, current, index) => ({
         ...previous,
@@ -302,10 +308,22 @@ function ListProduct(props) {
         />
       </Dialog>
     ),
-    [activeProductTemplateId, classes.appBar, classes.flex, openEditDialog, productsData],
+    [
+      activeProductTemplateId,
+      classes.appBar,
+      classes.flex,
+      openEditDialog,
+      productsData,
+    ],
   );
   let productTemplateId;
   if (loading) return <Loading />;
+  const emptyRows =    rowsPerPage
+    - Math.min(
+      rowsPerPage,
+      productsData && productsData.length - page * rowsPerPage,
+    );
+
   if (!userLoggedIn()) {
     return <Redirect to="/sellers/signin" />;
   }
@@ -558,9 +576,15 @@ function ListProduct(props) {
                     </TableRow>
                   );
                 })}
-            {(productsData.length === 0 || cloneProductData.length === 0) && (
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 48 * emptyRows }}>
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
+            {((productsData && productsData.length === 0)
+              || cloneProductData.length === 0) && (
               <TableRow className={classes.emptyDataMessage}>
-                <td>Không tìm thấy dữ liệu</td>
+                <td colSpan={6}>Không tìm thấy dữ liệu</td>
               </TableRow>
             )}
           </TableBody>

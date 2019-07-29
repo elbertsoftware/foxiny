@@ -1,6 +1,8 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, {
+ useState, useEffect, useContext, useRef 
+} from 'react';
 import {
   Grid,
   Typography,
@@ -13,28 +15,28 @@ import {
   MenuItem,
   InputLabel,
   Icon,
-  Zoom
-} from "@material-ui/core";
-import { Form, Field, FormSpy } from "react-final-form";
-import { Redirect } from "react-router";
-import { graphql, compose } from "react-apollo";
-import SwipeableViews from "react-swipeable-views";
-import { toast } from "react-toastify";
-import createDecorator from "final-form-focus";
+  Zoom,
+} from '@material-ui/core';
+import { Form, Field, FormSpy } from 'react-final-form';
+import { Redirect } from 'react-router';
+import { graphql, compose } from 'react-apollo';
+import SwipeableViews from 'react-swipeable-views';
+import { toast } from 'react-toastify';
+import createDecorator from 'final-form-focus';
 import {
   required,
   email,
   phone,
-  formatInternationalPhone
-} from "../../../../utils/processData/validation/validation";
-import { countries } from "../../../../utils/processData/rawData/callingcodes";
-import RFTextField from "../../../../components/TextField/RFTextField";
-import FormButton from "../../../../components/Button/FormButton/FormButton";
-import TabContainer from "../../../../components/TabContainer/TabContainer";
-import registerSellerStyles from "./style/registerSellerStyles";
-import SelectList from "../../../../components/Select/SelectList";
-import SwipeButton from "../../../../components/Button/SwipeButton/SwipeButton";
-import { REGISTER_RETAILER } from "../../../../utils/graphql/retailer";
+  formatInternationalPhone,
+} from '../../../../utils/processData/validation/validation';
+import { countries } from '../../../../utils/processData/rawData/callingcodes';
+import RFTextField from '../../../../components/TextField/RFTextField';
+import FormButton from '../../../../components/Button/FormButton/FormButton';
+import TabContainer from '../../../../components/TabContainer/TabContainer';
+import registerSellerStyles from './style/registerSellerStyles';
+import SelectList from '../../../../components/Select/SelectList';
+import SwipeButton from '../../../../components/Button/SwipeButton/SwipeButton';
+import { REGISTER_RETAILER } from '../../../../utils/graphql/retailer';
 
 const focusOnError = createDecorator();
 
@@ -81,33 +83,33 @@ const RegisterSeller = ({
     try {
       const phoneNumber = formatInternationalPhone(
         values.businessPhone,
-        values.countryCode
+        values.countryCode,
       );
       const data = await registerRetailer({
         variables: {
           data: {
             businessName: values.businessName,
             businessEmail: values.businessEmail,
-            emailConfirmCode: values.emailCode || "",
+            emailConfirmCode: values.emailCode || '',
             businessPhone: phoneNumber,
-            phoneConfirmCode: values.phoneCode || "",
+            phoneConfirmCode: values.phoneCode || '',
             businessAddress: {
-              city: values.businessAddress
-            }
-          }
-        }
+              city: values.businessAddress,
+            },
+          },
+        },
       });
-      toast.success("Đăng ký thành công !");
-      history.push("/sellers/seller-declaration");
+      toast.success('Đăng ký thành công !');
       window.location.reload();
+      history.push('/sellers/seller-declaration');
     } catch (error) {
       toast.error(
-        error.message.replace("GraphQL error:", "") || "Có lỗi xảy ra!"
+        error.message.replace('GraphQL error:', '') || 'Có lỗi xảy ra!',
       );
     }
   };
   if (!userLoggedIn()) {
-    return <Redirect to="/seller/sign" />;
+    return <Redirect to="/sellers/sign" />;
   }
   return (
     <Grid container className={classes.container}>
@@ -144,14 +146,14 @@ const RegisterSeller = ({
             validate={values => {
               const errors = required(
                 [
-                  "businessType",
-                  "businessName",
-                  "businessEmail",
-                  "businessPhone",
-                  "businessAddress",
-                  "countryCode"
+                  'businessType',
+                  'businessName',
+                  'businessEmail',
+                  'businessPhone',
+                  'businessAddress',
+                  'countryCode',
                 ],
-                values
+                values,
               );
               if (!errors.businessEmail) {
                 const emailError = email(values.businessEmail);
@@ -162,7 +164,7 @@ const RegisterSeller = ({
               if (!errors.businessPhone) {
                 const phoneError = phone(
                   values.countryCode,
-                  values.businessPhone
+                  values.businessPhone,
                 );
                 if (phoneError) {
                   errors.businessPhone = phoneError;
@@ -171,10 +173,12 @@ const RegisterSeller = ({
               return errors;
             }}
           >
-            {({ handleSubmit, submitting, values, pristine, invalid }) => (
+            {({
+ handleSubmit, submitting, values, pristine, invalid 
+}) => (
               <form onSubmit={handleSubmit} noValidate>
                 <SwipeableViews
-                  axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+                  axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                   index={activeTabId}
                   onChangeIndex={handleChangeIndex}
                 >
@@ -218,12 +222,15 @@ const RegisterSeller = ({
                         <Zoom in={values.businessType !== undefined}>
                           <div className={classes.messagesContainer}>
                             <Typography variant="subtitle2">
-                              {values.businessType === "personal"
-                                ? "Cá nhân từ 18 tuổi trở lên, có CMND còn thời hạn."
-                                : "Cần có giấy phép đăng ký kinh doanh còn thời hạn."}
+                              {values.businessType === 'personal'
+                                ? 'Cá nhân từ 18 tuổi trở lên, có CMND còn thời hạn.'
+                                : 'Cần có giấy phép đăng ký kinh doanh còn thời hạn.'}
                             </Typography>
                             <Typography variant="subtitle2">
-                              <span role="img">📝</span> <strong>Lưu ý:</strong>{" "}
+                              <span role="img">📝</span> 
+{' '}
+<strong>Lưu ý:</strong>
+{" "}
                               Bạn cần phải cung cấp hình ảnh cần thiết cho
                               Foxiny sau khi hoàn tất các bước đăng ký (CMND hai
                               mặt/Giấy phép kinh doanh)
@@ -237,8 +244,10 @@ const RegisterSeller = ({
                           size="large"
                           className={classes.forgetButton}
                         >
-                          <Icon>help_outline</Icon> Hỗ trợ
-                        </Button>
+                          <Icon>help_outline</Icon>
+{' '}
+Hỗ trợ
+</Button>
                         <Button
                           disabled={values.businessType === undefined}
                           onClick={() => setActiveTabId(1)}
@@ -353,10 +362,10 @@ const RegisterSeller = ({
                             setFieldVisible={setFieldVisible}
                             email={isEmailConfirmed && values.businessEmail}
                             phone={
-                              isPhoneConfirmed &&
-                              formatInternationalPhone(
+                              isPhoneConfirmed
+                              && formatInternationalPhone(
                                 values.businessPhone,
-                                values.countryCode
+                                values.countryCode,
                               )
                             }
                           />
@@ -426,11 +435,11 @@ const RegisterSeller = ({
                   subscription={{ values: true, touched: true }}
                   onChange={state => {
                     const { values, touched } = state;
-                    if (touched["businessEmail"] || touched["businessPhone"]) {
+                    if (touched.businessEmail || touched.businessPhone) {
                       checkEmailPhone(
                         values.businessEmail,
                         values.businessPhone,
-                        values.countryCode
+                        values.countryCode,
                       );
                     }
                   }}
@@ -445,6 +454,6 @@ const RegisterSeller = ({
 };
 
 export default compose(
-  graphql(REGISTER_RETAILER, { name: "registerRetailer" }),
-  withStyles(registerSellerStyles, { withTheme: true })
+  graphql(REGISTER_RETAILER, { name: 'registerRetailer' }),
+  withStyles(registerSellerStyles, { withTheme: true }),
 )(RegisterSeller);

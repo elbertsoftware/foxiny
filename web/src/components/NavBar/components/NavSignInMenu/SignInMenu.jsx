@@ -1,22 +1,23 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import React from "react";
+import { withStyles } from "@material-ui/core/styles";
 import {
   Button,
   Typography,
   Badge,
   Grid,
   Avatar,
-  IconButton,
-} from '@material-ui/core';
-import { Mutation } from 'react-apollo';
-import { Redirect } from 'react-router-dom';
+  IconButton
+} from "@material-ui/core";
+import { Mutation } from "react-apollo";
+import { Redirect } from "react-router-dom";
 import {
   removeAuthorizationToken,
   removeSellerId,
-} from '../../../../utils/processData/localStorage';
-import PopperAccount from '../../../Popper/PopperAccount';
-import PopperNotification from '../../../Popper/PopperNotification';
-import { LOGOUT } from '../../../../utils/graphql/user';
+  removeProductIds
+} from "../../../../utils/processData/localStorage";
+import PopperAccount from "../../../Popper/PopperAccount";
+import PopperNotification from "../../../Popper/PopperNotification";
+import { LOGOUT } from "../../../../utils/graphql/user";
 
 const styles = theme => ({
   popper: {
@@ -25,16 +26,16 @@ const styles = theme => ({
     '&[x-placement*="bottom"] $arrow': {
       top: 0,
       left: 0,
-      marginTop: '-0.9em',
-      width: '3em',
-      height: '1em',
-      '&::before': {
-        borderWidth: '0 1em 1em 1em',
+      marginTop: "-0.9em",
+      width: "3em",
+      height: "1em",
+      "&::before": {
+        borderWidth: "0 1em 1em 1em",
         borderColor: `transparent transparent ${
           theme.palette.common.white
-        } transparent`,
-      },
-    },
+        } transparent`
+      }
+    }
   },
   popperNoti: {
     zIndex: 1,
@@ -42,68 +43,68 @@ const styles = theme => ({
     '&[x-placement*="bottom"] $arrow': {
       top: 0,
       left: 0,
-      marginTop: '-0.9em',
-      width: '3em',
-      height: '1em',
-      '&::before': {
-        borderWidth: '0 1em 1em 1em',
+      marginTop: "-0.9em",
+      width: "3em",
+      height: "1em",
+      "&::before": {
+        borderWidth: "0 1em 1em 1em",
         borderColor: `transparent transparent ${
           theme.palette.common.white
-        } transparent`,
-      },
-    },
+        } transparent`
+      }
+    }
   },
   arrow: {
-    position: 'absolute',
+    position: "absolute",
     fontSize: 7,
-    width: '3em',
-    height: '3em',
-    '&::before': {
+    width: "3em",
+    height: "3em",
+    "&::before": {
       content: '""',
-      margin: 'auto',
-      display: 'block',
+      margin: "auto",
+      display: "block",
       width: 0,
       height: 0,
-      borderStyle: 'solid',
-    },
+      borderStyle: "solid"
+    }
   },
   paper: {
-    maxWidth: 400,
+    maxWidth: 400
   },
   paperNoti: {
-    maxWidth: 400,
+    maxWidth: 400
   },
   typo: {
-    textTransform: 'none',
-    padding: '6px 8px',
-    color: theme.palette.common.white,
+    textTransform: "none",
+    padding: "6px 8px",
+    color: theme.palette.common.white
   },
   button: {
-    '&:hover': {
-      backgroundColor: 'transparent',
+    "&:hover": {
+      backgroundColor: "transparent"
     },
-    marginBottom: '-16px',
+    marginBottom: "-16px"
   },
   greeting: {
     color: theme.palette.common.white,
-    fontSize: '15px',
-    paddingLeft: '10px',
-    marginBottom: '-18px',
+    fontSize: "15px",
+    paddingLeft: "10px",
+    marginBottom: "-18px"
   },
   avatar: {
-    margin: 0,
+    margin: 0
   },
   badge: {
-    margin: 0,
+    margin: 0
   },
   iconButton: {
     padding: 0,
     opacity: 0.75,
-    transition: 'opacity .5s ease-in-out',
-    '&:hover': {
-      opacity: 1,
-    },
-  },
+    transition: "opacity .5s ease-in-out",
+    "&:hover": {
+      opacity: 1
+    }
+  }
 });
 
 class SignInMenu extends React.Component {
@@ -115,7 +116,7 @@ class SignInMenu extends React.Component {
     anchorElNoti: null,
     arrowRefNoti: null,
     invisible: true,
-    userExpired: false,
+    userExpired: false
   };
 
   componentDidMount() {
@@ -127,7 +128,7 @@ class SignInMenu extends React.Component {
     const { currentTarget } = event;
     this.setState(state => ({
       anchorEl: currentTarget,
-      open: !state.open,
+      open: !state.open
     }));
   };
 
@@ -135,7 +136,7 @@ class SignInMenu extends React.Component {
     const { currentTarget } = event;
     this.setState(state => ({
       anchorElNoti: currentTarget,
-      openNoti: !state.openNoti,
+      openNoti: !state.openNoti
     }));
   };
 
@@ -143,7 +144,7 @@ class SignInMenu extends React.Component {
     const { currentTarget } = event;
     this.setState({
       anchorEl: currentTarget,
-      open: true,
+      open: true
     });
   };
 
@@ -152,7 +153,7 @@ class SignInMenu extends React.Component {
     this.setState(state => ({
       anchorElNoti: currentTarget,
       openNoti: !state.openNoti,
-      invisible: !state.invisible,
+      invisible: !state.invisible
     }));
   };
 
@@ -172,26 +173,27 @@ class SignInMenu extends React.Component {
     this.setState(state => ({
       anchorElNoti: null,
       openNoti: false,
-      invisible: !state.invisible,
+      invisible: !state.invisible
     }));
   };
 
   handleArrowRef = node => {
     this.setState({
-      arrowRef: node,
+      arrowRef: node
     });
   };
 
   handleArrowRefNoti = node => {
     this.setState({
-      arrowRefNoti: node,
+      arrowRefNoti: node
     });
   };
 
   handleAfterLogout = () => {
     removeAuthorizationToken();
     removeSellerId();
-    window.location.href = '/';
+    removeProductIds();
+    window.location.href = "/";
   };
 
   render() {
@@ -203,7 +205,7 @@ class SignInMenu extends React.Component {
       anchorElNoti,
       arrowRefNoti,
       invisible,
-      userExpired,
+      userExpired
     } = this.state;
     const { classes, user } = this.props;
     if (userExpired) return <Redirect to="/signin" />;
@@ -231,17 +233,13 @@ class SignInMenu extends React.Component {
               </Badge>
 
               <div>
-                <Typography
-                  variant="body2"
-                  className={classes.greeting}
-                >
-{`Hi, ${user.name.split(" ")[0]}`}
-
+                <Typography variant="body2" className={classes.greeting}>
+                  {`Hi, ${user.name.split(" ")[0]}`}
                 </Typography>
 
                 <Button
                   className={classes.button}
-                  aria-owns={open ? 'fade-popper' : undefined}
+                  aria-owns={open ? "fade-popper" : undefined}
                   variant="text"
                   color="secondary"
                   onMouseEnter={this.handleOpen}

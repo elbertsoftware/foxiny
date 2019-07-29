@@ -64,6 +64,7 @@ export const productSchema = gql`
     ): [FriendlyProduct!]!
     # productsManufacturers(query: String): [ProductManufacturer!]!
     # productsRetailers(query: String): [ProductRetailer!]!
+    getProducts(query: StaffGetProductsInput): [FriendlyProduct!]!
   }
 
   extend type Mutation {
@@ -129,5 +130,16 @@ export const productSchema = gql`
   input ApproveProductInput {
     productId: String!
     approved: Boolean!
+  }
+
+  input StaffGetProductsInput {
+    skip: Int
+    first: Int
+    last: Int
+
+    productTemplateId: String
+    productIds: [String!]
+    sellerId: String
+    productName: String
   }
 `;

@@ -119,9 +119,42 @@ const GET_CATEGORIES = gql`
     }
   }
 `;
+const GET_MANY_PRODUCTS = gql`
+  query getProducts($query: StaffGetProductsInput) {
+    getProducts(query: $query) {
+      productTemplateId
+      productId
+      name
+      productName
+      briefDescription
+      brand
+      catalog {
+        id
+        name
+      }
+      descriptions {
+        fromRetailers
+      }
+      productMedias {
+        id
+        uri
+      }
+      listPrice
+      sellPrice
+      stockQuantity
+      inStock
+      approved
+      attributes {
+        attributeName
+        value
+      }
+    }
+  }
+`;
 
 export {
   GET_PRODUCT,
+  GET_MANY_PRODUCTS,
   GET_CATEGORIES,
   CREATE_NEW_PRODUCT,
   UPLOAD_IMAGES,

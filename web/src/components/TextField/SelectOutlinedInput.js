@@ -5,15 +5,25 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
+import { makeStyles } from '@material-ui/core';
+
+const styles = makeStyles({
+  root: {
+    height: 30,
+  },
+});
 
 const SelectInput = ({
-  input: { name, value, onChange, ...restInput },
+  input: {
+ name, value, onChange, ...restInput 
+},
   meta,
   label,
   formControlProps,
   showError,
   ...rest
 }) => {
+  const classes = styles();
   return (
     <FormControl
       {...formControlProps}
@@ -32,7 +42,14 @@ const SelectInput = ({
         onChange={onChange}
         inputProps={restInput}
         value={value}
-        input={<OutlinedInput labelWidth={0} name="whatever" id={name} />}
+        input={(
+<OutlinedInput
+            classes={{ root: classes.root }}
+            labelWidth={0}
+            name="whatever"
+            id={name}
+          />
+)}
       />
       {meta.error && <FormHelperText>{meta.error}</FormHelperText>}
     </FormControl>
